@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('/v1')->group(function () {
+    //onboarding
+    Route::middleware("unguarded")->group(function () {
+        Route::prefix('/onboarding/')->group(function () {
+            Route::post('/register', 'OnboardingController@register');
+            Route::post('/verify-phone-number', 'OnboardingController@verify_phone_number');
+            Route::post('/set-password', 'OnboardingController@set_password');
+        });
+    });
+    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
