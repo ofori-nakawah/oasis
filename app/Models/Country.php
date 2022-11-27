@@ -41,7 +41,7 @@ class Country extends Model
     }
 
     public static function GetCountry($country){
-        $country_config = Country::where("id", $country)->orWhere("name", $country)->first();
+        $country_config = Country::where("id", $country)->orWhere("name", $country)->orWhere("tel_code", $country)->first();
         if (!$country_config) {
             Log::error("COULD NOT FIND COUNTRY CONFIG FOR >>>>>>>>>>>>>>>>>>>> " . $country);
             return null;
@@ -49,7 +49,8 @@ class Country extends Model
 
         return [
             "id" => $country_config->id,
-            "name" => $country_config->name
+            "name" => $country_config->name,
+            "tel_code" => $country_config->tel_code,
         ];
     }
 

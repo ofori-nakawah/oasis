@@ -51,8 +51,9 @@ trait Responses
     private function process_response($response, $payload, string $message = null){
         return response()->json([
             "message" => ($message) ? $message : $response["message"],
+            "status_code" => $response["code"],
             "data" => $payload
-        ], $response["code"]);
+        ]);
     }
 
     /**

@@ -17,6 +17,7 @@ class CreateCountriesTable extends Migration
             $table->uuid("id")->primary();
             $table->string("name");
             $table->string("country_code");
+            $table->string("tel_code");
             $table->text("img")->nullable();
             $table->boolean("is_phone_number_required_during_onboarding")->default(false);
             $table->boolean("is_phone_number_default_verification_medium")->default(false);
@@ -27,6 +28,7 @@ class CreateCountriesTable extends Migration
         $country->id = \Illuminate\Support\Str::uuid();
         $country->name = "Ghana";
         $country->country_code = "GH";
+        $country->tel_code = "+233";
         $country->is_phone_number_required_during_onboarding = true;
         $country->is_phone_number_default_verification_medium = true;
         $country->save();

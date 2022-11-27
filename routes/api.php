@@ -17,13 +17,19 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/v1')->group(function () {
     //onboarding
     Route::middleware("unguarded")->group(function () {
-        Route::prefix('/onboarding/')->group(function () {
+        Route::prefix('/onboarding')->group(function () {
             Route::post('/register', 'OnboardingController@register');
             Route::post('/verify-phone-number', 'OnboardingController@verify_phone_number');
-            Route::post('/set-password', 'OnboardingController@set_password');
+        });
+
+        Route::prefix('/auth')->group(function () {
+            Route::post('/login', 'AuthController@login');
         });
     });
-    Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-        return $request->user();
+
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::prefix('/volunteer')->group(function () {
+            Route::post('/create-post', 'PostController@create_volunteer_post');
+        });
     });
 });

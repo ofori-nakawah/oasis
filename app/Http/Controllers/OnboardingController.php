@@ -27,17 +27,21 @@ class OnboardingController extends Controller
     public function register(Request $request){
         $validation = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'phone_number' => 'unique:users,phone_number',
-            'country' => 'required'
+            'email' => 'email|unique:users',
+            'phone_number' => 'unique:users',
+            'country' => 'required',
+            'password' => 'required'
         ]);
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
-        /**
-         * Let get country config and check if phone number is required
-         * Get the verification medium based on the users country
-         */
-        if (CountryConfig::QueryCountryConfig($request->input("country"), "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
+//        /**
+//         * Let get country config and check if phone number is required
+//         * Get the verification medium based on the users country
+//         */
+        $country = CountryConfig::GetCountry($request->input("country"));
+        if (!$country) {return $this->general_error_response([]);}
+
+        if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
             $errors = new MessageBag();
             $errors->add("phone_number", "The phone number field is required");
             {return $this->data_validation_error_response($errors->getMessages());}
@@ -48,19 +52,18 @@ class OnboardingController extends Controller
         $user->name = $request->input("name");
         $user->email = $request->input("email");
         $user->type = (!$request->input("type")) ? User::APP_USER_TYPE : $request->input("type");
+        $user->password = Hash::make($request->input("password"));
         $user->status = User::ONBOARDING_STATUS;
 
         /**
          * Get international phone number
          */
-        $international_phone_number = CountryConfig::GetIntPhoneNumber($request->input("country"), $request->input("phone_number"));
+        $international_phone_number = CountryConfig::GetIntPhoneNumber($country["name"], $request->input("phone_number"));
         $user->phone_number = ($international_phone_number === null) ? $request->input("phone_number") : $international_phone_number;
 
         /**
          * Get country id from the country selected by user
          */
-        $country = CountryConfig::GetCountry($request->input("country"));
-        if (!$country) {return $this->general_error_response([]);}
         $user->country_id = $country["id"];
 
         try {
@@ -79,7 +82,8 @@ class OnboardingController extends Controller
 
         $data = [
             "uuid" => $user->uuid,
-            "is_phone_number_default_verification_medium" => User::IsPhoneNumberVerificationRequired($user)
+            "is_phone_number_default_verification_medium" => User::IsPhoneNumberVerificationRequired($user),
+            "phone_number" => $user->phone_number
         ];
         $default_verification_medium = (User::IsPhoneNumberVerificationRequired($user)) ? 'phone number' : 'email';
         $message = "A verification code has been sent to your " . $default_verification_medium ;
@@ -91,13 +95,12 @@ class OnboardingController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'phone_number' => 'required',
-            'country' => 'required',
             'code' => 'required'
         ]);
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
 
-        $verification_status = OTP::Validate("phone_number", CountryConfig::GetIntPhoneNumber($request->input("country"), $request->input("phone_number")), $request->input("code"));
+        $verification_status = OTP::Validate("phone_number",  $request->input("phone_number"), $request->input("code"));
 
         switch ($verification_status) {
             case OTP::INVALID_STATUS:
@@ -111,7 +114,7 @@ class OnboardingController extends Controller
                 break;
         }
 
-        $user = User::where("phone_number", CountryConfig::GetIntPhoneNumber($request->input("country"), $request->input("phone_number")))->first();
+        $user = User::where("phone_number", $request->input("phone_number"))->first();
         if (!$user) {return $this->not_found_response([]);}
 
         $user->phone_number_verified_at = Carbon::now();
@@ -125,26 +128,26 @@ class OnboardingController extends Controller
         return $this->success_response([], "Phone number verification successful");
     }
 
-    public function set_password(Request $request) {
-        $validation = Validator::make($request->all(), [
-            'uuid' => 'required',
-            'password' => 'required|confirmed',
-            'password_confirmation' => 'required'
-        ]);
-
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
-
-        $user = User::where("uuid", $request->input("uuid"))->first();
-        if (!$user) {return $this->not_found_response([]);}
-
-        $user->password = Hash::make($request->input("password"));
-        try {
-            $user->update();
-        } catch (QueryException $e) {
-            Log::error("ERROR SETTING PASSWORD FOR >>>>>>>>>> " . $user->id);
-            return $this->db_operation_error_response([]);
-        }
-
-        return $this->success_response([], "Password set successful.");
-    }
+//    public function set_password(Request $request) {
+//        $validation = Validator::make($request->all(), [
+//            'uuid' => 'required',
+//            'password' => 'required|confirmed',
+//            'password_confirmation' => 'required'
+//        ]);
+//
+//        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+//
+//        $user = User::where("uuid", $request->input("uuid"))->first();
+//        if (!$user) {return $this->not_found_response([]);}
+//
+//        $user->password = Hash::make($request->input("password"));
+//        try {
+//            $user->update();
+//        } catch (QueryException $e) {
+//            Log::error("ERROR SETTING PASSWORD FOR >>>>>>>>>> " . $user->id);
+//            return $this->db_operation_error_response([]);
+//        }
+//
+//        return $this->success_response([], "Password set successful.");
+//    }
 }
