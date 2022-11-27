@@ -31,5 +31,9 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/volunteer')->group(function () {
             Route::post('/create-post', 'PostController@create_volunteer_post');
         });
+
+        Route::prefix('/activities')->group(function () {
+            Route::get('/get-user-posts', 'PostController@get_user_posts');
+        });
     });
 });

@@ -40,6 +40,7 @@ class PostController extends Controller
         $post->volunteer_hours = $request->volunteer_hours;
         $post->other_relevant_information = $request->other_relevant_information;
         $post->user_id = auth()->id();
+        $post->type = "VOLUNTEER";
 
         try {
             $post->save();
@@ -48,5 +49,11 @@ class PostController extends Controller
             Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
         }
+    }
+
+    public function get_user_posts(Request $request)
+    {
+        $posts = auth()->user()->posts;
+        return $this->success_response($posts, "Posts fetched successfully.");
     }
 }

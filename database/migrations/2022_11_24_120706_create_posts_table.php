@@ -21,6 +21,7 @@ class CreatePostsTable extends Migration
             $table->string("date");
             $table->string("time");
             $table->string("location");
+            $table->string("type");
             $table->string("coords");
             $table->string("maximum_number_of_volunteers")->nullable();
             $table->string("volunteer_hours")->nullable();
