@@ -13,6 +13,11 @@ class PostController extends Controller
 {
     use Responses;
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * create a volunteer post
+     */
     public function create_volunteer_post(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -51,9 +56,65 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * Get posts created by user
+     */
     public function get_user_posts(Request $request)
     {
         $posts = auth()->user()->posts;
         return $this->success_response($posts, "Posts fetched successfully.");
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * Get posts based on user location and category
+     */
+    public function get_posts_closest_to_me(Request $request)
+    {
+        $posts = [];
+
+        //get user coordinates
+        $user_location = auth()->user()->location;
+        $user_location_lat = explode(',', $user_location)[0];
+        $user_location_lng = explode(',', $user_location)[1];
+
+        switch ($request->type) {
+            case "VOLUNTEER":
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->get();
+                break;
+        }
+
+        $posts->map(function ($post) use ($user_location_lat, $user_location_lng) {
+            //get post coordinates
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
+
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+            $post["organiser_name"] = $post->user->name;
+            $post["distance"] = $distance;
+            return $post;
+        });
+
+        return $this->success_response($posts, "Posts fetched successfully.");
+    }
+
+    private function get_distance($lat1, $lon1, $lat2, $lon2, $unit) {
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
     }
 }

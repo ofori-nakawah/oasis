@@ -26,6 +26,7 @@ class CreatePostsTable extends Migration
             $table->string("maximum_number_of_volunteers")->nullable();
             $table->string("volunteer_hours")->nullable();
             $table->string("other_relevant_information")->nullable();
+            $table->string("status")->default("active");
             $table->timestamps();
         });
     }

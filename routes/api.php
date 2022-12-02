@@ -34,6 +34,11 @@ Route::prefix('/v1')->group(function () {
 
         Route::prefix('/activities')->group(function () {
             Route::get('/get-user-posts', 'PostController@get_user_posts');
+            Route::get('/get-posts', 'PostController@get_posts_closest_to_me');
+        });
+
+        Route::prefix('/profile')->group(function () {
+            Route::post('/update-current-location', 'LocationController@update_user_current_location');
         });
     });
 });
