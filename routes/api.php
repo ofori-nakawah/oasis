@@ -35,6 +35,7 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/activities')->group(function () {
             Route::get('/get-user-posts', 'PostController@get_user_posts');
             Route::get('/get-posts', 'PostController@get_posts_closest_to_me');
+            Route::get('/get-post-details', 'PostController@get_post_details');
         });
 
         Route::prefix('/profile')->group(function () {

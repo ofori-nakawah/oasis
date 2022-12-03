@@ -94,7 +94,7 @@ class PostController extends Controller
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
-            $post["distance"] = $distance;
+            $post["distance"] = number_format($distance, 2);
             return $post;
         });
 
@@ -116,5 +116,19 @@ class PostController extends Controller
         } else {
             return $miles;
         }
+    }
+
+    public function get_post_details(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $post = Post::where("id", $request->id)->first();
+        if (!$post) {return $this->not_found_response([], "Error fetching post details");}
+
+        return $this->success_response($post, "Posts fetched successfully.");
     }
 }
