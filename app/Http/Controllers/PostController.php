@@ -78,6 +78,10 @@ class PostController extends Controller
 
         //get user coordinates
         $user_location = auth()->user()->location;
+        if (!$user_location) {
+            return $this->not_found_response([], "Could not retrieve user's current location");
+        }
+
         $user_location_lat = explode(',', $user_location)[0];
         $user_location_lng = explode(',', $user_location)[1];
 
@@ -128,6 +132,8 @@ class PostController extends Controller
 
         $post = Post::where("id", $request->id)->first();
         if (!$post) {return $this->not_found_response([], "Error fetching post details");}
+
+        $post->user;
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
