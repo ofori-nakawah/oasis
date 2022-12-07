@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobApplication;
 use App\Models\Post;
 use App\Traits\Responses;
+use http\Message;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -93,8 +95,8 @@ class PostController extends Controller
 
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng) {
             //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat = explode(',', $post->coords)[1];
+            $post_location_lng = explode(',', $post->coords)[0];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
@@ -132,8 +134,65 @@ class PostController extends Controller
 
         $post = Post::where("id", $request->id)->first();
         if (!$post) {return $this->not_found_response([], "Error fetching post details");}
-
+        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+        if ($has_already_applied) {
+            $post->has_already_applied = "yes";
+        }
         $post->user;
+
+        return $this->success_response($post, "Posts fetched successfully.");
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function apply_for_job(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'job_post_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $post = Post::where("id", $request->job_post_id)->first();
+        if (!$post) {return $this->not_found_response([], "Error fetching post details");}
+
+        //check if user has applied already
+        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $request->job_post_id)->first();
+        if ($has_already_applied) {return $this->general_error_response([], "You have already applied for this job.");}
+
+        $job_application = new JobApplication();
+        $job_application->user_id = auth()->id();
+        $job_application->post_id = $request->job_post_id;
+        try {
+            $job_application->save();
+
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING JOB APPLICATION >>>>>>>>>> " . $job_application . " >>>>>>>>> " . $e);
+            return $this->db_operation_error_response([]);
+        }
+
+        return $this->success_response([], "Congratulations! Your application was successful");
+    }
+
+    public function get_user_post_status(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'uuid' => 'required'
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $post = Post::where("id", $request->uuid)->first();
+        if (!$post) {return $this->not_found_response([], "Error fetching post details");}
+
+        $post->number_of_participants_applied = $post->applications()->count();
+        $post->number_of_participants_confirmed = $post->applications()->where("status", "approved")->count();
+
+        foreach ($post->applications as $application) {
+            $application->user;
+        }
 
         return $this->success_response($post, "Posts fetched successfully.");
     }

@@ -6,7 +6,7 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class JobApplication extends Model
 {
     use HasFactory, Uuids;
 
@@ -15,9 +15,8 @@ class Post extends Model
         return $this->belongsTo("App\Models\User", "user_id");
     }
 
-    public function applications()
+    public function job_post()
     {
-        return $this->hasMany("App\Models\JobApplication");
+        return $this->belongsTo("App\Models\Post", "post_id");
     }
-
 }

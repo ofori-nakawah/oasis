@@ -53,6 +53,11 @@ class User extends Authenticatable
         return $this->belongsTo("App\Models\Country", "country_id");
     }
 
+    public function job_applications()
+    {
+        return $this->hasMany("App\Models\JobApplication", "user_id");
+    }
+
     public function skills()
     {
         return $this->hasMany("App\Models\SkillUser", "user_id");
