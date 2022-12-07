@@ -53,6 +53,11 @@ class User extends Authenticatable
         return $this->belongsTo("App\Models\Country", "country_id");
     }
 
+    public function skills()
+    {
+        return $this->hasMany("App\Models\SkillUser", "user_id");
+    }
+
     public static function IsActive(User $user) {
         if ($user->status === self::ACTIVE_STATUS) {
             return true;
