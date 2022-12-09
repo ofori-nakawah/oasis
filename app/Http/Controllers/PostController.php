@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JobApplication;
 use App\Models\Post;
+use App\Models\User;
 use App\Traits\Responses;
 use http\Message;
 use Illuminate\Database\QueryException;
@@ -167,7 +168,6 @@ class PostController extends Controller
         $job_application->post_id = $request->job_post_id;
         try {
             $job_application->save();
-
         } catch (QueryException $e) {
             Log::error("ERROR SAVING JOB APPLICATION >>>>>>>>>> " . $job_application . " >>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
@@ -188,12 +188,64 @@ class PostController extends Controller
         if (!$post) {return $this->not_found_response([], "Error fetching post details");}
 
         $post->number_of_participants_applied = $post->applications()->count();
-        $post->number_of_participants_confirmed = $post->applications()->where("status", "approved")->count();
+        $post->number_of_participants_confirmed = $post->applications()->where("status", "confirmed")->count();
 
         foreach ($post->applications as $application) {
             $application->user;
         }
 
         return $this->success_response($post, "Posts fetched successfully.");
+    }
+
+    public function confirm_decline_applicant(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'action' => 'required',
+            'application_id' => 'required',
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $application = JobApplication::where("id", $request->application_id)->first();
+        if (!$application) {return $this->not_found_response([], "Error fetching application details");}
+
+        $message = "";
+        if ($request->action === "confirm") {
+            $application->status = "confirmed";
+            $message = "Applicant has been confirmed successfully";
+        } else {
+            $application->status = "declined";
+            $message = "Applicant has been declined successfully";
+        }
+        try {
+            $application->update();
+        } catch (QueryException $e) {
+            Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);
+            return $this->db_operation_error_response([]);
+        }
+
+        return $this->success_response([], $message);
+    }
+
+    public function close_activity(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'job_post_id' => 'required',
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $post = Post::where("id", $request->job_post_id)->first();
+        if (!$post) {return $this->not_found_response([], "Error fetching post details");}
+
+        $post->status = "closed";
+        try {
+            $post->update();
+        } catch (QueryException $e) {
+            Log::error("ERROR closing JOB post >>>>>>>>>> " . $post . " >>>>>>>>> " . $e);
+            return $this->db_operation_error_response([]);
+        }
+
+        return $this->success_response($post, "Post has been closed successfully.");
     }
 }
