@@ -80,7 +80,7 @@ class PostController extends Controller
         $posts = [];
 
         //get user coordinates
-        $user_location = auth()->user()->location;
+        $user_location = auth()->user()->location_coords;
         if (!$user_location) {
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
@@ -108,6 +108,14 @@ class PostController extends Controller
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 
+    /**
+     * @param $lat1
+     * @param $lon1
+     * @param $lat2
+     * @param $lon2
+     * @param $unit
+     * @return float
+     */
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit) {
         $theta = $lon1 - $lon2;
         $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
@@ -125,6 +133,10 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_post_details(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -176,6 +188,10 @@ class PostController extends Controller
         return $this->success_response([], "Congratulations! Your application was successful");
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function get_user_post_status(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -197,6 +213,10 @@ class PostController extends Controller
         return $this->success_response($post, "Posts fetched successfully.");
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function confirm_decline_applicant(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -227,10 +247,16 @@ class PostController extends Controller
         return $this->success_response([], $message);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * we are also setting the volunteer hours here
+     */
     public function close_activity(Request $request)
     {
         $validation = Validator::make($request->all(), [
             'job_post_id' => 'required',
+            'volunteer_details' => 'required'
         ]);
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
@@ -238,6 +264,35 @@ class PostController extends Controller
         $post = Post::where("id", $request->job_post_id)->first();
         if (!$post) {return $this->not_found_response([], "Error fetching post details");}
 
+        /**
+         * assign volunteer hours to participants
+         */
+        $volunteer_details = $request->volunteer_details;
+        for ($i = 0; $i < count($volunteer_details); $i++) {
+            $participant = User::where("id", $volunteer_details[$i]["user_id"])->first();
+            if (!$participant) {
+                Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"]);
+            }
+
+            $application = JobApplication::where("user_id", $volunteer_details[$i]["user_id"])->where("post_id", $request->job_post_id)->first();
+            if (!$application) {
+                Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"] . " AND POST ID >>>>> " . $request->job_post_id);
+            }
+
+            $participant->volunteer_hours += (float) $volunteer_details[$i]["volunteer_hours"];
+            $application->volunteer_hours = (float) $volunteer_details[$i]["volunteer_hours"];
+            try {
+                $participant->update();
+                $application->update();
+            } catch (QueryException $e) {
+                Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
+                continue;
+            }
+        }
+
+        /**
+         * close the activity
+         */
         $post->status = "closed";
         try {
             $post->update();

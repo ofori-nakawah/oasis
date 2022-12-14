@@ -24,7 +24,9 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable();
             $table->string('country_id');
             $table->string('profile_picture')->nullable();
-            $table->string('location')->nullable();
+            $table->string('location_name')->nullable();
+            $table->string('location_coords')->nullable();
+            $table->string('volunteer_hours')->default(0);
             $table->string('is_core_skills_set')->default(0);
             $table->string('is_languages_set')->default(0);
             $table->integer('type')->default(1); // 0 is admin | 1 is app user

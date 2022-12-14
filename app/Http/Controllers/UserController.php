@@ -12,9 +12,14 @@ class UserController extends Controller
 
     public function update_user_current_location(Request $request)
     {
-        auth()->user()->location = $request->location;
+        auth()->user()->location_name = $request->location_name;
+        auth()->user()->location_coords = $request->location_coords;
         auth()->user()->update();
-        return $this->success_response([], "Location updated successfully.");
+        $payload = [
+            "location_coords" => auth()->user()->location_coords,
+            "location_name" => auth()->user()->location_name,
+        ];
+        return $this->success_response($payload, "Location updated successfully.");
     }
 
     public function update_user_core_skills(Request $request)

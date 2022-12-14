@@ -17,6 +17,7 @@ class CreateJobApplicationsTable extends Migration
             $table->uuid("id")->primary();
             $table->string("user_id");
             $table->string("post_id");
+            $table->integer("volunteer_hours")->default(0);
             $table->string("status")->default("applied");
             $table->timestamps();
         });
