@@ -40,6 +40,7 @@ Route::prefix('/v1')->group(function () {
             Route::get('/get-user-post-status', 'PostController@get_user_post_status');
             Route::post('/confirm-decline-applicant', 'PostController@confirm_decline_applicant');
             Route::post('/close-activity', 'PostController@close_activity');
+            Route::post('/get-user-post-details', 'PostController@get_user_post_details');
         });
 
         Route::prefix('/profile')->group(function () {

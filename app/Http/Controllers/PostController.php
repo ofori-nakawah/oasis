@@ -216,6 +216,25 @@ class PostController extends Controller
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * Get the post details for the post creator to make modifications
+     */
+    public function get_user_post_details(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'uuid' => 'required'
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $post = Post::where("id", $request->uuid)->first();
+        if (!$post) {return $this->not_found_response([], "Error fetching post details");}
+
+        return $this->success_response($post, "Posts fetched successfully.");
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function confirm_decline_applicant(Request $request)
     {
