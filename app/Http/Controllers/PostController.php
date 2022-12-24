@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JobApplication;
 use App\Models\Post;
+use App\Models\Skill;
 use App\Models\User;
 use App\Traits\Responses;
 use http\Message;
@@ -79,8 +80,12 @@ class PostController extends Controller
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
 
+        $category = Skill::where("name", $request->category)->first();
+        if (!$category) {return $this->not_found_response([], "Error fetching category details");}
+
         $post = new Post();
         $post->category = $request->category;
+        $post->category_id = $category->id;
         $post->description = $request->description;
         $post->date = $request->date;
         $post->time = $request->time;
@@ -145,19 +150,21 @@ class PostController extends Controller
         switch ($request->type) {
             case "VOLUNTEER":
                 $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->get();
+                $posts->map(function ($post) use ($user_location_lat, $user_location_lng) {
+                    //get post coordinates
+                    $post_location_lat = explode(',', $post->coords)[1];
+                    $post_location_lng = explode(',', $post->coords)[0];
+
+                    $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+                    $post["organiser_name"] = $post->user->name;
+                    $post["distance"] = number_format($distance, 2);
+                    return $post;
+                });
+                break;
+            case "QUICK_JOB":
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->get();
                 break;
         }
-
-        $posts->map(function ($post) use ($user_location_lat, $user_location_lng) {
-            //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[1];
-            $post_location_lng = explode(',', $post->coords)[0];
-
-            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
-            $post["organiser_name"] = $post->user->name;
-            $post["distance"] = number_format($distance, 2);
-            return $post;
-        });
 
         return $this->success_response($posts, "Posts fetched successfully.");
     }

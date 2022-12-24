@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('phone_number_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('country_id');
+            $table->string('rating')->default(0);
             $table->string('profile_picture')->nullable();
             $table->string('location_name')->nullable();
             $table->string('location_coords')->nullable();
