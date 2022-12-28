@@ -6,7 +6,7 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class JobApplication extends Model
+class RatingReview extends Model
 {
     use HasFactory, Uuids;
 
@@ -15,13 +15,8 @@ class JobApplication extends Model
         return $this->belongsTo("App\Models\User", "user_id");
     }
 
-    public function job_post()
+    public function job_application()
     {
-        return $this->belongsTo("App\Models\Post", "post_id");
-    }
-
-    public function rating_and_reviews()
-    {
-        return $this->hasOne("App\Models\RatingReview");
+        return $this->belongsTo("App\Models\JobApplication", "job_application_id");
     }
 }

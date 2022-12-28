@@ -33,6 +33,10 @@ class CreatePostsTable extends Migration
             $table->string("is_negotiable")->nullable();
             $table->string("is_includes_tax")->nullable();
             $table->string("post_image_link")->nullable();
+            $table->string("is_job_applicant_confirmed")->default(0);
+            $table->string("confirmed_applicant_id")->nullable();
+            $table->string("final_payment_amount")->nullable();
+            $table->string("payment_channel")->nullable();
             $table->string("status")->default("active");
             $table->timestamps();
         });

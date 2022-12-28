@@ -120,4 +120,9 @@ class User extends Authenticatable
     {
         return $this->hasMany("App\Models\Post", "user_id");
     }
+
+    public function rating_and_reviews()
+    {
+        return $this->hasMany("App\Models\RatingReview", "user_id");
+    }
 }

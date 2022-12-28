@@ -43,7 +43,7 @@ Route::prefix('/v1')->group(function () {
             Route::post('/apply-for-job', 'PostController@apply_for_job');
             Route::get('/get-user-post-status', 'PostController@get_user_post_status');
             Route::post('/confirm-decline-applicant', 'PostController@confirm_decline_applicant');
-            Route::post('/close-activity', 'PostController@close_activity');
+            Route::post('/close-post', 'PostController@close_post');
             Route::get('/get-user-post-details', 'PostController@get_user_post_details');
         });
 

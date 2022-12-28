@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JobApplication;
 use App\Models\Post;
+use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
 use App\Traits\Responses;
@@ -305,6 +306,7 @@ class PostController extends Controller
 
         foreach ($post->applications as $application) {
             $application->user;
+            $application->rating_and_reviews;
         }
 
         return $this->success_response($post, "Posts fetched successfully.");
@@ -363,6 +365,15 @@ class PostController extends Controller
         }
         try {
             $application->update();
+
+            /**
+             * job applicant confirmed
+             */
+            if ($application->job_post->type != "VOLUNTEER" || $request->action === "confirm") {
+                $application->job_post->is_job_applicant_confirmed = "1";
+                $application->job_post->confirmed_applicant_id = $application->user->id;
+                $application->job_post->update();
+            }
         } catch (QueryException $e) {
             Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
@@ -376,11 +387,11 @@ class PostController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * we are also setting the volunteer hours here
      */
-    public function close_activity(Request $request)
+    public function close_post(Request $request)
     {
         $validation = Validator::make($request->all(), [
             'job_post_id' => 'required',
-            'volunteer_details' => 'required'
+            'job_type' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -393,33 +404,92 @@ class PostController extends Controller
         }
 
         /**
-         * assign volunteer hours to participants
+         * seperate activity or job closing logic by switching on the
+         * type of post
          */
-        $volunteer_details = $request->volunteer_details;
-        for ($i = 0; $i < count($volunteer_details); $i++) {
-            $participant = User::where("id", $volunteer_details[$i]["user_id"])->first();
-            if (!$participant) {
-                Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"]);
-            }
+        switch ($request->job_type) {
+            case "VOLUNTEER":
+                /**
+                 * assign volunteer hours to participants
+                 */
+                $volunteer_details = $request->volunteer_details;
+                for ($i = 0; $i < count($volunteer_details); $i++) {
+                    $participant = User::where("id", $volunteer_details[$i]["user_id"])->first();
+                    if (!$participant) {
+                        Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"]);
+                    }
 
-            $application = JobApplication::where("user_id", $volunteer_details[$i]["user_id"])->where("post_id", $request->job_post_id)->first();
-            if (!$application) {
-                Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"] . " AND POST ID >>>>> " . $request->job_post_id);
-            }
+                    $application = JobApplication::where("user_id", $volunteer_details[$i]["user_id"])->where("post_id", $request->job_post_id)->first();
+                    if (!$application) {
+                        Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"] . " AND POST ID >>>>> " . $request->job_post_id);
+                    }
 
-            $participant->volunteer_hours += (float)$volunteer_details[$i]["volunteer_hours"];
-            $application->volunteer_hours = (float)$volunteer_details[$i]["volunteer_hours"];
-            try {
-                $participant->update();
-                $application->update();
-            } catch (QueryException $e) {
-                Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
-                continue;
-            }
+                    $participant->volunteer_hours += (float)$volunteer_details[$i]["volunteer_hours"];
+                    $application->volunteer_hours = (float)$volunteer_details[$i]["volunteer_hours"];
+                    try {
+                        $participant->update();
+                        $application->update();
+                    } catch (QueryException $e) {
+                        Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
+                        continue;
+                    }
+                }
+                break;
+            case "QUICK_JOB":
+                $participant = User::where("id", $request->user_id)->first();
+                if (!$participant) {
+                    Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id);
+                }
+
+                $application = JobApplication::where("user_id", $request->user_id)->where("post_id", $request->job_post_id)->first();
+                if (!$application) {
+                    Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id . " AND POST ID >>>>> " . $request->job_post_id);
+                }
+
+                /**
+                 * create feedback and rating for vorker
+                 */
+                $ratingReview = new RatingReview();
+                $ratingReview->user_id = $participant->id;
+                $ratingReview->job_application_id = $application->id;
+                $ratingReview->post_id = $post->id;
+                $ratingReview->expertise_rating = $request->expertise_rating;
+                $ratingReview->work_ethic_rating = $request->work_ethic_rating;
+                $ratingReview->professionalism_rating = $request->professionalism_rating;
+                $ratingReview->customer_service_rating = $request->customer_service_rating;
+                $ratingReview->rating = ((float) $request->expertise_rating + (float) $request->work_ethic_rating + (float) $request->professionalism_rating + (float) $request->customer_service_rating) / 4;
+                $ratingReview->feedback_message = $request->feedback_message;
+                try {
+                    $ratingReview->save();
+                }  catch (QueryException $e) {
+                    Log::error("ERROR SAVING RATING REVIEW >>>>>>>>>> " . $ratingReview . " >>>>>>>>> " . $e);
+                }
+
+                /**
+                 * application with final amount
+                 */
+                $post->final_payment_amount = $request->final_payment_amount;
+                $post->payment_channel = "cash"; // to be update when we start using in-app wallets
+
+                /**
+                 * update vorker rating
+                 */
+                $user_review_rating = 0;
+                if ($participant->rating_and_reviews->count() >= 1) {
+                    $user_review_rating = $participant->rating_and_reviews->sum("rating") / $participant->rating_and_reviews->count();
+                }
+
+                $participant->rating = $user_review_rating;
+                try {
+                    $participant->update();
+                }  catch (QueryException $e) {
+                    Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
+                }
+                break;
         }
 
         /**
-         * close the activity
+         * close the post
          */
         $post->status = "closed";
         try {
