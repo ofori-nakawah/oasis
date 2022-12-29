@@ -6,6 +6,7 @@ use App\Models\SkillUser;
 use App\Services\PushNotification;
 use App\Traits\Responses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -59,10 +60,11 @@ class UserController extends Controller
      */
     public function update_user_fcm_token(Request $request)
     {
+        Log::debug("FCM TOKEN >>>>>>>>>>>>> " . $request->user_fcm_token);
         auth()->user()->fcm_token = $request->user_fcm_token;
         auth()->user()->update();
 
-        PushNotification::FireSingleUserPushNotification("title", "body", "SOME_EVENT", "some details", auth()->user()->fcm_token);
+        PushNotification::FireSingleUserPushNotification("title", "body", "SOME_EVENT", "some details", $request->user_fcm_token);
         return $this->success_response([], "FCM token updated successfully.");
     }
 }
