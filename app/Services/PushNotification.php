@@ -4,7 +4,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Log;
 
 class PushNotification {
-    public static function FirePushNotification($title,$body,$status,$details,$user_fcm_token){
+    public static function FireSingleUserPushNotification($title,$body,$event,$details,$user_fcm_token){
         $server_api_key = env("FIREBASE_SERVER_API_KEY");
         if (!$server_api_key) {
             Log::debug("MISSING FIREBASE_SERVER_API_KEY IN ENV FILE");
@@ -18,12 +18,12 @@ class PushNotification {
             'title' => $title,
             'body' => $body,
             'icon' => '',
-            'image' => ''
+            'image' => '',
+            'event' => $event
         ];
 
         $notification_payload = [
-            'type' => 'transaction_status',
-            'status' => $status,
+            'event' => $event,
             'details' => $details,
             'title' => $title,
             'body' => $body
@@ -34,6 +34,7 @@ class PushNotification {
             'data' => $notification_payload,
             'to' => $user_fcm_token,
         ];
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => 'https://fcm.googleapis.com/fcm/send',

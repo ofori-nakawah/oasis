@@ -20,6 +20,7 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/onboarding')->group(function () {
             Route::post('/register', 'OnboardingController@register');
             Route::post('/verify-phone-number', 'OnboardingController@verify_phone_number');
+            Route::post('/update-user-fcm-token', 'UserController@update_user_fcm_token');
         });
 
         Route::prefix('/auth')->group(function () {
@@ -50,7 +51,6 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/profile')->group(function () {
             Route::post('/update-current-location', 'UserController@update_user_current_location');
             Route::post('/update-user-core-skills', 'UserController@update_user_core_skills');
-            Route::post('/update-user-fcm-token', 'UserController@update_user_fcm_token');
         });
 
         Route::prefix('/config')->group(function () {

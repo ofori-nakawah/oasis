@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SkillUser;
+use App\Services\PushNotification;
 use App\Traits\Responses;
 use Illuminate\Http\Request;
 
@@ -10,6 +11,11 @@ class UserController extends Controller
 {
     use Responses;
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * update user's location
+     */
     public function update_user_current_location(Request $request)
     {
         auth()->user()->location_name = $request->location_name;
@@ -22,6 +28,11 @@ class UserController extends Controller
         return $this->success_response($payload, "Location updated successfully.");
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * update user skills
+     */
     public function update_user_core_skills(Request $request)
     {
         foreach (auth()->user()->skills as $skill) {
@@ -41,10 +52,17 @@ class UserController extends Controller
         return $this->success_response([], "");
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * setup user fcm token for push notifications
+     */
     public function update_user_fcm_token(Request $request)
     {
         auth()->user()->fcm_token = $request->user_fcm_token;
         auth()->user()->update();
-        return $this->success_response([], "FCM updated successfully.");
+
+        PushNotification::FireSingleUserPushNotification("title", "body", "SOME_EVENT", "some details", auth()->user()->fcm_token);
+        return $this->success_response([], "FCM token updated successfully.");
     }
 }
