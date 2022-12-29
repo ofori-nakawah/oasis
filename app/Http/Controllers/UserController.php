@@ -40,4 +40,11 @@ class UserController extends Controller
 
         return $this->success_response([], "");
     }
+
+    public function update_user_fcm_token(Request $request)
+    {
+        auth()->user()->fcm_token = $request->user_fcm_token;
+        auth()->user()->update();
+        return $this->success_response([], "FCM updated successfully.");
+    }
 }

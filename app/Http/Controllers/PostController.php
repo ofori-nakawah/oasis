@@ -7,10 +7,12 @@ use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
+use App\Notifications\PostActivityNotification;
 use App\Traits\Responses;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
@@ -278,6 +280,8 @@ class PostController extends Controller
             Log::error("ERROR SAVING JOB APPLICATION >>>>>>>>>> " . $job_application . " >>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
         }
+
+        Notification::send(auth()->user(), new PostActivityNotification($post, "SUCCESSFUL_JOB_APPLICATION", "Your job application was successful"));
 
         return $this->success_response([], "Congratulations! Your application was successful");
     }
