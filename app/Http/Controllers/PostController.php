@@ -7,12 +7,11 @@ use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
-use App\Notifications\PostActivityNotification;
 use App\Traits\Responses;
+use App\Helpers\Notifications as Notifications;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
@@ -276,12 +275,16 @@ class PostController extends Controller
         $job_application->post_id = $request->job_post_id;
         try {
             $job_application->save();
+
+            /**
+             * create notification
+             */
+            $post->user;
+            Notifications::PushUserNotification($post, $job_application, auth()->user(), "SUCCESSFUL_JOB_APPLICATION");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING JOB APPLICATION >>>>>>>>>> " . $job_application . " >>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
         }
-
-        Notification::send(auth()->user(), new PostActivityNotification($post, "SUCCESSFUL_JOB_APPLICATION", "Your job application was successful"));
 
         return $this->success_response([], "Congratulations! Your application was successful");
     }
@@ -377,6 +380,15 @@ class PostController extends Controller
                 $application->job_post->is_job_applicant_confirmed = "1";
                 $application->job_post->confirmed_applicant_id = $application->user->id;
                 $application->job_post->update();
+                /**
+                 * create notification
+                 */
+                Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_CONFIRMED");
+            } else {
+                /**
+                 * create notification
+                 */
+                Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_DECLINED");
             }
         } catch (QueryException $e) {
             Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);

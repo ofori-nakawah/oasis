@@ -14,17 +14,23 @@ class PostActivityNotification extends Notification
     public $post;
     public $event;
     public $message;
+    public $ref_id;
+    public $category;
+    public $status;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($post, $event, $message)
+    public function __construct($post, $event, $message, $ref_id, $category, $status)
     {
         $this->post = $post;
         $this->event = $event;
         $this->message = $message;
+        $this->ref_id = $ref_id;
+        $this->category = $category;
+        $this->status = $status;
     }
 
     /**
@@ -63,6 +69,9 @@ class PostActivityNotification extends Notification
         return [
             'post' => $this->post,
             'event' => $this->event,
+            'ref_id' => $this->ref_id,
+            'category' => $this->category,
+            'status' => $this->status,
             'message' => $this->message
         ];
     }

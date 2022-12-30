@@ -45,6 +45,9 @@ Route::prefix('/v1')->group(function () {
             Route::post('/confirm-decline-applicant', 'PostController@confirm_decline_applicant');
             Route::post('/close-post', 'PostController@close_post');
             Route::get('/get-user-post-details', 'PostController@get_user_post_details');
+            Route::get('/get-user-notifications', 'UserController@get_user_notifications');
+            Route::get('/get-user-notification-details', 'UserController@get_user_notification_details');
+            Route::get('/get-user-notifications-count', 'UserController@get_user_unread_notifications_count');
         });
 
         Route::prefix('/profile')->group(function () {

@@ -61,10 +61,54 @@ class UserController extends Controller
     public function update_user_fcm_token(Request $request)
     {
         Log::debug("FCM TOKEN >>>>>>>>>>>>> " . $request->user_fcm_token);
+
         auth()->user()->fcm_token = $request->user_fcm_token;
         auth()->user()->update();
 
-        PushNotification::FireSingleUserPushNotification("title", "body", "SOME_EVENT", "some details", $request->user_fcm_token);
+//        PushNotification::FireSingleUserPushNotification("title", "body", "SOME_EVENT", "some details", $request->user_fcm_token);
+
         return $this->success_response([], "FCM token updated successfully.");
+    }
+
+    /**
+     * @param Request $request
+     * get user unread notifications count to display as badge
+     */
+    public function get_user_unread_notifications_count(Request $request)
+    {
+        return $this->success_response(auth()->user()->unreadNotifications->count(), "Notification count fetched");
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * get all user notifications
+     */
+    public function get_user_notifications(Request $request)
+    {
+        $notifications = auth()->user()->notifications->map(function ($notification) {
+            $notification["group_id"] = $notification->data["post"]["id"];
+            $notification["created_at"] = $notification->created_at->format("d-m-Y H:i");
+            $notification->update();
+            return $notification;
+        })->unique("group_id");
+
+        return $this->success_response($notifications, "Notifications fetched successfully.");
+    }
+
+    public function get_user_notification_details(Request $request)
+    {
+        $notifications = auth()->user()->notifications->where("group_id", $request->notification_group_id);
+
+        /**
+         * mark notification as ready
+         */
+        if (count($notifications) > 0) {
+            foreach ($notifications as $notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        return $this->success_response($notifications, "Notification details fetched successfully.");
     }
 }
