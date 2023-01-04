@@ -54,7 +54,7 @@ class CountryController extends Controller
             "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
             "cancellationUrl" => "http://google.com",
             "returnUrl" => "http://google.com",
-            "logo" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKfch11GH7TUGj3KTUU5DZ8nF7ww7_KdfyXUsZSwAMIw&s"
+            "logo" => "https://dashboard.ordagh.com/assets/html-template/src/images/login-logo.png"
         );
 
         curl_setopt_array($curl, [
