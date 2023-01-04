@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
+
 class CountryController extends Controller
 {
+    const mobileNumber = "+233245563498";
+
     public function getSoapRequest(Request $request)
     {
         $xmlData = $request->getContent();
@@ -42,6 +45,41 @@ class CountryController extends Controller
         Log::debug($cancellationUrl);
         Log::debug($returnUrl);
 
+        $curl = curl_init();
+
+        $payload = array(
+            "amount" => 1,
+            "title" => "testing",
+            "description" => "testing",
+            "clientReference" => "444444",
+            "callbackUrl" => "https://oasis.myvork.com/api/hubtelCallback",
+            "cancellationUrl" => "http://example.com",
+            "returnUrl" => "http://example.com",
+            "logo" => "http://example.com"
+        );
+
+        curl_setopt_array($curl, [
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: application/json",
+                "Authorization: Basic " . base64_encode("bxvjoezq:desbqwqg")
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_URL => "https://devp-reqsendmoney-230622-api.hubtel.com/request-money/" . mobileNumber,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($error) {
+            Log::debug("cURL Error #:" . $error) ;
+        } else {
+            Log::debug($response) ;
+        }
+
         /**
          * generate response
          */
@@ -61,5 +99,10 @@ class CountryController extends Controller
 
         return response($response)
             ->header('Content-Type', 'text/xml');
+    }
+
+    public function hubtelCallback(Request $request)
+    {
+        Log::debug("Callback >>>>>>>>>> " . $request->all());
     }
 }

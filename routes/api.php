@@ -62,4 +62,5 @@ Route::prefix('/v1')->group(function () {
     });
 
     Route::post("/soap", "CountryController@getSoapRequest");
+    Route::post("/hubtelCallback", "CountryController@hubtelCallback");
 });
