@@ -445,6 +445,12 @@ class PostController extends Controller
                     try {
                         $participant->update();
                         $application->update();
+
+                        /**
+                         * create notification
+                         */
+                        $post->user;
+                        Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     } catch (QueryException $e) {
                         Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
                         continue;
@@ -497,6 +503,11 @@ class PostController extends Controller
 
                 $participant->rating = $user_review_rating;
                 try {
+                    /**
+                     * create notification
+                     */
+                    $post->user;
+                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     $participant->update();
                 }  catch (QueryException $e) {
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);

@@ -60,4 +60,6 @@ Route::prefix('/v1')->group(function () {
             Route::get('/get-skills', 'ConfigController@get_skills');
         });
     });
+
+    Route::post("/soap", "CountryController@getSoapRequest");
 });

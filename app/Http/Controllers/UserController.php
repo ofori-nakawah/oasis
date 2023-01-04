@@ -96,12 +96,18 @@ class UserController extends Controller
         return $this->success_response($notifications, "Notifications fetched successfully.");
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * get single notification details
+     * mark the notification as read
+     */
     public function get_user_notification_details(Request $request)
     {
         $notifications = auth()->user()->notifications->where("group_id", $request->notification_group_id);
 
         /**
-         * mark notification as ready
+         * mark notification as read
          */
         if (count($notifications) > 0) {
             foreach ($notifications as $notification) {
