@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Log;
 
 class CountryController extends Controller
 {
-    const mobileNumber = "+233245563498";
 
     public function getSoapRequest(Request $request)
     {
@@ -64,7 +63,7 @@ class CountryController extends Controller
                 "Authorization: Basic " . base64_encode("bxvjoezq:desbqwqg")
             ],
             CURLOPT_POSTFIELDS => json_encode($payload),
-            CURLOPT_URL => "https://devp-reqsendmoney-230622-api.hubtel.com/request-money/" . mobileNumber,
+            CURLOPT_URL => "https://devp-reqsendmoney-230622-api.hubtel.com/request-money/233245563498",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => "POST",
         ]);
