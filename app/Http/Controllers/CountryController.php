@@ -52,7 +52,7 @@ class CountryController extends Controller
             "title" => "testing",
             "description" => "testing",
             "clientReference" => "444444",
-            "callbackUrl" => "https://oasis.myvork.com/api/hubtelCallback",
+            "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
             "cancellationUrl" => "http://example.com",
             "returnUrl" => "http://example.com",
             "logo" => "http://example.com"
