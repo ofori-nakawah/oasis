@@ -103,9 +103,9 @@ class CountryController extends Controller
                <returnPaymentInitiationDetails>
                   <statusCode>'. $response->code .'</statusCode>
                   <message>'. $response->message .'</message>
-                  <transactionId>'. $response->clientReference .'</transactionId>
-                  <paymentLink>'. $response->paylinkUrl .'</paymentLink>
-                  <expiresAt>'. $response->expireIn .'</expiresAt>
+                  <transactionId>'. $response->data->clientReference .'</transactionId>
+                  <paymentLink>'. $response->data->paylinkUrl .'</paymentLink>
+                  <expiresAt>'. $response->data->expireIn .'</expiresAt>
                </returnPaymentInitiationDetails>
               </Response>
              </soap:Body>
