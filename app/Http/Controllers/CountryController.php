@@ -93,6 +93,7 @@ class CountryController extends Controller
             Log::debug($response) ;
         }
 
+        $response = json_decode($response);
         /**
          * generate response
          */
