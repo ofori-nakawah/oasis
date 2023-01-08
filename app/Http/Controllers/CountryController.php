@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -56,7 +57,7 @@ class CountryController extends Controller
         $transaction = new Transaction();
         $transaction->client_reference = Str::uuid()->toString();
         $transaction->amount = $amount;
-        $transaction->status = "PENDING";
+        $transaction->status = "INITIATED";
 
         $curl = curl_init();
 
@@ -91,13 +92,19 @@ class CountryController extends Controller
             Log::debug("cURL Error #:" . $error) ;
         } else {
             Log::debug($response) ;
-        }
+            $response = json_decode($response);
+            $transaction->pay_link_url = $response->data->paylinkUrl;
+            $transaction->pay_link_id = $response->data->paylinkId;
+            try {
+                $transaction->save();
+            } catch (QueryException $e) {
+                Log::debug($e);
+            }
 
-        $response = json_decode($response);
-        /**
-         * generate response
-         */
-        $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+            /**
+             * generate response
+             */
+            $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
              <soap:Body>
               <Response xmlns="http://xxx.gateway.xxx.abcd.com">
                <returnPaymentInitiationDetails>
@@ -110,6 +117,7 @@ class CountryController extends Controller
               </Response>
              </soap:Body>
             </soap:Envelope>';
+        }
 
         return response($response)
             ->header('Content-Type', 'text/xml');

@@ -65,10 +65,10 @@ Route::prefix('/v1')->group(function () {
      * sikagwa
      */
     Route::post("/soap", "CountryController@getSoapRequest");
-    Route::post("/hubtelCallback", "CountryController@hubtelCallback");
+    Route::post("/hubtelCallback", "CountryController@callback");
 
     Route::prefix('/transactions')->group(function () {
         Route::post('/initiate-transaction', 'CountryController@getSoapRequest');
-        Route::get('/callback', 'CountryController@hubtelCallback');
+        Route::get('/callback', 'CountryController@callback');
     });
 });
