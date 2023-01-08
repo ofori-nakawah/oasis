@@ -61,6 +61,14 @@ Route::prefix('/v1')->group(function () {
         });
     });
 
+    /**
+     * sikagwa
+     */
     Route::post("/soap", "CountryController@getSoapRequest");
     Route::post("/hubtelCallback", "CountryController@hubtelCallback");
+
+    Route::prefix('/transactions')->group(function () {
+        Route::post('/initiate-transaction', 'CountryController@getSoapRequest');
+        Route::get('/callback', 'CountryController@hubtelCallback');
+    });
 });

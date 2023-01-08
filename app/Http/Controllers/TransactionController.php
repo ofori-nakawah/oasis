@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 
-class CountryController extends Controller
+class TransactionController extends Controller
 {
 
-    public function getSoapRequest(Request $request)
+    public function initiate_transaction(Request $request)
     {
         $xmlData = $request->getContent();
-
-        /**
-         * validate content
-         */
 
         /**
          * convert request into something we can work with
@@ -50,22 +45,14 @@ class CountryController extends Controller
         Log::debug($cancellation_url);
         Log::debug($return_url);
 
-        /**
-         * generete and prepare post data
-         */
-        $transaction = new Transaction();
-        $transaction->client_reference = Str::uuid()->toString();
-        $transaction->amount = $amount;
-        $transaction->status = "PENDING";
-
         $curl = curl_init();
 
         $payload = array(
             "amount" => $amount,
             "title" => "To build 6000TPY CASSAVA STARCH FACTORY and use the proceeds for charitable projects for deprived children",
             "description" => "To build an orphanage home & a school complex for children using the proceeds from the cassava starch factory",
-            "clientReference" => $transaction->client_reference,
-            "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
+            "clientReference" => Str::uuid()->toString(),
+            "callbackUrl" => "https://nnf.shopinary.shop/api/v1/transactions/initiate-transaction",
             "cancellationUrl" => $cancellation_url,
             "returnUrl" => $return_url,
             "logo" => "https://dashboard.ordagh.com/assets/html-template/src/images/login-logo.png"
@@ -100,11 +87,11 @@ class CountryController extends Controller
              <soap:Body>
               <Response xmlns="http://xxx.gateway.xxx.abcd.com">
                <returnPaymentInitiationDetails>
-                  <statusCode>'. $response->code .'</statusCode>
-                  <message>'. $response->message .'</message>
-                  <transactionId>'. $response->clientReference .'</transactionId>
-                  <paymentLink>'. $response->paylinkUrl .'</paymentLink>
-                  <expiresAt>'. $response->expireIn .'</expiresAt>
+                  <statusCode>200</statusCode>
+                  <Message>Transaction initiated successfully</Message>
+                  <transactionId>1234567</transactionId>
+                  <paymentLink>https://ghanagov.com</paymentLink>
+                  <expiresAt>43</expiresAt>
                </returnPaymentInitiationDetails>
               </Response>
              </soap:Body>
@@ -114,7 +101,7 @@ class CountryController extends Controller
             ->header('Content-Type', 'text/xml');
     }
 
-    public function hubtelCallback(Request $request)
+    public function callback(Request $request)
     {
         Log::debug("Callback >>>>>>>>>> " . $request->all());
     }
