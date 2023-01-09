@@ -62,13 +62,13 @@ class CountryController extends Controller
         $curl = curl_init();
 
         $payload = array(
-            "amount" => 1, //$amount,
+            "amount" => $amount,
             "title" => "To build 6000TPY CASSAVA STARCH FACTORY and use the proceeds for charitable projects for deprived children",
             "description" => "To build an orphanage home & a school complex for children using the proceeds from the cassava starch factory",
-            "clientReference" => "5555555",
+            "clientReference" => $transaction->client_reference,
             "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
-            "cancellationUrl" => "https://google.com",
-            "returnUrl" => "https://facebook.com",
+            "cancellationUrl" => $cancellation_url,
+            "returnUrl" => $return_url,
             "logo" => "https://dashboard.ordagh.com/assets/html-template/src/images/login-logo.png"
         );
 
