@@ -62,13 +62,13 @@ class CountryController extends Controller
         $curl = curl_init();
 
         $payload = array(
-            "amount" => $amount,
+            "amount" => 1, //$amount,
             "title" => "To build 6000TPY CASSAVA STARCH FACTORY and use the proceeds for charitable projects for deprived children",
             "description" => "To build an orphanage home & a school complex for children using the proceeds from the cassava starch factory",
-            "clientReference" => $transaction->client_reference,
+            "clientReference" => "5555555",
             "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
-            "cancellationUrl" => $cancellation_url,
-            "returnUrl" => $return_url,
+            "cancellationUrl" => "https://google.com",
+            "returnUrl" => "https://facebook.com",
             "logo" => "https://dashboard.ordagh.com/assets/html-template/src/images/login-logo.png"
         );
 
@@ -106,7 +106,7 @@ class CountryController extends Controller
              */
             $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
              <soap:Body>
-              <Response xmlns="http://xxx.gateway.xxx.abcd.com">
+              <Response xmlns="'. url('/') .'">
                <returnPaymentInitiationDetails>
                   <statusCode>'. $response->code .'</statusCode>
                   <message>'. $response->message .'</message>
@@ -126,5 +126,22 @@ class CountryController extends Controller
     public function hubtelCallback(Request $request)
     {
         Log::debug("Callback >>>>>>>>>> " . $request->all());
+        $client_reference = $request->data->clientReference;
+        $transaction = Transaction::where("client_reference", $client_reference)
+            ->where("pay_link_id", $request->data->paylinkId)
+            ->first();
+        if (!$transaction) {
+            Log::alert("NO TRANSACTION RECORD FOUND FOR CLIENT REFERENCE >>>>>>>>>>>>>>>>>> " . $client_reference);
+            return false;
+        }
+
+        $transaction->payment_type = $request->data->paymentType;
+        $transaction->phone_number = $request->data->phoneNumber;
+        $transaction->status = $request->responseCode;
+        try {
+            $transaction->update();
+        } catch (QueryException $e) {
+            Log::error($e);
+        }
     }
 }
