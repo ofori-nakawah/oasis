@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string("pay_link_id");
             $table->string("payment_type")->nullable();
             $table->string("phone_number")->nullable();
+            $table->string("status");
             $table->timestamps();
         });
     }
