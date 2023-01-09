@@ -55,7 +55,7 @@ class CountryController extends Controller
          * generete and prepare post data
          */
         $transaction = new Transaction();
-        $transaction->client_reference = Str::uuid()->toString();
+        $transaction->client_reference  = Str::uuid()->toString();
         $transaction->amount = $amount;
         $transaction->status = "INITIATED";
 
