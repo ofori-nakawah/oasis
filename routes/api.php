@@ -67,8 +67,11 @@ Route::prefix('/v1')->group(function () {
     Route::post("/soap", "CountryController@getSoapRequest");
     Route::post("/hubtelCallback", "CountryController@callback");
 
+    Route::post('/initiate-request', 'CountryController@initiateRequest');
+    Route::get('/callback', 'CountryController@callback');
+
     Route::prefix('/transactions')->group(function () {
-        Route::post('/initiate-transaction', 'CountryController@getSoapRequest');
+        Route::post('/initiate-transaction', 'CountryController@initiateRequest');
         Route::get('/callback', 'CountryController@callback');
     });
 });

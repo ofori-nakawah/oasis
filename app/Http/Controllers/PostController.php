@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -519,6 +520,7 @@ class PostController extends Controller
          * close the post
          */
         $post->status = "closed";
+        $post->closed_at = Carbon::now();
         try {
             $post->update();
         } catch (QueryException $e) {

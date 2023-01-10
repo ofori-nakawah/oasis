@@ -88,8 +88,8 @@ class UserController extends Controller
     {
         $notifications = auth()->user()->notifications->map(function ($notification) {
             $notification["group_id"] = $notification->data["post"]["id"];
-            $notification["created_at"] = $notification->created_at->format("d-m-Y H:i");
             $notification->update();
+            $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
             return $notification;
         })->unique("group_id");
 
@@ -112,6 +112,7 @@ class UserController extends Controller
         if (count($notifications) > 0) {
             foreach ($notifications as $notification) {
                 $notification->markAsRead();
+                $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
             }
         }
 
