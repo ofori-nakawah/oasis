@@ -171,6 +171,7 @@ class CountryController extends Controller
          * setup transaction variables we need to make a request to hubtel
          */
         $amount = (float) $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:amount')[0];
+        $email = (string) $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:email')[0];
         $cancellation_url = (string) $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:cancellationUrl')[0];
         $return_url = (string) $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:returnUrl')[0];
 
@@ -179,6 +180,7 @@ class CountryController extends Controller
         Log::debug($amount);
         Log::debug($cancellation_url);
         Log::debug($return_url);
+        Log::debug($email);
 
         /**
          * generete and prepare post data
@@ -188,12 +190,10 @@ class CountryController extends Controller
         $transaction->amount = $amount;
         $transaction->status = "INITIATED";
 
-        $curl = curl_init();
-
-        $transactionRefNo = uniqid();
+        $transactionRefNo = $transaction->client_reference;
 
         $transactionDetails = array(
-            'merchant_key' => 'OrDaGH1920',
+            'merchant_key' => 'JF6vaHO1l',
             'invoice' => array(
                 'items' => [array(
                     'name' => 'Nurture Nature Foundation',
@@ -211,7 +211,7 @@ class CountryController extends Controller
             ),
             'currency_code' => 'GHS',
             'paytype' => 'visa',
-            'email' => "ofori.nakawah@gmail.com"
+            'email' => $email
         );
 
         Log::debug('TRANSACTION INITIATION DETAILS LOG >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ' . json_encode($transactionDetails));
@@ -241,6 +241,16 @@ class CountryController extends Controller
 
         if ($error) {
             Log::debug("cURL Error #:" . $error) ;
+            $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+             <soap:Body>
+              <Response xmlns="'. url('/') .'/initiate-request-response">
+               <returnPaymentInitiationDetails>
+                  <statusCode>500</statusCode>
+                  <message>We encounted an issue while processing transaction. Please try again later.</message>
+               </returnPaymentInitiationDetails>
+              </Response>
+             </soap:Body>
+            </soap:Envelope>';
         } else {
             Log::debug($response) ;
 //            $response = json_decode($response);
@@ -255,7 +265,17 @@ class CountryController extends Controller
              * generate response
              */
             $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
-             ';
+             <soap:Body>
+              <Response xmlns="'. url('/') .'">
+               <returnPaymentInitiationResponse>
+                  <statusCode>200</statusCode>
+                  <message>Transaction initiated successfuly</message>
+                  <transactionId>'. $transactionRefNo .'</transactionId>
+                  <paymentLink>'. $response->link .'</paymentLink>
+               </returnPaymentInitiationResponse>
+              </Response>
+             </soap:Body>
+            </soap:Envelope>';
         }
 
         return response($response)
