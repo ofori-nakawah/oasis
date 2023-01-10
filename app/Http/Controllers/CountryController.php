@@ -210,7 +210,7 @@ class CountryController extends Controller
                 'landing_page_url' => $return_url
             ),
             'currency_code' => 'GHS',
-            'paytype' => 'card',
+            'paytype' => 'visa',
             'email' => "ofori.nakawah@gmail.com"
         );
 
