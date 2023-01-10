@@ -62,26 +62,15 @@ class CountryController extends Controller
         $curl = curl_init();
 
         $payload = array(
-            "amount" => 1,
-            "title" => "testing",
-            "description" => "2342342343",
-            "clientReference" => "3243423424",
-            "callbackUrl" => "http://google.com",
-            "cancellationUrl" => "http://google.com",
-            "returnUrl" => "http://google.com",
+            "amount" => $amount,
+            "title" => "To build 6000TPY CASSAVA STARCH FACTORY and use the proceeds for charitable projects for deprived children",
+            "description" => "To build an orphanage home & a school complex for children using the proceeds from the cassava starch factory",
+            "clientReference" => $transaction->client_reference,
+            "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
+            "cancellationUrl" => $cancellation_url,
+            "returnUrl" => $return_url,
             "logo" => "https://dashboard.ordagh.com/assets/html-template/src/images/login-logo.png"
         );
-
-//        $payload = array(
-//            "amount" => $amount,
-//            "title" => "To build 6000TPY CASSAVA STARCH FACTORY and use the proceeds for charitable projects for deprived children",
-//            "description" => "To build an orphanage home & a school complex for children using the proceeds from the cassava starch factory",
-//            "clientReference" => $transaction->client_reference,
-//            "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
-//            "cancellationUrl" => $cancellation_url,
-//            "returnUrl" => $return_url,
-//            "logo" => "https://dashboard.ordagh.com/assets/html-template/src/images/login-logo.png"
-//        );
 
         Log::debug($payload);
 
