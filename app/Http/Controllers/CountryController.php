@@ -41,7 +41,7 @@ class CountryController extends Controller
         /**
          * setup transaction variables we need to make a request to hubtel
          */
-        $amount = (float) $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:amount')[0];
+        $amount = $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:amount')[0];
         $cancellation_url = (string) $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:cancellationUrl')[0];
         $return_url = (string) $xml->xpath('/soapenv:Envelope/soapenv:Body/payment-config:getNNFPaymentConfig/payment-config:returnUrl')[0];
 
@@ -65,7 +65,7 @@ class CountryController extends Controller
             "amount" => $amount,
             "title" => "To build 6000TPY CASSAVA STARCH FACTORY and use the proceeds for charitable projects for deprived children",
             "description" => "To build an orphanage home & a school complex for children using the proceeds from the cassava starch factory",
-            "clientReference" => "323489234",//$transaction->client_reference,
+            "clientReference" => $transaction->client_reference,
             "callbackUrl" => "https://oasis.myvork.com/api/v1/hubtelCallback",
             "cancellationUrl" => $cancellation_url,
             "returnUrl" => $return_url,
