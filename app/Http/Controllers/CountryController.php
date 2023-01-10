@@ -72,6 +72,8 @@ class CountryController extends Controller
             "logo" => "https://dashboard.ordagh.com/assets/html-template/src/images/login-logo.png"
         );
 
+        Log::debug($payload);
+
         curl_setopt_array($curl, [
             CURLOPT_HTTPHEADER => [
                 "Content-Type: application/json",
