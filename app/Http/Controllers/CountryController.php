@@ -136,8 +136,10 @@ class CountryController extends Controller
     const CLIENT_SECRET = "d19aa34839ffbde375e5d4dbb67268f3";
 
     private function getBasicAuthKey(){
-        return "Basic ".base64_encode(self::CLIENT_ID . ':' . self::CLIENT_SECRET);
+//        return "Basic ".base64_encode(self::CLIENT_ID . ':' . self::CLIENT_SECRET);
+        return "Basic T3JEYUdIMTkyMDpqa2xhbjl1amRqaW9qcmU5NC1qYWQ4b2lrYWpyOQ==";
     }
+
 
     public function initiateRequest(Request $request)
     {
@@ -242,10 +244,9 @@ class CountryController extends Controller
         } else {
             Log::debug($response) ;
 //            $response = json_decode($response);
-//            $transaction->pay_link_url = $response->data->paylinkUrl;
-//            $transaction->pay_link_id = $response->data->paylinkId;
+//            $transaction->pay_link_url = $response->link;
             try {
-                $transaction->save();
+//                $transaction->save();
             } catch (QueryException $e) {
                 Log::debug($e);
             }
