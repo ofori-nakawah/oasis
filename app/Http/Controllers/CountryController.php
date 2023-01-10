@@ -133,7 +133,7 @@ class CountryController extends Controller
      */
 
     const CLIENT_ID = "JF6vaHO1l";
-    const CLIENT_SECRET = "jd19aa34839ffbde375e5d4dbb67268f3";
+    const CLIENT_SECRET = "d19aa34839ffbde375e5d4dbb67268f3";
 
     private function getBasicAuthKey(){
         return "Basic ".base64_encode(self::CLIENT_ID . ':' . self::CLIENT_SECRET);
