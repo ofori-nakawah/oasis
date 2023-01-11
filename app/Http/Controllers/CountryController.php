@@ -328,38 +328,41 @@ class CountryController extends Controller
     public function callback(Request $request)
     {
         $callbackResponse = json_decode($request);
-        Log::debug("Callback >>>>>>>>>> " . $callbackResponse);
-        if ($callbackResponse->Data){
-            $clientReference = $callbackResponse->Data->Transaction->TransactionId;
-            $responseCode = $callbackResponse->Data->ResponseCode;
-            $responseDescription = $callbackResponse->Data->ResponseMessage;
-            $responseTransaction = $callbackResponse->Data->Transaction;
+        if ($callbackResponse === "" || $callbackResponse === null) {
+            Log::error(' TRANSACTION CALLBACK DATA IS NULL');
+        } else{
+            Log::debug("Callback >>>>>>>>>> " . $callbackResponse);
+            if ($callbackResponse->Data){
+                $clientReference = $callbackResponse->Data->Transaction->TransactionId;
+                $responseCode = $callbackResponse->Data->ResponseCode;
+                $responseDescription = $callbackResponse->Data->ResponseMessage;
+                $responseTransaction = $callbackResponse->Data->Transaction;
 
-            $transaction = Transaction::where("client_reference", $clientReference)->first();
-            if ($transaction){
-                $transaction->response_code = $responseCode;
-                $transaction->response_description = $responseDescription;
-                $transaction->amount = $responseTransaction->TransactionAmount;
-                $transaction->charges = 0;
-                $transaction->amount_after_charges = $responseTransaction->TransactionNet;
+                $transaction = Transaction::where("client_reference", $clientReference)->first();
+                if ($transaction){
+                    $transaction->response_code = $responseCode;
+                    $transaction->response_description = $responseDescription;
+                    $transaction->amount = $responseTransaction->TransactionAmount;
+                    $transaction->charges = 0;
+                    $transaction->amount_after_charges = $responseTransaction->TransactionNet;
 
-                Log::info('UPDATE TRANSACTION DATA LOG >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' . $transaction);
+                    Log::info('UPDATE TRANSACTION DATA LOG >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' . $transaction);
 
-                /**
-                 * update the transaction status
-                 */
-                if ($transaction->response_code === "0" || $transaction->response_code === 0) {
-                    $transaction->status = "SUCCESSFUL";
-                } else {
-                    $transaction->status = "FAILED";
-                }
+                    /**
+                     * update the transaction status
+                     */
+                    if ($transaction->response_code === "0" || $transaction->response_code === 0) {
+                        $transaction->status = "SUCCESSFUL";
+                    } else {
+                        $transaction->status = "FAILED";
+                    }
 
-                $transaction->update();
+                    $transaction->update();
 
-                /**
-                 * Initiator Transaction alerts
-                 */
-                $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+                    /**
+                     * Initiator Transaction alerts
+                     */
+                    $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
                  <soap:Body>
                   <Response xmlns="'. url('/') .'/request-callback">
                    <returnPaymentInitiationDetails>
@@ -370,43 +373,32 @@ class CountryController extends Controller
                   </Response>
                  </soap:Body>
                 </soap:Envelope>';
-            } else {
-                /**
-                 * figure out a way to handle this
-                 */
+
+                    /**
+                     * Post the response back to the endpoint
+                     */
+                    $url = self::CALLBACK_URL;
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS,
+                        "xmlRequest=" . $response);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
+                    $response = curl_exec($ch);
+                    $error = curl_error($ch);
+                    curl_close($ch);
+
+                    if ($error) {
+                        Log::error("ERROR SENDING CALLBACK TO INITIATOR >>>>>>>>>>>>>>>>>> " . $error);
+                    } else {
+                        Log::info("SUCCESSFUL CALLBACK PUSH");
+                    }
+                } else {
+                    /**
+                     * figure out a way to handle this
+                     */
+                }
             }
-        }else{
-//            $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
-//             <soap:Body>
-//              <Response xmlns="'. url('/') .'/request-callback">
-//               <returnPaymentInitiationDetails>
-//                  <statusCode>500</statusCode>
-//                  <message>We encounted an issue while processing transaction. Please try again later.</message>
-//               </returnPaymentInitiationDetails>
-//              </Response>
-//             </soap:Body>
-//            </soap:Envelope>';
-            Log::error(' TRANSACTION CALLBACK DATA IS NULL');
-        }
-
-        /**
-         * Post the response back to the endpoint
-         */
-        $url = self::CALLBACK_URL;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,
-            "xmlRequest=" . $response);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 300);
-        $response = curl_exec($ch);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        if ($error) {
-            Log::error("ERROR SENDING CALLBACK TO INITIATOR >>>>>>>>>>>>>>>>>> " . $error);
-        } else {
-            Log::info("SUCCESSFUL CALLBACK PUSH");
         }
     }
 }
