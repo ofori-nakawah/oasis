@@ -68,7 +68,7 @@ Route::prefix('/v1')->group(function () {
     Route::post("/hubtelCallback", "CountryController@callback");
 
     Route::post('/initiate-request', 'CountryController@initiateRequest');
-    Route::get('/callback', 'CountryController@callback');
+    Route::post('/callback', 'CountryController@callback');
 
     Route::prefix('/transactions')->group(function () {
         Route::post('/initiate-transaction', 'CountryController@initiateRequest');
