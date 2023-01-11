@@ -16,10 +16,13 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->string("client_reference");
             $table->string("amount");
+            $table->string("email");
             $table->string("pay_link_url");
-            $table->string("pay_link_id");
+            $table->string("response_code")->nullable();
+            $table->string("response_description")->nullable();
             $table->string("payment_type")->nullable();
-            $table->string("phone_number")->nullable();
+            $table->string("charges")->nullable();
+            $table->string("amount_after_charges")->nullable();
             $table->string("status");
             $table->timestamps();
         });
