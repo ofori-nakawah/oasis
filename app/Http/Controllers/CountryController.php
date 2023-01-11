@@ -376,17 +376,17 @@ class CountryController extends Controller
                  */
             }
         }else{
-            $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
-             <soap:Body>
-              <Response xmlns="'. url('/') .'/request-callback">
-               <returnPaymentInitiationDetails>
-                  <statusCode>500</statusCode>
-                  <message>We encounted an issue while processing transaction. Please try again later.</message>
-               </returnPaymentInitiationDetails>
-              </Response>
-             </soap:Body>
-            </soap:Envelope>';
-            Log::error('ISSUE WITH TRANSACTION. TRANSACTION CALLBACK DATA IS NULL');
+//            $response = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+//             <soap:Body>
+//              <Response xmlns="'. url('/') .'/request-callback">
+//               <returnPaymentInitiationDetails>
+//                  <statusCode>500</statusCode>
+//                  <message>We encounted an issue while processing transaction. Please try again later.</message>
+//               </returnPaymentInitiationDetails>
+//              </Response>
+//             </soap:Body>
+//            </soap:Envelope>';
+            Log::error(' TRANSACTION CALLBACK DATA IS NULL');
         }
 
         /**
