@@ -137,9 +137,12 @@ class CountryController extends Controller
     const CANCELLATION_URL = "https://facebook.com";
     const SECRET = "1917c20a-7ca7-43e4-b562-4dd22d0be19b";
     const KEY = "32179735-648f-4281-9c8e-ae24a10b303d";
+    const CLIENT_ID = "JF6vaHO1l";
+    const CLIENT_SECRET = "d19aa34839ffbde375e5d4dbb67268f3";
 
     private function getBasicAuthKey(){
-        return "Basic T3JEYUdIMTkyMDpqa2xhbjl1amRqaW9qcmU5NC1qYWQ4b2lrYWpyOQ==";
+//        return "Basic T3JEYUdIMTkyMDpqa2xhbjl1amRqaW9qcmU5NC1qYWQ4b2lrYWpyOQ==";
+        return "Basic " . base64_encode(self::CLIENT_ID . ':' . self::CLIENT_SECRET);
     }
 
 
