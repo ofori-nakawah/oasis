@@ -325,7 +325,7 @@ class CountryController extends Controller
         }
     }
 
-    public function callback()
+    public function callback(Request $request)
     {
         Log::debug("Callback >>>>>>>>>> " . $request->all());
         $callbackResponse = json_decode($request);
