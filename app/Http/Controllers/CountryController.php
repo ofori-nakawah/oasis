@@ -226,7 +226,7 @@ class CountryController extends Controller
                 'cancel_return_url' => self::CANCELLATION_URL,
                 'landing_page_url' => self::RETURN_URL
             ),
-            'currency_code' => 'GHS',
+            'currency_code' => 'USD',
             'paytype' => 'visa',
             'email' => $email
         );
