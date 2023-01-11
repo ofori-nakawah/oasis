@@ -230,7 +230,7 @@ class CountryController extends Controller
                 'landing_page_url' => self::RETURN_URL
             ),
             'currency_code' => 'USD',
-            'paytype' => 'visa',
+            'paytype' => 'card',
             'email' => $email
         );
 
