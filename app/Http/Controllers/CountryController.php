@@ -327,8 +327,8 @@ class CountryController extends Controller
 
     public function callback(Request $request)
     {
-        Log::debug("Callback >>>>>>>>>> " . $request->all());
         $callbackResponse = json_decode($request);
+        Log::debug("Callback >>>>>>>>>> " . $callbackResponse);
         if ($callbackResponse->Data){
             $clientReference = $callbackResponse->Data->Transaction->TransactionId;
             $responseCode = $callbackResponse->Data->ResponseCode;
