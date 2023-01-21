@@ -118,4 +118,43 @@ class UserController extends Controller
 
         return $this->success_response($notifications, "Notification details fetched successfully.");
     }
+
+    /**
+     * get uer profile details
+     */
+    public function get_user_full_profile()
+    {
+        /**
+         * Analytics
+         * get user number of jobs | average rating | volunteer hours | number of volunteer activities | total earnings
+         */
+        $core_skills = auth()->user()->skills;
+        $job_history = auth()->user()->job_applications->where("status", "confirmed");
+        $average_rating = auth()->user()->rating;
+        $volunteer_hours = auth()->user()->volunteer_hours;
+
+        $jobs_count = 0;
+        $volunteer_count = 0;
+        foreach ($job_history as $vork) {
+            if ($vork->job_post->type === "VOLUNTEER") {
+                $volunteer_count++;
+            } else {
+                $jobs_count++;
+            }
+
+            $vork->job_post;
+            $vork->rating_and_reviews;
+        }
+
+        $user_profile = array(
+            "number_of_jobs" => $jobs_count,
+            "number_of_activities" => $volunteer_count,
+            "average_rating" => $average_rating,
+            "volunteer_hours" => $volunteer_hours,
+            "core_skills" => $core_skills,
+            "work_history" => $job_history
+        );
+
+        return $this->success_response($user_profile, "Profile details fetched successfully.");
+    }
 }

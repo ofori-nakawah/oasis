@@ -54,6 +54,7 @@ Route::prefix('/v1')->group(function () {
             Route::post('/update-current-location', 'UserController@update_user_current_location');
             Route::post('/update-user-core-skills', 'UserController@update_user_core_skills');
             Route::post('/update-user-fcm-token', 'UserController@update_user_fcm_token');
+            Route::get('/', 'UserController@get_user_full_profile');
         });
 
         Route::prefix('/config')->group(function () {
