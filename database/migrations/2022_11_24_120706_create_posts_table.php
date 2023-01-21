@@ -38,6 +38,7 @@ class CreatePostsTable extends Migration
             $table->string("final_payment_amount")->nullable();
             $table->string("payment_channel")->nullable();
             $table->string("status")->default("active");
+            $table->string("closed_at")->nullable();
             $table->timestamps();
         });
     }

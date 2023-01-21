@@ -45,15 +45,34 @@ Route::prefix('/v1')->group(function () {
             Route::post('/confirm-decline-applicant', 'PostController@confirm_decline_applicant');
             Route::post('/close-post', 'PostController@close_post');
             Route::get('/get-user-post-details', 'PostController@get_user_post_details');
+            Route::get('/get-user-notifications', 'UserController@get_user_notifications');
+            Route::get('/get-user-notification-details', 'UserController@get_user_notification_details');
+            Route::get('/get-user-notifications-count', 'UserController@get_user_unread_notifications_count');
         });
 
         Route::prefix('/profile')->group(function () {
             Route::post('/update-current-location', 'UserController@update_user_current_location');
             Route::post('/update-user-core-skills', 'UserController@update_user_core_skills');
+            Route::post('/update-user-fcm-token', 'UserController@update_user_fcm_token');
+            Route::get('/', 'UserController@get_user_full_profile');
         });
 
         Route::prefix('/config')->group(function () {
             Route::get('/get-skills', 'ConfigController@get_skills');
         });
+    });
+
+    /**
+     * sikagwa
+     */
+    Route::post("/soap", "CountryController@getSoapRequest");
+    Route::post("/hubtelCallback", "CountryController@callback");
+
+    Route::post('/initiate-request', 'CountryController@initiateRequest');
+    Route::post('/callback', 'CountryController@callback');
+
+    Route::prefix('/transactions')->group(function () {
+        Route::post('/initiate-transaction', 'CountryController@initiateRequest');
+        Route::get('/callback', 'CountryController@callback');
     });
 });

@@ -8,11 +8,13 @@ use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
 use App\Traits\Responses;
+use App\Helpers\Notifications as Notifications;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -274,6 +276,12 @@ class PostController extends Controller
         $job_application->post_id = $request->job_post_id;
         try {
             $job_application->save();
+
+            /**
+             * create notification
+             */
+            $post->user;
+            Notifications::PushUserNotification($post, $job_application, auth()->user(), "SUCCESSFUL_JOB_APPLICATION");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING JOB APPLICATION >>>>>>>>>> " . $job_application . " >>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
@@ -373,6 +381,15 @@ class PostController extends Controller
                 $application->job_post->is_job_applicant_confirmed = "1";
                 $application->job_post->confirmed_applicant_id = $application->user->id;
                 $application->job_post->update();
+                /**
+                 * create notification
+                 */
+                Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_CONFIRMED");
+            } else {
+                /**
+                 * create notification
+                 */
+                Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_DECLINED");
             }
         } catch (QueryException $e) {
             Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);
@@ -429,6 +446,12 @@ class PostController extends Controller
                     try {
                         $participant->update();
                         $application->update();
+
+                        /**
+                         * create notification
+                         */
+                        $post->user;
+                        Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     } catch (QueryException $e) {
                         Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
                         continue;
@@ -481,6 +504,11 @@ class PostController extends Controller
 
                 $participant->rating = $user_review_rating;
                 try {
+                    /**
+                     * create notification
+                     */
+                    $post->user;
+                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     $participant->update();
                 }  catch (QueryException $e) {
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
@@ -492,6 +520,7 @@ class PostController extends Controller
          * close the post
          */
         $post->status = "closed";
+        $post->closed_at = Carbon::now();
         try {
             $post->update();
         } catch (QueryException $e) {
