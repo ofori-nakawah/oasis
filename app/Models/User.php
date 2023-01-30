@@ -14,10 +14,12 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     public const ONBOARDING_STATUS = 0;
-    public const ACTIVE_STATUS = 0;
+    public const ACTIVE_STATUS = 1;
     public const INACTIVE_STATUS = 2;
     public const APP_USER_TYPE = 1;
     public const ADMIN_USER_TYPE = 0;
+    public const UNVERIFIED_STATUS = 0;
+    public const VERIFIED_STATUS = 1;
 
     /**
      * The attributes that are mass assignable.
@@ -61,6 +63,11 @@ class User extends Authenticatable
     public function skills()
     {
         return $this->hasMany("App\Models\SkillUser", "user_id");
+    }
+
+    public function languages()
+    {
+        return $this->hasMany("App\Models\LanguageUser", "language_id");
     }
 
     public static function IsActive(User $user) {

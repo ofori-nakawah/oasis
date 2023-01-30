@@ -54,6 +54,7 @@ class OnboardingController extends Controller
         $user->type = (!$request->input("type")) ? User::APP_USER_TYPE : $request->input("type");
         $user->password = Hash::make($request->input("password"));
         $user->status = User::ONBOARDING_STATUS;
+        $user->is_verified = User::UNVERIFIED_STATUS;
 
         /**
          * Get international phone number
@@ -118,6 +119,7 @@ class OnboardingController extends Controller
         if (!$user) {return $this->not_found_response([]);}
 
         $user->phone_number_verified_at = Carbon::now();
+        $user->status = User::ACTIVE_STATUS;
         try {
             $user->update();
         } catch (QueryException $e) {
