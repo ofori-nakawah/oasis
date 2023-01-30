@@ -53,12 +53,15 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/profile')->group(function () {
             Route::post('/update-current-location', 'UserController@update_user_current_location');
             Route::post('/update-user-core-skills', 'UserController@update_user_core_skills');
+            Route::post('/update-user-languages', 'UserController@update_user_languages');
             Route::post('/update-user-fcm-token', 'UserController@update_user_fcm_token');
+            Route::get('/kyc', 'UserController@get_user_kyc_status');
             Route::get('/', 'UserController@get_user_full_profile');
         });
 
         Route::prefix('/config')->group(function () {
             Route::get('/get-skills', 'ConfigController@get_skills');
+            Route::get('/get-languages', 'ConfigController@get_languages');
         });
     });
 

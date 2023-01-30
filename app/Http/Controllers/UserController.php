@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LanguageUser;
 use App\Models\SkillUser;
 use App\Services\PushNotification;
 use App\Traits\Responses;
@@ -48,6 +49,29 @@ class UserController extends Controller
         }
 
         auth()->user()->is_core_skills_set = "1";
+        auth()->user()->update();
+
+        return $this->success_response([], "");
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_user_languages(Request $request)
+    {
+        foreach (auth()->user()->languages as $language) {
+            $language->delete();
+        }
+
+        for ($i = 0; $i < count($request->languages); $i++) {
+            $language_user = new LanguageUser();
+            $language_user->user_id = auth()->id();
+            $language_user->language_id = $request->languages[$i];
+            $language_user->save();
+        }
+
+        auth()->user()->is_languages_set = "1";
         auth()->user()->update();
 
         return $this->success_response([], "");
@@ -120,6 +144,30 @@ class UserController extends Controller
     }
 
     /**
+     * @param Request $request
+     */
+    public function get_user_kyc_status(Request $request)
+    {
+        $is_kyc_completed = 0;
+        if (auth()->user()->is_core_skills_set === "0" || auth()->user()->is_languages_set === "0" || auth()->user()->location_name === null) {
+            $is_kyc_completed = 0;
+        } else {
+            $is_kyc_completed = 1;
+        }
+
+        $kyc_status = array(
+            "is_kyc_completed" => $is_kyc_completed,
+            "is_core_skills_set" => (int) auth()->user()->is_core_skills_set,
+            "is_languages_set" => (int) auth()->user()->is_languages_set,
+            "is_location_set" => (!auth()->user()->location_name || auth()->user()->location_name == null) ? 0 : 1,
+            "is_profile_picture_set" => (!auth()->user()->profile_picture || auth()->user()->profile_picture == null)  ? 0 : 1,
+            "is_email_verified" => (!auth()->user()->email_verified_at || auth()->user()->email_verified_at == null)  ? 0 : 1,
+        );
+
+        return $this->success_response($kyc_status, "KYC status fetched successfully.");
+    }
+
+    /**
      * get uer profile details
      */
     public function get_user_full_profile()
@@ -129,6 +177,10 @@ class UserController extends Controller
          * get user number of jobs | average rating | volunteer hours | number of volunteer activities | total earnings
          */
         $core_skills = auth()->user()->skills;
+        foreach ($core_skills as $skill) {
+            $skill->skill;
+        }
+
         $job_history = auth()->user()->job_applications->where("status", "confirmed");
         $average_rating = auth()->user()->rating;
         $volunteer_hours = auth()->user()->volunteer_hours;
@@ -144,6 +196,7 @@ class UserController extends Controller
 
             $vork->job_post;
             $vork->rating_and_reviews;
+            $vork->ref_id = "VO-" . explode("-", $vork->id)[0];
         }
 
         $user_profile = array(
@@ -152,7 +205,7 @@ class UserController extends Controller
             "average_rating" => $average_rating,
             "volunteer_hours" => $volunteer_hours,
             "core_skills" => $core_skills,
-            "work_history" => $job_history
+            "work_history" => $job_history,
         );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");

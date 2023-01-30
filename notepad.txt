@@ -60,3 +60,11 @@ class CountryController extends Controller
         Log::debug($returnUrl);
     }
 }
+
+
+profile update
+- profile picture
+- basic information
+- location
+- skills
+- languages
