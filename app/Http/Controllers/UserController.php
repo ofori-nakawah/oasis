@@ -181,9 +181,15 @@ class UserController extends Controller
             $skill->skill;
         }
 
+        $languages = auth()->user()->languages;
+        foreach ($languages as $language) {
+            $language->language;
+        }
+
         $job_history = auth()->user()->job_applications->where("status", "confirmed");
         $average_rating = auth()->user()->rating;
         $volunteer_hours = auth()->user()->volunteer_hours;
+        $total_earnings = auth()->user()->total_earnings;
 
         $jobs_count = 0;
         $volunteer_count = 0;
@@ -203,9 +209,11 @@ class UserController extends Controller
             "number_of_jobs" => $jobs_count,
             "number_of_activities" => $volunteer_count,
             "average_rating" => $average_rating,
+            "location" => auth()->user()->location_name,
             "volunteer_hours" => $volunteer_hours,
-            "core_skills" => $core_skills,
-            "work_history" => $job_history,
+            "total_earnings" => $total_earnings,
+            "skills" => $core_skills,
+            "languages" => $languages
         );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");

@@ -32,6 +32,10 @@ class CreateUsersTable extends Migration
             $table->string('is_core_skills_set')->default(0);
             $table->string('is_languages_set')->default(0);
             $table->string('is_verified')->default(0);
+            $table->string('total_earnings')->default(0);
+            $table->string('total_topups')->default(0);
+            $table->string('available_balance')->default(0);
+            $table->string('total_payouts')->default(0);
             $table->integer('type')->default(1); // 0 is admin | 1 is app user
             $table->integer('status')->default(0); // 0 is onboarding | 1 is active | 2 is blocked
             $table->rememberToken();
