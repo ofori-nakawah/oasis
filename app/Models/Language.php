@@ -9,4 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class Language extends Model
 {
     use HasFactory, Uuids;
+
+    public function users()
+    {
+        return $this->hasMany("App\Models\LanguageUser", "language_id");
+    }
 }

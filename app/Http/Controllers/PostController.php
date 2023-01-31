@@ -495,6 +495,11 @@ class PostController extends Controller
                 $post->payment_channel = "cash"; // to be update when we start using in-app wallets
 
                 /**
+                 * update user earnings
+                 */
+                $participant->total_earnings = (float) $participant->total_earnings + (float) $request->final_payment_amount;
+
+                /**
                  * update vorker rating
                  */
                 $user_review_rating = 0;

@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function languages()
     {
-        return $this->hasMany("App\Models\LanguageUser", "language_id");
+        return $this->hasMany("App\Models\LanguageUser", "user_id");
     }
 
     public static function IsActive(User $user) {
