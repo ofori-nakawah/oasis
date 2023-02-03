@@ -197,14 +197,15 @@ class UserController extends Controller
         $volunteer_count = 0;
         foreach ($job_history as $vork) {
             if ($vork->job_post->type === "VOLUNTEER") {
+                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
                 $volunteer_count++;
             } else {
+                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
                 $jobs_count++;
             }
 
             $vork->job_post;
             $vork->rating_and_reviews;
-            $vork->ref_id = "VO-" . explode("-", $vork->id)[0];
         }
 
         $user_profile = array(
@@ -234,14 +235,15 @@ class UserController extends Controller
         $volunteer_count = 0;
         foreach ($job_history as $vork) {
             if ($vork->job_post->type === "VOLUNTEER") {
+                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
                 $volunteer_count++;
             } else {
+                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
                 $jobs_count++;
             }
 
             $vork->job_post;
             $vork->rating_and_reviews;
-            $vork->ref_id = "VO-" . explode("-", $vork->id)[0];
         }
 
         $user_profile = array(
