@@ -57,6 +57,12 @@ Route::prefix('/v1')->group(function () {
             Route::post('/update-user-fcm-token', 'UserController@update_user_fcm_token');
             Route::get('/kyc', 'UserController@get_user_kyc_status');
             Route::get('/', 'UserController@get_user_full_profile');
+            Route::get('/job-history', 'UserController@get_job_history');
+
+            /**
+             * other user profile routes
+             */
+            Route::get('/get-user-vork-profile', 'UserController@get_user_vork_profile');
         });
 
         Route::prefix('/config')->group(function () {

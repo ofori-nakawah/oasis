@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\LanguageUser;
 use App\Models\SkillUser;
+use App\Models\User;
 use App\Services\PushNotification;
+use Illuminate\Support\Facades\Validator;
 use App\Traits\Responses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -214,6 +216,106 @@ class UserController extends Controller
             "total_earnings" => $total_earnings,
             "skills" => $core_skills,
             "languages" => $languages
+        );
+
+        return $this->success_response($user_profile, "Profile details fetched successfully.");
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get_job_history(Request $request)
+    {
+        $job_history = auth()->user()->job_applications->where("status", "confirmed");
+        $average_rating = auth()->user()->rating;
+
+        $jobs_count = 0;
+        $volunteer_count = 0;
+        foreach ($job_history as $vork) {
+            if ($vork->job_post->type === "VOLUNTEER") {
+                $volunteer_count++;
+            } else {
+                $jobs_count++;
+            }
+
+            $vork->job_post;
+            $vork->rating_and_reviews;
+            $vork->ref_id = "VO-" . explode("-", $vork->id)[0];
+        }
+
+        $user_profile = array(
+            "number_of_jobs" => $jobs_count,
+            "job_history" => $job_history,
+            "average_rating" => $average_rating,
+        );
+
+        return $this->success_response($user_profile, "Profile details fetched successfully.");
+    }
+
+    /**
+     * get uer vork profile details
+     */
+    public function get_user_vork_profile(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'uuid' => 'required',
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        /**
+         * get user
+         */
+        $user = User::where("id", $request->uuid)->first();
+        if (!$user) {return $this->not_found_response([], "Error fetching user information. Kindly try again");}
+
+        /**
+         * Analytics
+         * get user number of jobs | average rating | volunteer hours | number of volunteer activities | total earnings
+         */
+        $core_skills = $user->skills;
+        foreach ($core_skills as $skill) {
+            $skill->skill;
+        }
+
+        $languages = $user->languages;
+        foreach ($languages as $language) {
+            $language->language;
+        }
+
+        $job_history = $user->job_applications->where("status", "confirmed");
+        $average_rating = $user->rating;
+        $volunteer_hours = $user->volunteer_hours;
+        $total_earnings = $user->total_earnings;
+
+        $jobs_count = 0;
+        $volunteer_count = 0;
+        foreach ($job_history as $vork) {
+            if ($vork->job_post->type === "VOLUNTEER") {
+                $volunteer_count++;
+                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
+
+            } else {
+                $jobs_count++;
+                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
+            }
+
+            $vork->job_post;
+            $vork->rating_and_reviews;
+        }
+
+        $user_profile = array(
+            "number_of_jobs" => $jobs_count,
+            "number_of_activities" => $volunteer_count,
+            "average_rating" => $average_rating,
+            "location" => $user->location_name,
+            "volunteer_hours" => $volunteer_hours,
+            "total_earnings" => $total_earnings,
+            "skills" => $core_skills,
+            "languages" => $languages,
+            "username" => $user->name,
+            "work_history" => $job_history,
         );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");
