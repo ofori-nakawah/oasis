@@ -164,6 +164,7 @@ class UserController extends Controller
             "is_location_set" => (!auth()->user()->location_name || auth()->user()->location_name == null) ? 0 : 1,
             "is_profile_picture_set" => (!auth()->user()->profile_picture || auth()->user()->profile_picture == null)  ? 0 : 1,
             "is_email_verified" => (!auth()->user()->email_verified_at || auth()->user()->email_verified_at == null)  ? 0 : 1,
+            "location_coords" => auth()->user()->location_coords
         );
 
         return $this->success_response($kyc_status, "KYC status fetched successfully.");
@@ -197,14 +198,15 @@ class UserController extends Controller
         $volunteer_count = 0;
         foreach ($job_history as $vork) {
             if ($vork->job_post->type === "VOLUNTEER") {
+                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
                 $volunteer_count++;
             } else {
+                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
                 $jobs_count++;
             }
 
             $vork->job_post;
             $vork->rating_and_reviews;
-            $vork->ref_id = "VO-" . explode("-", $vork->id)[0];
         }
 
         $user_profile = array(
@@ -212,6 +214,7 @@ class UserController extends Controller
             "number_of_activities" => $volunteer_count,
             "average_rating" => $average_rating,
             "location" => auth()->user()->location_name,
+            "location_coords" => auth()->user()->location_coords,
             "volunteer_hours" => $volunteer_hours,
             "total_earnings" => $total_earnings,
             "skills" => $core_skills,
@@ -234,14 +237,15 @@ class UserController extends Controller
         $volunteer_count = 0;
         foreach ($job_history as $vork) {
             if ($vork->job_post->type === "VOLUNTEER") {
+                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
                 $volunteer_count++;
             } else {
+                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
                 $jobs_count++;
             }
 
             $vork->job_post;
             $vork->rating_and_reviews;
-            $vork->ref_id = "VO-" . explode("-", $vork->id)[0];
         }
 
         $user_profile = array(
@@ -310,6 +314,7 @@ class UserController extends Controller
             "number_of_activities" => $volunteer_count,
             "average_rating" => $average_rating,
             "location" => $user->location_name,
+            "location_coords" => $user->location_coords,
             "volunteer_hours" => $volunteer_hours,
             "total_earnings" => $total_earnings,
             "skills" => $core_skills,
