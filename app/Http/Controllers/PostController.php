@@ -19,6 +19,8 @@ use Carbon\Carbon;
 class PostController extends Controller
 {
     use Responses;
+    const JOB_SEARCH_RADIUS = 5;
+    const VOLUNTEER_SEARCH_RADIUS = 10;
 
     /**
      * @param Request $request
@@ -157,8 +159,9 @@ class PostController extends Controller
 
         switch ($request->type) {
             case "VOLUNTEER":
+                $volunteer_near_me = collect();
                 $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->get();
-                $posts->map(function ($post) use ($user_location_lat, $user_location_lng) {
+                $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
                     //get post coordinates
                     $post_location_lat = explode(',', $post->coords)[1];
                     $post_location_lng = explode(',', $post->coords)[0];
@@ -166,11 +169,42 @@ class PostController extends Controller
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
+                    if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
+                        Log::debug("on pointoo");
+                        $volunteer_near_me->push($post);
+                    }
                     return $post;
                 });
+                $posts = $volunteer_near_me;
+
                 break;
             case "QUICK_JOB":
-                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->get();
+                $_user_interests = auth()->user()->skills;
+                $user_interests = array();
+                foreach ($_user_interests as $interest) {
+                    array_push($user_interests, $interest->skill->id);
+                }
+
+                /**
+                 * filter using:
+                 * post type
+                 * interests | skills
+                 */
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->get();
+
+                /**
+                 * filter using distance
+                 */
+                $jobs_near_me = collect();
+                foreach ($posts as $post) {
+                    $post_location_lat = explode(',', $post->coords)[1];
+                    $post_location_lng = explode(',', $post->coords)[0];
+                    $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+                    if ($distance <= self::JOB_SEARCH_RADIUS) {
+                        $jobs_near_me->push($post);
+                    }
+                }
+                $posts = $jobs_near_me;
                 break;
         }
 
@@ -534,5 +568,47 @@ class PostController extends Controller
         }
 
         return $this->success_response($post, "Post has been closed successfully.");
+    }
+
+    public function filter_jobs(Request $request)
+    {
+        $interests = $request->interests;
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return $this->not_found_response([], "Could not retrieve user's current location");
+        }
+
+        $_user_interests = auth()->user()->skills;
+        $user_interests = array();
+        foreach ($_user_interests as $interest) {
+            array_push($user_interests, $interest->skill->id);
+        }
+
+        /**
+         * filter using:
+         * post type
+         * interests | skills
+         */
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->get();
+
+        /**
+         * filter using distance
+         */
+        $jobs_near_me = collect();
+        foreach ($posts as $post) {
+            $post_location_lat = explode(',', $post->coords)[1];
+            $post_location_lng = explode(',', $post->coords)[0];
+
+            $user_location_lat = explode(',', $user_location)[0];
+            $user_location_lng = explode(',', $user_location)[1];
+
+
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+            if ($distance <= self::JOB_SEARCH_RADIUS) {
+                $jobs_near_me->push($post);
+            }
+        }
+        $posts = $jobs_near_me;
+        return $this->success_response($posts, "Posts fetched successfully.");
     }
 }
