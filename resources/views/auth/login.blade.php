@@ -5,11 +5,11 @@
     <meta charset="utf-8">
     <meta name="author" content="Softnio">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="OrdaGH Dashboard">
+    <meta name="description" content="Vork Dashboard">
     <!-- Fav Icon  -->
     <link rel="shortcut icon" href="{{asset("assets/assets/images/favico.png")}}">
     <!-- Page Title  -->
-    <title>OrdaGH | Login</title>
+    <title>VORK | Login</title>
     <!-- StyleSheets  -->
     <link rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/dashlite.css?ver=1.4.0")}}">
     <link id="skin-default" rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/skins/theme-egyptian.css?ver=1.4.0")}}">
