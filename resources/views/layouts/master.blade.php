@@ -169,7 +169,7 @@
                         <div class="nk-header-tools">
                             <ul class="nk-quick-nav">
                                 <li>
-                                    <a href="" class="btn btn-outline-primary"><b>Volunteer</b></a>
+                                    <a href="{{route("user.volunteerism")}}" class="btn btn-outline-primary"><b>Volunteer</b></a>
                                 </li>
                                 <li>
                                     <a href="" class="btn btn-outline-success"><b>Work</b></a>
