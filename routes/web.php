@@ -21,6 +21,7 @@ Route::group(['middleware'=>'auth'], function () {
 
     Route::get('/volunteerism', 'Web\PostController@volunteerism')->name('user.volunteerism');
     Route::get('/volunteerism/upcoming-activities-near-you', 'Web\PostController@list_volunteer_activities')->name('user.volunteerism.list');
+    Route::get('/volunteerism/organise', 'Web\PostController@create_volunteer_activity')->name('user.volunteerism.create');
     Route::get('/volunteerism/{uuid}', 'Web\PostController@show_volunteer_activity')->name('user.volunteerism.show');
 
     //apply

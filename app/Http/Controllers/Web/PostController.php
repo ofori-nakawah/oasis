@@ -12,7 +12,7 @@ use Illuminate\Database\QueryException;
 
 class PostController extends Controller
 {
-    const JOB_SEARCH_RADIUS = 10;
+    const JOB_SEARCH_RADIUS = 5;
     const VOLUNTEER_SEARCH_RADIUS = 10;
 
     public function volunteerism()
@@ -219,5 +219,10 @@ class PostController extends Controller
         }
 
         return back()->with("success", "Congratulations! Your application was successful");
+    }
+
+    public function create_volunteer_activity()
+    {
+        return view("volunteerism.create");
     }
 }
