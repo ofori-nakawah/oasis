@@ -119,37 +119,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Help</a>
                         </li>
-                        <li class="nav-item dropup">
-                            <a class="dropdown-toggle dropdown-indicator has-indicator nav-link" data-toggle="dropdown" data-offset="0,10"><small>English</small></a>
-                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                                <ul class="language-list">
-                                    <li>
-                                        <a href="#" class="language-item">
-                                            <img src="./images/flags/english.png" alt="" class="language-flag">
-                                            <span class="language-name">English</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="language-item">
-                                            <img src="./images/flags/spanish.png" alt="" class="language-flag">
-                                            <span class="language-name">Español</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="language-item">
-                                            <img src="./images/flags/french.png" alt="" class="language-flag">
-                                            <span class="language-name">Français</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="language-item">
-                                            <img src="./images/flags/turkey.png" alt="" class="language-flag">
-                                            <span class="language-name">Türkçe</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
                     </ul><!-- .nav -->
                 </div>
                 <div class="mt-3">
@@ -159,43 +128,18 @@
         </div><!-- .nk-split-content -->
         <div class="nk-split-content nk-split-stretch bg-lighter d-flex toggle-break-lg toggle-slide toggle-slide-right" data-content="athPromo" data-toggle-screen="lg" data-toggle-overlay="true">
             <div class="slider-wrap w-100 w-max-550px p-3 p-sm-5 m-auto">
-                <div class="slider-init" data-slick='{"dots":true, "arrows":false}'>
+                <div class="slider-init" data-slick='{"dots":false, "arrows":false}'>
                     <div class="slider-item">
                         <div class="nk-feature nk-feature-center">
                             <div class="nk-feature-img">
-                                <img class="round" src="{{asset("assets/assets/images/fast.svg")}}" style="height:360px;" srcset="{{asset("assets/assets/images/fast.svg")}}" alt="dashboard ordagh eshopping">
+                                <img class="round" src="{{asset("assets/html-template/src/images/tag.svg")}}" style="height:360px;" srcset="{{asset("assets/html-template/src/images/tag.svg")}}" alt="VORK">
                             </div>
                             <div class="nk-feature-content py-4 p-sm-5">
-                                <h4>Secure</h4>
-                                <p>Drivers, Delivery Agents, Vehicles and Motorbikes are vetted and the goods are insured. Our platform is also secured with latest security features for our users to access it for their delivery requests.</p>
+                                <h4>Endless Opportunities</h4>
+                                <p>Explore a world of endless opportunities with VORK.</p>
                             </div>
                         </div>
                     </div><!-- .slider-item -->
-                    <div class="slider-item">
-                        <div class="nk-feature nk-feature-center">
-                            <div class="nk-feature-img">
-                                <img class="round" src="{{asset("assets/assets/images/best_prices.svg")}}" style="height:360px;" srcset="{{asset("assets/assets/images/best_prices.svg")}}" alt="dashboard ordagh eshopping">
-                            </div>
-                            <div class="nk-feature-content py-4 p-sm-5">
-                                <h4>Best Prices</h4>
-                                <p>Our system gives one of the best prices for motorbikes delivery services as well as allow drivers bid for deliveries on our platform ensuring competitive and best prices.</p>
-                            </div>
-                        </div>
-                    </div><!-- .slider-item -->
-                    <div class="slider-item">
-                        <div class="nk-feature nk-feature-center">
-                            <div class="nk-feature-img">
-                                <img class="round" src="{{asset("assets/assets/images/easy_access.svg")}}" style="height:360px;" srcset="{{asset("assets/assets/images/easy_access.svg")}}" alt="dashboard ordagh eshopping">
-                            </div>
-                            <div class="nk-feature-content py-4 p-sm-5">
-                                <h4>Easy Access</h4>
-                                <p>Access to our large networks of motorbikes, trucks, vans, pickups, towing cars and so on, as never been easier with our webapp, Mobile App and USSD for both online and offline delivery requests.</p>
-                            </div>
-                        </div>
-                    </div><!-- .slider-item -->
-                </div><!-- .slider-init -->
-                <div class="slider-dots"></div>
-                <div class="slider-arrows"></div>
             </div><!-- .slider-wrap -->
         </div><!-- .nk-split-content -->
     </div><!-- .nk-split -->
