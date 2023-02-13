@@ -59,6 +59,9 @@
                         </div>
                     </div>
                     <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
+                        <span class="pull-left" style="float: left !important;">
+                            @if($post->has_already_applied === "yes") <span>Already applied</span> @endif
+                        </span>
                         <a href="{{route('user.volunteerism.show', ['uuid' => $post->id])}}" class="btn btn-outline-secondary">View Details</a>
                     </div>
                 </div>
