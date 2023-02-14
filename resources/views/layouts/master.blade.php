@@ -89,7 +89,7 @@
     </style>
 </head>
 
-<body class="nk-body bg-lighter npc-general has-sidebar ">
+<body class="nk-body bg-white npc-general has-sidebar ">
 <div class="nk-app-root">
     <!-- main @s -->
     <div class="nk-main ">
@@ -148,7 +148,7 @@
         </div>
         <!-- sidebar @e -->
         <!-- wrap @s -->
-        <div class="nk-wrap ">
+        <div class="nk-wrap bg-white">
             <!-- main header @s -->
             <div class="nk-header nk-header-fixed is-light">
                 <div class="container-fluid">
@@ -227,7 +227,7 @@
             </div>
             <!-- main header @e -->
             <!-- content @s -->
-            <div class="nk-content ">
+            <div class="nk-content bg-white">
                 <div class="container-fluid">
                     <div class="nk-content-inner">
                         <div class="nk-content-body">

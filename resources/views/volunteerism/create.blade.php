@@ -37,8 +37,8 @@
                     </div>
                     <div class="card-body1">
                         <div class="input-group1 mb-3">
-                            <label for="name"><b>Activity Name</b></label>
-                            <input type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" placeholder="Enter name of activity or project" name="name">
+{{--                            <label for="name"><b>Activity Name</b></label>--}}
+                            <input type="text" class="form-control form-control-l @error('name') is-invalid @enderror" placeholder="Enter name of activity or project" name="name">
 
                             @error('name')
                             <span class="invalid-feedback" role="alert">
@@ -48,8 +48,8 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="description"><b>Description</b></label>
-                            <textarea class="form-control form-control-lg @error('description') is-invalid @enderror" placeholder="Enter brief description of the project" name="description"></textarea>
+{{--                            <label for="description"><b>Description</b></label>--}}
+                            <textarea class="form-control form-control-l @error('description') is-invalid @enderror" placeholder="Enter brief description of the project" name="description"></textarea>
 
                             @error('description')
                             <span class="invalid-feedback" role="alert">
@@ -61,8 +61,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                    <label for="date"><b>Date</b></label>
-                                    <input type="date" class="form-control form-control-lg @error('date') is-invalid @enderror" placeholder="Select date of activity" name="date">
+{{--                                    <label for="date"><b>Date</b></label>--}}
+                                    <input type="date" class="form-control form-control-l @error('date') is-invalid @enderror" placeholder="Select date of activity" name="date">
 
                                     @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -73,8 +73,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                    <label for="time"><b>Time</b></label>
-                                    <input type="time" class="form-control form-control-lg @error('time') is-invalid @enderror" placeholder="Select time of activity" name="time">
+{{--                                    <label for="time"><b>Time</b></label>--}}
+                                    <input type="time" class="form-control form-control-l @error('time') is-invalid @enderror" placeholder="Select time of activity" name="time">
 
                                     @error('time')
                                     <span class="invalid-feedback" role="alert">
@@ -88,8 +88,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                    <label for="number_of_participants"><b>Number of Participants</b></label>
-                                    <input type="number" class="form-control form-control-lg @error('number_of_participants') is-invalid @enderror" placeholder="Specify number of participants" name="number_of_participants">
+{{--                                    <label for="number_of_participants"><b>Number of Participants</b></label>--}}
+                                    <input type="number" class="form-control form-control-l @error('number_of_participants') is-invalid @enderror" placeholder="Specify number of participants" name="number_of_participants">
 
                                     @error('number_of_participants')
                                     <span class="invalid-feedback" role="alert">
@@ -100,8 +100,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                    <label for="name"><b>Volunteer Hours</b></label>
-                                    <input type="text" class="form-control form-control-lg @error('volunteer_hours') is-invalid @enderror" placeholder="Specify volunteer hours" name="volunteer_hours">
+{{--                                    <label for="name"><b>Volunteer Hours</b></label>--}}
+                                    <input type="text" class="form-control form-control-l @error('volunteer_hours') is-invalid @enderror" placeholder="Specify volunteer hours" name="volunteer_hours">
 
                                     @error('volunteer_hours')
                                     <span class="invalid-feedback" role="alert">
@@ -113,8 +113,8 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="name"><b>Location</b></label>
-                            <input type="text" class="form-control form-control-lg @error('location') is-invalid @enderror" placeholder="Provide location of activity" name="location">
+{{--                            <label for="name"><b>Location</b></label>--}}
+                            <input type="text" class="form-control form-control-l @error('location') is-invalid @enderror" placeholder="Provide location of activity" name="location">
 
                             @error('location')
                             <span class="invalid-feedback" role="alert">
@@ -124,8 +124,8 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>
-                            <textarea type="tel" class="form-control form-control-lg @error('other_relevant_information') is-invalid @enderror" placeholder="Specify any other relevant information" name="other_relevant_information"></textarea>
+{{--                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>--}}
+                            <textarea type="tel" class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror" placeholder="Specify any other relevant information" name="other_relevant_information"></textarea>
 
                             @error('other_relevant_information')
                             <span class="invalid-feedback" role="alert">
@@ -136,7 +136,7 @@
 
                     </div>
                     <div class="text-right">
-                        <button class="btn btn-success btn-lg"><b>Create & Publish</b></button>
+                        <button class="btn btn-success btn-l"><b>Create & Publish</b></button>
                     </div>
                 </div>
             </form>
