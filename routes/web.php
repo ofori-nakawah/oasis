@@ -19,10 +19,20 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/dashboard', 'Web\HomeController@index')->name('home');
 //    Route::post('/logout', 'Web\AuthController@logout')->name('logout');
 
+    /*
+     * volunteerism
+     */
     Route::get('/volunteerism', 'Web\PostController@volunteerism')->name('user.volunteerism');
     Route::get('/volunteerism/upcoming-activities-near-you', 'Web\PostController@list_volunteer_activities')->name('user.volunteerism.list');
     Route::get('/volunteerism/organise', 'Web\PostController@create_volunteer_activity')->name('user.volunteerism.create');
     Route::get('/volunteerism/{uuid}', 'Web\PostController@show_volunteer_activity')->name('user.volunteerism.show');
+
+    /**
+     * jobs
+     */
+    Route::get('/work', 'Web\PostController@work')->name('user.work');
+    Route::get('/work/{type_of_user}', 'Web\PostController@type_of_work')->name('user.work.type');
+    Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');
 
     //apply
     Route::get('/posts/{uuid}/apply', 'Web\PostController@apply_for_job')->name('user.apply_for_job');

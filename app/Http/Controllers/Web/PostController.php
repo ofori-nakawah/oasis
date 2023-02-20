@@ -12,12 +12,49 @@ use Illuminate\Database\QueryException;
 
 class PostController extends Controller
 {
-    const JOB_SEARCH_RADIUS = 5;
+    const JOB_SEARCH_RADIUS = 7;
     const VOLUNTEER_SEARCH_RADIUS = 10;
 
     public function volunteerism()
     {
         return view("volunteerism.index");
+    }
+
+    public function work()
+    {
+        return view("work.index");
+    }
+
+    public function type_of_work($type_of_user)
+    {
+        if (!$type_of_user) {return back()->with("danger", "Invalid request");}
+
+        if ($type_of_user != "seeker" && $type_of_user != "employer") {
+            return back()->with("danger", "Invalid request");
+        }
+
+        return view("work.type", compact("type_of_user"));
+    }
+
+    public function list_jobs($type_of_user, $type_of_work)
+    {
+        if (!$type_of_user || !$type_of_work) {return back()->with("danger", "Invalid request");}
+
+        if ($type_of_user != "seeker" && $type_of_user != "employer") {return back()->with("danger", "Invalid request");}
+
+        if ($type_of_work != "quick-job" && $type_of_work != "fixed-term" && $type_of_work != "permanent") {return back()->with("danger", "Invalid request");}
+
+        switch ($type_of_work) {
+            case "quick-job":
+                if ($type_of_work == "quick-job") {
+                    return $this->list_quick_jobs();
+                } else {
+                    return view("quick_jobs.create");
+                }
+                break;
+        }
+
+        return back()->with("danger", "Invalid request");
     }
 
     public function list_volunteer_activities()
@@ -93,13 +130,21 @@ class PostController extends Controller
             $post_location_lat = explode(',', $post->coords)[1];
             $post_location_lng = explode(',', $post->coords)[0];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+
             if ($distance <= self::JOB_SEARCH_RADIUS) {
+                $post["organiser_name"] = $post->user->name;
+                $post["distance"] = number_format($distance, 2);
                 $jobs_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
             }
         }
         $posts = $jobs_near_me;
 
-        return view("work.quick_jobs.list", compact("posts"));
+        return view("work.quick_jobs.index", compact("posts"));
     }
 
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
