@@ -34,8 +34,16 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/work/{type_of_user}', 'Web\PostController@type_of_work')->name('user.work.type');
     Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');
 
-    //apply
+    /**
+     * apply for job
+     */
     Route::get('/posts/{uuid}/apply', 'Web\PostController@apply_for_job')->name('user.apply_for_job');
+
+    /**
+     * notifications
+     */
+    Route::get('/notifications', 'Web\UserController@get_user_notifications')->name('user.notifications');
+    Route::get('/notifications/{notification_group_id}', 'Web\UserController@get_user_notification_details')->name('user.notifications.show');
 });
 
 Route::get('/login', 'Web\AuthController@show_login_form')->name('login');
