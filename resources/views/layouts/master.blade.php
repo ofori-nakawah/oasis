@@ -112,13 +112,13 @@
                     <div class="nk-sidebar-menu" data-simplebar>
                         <ul class="nk-menu">
                             <li class="nk-menu-item">
-                                <a href="" class="nk-menu-link">
+                                <a href="{{route("home")}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-growth"></em></span>
                                     <span class="nk-menu-text"> Dashboard</span>
                                 </a>
                             </li><!-- .nk-menu-item -->
                             <li class="nk-menu-item">
-                                <a href="" class="nk-menu-link">
+                                <a href="{{route('user.posts.list')}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-edit-alt"></em></span>
                                     <span class="nk-menu-text"> Postings</span>
                                 </a>
@@ -126,11 +126,11 @@
                             <li class="nk-menu-item">
                                 <a href="{{route("user.notifications")}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-bell"></em></span>
-                                    <span class="nk-menu-text"> Notifications</span>
+                                    <span class="nk-menu-text"> Notifications @if(auth()->user()->unreadNotifications->count() > 0) <span class="badge badge-danger circle">{{auth()->user()->unreadNotifications->count() ?? ''}}</span> @endif</span>
                                 </a>
                             </li><!-- .nk-menu-item -->
                             <li class="nk-menu-item">
-                                <a href="" class="nk-menu-link">
+                                <a href="{{route('user.wallet')}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-wallet-alt"></em></span>
                                     <span class="nk-menu-text"> Wallet</span>
                                 </a>

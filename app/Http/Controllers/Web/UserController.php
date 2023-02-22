@@ -18,11 +18,6 @@ class UserController extends Controller
         $this->middleware('auth:web');
     }
 
-    public function get_user_unread_notifications_count(Request $request)
-    {
-        return $this->success_response(auth()->user()->unreadNotifications->count(), "Notification count fetched");
-    }
-
     /**
      *
      * get all user notifications
@@ -60,5 +55,16 @@ class UserController extends Controller
         }
 
         return view("notifications.show", compact("notifications"));
+    }
+
+    public function my_wallet()
+    {
+        return view("wallet.index");
+    }
+
+    public function user_postings()
+    {
+        $posts = auth()->user()->posts;
+        return view("postings.index", compact("posts"));
     }
 }

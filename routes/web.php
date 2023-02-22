@@ -44,6 +44,18 @@ Route::group(['middleware'=>'auth'], function () {
      */
     Route::get('/notifications', 'Web\UserController@get_user_notifications')->name('user.notifications');
     Route::get('/notifications/{notification_group_id}', 'Web\UserController@get_user_notification_details')->name('user.notifications.show');
+
+    /**
+     * wallet
+     */
+    Route::get('/wallet', 'Web\UserController@my_wallet')->name('user.wallet');
+
+    /**
+     * postings
+     */
+    Route::get('/posts', 'Web\UserController@user_postings')->name('user.posts.list');
+    Route::get('/posts/{uuid}/edit', 'Web\UserController@user_posts')->name('user.posts.edit');
+    Route::get('/posts/{uuid}/show', 'Web\UserController@user_posts')->name('user.posts.show');
 });
 
 Route::get('/login', 'Web\AuthController@show_login_form')->name('login');
