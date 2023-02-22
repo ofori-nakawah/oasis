@@ -40,7 +40,7 @@
                     </div>
                     <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
                         <a href="{{route('user.posts.edit', ['uuid' => $post->id])}}" class="btn btn-outline-warning">Edit</a>
-                        <a href="{{route('user.posts.show', ['uuid' => $post->id])}}" class="btn btn-outline-secondary">View Details</a>
+                        <a href="{{route('user.posts.show', ['uuid' => $post->id])}}" class="btn btn-outline-secondary">Status</a>
                     </div>
                 </div>
             @endforeach

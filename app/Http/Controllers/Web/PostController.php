@@ -8,6 +8,7 @@ use App\Models\JobApplication;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 
 class PostController extends Controller
@@ -269,5 +270,79 @@ class PostController extends Controller
     public function create_volunteer_activity()
     {
         return view("volunteerism.create");
+    }
+
+    /**
+     * @param $uuid
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function show_user_post_details($uuid)
+    {
+        if (!$uuid) {return back()->with("danger", "Invalid request.");}
+
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {return back()->with("danger", "Error fetching post details");}
+
+        $post->number_of_participants_applied = $post->applications()->count();
+        $post->number_of_participants_confirmed = $post->applications()->where("status", "confirmed")->count();
+
+        foreach ($post->applications as $application) {
+            $application->user;
+            $application->rating_and_reviews;
+        }
+
+        $posts = auth()->user()->posts;
+
+        return view("postings.show", compact("post", "posts"));
+    }
+
+    /**
+     * @param $application_id
+     * @param $action
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function confirm_decline_applicant($application_id, $action)
+    {
+        if (!$application_id || !$action) {return back()->with("danger", "Invalid request");}
+
+        $application = JobApplication::where("id", $application_id)->first();
+        if (!$application) {
+            return back()->with("danger", "Error fetching application details");
+        }
+
+        $message = "";
+        if ($action === "confirm") {
+            $application->status = "confirmed";
+            $message = "Applicant has been confirmed successfully";
+        } else {
+            $application->status = "declined";
+            $message = "Applicant has been declined successfully";
+        }
+        try {
+            $application->update();
+
+            /**
+             * job applicant confirmed
+             */
+            if ($application->job_post->type != "VOLUNTEER" || $action === "confirm") {
+                $application->job_post->is_job_applicant_confirmed = "1";
+                $application->job_post->confirmed_applicant_id = $application->user->id;
+                $application->job_post->update();
+                /**
+                 * create notification
+                 */
+                Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_CONFIRMED");
+            } else {
+                /**
+                 * create notification
+                 */
+                Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_DECLINED");
+            }
+        } catch (QueryException $e) {
+            Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);
+            return back()->with("danger","Error confirming applicant. Kindly try again.");
+        }
+
+        return back()->with("success", "Applicant confirmed successfully.");
     }
 }
