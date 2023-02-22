@@ -58,6 +58,11 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/posts/{uuid}/show', 'Web\PostController@show_user_post_details')->name('user.posts.show');
 
     Route::get('/posts/{application_id}/{action}', 'Web\PostController@confirm_decline_applicant')->name('user.posts.confirm_decline_applicant');
+
+    /**
+     * profile
+     */
+    Route::get('/profile/{user_id}', 'Web\UserController@user_profile')->name('user.profile');
 });
 
 Route::get('/login', 'Web\AuthController@show_login_form')->name('login');

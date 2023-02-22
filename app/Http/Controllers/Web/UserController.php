@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -66,5 +67,51 @@ class UserController extends Controller
     {
         $posts = auth()->user()->posts;
         return view("postings.index", compact("posts"));
+    }
+
+    public function user_profile($user_id)
+    {
+        if (!$user_id) {return back()->with("danger", "Invalid request");}
+
+        $user = User::where("id", $user_id)->first();
+        if (!$user) {return back()->with("danger", "Error fetching user information");}
+
+        $core_skills = $user->skills;
+        foreach ($core_skills as $skill) {
+            $skill->skill;
+        }
+
+        $languages = $user->languages;
+        foreach ($languages as $language) {
+            $language->language;
+        }
+
+        $job_history = $user->job_applications->where("status", "confirmed");
+        $average_rating = $user->rating;
+        $volunteer_hours = $user->volunteer_hours;
+        $total_earnings = $user->total_earnings;
+
+        $jobs_count = 0;
+        $volunteer_count = 0;
+        foreach ($job_history as $vork) {
+            if ($vork->job_post->type === "VOLUNTEER") {
+                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
+                $volunteer_count++;
+            } else {
+                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
+                $jobs_count++;
+            }
+
+            $vork->job_post;
+            $vork->rating_and_reviews;
+        }
+
+            $number_of_jobs = $jobs_count;
+            $number_of_activities = $volunteer_count;
+            $location = $user->location_name;
+            $location_coords = $user->location_coords;
+            $skills = $core_skills;
+
+        return view("profile.show", compact("number_of_activities", "number_of_jobs", "average_rating", "volunteer_hours", "total_earnings", "languages", "skills", "location", "user", "job_history"));
     }
 }

@@ -103,7 +103,7 @@
                                         <div><em
                                                 class="icon ni ni-star-fill text-warning"></em> {{$applicant->user->rating}}
                                         </div>
-                                        <div><a href="" class="font-italic">See profile</a></div>
+                                        <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}" class="font-italic">See profile</a></div>
                                     </div>
                                     <div class="col-md-2">
                                         @if($post->is_job_applicant_confirmed != 1)
@@ -209,7 +209,7 @@
                                         <div><em
                                                 class="icon ni ni-star-fill text-warning"></em> {{$applicant->user->rating}}
                                         </div>
-                                        <div><a href="" class="font-italic">See profile</a></div>
+                                        <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}" class="font-italic">See profile</a></div>
                                     </div>
                                     <div class="col-md-2">
                                         @if ($applicant->status != "confirmed")
