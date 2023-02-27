@@ -142,7 +142,7 @@
                                 @foreach($job_history as $job)
                                     @if($job->type !== "VOLUNTEER" && $job->status === "closed")
                                         <tr>
-                                            <td>{{$job->ref_id}}</td>
+                                            <td>{{$job->created_at->diffForHumans()}}</td>
                                             <td>{{$job->category}}</td>
                                             <td>
                                                 <div>starts</div>
