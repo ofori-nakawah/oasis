@@ -9,7 +9,7 @@
     <!-- Fav Icon  -->
     <link rel="shortcut icon" href="{{asset("assets/assets/images/favico.png")}}">
     <!-- Page Title  -->
-    <title>VORK | Login</title>
+    <title>VORK | Verify Phone</title>
     <!-- StyleSheets  -->
     <link rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/dashlite.css?ver=1.4.0")}}">
     <link id="skin-default" rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/skins/theme-egyptian.css?ver=1.4.0")}}">
@@ -26,9 +26,6 @@
             line-height: 1.5;
             color: #000;
         }
-
-
-
     </style>
 </head>
 
@@ -54,57 +51,36 @@
                 </div>
                 <div class="nk-block-head">
                     <div class="nk-block-head-content">
-                        <h1 class="nk-block-title"><b>Sign In</b></h1>
+                        <h1 class="nk-block-title"><b>Verify Phone</b></h1>
                         <div class="nk-block-des">
                             <p>Login to access a world of endless opportunities.</p>
                         </div>
                     </div>
                 </div><!-- .nk-block-head -->
-                <form action="{{route("user.login")}}" method="POST">
+                <form action="{{route("onboarding.verify_phone_number.submit")}}" method="POST">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <div class="form-label-group{{ $errors->has('email_or_phone_number') ? ' text-danger' : '' }}">
-                            <label class="form-label" for="default-01"><b>Email Or Phone Number</b></label>
+                        <div class="form-label-group{{ $errors->has('code') ? ' text-danger' : '' }}">
+                            <label class="form-label" for="default-01"><b>Code</b></label>
+                            <a class="link link-primary link-sm" tabindex="-1" href="{{route('auth.resend_otp', ['user' => $user])}}"><b class="text-success">Resend Code</b></a>
+
                         </div>
                         <div class="form-control-wrap">
-                            <div class="form-icon form-icon-left">
-                                <em class="icon ni ni-user"></em>
-                            </div>
-                            <input type="text" class="form-control form-control-lg{{ $errors->has('email_or_phone_number') ? ' error' : '' }}" name="email_or_phone_number" id="default-01" placeholder="Enter your email address or phone number">
+                            <input type="hidden" name="phone_number" value="{{$user->phone_number}}">
+                            <input type="number" class="form-control form-control-lg{{ $errors->has('code') ? ' error' : '' }}" name="code" id="default-01" placeholder="___   ___   ___   ___   ___   ___" style="text-align: center !important;">
                         </div>
-                        @if($errors->has('email_or_phone_number'))
+                        @if($errors->has('code'))
                             <span class="help-block text-danger">
-                                               <small>{{$errors->first('email_or_phone_number')}}</small>
+                                               <small class="text-danger">{{$errors->first('code')}}</small>
                                             </span>
                         @endif
                     </div><!-- .foem-group -->
                     <div class="form-group">
-                        <div class="form-label-group{{ $errors->has('password') ? ' text-danger' : '' }}">
-                            <label class="form-label" for="password"><b>Password</b></label>
-                            <a class="link link-primary link-sm" tabindex="-1" href="">Forgot Password?</a>
-                        </div>
-                        <div class="form-control-wrap">
-                            <a tabindex="-1" href="#" class="form-icon form-icon-right passcode-switch" data-target="password">
-                                <em class="passcode-icon icon-show icon ni ni-eye"></em>
-                                <em class="passcode-icon icon-hide icon ni ni-eye-off"></em>
-                            </a>
-                            <div class="form-icon form-icon-left">
-                                <em class="icon ni ni-lock"></em>
-                            </div>
-                            <input type="password" class="form-control form-control-lg{{ $errors->has('password') ? ' error' : '' }}" id="password" name="password" placeholder="Enter your password">
-                        </div>
-                        @if($errors->has('password'))
-                            <span class="help-block text-danger">
-                                               <small>{{$errors->first('password')}}</small>
-                                            </span>
-                        @endif
-                    </div><!-- .foem-group -->
-                    <div class="form-group">
-                        <button class="btn btn-lg btn-primary btn-block" type="submit"><b>Sign in</b></button>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit"><b>Verify</b></button>
                     </div>
                 </form><!-- form -->
                 <br>
-                <div>Dont have an account yet? <a href="{{route("onboarding.register")}}"><b>Register</b></a></div>
+                <div>Already have an account? <a href="{{route("login")}}"><b>Login</b></a></div>
 
             </div><!-- .nk-block -->
             <div class="nk-block nk-auth-footer">

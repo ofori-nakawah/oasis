@@ -65,8 +65,20 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/profile/{user_id}', 'Web\UserController@user_profile')->name('user.profile');
 });
 
+/**
+ * Login
+ */
 Route::get('/login', 'Web\AuthController@show_login_form')->name('login');
 Route::post('/login', 'Web\AuthController@login')->name('user.login');
 
+/**
+ * register
+ */
+Route::get('/register', 'Web\OnboardingController@registration_form')->name('onboarding.register');
+Route::post('/register', 'Web\OnboardingController@register')->name('onboarding.register.submit');
+Route::get('/register/{uuid}/verify-phone-number', 'Web\OnboardingController@verify_onboarding_phone_number')->name('onboarding.verify_phone_number');
+Route::post('/register/verify-phone-number', 'Web\OnboardingController@verify_phone_number')->name('onboarding.verify_phone_number.submit');
+
+Route::get('/auth/otp/resend/{user}', 'Web\OnboardingController@resend_otp')->name('auth.resend_otp');
 
 require __DIR__.'/auth.php';
