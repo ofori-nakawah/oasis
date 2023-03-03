@@ -114,4 +114,12 @@ class UserController extends Controller
 
         return view("profile.show", compact("number_of_activities", "number_of_jobs", "average_rating", "volunteer_hours", "total_earnings", "languages", "skills", "location", "user", "job_history"));
     }
+
+    public function update_user_location(Request $request)
+    {
+        auth()->user()->location_name = $request->location_name;
+        auth()->user()->location_coords = $request->location_coords;
+        auth()->user()->update();
+        return redirect()->route("home")->with("success", "Your location has been updated successfully");
+    }
 }

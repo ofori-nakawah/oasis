@@ -63,6 +63,12 @@ Route::group(['middleware'=>'auth'], function () {
      * profile
      */
     Route::get('/profile/{user_id}', 'Web\UserController@user_profile')->name('user.profile');
+
+    /**
+     * onboarding
+     */
+    Route::post('/onboarding/location', 'Web\UserController@update_user_location')->name('onboarding.location.update');
+
 });
 
 /**
