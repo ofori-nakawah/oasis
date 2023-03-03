@@ -13,7 +13,7 @@
                     <p class="hide-mb-sm hide-mb-xs md">
                     <nav>
                         <ul class="breadcrumb breadcrumb-arrow">
-                            <li class="breadcrumb-item"><a href="#"><b>Setup your location</b></a></li>
+                            <li class="breadcrumb-item"><a href="#"><b>Where are you located?</b></a></li>
                         </ul>
                     </nav>
                     </p>
@@ -81,8 +81,11 @@
 
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-12">
-                    <form action="">
-                        <button class="btn btn-lg btn-success" style="float: right;"><b>Continue</b></button>
+                    <form action="{{route('onboarding.location.update')}}" method="POST">
+                        {{csrf_field()}}
+                        <input type="hidden" id="onboardingLocationName" name="location_name">
+                        <input type="hidden" id="onboardingLocationCoords" name="location_coords">
+                        <button id="locationOnboardingSubmitBtn" class="btn btn-lg btn-success" disabled style="float: right;"><b>Continue</b></button>
                     </form>
                 </div>
             </div>
@@ -134,6 +137,18 @@
                     map: map,
                 });
                 markers.push(marker);
+
+                /**
+                 * setup form fields
+                 **/
+                $('#onboardingLocationName').val(place.name)
+                $('#onboardingLocationCoords').val(`${place.geometry.location.lat()}, ${place.geometry.location.lng()}`)
+
+                /**
+                 *
+                 * enable submit button
+                 **/
+                $('#locationOnboardingSubmitBtn').attr("disabled", false)
             });
 
             $(document).ready(function () {
@@ -164,7 +179,6 @@
 
                         function showPosition(position) {
                             console.log('Latitude: ' + position.coords.latitude + ' Longitude: ' + position.coords.longitude);
-                            const location = {lat: position.coords.latitude, lng: position.coords.longitude}
                             const _latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                             const icon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png';
                             let userCurrentLocationName = null;
@@ -185,6 +199,19 @@
                                         $('#mapLoadingContent').append(userCurrentLocationContent)
 
                                         $('#pac_input').val(userCurrentLocationName)
+
+                                        /**
+                                         * setup form fields
+                                         **/
+                                        $('#onboardingLocationName').val(userCurrentLocationName)
+                                        $('#onboardingLocationCoords').val(`${position.coords.latitude}, ${position.coords.longitude}`)
+
+                                        /**
+                                         *
+                                         * enable submit button
+                                         **/
+                                        $('#locationOnboardingSubmitBtn').attr("disabled", false)
+
                                     } else {
                                         userCurrentLocationName = "Oops...We could not find your location due to: " + status;
                                         $('#mapLoadingContent').append(userCurrentLocationContent)
@@ -260,6 +287,18 @@
                                 });
                                 markers.push(marker);
                                 $("#pac_input").val(results[0].formatted_address);
+
+                                /**
+                                 * setup form fields
+                                 **/
+                                $('#onboardingLocationName').val(results[0].formatted_address)
+                                $('#onboardingLocationCoords').val(`${latitude}, ${longitude}`)
+
+                                /**
+                                 *
+                                 * enable submit button
+                                 **/
+                                $('#locationOnboardingSubmitBtn').attr("disabled", false)
                             }
                         }
                     });
