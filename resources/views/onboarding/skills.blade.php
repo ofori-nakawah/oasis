@@ -45,6 +45,33 @@
                     <hr style="border: 3px solid #ccc;border-radius: 4px;">
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Choose at most 3 skills you have or area of interest from the list below</p>
+
+                    <div style="margin-top: 15px;">
+                        <div class="card card-bordered" style="padding: 15px;">
+                            <div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
+                                    <label class="custom-control-label" for="customCheck2">Option Label</label>
+                                </div>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck">
+                                    <label class="custom-control-label" for="customCheck">Option Label</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-lg btn-success" style="float: right;"><b>Continue</b></button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 @endsection

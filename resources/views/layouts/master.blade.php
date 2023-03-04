@@ -21,7 +21,7 @@
             /*font-family: 'Lilita One', cursive;*/
             /*font-family: 'Poppins', sans-serif;*/
             /*font-family: "Signika",Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;*/
-            font-family: 'lato', sans-serif;
+            font-family: Helvetica, 'lato', sans-serif;
             /*font-weight: 600 !important;*/
             line-height: 1.5;
             color: #000;
@@ -35,14 +35,6 @@
         table{
             /*border-bottom: 1px solid #8094ae;*/
             border-bottom: 1px solid #e5e9f2;
-        }
-
-        *, .link, .btn, .nk-block-title, h1, h2, h3, h4, h5, h6, table, div, span, a, p, .nk-iv-wg2-title .title {
-            /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
-            /* font-family: 'Lilita One', cursive; */
-            /* font-family: 'Poppins', sans-serif; */
-            /* font-family: 'Source Sans Pro', sans-serif; */
-            font-family: 'lato', sans-serif;
         }
 
         .alignDataTablePaginationCenter{

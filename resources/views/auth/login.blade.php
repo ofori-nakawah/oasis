@@ -26,7 +26,7 @@
                 <div class="nk-block-head-content">
                     <h1 class="nk-block-title"><b>Sign In</b></h1>
                     <div class="nk-block-des">
-                        <p>Login to access a world of endless opportunities.</p>
+{{--                        <p>Login to access a world of endless opportunities.</p>--}}
                     </div>
                 </div>
             </div><!-- .nk-block-head -->
@@ -94,6 +94,25 @@
 {{--                </div>--}}
 {{--            </div><!-- .nk-block -->--}}
         </div><!-- .nk-block -->
+    </div>
+
+    <div class="nk-block nk-auth-footer" style="margin-top: 40px;">
+        <div class="nk-block-between">
+            <ul class="nav nav-sm">
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Terms & Condition</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Privacy Policy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Help</a>
+                </li>
+            </ul><!-- .nav -->
+        </div>
+        <div class="mt-3">
+            <p class="">&copy; {{date('Y')}} VORK Technologies. All Rights Reserved.</p>
+        </div>
     </div>
 @endsection
 
