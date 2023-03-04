@@ -29,7 +29,7 @@
                 <div class="nk-block-head-content">
                     <h1 class="nk-block-title"><b>Register</b></h1>
                     <div class="nk-block-des">
-                        <p>Register to join a world of endless opportunities.</p>
+{{--                        <p>Register to join a world of endless opportunities.</p>--}}
                     </div>
                 </div>
             </div><!-- .nk-block-head -->
@@ -161,6 +161,11 @@
                                             </span>
                     @endif
                 </div><!-- .foem-group -->
+                <div class="custom-control custom-control-lg custom-checkbox" style="margin-bottom: 15px;">
+                    <input type="checkbox" class="custom-control-input" required id="customCheck2">
+                    <label class="custom-control-label" for="customCheck2">Accept our <a href="https://myvork.com/terms-of-use/"><b>terms of use</b> </a> and <a href="https://myvork.com/privacy-policy-statement/"><b>privacy policy</b></a></label>
+                </div>
+
                 <div class="form-group">
                     <button class="btn btn-lg btn-primary btn-block" type="submit"><b>Register</b></button>
                 </div>
@@ -168,6 +173,25 @@
 
             <br>
             <div>Already have an account? <a href="{{route("login")}}"><b>Login</b></a></div>
+        </div>
+    </div>
+
+    <div class="nk-block nk-auth-footer" style="margin-top: 40px;">
+        <div class="nk-block-between">
+            <ul class="nav nav-sm">
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Terms & Condition</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Privacy Policy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Help</a>
+                </li>
+            </ul><!-- .nav -->
+        </div>
+        <div class="mt-3">
+            <p class="">&copy; {{date('Y')}} VORK Technologies. All Rights Reserved.</p>
         </div>
     </div>
 @endsection

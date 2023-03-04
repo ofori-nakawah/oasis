@@ -54,4 +54,23 @@
             <div>Already have an account? <a href="{{route("login")}}"><b>Login</b></a></div>
         </div>
     </div>
+
+    <div class="nk-block nk-auth-footer text-center" style="margin-top: 40px;">
+        <div class="nk-block-between">
+            <ul class="nav nav-sm">
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Terms & Condition</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Privacy Policy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="#">Help</a>
+                </li>
+            </ul><!-- .nav -->
+        </div>
+        <div class="mt-3">
+            <p class="">&copy; {{date('Y')}} VORK Technologies. All Rights Reserved.</p>
+        </div>
+    </div>
 @endsection
