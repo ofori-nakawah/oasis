@@ -4,10 +4,16 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\LanguageUser;
+use App\Models\Post;
+use App\Models\Skill;
 use App\Models\SkillUser;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 
 class UserController extends Controller
