@@ -300,7 +300,6 @@
                                 <p class="text-center">You are currently located at <br> <b><span style="font-size: 16px">${userCurrentLocationName}</span></b></p><br>
                                 <div class="text-center"><a href="#" role="button" id="showUserCurrentLocationOnMap" class="btn btn-outline-secondary"><b>Great! Show me on the map</b></a></div>
                             </div>`
-                                        $('#mapLoadingContent').html('')
                                         $('#mapLoadingContent').append(userCurrentLocationContent)
 
                                         $('#pac_input').val(userCurrentLocationName)
