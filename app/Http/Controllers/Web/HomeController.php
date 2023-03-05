@@ -41,8 +41,8 @@ class HomeController extends Controller
          * check if location is set else send user to set location
          */
         if (auth()->user()->is_languages_set == "0") {
-            $skills_and_interest = Language::all();
-            return view("onboarding.languages", compact("skills_and_interest"));
+            $languages = Language::all();
+            return view("onboarding.languages", compact("languages"));
         }
 
         return view('home');

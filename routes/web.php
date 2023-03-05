@@ -68,6 +68,8 @@ Route::group(['middleware'=>'auth'], function () {
      * onboarding
      */
     Route::post('/onboarding/location', 'Web\UserController@update_user_location')->name('onboarding.location.update');
+    Route::post('/onboarding/skills-and-interest', 'Web\UserController@update_user_core_skills')->name('onboarding.skills_and_interest.update');
+    Route::post('/onboarding/languages', 'Web\UserController@update_user_languages')->name('onboarding.languages.update');
 
 });
 

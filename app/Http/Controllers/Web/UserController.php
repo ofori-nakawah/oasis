@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\LanguageUser;
+use App\Models\SkillUser;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 
 class UserController extends Controller
 {
@@ -121,5 +125,56 @@ class UserController extends Controller
         auth()->user()->location_coords = $request->location_coords;
         auth()->user()->update();
         return redirect()->route("home")->with("success", "Your location has been updated successfully");
+    }
+
+    public function update_user_core_skills(Request $request)
+    {
+        if ($request->skills_and_interest == null || count($request->skills_and_interest) <= 0) {
+            $errors = new MessageBag();
+            $errors->add("skills_and_interest", "Choose at least one skill or an item you have interest in.");
+            return back()->withErrors($errors)->with("danger", "Choose at least one skill or an item you have interest in.");
+        }
+
+        foreach (auth()->user()->skills as $skill) {
+            $skill->delete();
+        }
+
+        for ($i = 0; $i < count($request->skills_and_interest); $i++) {
+            $skill_user = new SkillUser();
+            $skill_user->user_id = auth()->id();
+            $skill_user->skill_id = $request->skills_and_interest[$i];
+            $skill_user->save();
+        }
+
+        auth()->user()->is_core_skills_set = "1";
+        auth()->user()->update();
+
+        return redirect()->route("home")->with("success", "Your skills and interests have been updated successfully");
+    }
+
+    public function update_user_languages(Request $request)
+    {
+        $request = $request->all();
+        if (!array_key_exists('languages', $request) || $request["languages"] == null || count($request["languages"]) <= 0) {
+            $errors = new MessageBag();
+            $errors->add("languages", "Choose at least one language you are comfortable to conduct business in.");
+            return back()->withErrors($errors)->with("danger", "Choose at least one language you are comfortable to conduct business in.");
+        }
+
+        foreach (auth()->user()->languages as $language) {
+            $language->delete();
+        }
+
+        for ($i = 0; $i < count($request["languages"]); $i++) {
+            $language_user = new LanguageUser();
+            $language_user->user_id = auth()->id();
+            $language_user->language_id = $request["languages"][$i];
+            $language_user->save();
+        }
+
+        auth()->user()->is_languages_set = "1";
+        auth()->user()->update();
+
+        return redirect()->route("home")->with("success", "Your languages have been updated successfully");
     }
 }

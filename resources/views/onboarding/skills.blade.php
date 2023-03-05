@@ -50,25 +50,31 @@
                 <div class="col-md-12">
                     <p>Choose at most 3 skills you have or area of interest from the list below</p>
 
-                    <div style="margin-top: 15px;">
-                        <div class="card card-bordered" style="padding: 15px;">
-                            <div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                    <label class="custom-control-label" for="customCheck2">Option Label</label>
-                                </div>
-
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck">
-                                    <label class="custom-control-label" for="customCheck">Option Label</label>
-                                </div>
-                            </div>
+                    <div class="row mb-4 mt-2">
+                        <div class="col-sm-12">
+                            @include("utilities.alerts.alerts")
                         </div>
                     </div>
 
-                    <div style="margin-top: 15px;">
-                        <button class="btn btn-lg btn-success" style="float: right;"><b>Continue</b></button>
-                    </div>
+                    <form action="{{route('onboarding.skills_and_interest.update')}}" method="POST">
+                        {{csrf_field()}}
+                        <div style="margin-top: 15px;">
+                            <div class="card card-bordered" style="padding: 15px;">
+                                <div>
+                                    @foreach($skills_and_interest as $skills)
+                                        <div class="custom-control custom-checkbox" style="margin-right: 15px;margin-bottom: 15px;margin-top: 15px;">
+                                            <input type="checkbox" class="custom-control-input" value="{{$skills->id}}" name="skills_and_interest[]" id="{{$skills->name}}">
+                                            <label class="custom-control-label" for="{{$skills->name}}"><b>{{$skills->name}}</b></label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-lg btn-success" style="float: right;"><b>Continue</b></button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
