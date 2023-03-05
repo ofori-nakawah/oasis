@@ -6,10 +6,12 @@ use App\Helpers\Notifications as Notifications;
 use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Post;
+use App\Models\Skill;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -30,7 +32,9 @@ class PostController extends Controller
 
     public function type_of_work($type_of_user)
     {
-        if (!$type_of_user) {return back()->with("danger", "Invalid request");}
+        if (!$type_of_user) {
+            return back()->with("danger", "Invalid request");
+        }
 
         if ($type_of_user != "seeker" && $type_of_user != "employer") {
             return back()->with("danger", "Invalid request");
@@ -41,18 +45,25 @@ class PostController extends Controller
 
     public function list_jobs($type_of_user, $type_of_work)
     {
-        if (!$type_of_user || !$type_of_work) {return back()->with("danger", "Invalid request");}
+        if (!$type_of_user || !$type_of_work) {
+            return back()->with("danger", "Invalid request");
+        }
 
-        if ($type_of_user != "seeker" && $type_of_user != "employer") {return back()->with("danger", "Invalid request");}
+        if ($type_of_user != "seeker" && $type_of_user != "employer") {
+            return back()->with("danger", "Invalid request");
+        }
 
-        if ($type_of_work != "quick-job" && $type_of_work != "fixed-term" && $type_of_work != "permanent") {return back()->with("danger", "Invalid request");}
+        if ($type_of_work != "quick-job" && $type_of_work != "fixed-term" && $type_of_work != "permanent") {
+            return back()->with("danger", "Invalid request");
+        }
 
         switch ($type_of_work) {
             case "quick-job":
-                if ($type_of_work == "quick-job") {
+                if ($type_of_user == "seeker") {
                     return $this->list_quick_jobs();
                 } else {
-                    return view("quick_jobs.create");
+                    $categories = Skill::all();
+                    return view("work.quick_jobs.create", compact("categories"));
                 }
                 break;
         }
@@ -174,10 +185,14 @@ class PostController extends Controller
      */
     public function show_volunteer_activity($uuid)
     {
-        if (!$uuid) {return back()->with("danger", "Invalid request. Kindly try again.");}
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request. Kindly try again.");
+        }
 
         $original_post = Post::where("id", $uuid)->first();
-        if (!$original_post) {return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");}
+        if (!$original_post) {
+            return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+        }
         $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
         if ($has_already_applied) {
             $original_post->has_already_applied = "yes";
@@ -239,10 +254,14 @@ class PostController extends Controller
 
     public function apply_for_job($uuid)
     {
-        if (!$uuid) {return back()->with("danger", "Invalid request. Kindly try again.");}
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request. Kindly try again.");
+        }
 
         $post = Post::where("id", $uuid)->first();
-        if (!$post) {return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");}
+        if (!$post) {
+            return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+        }
 
         //check if user has applied already
         $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $uuid)->first();
@@ -280,10 +299,14 @@ class PostController extends Controller
      */
     public function show_user_post_details($uuid)
     {
-        if (!$uuid) {return back()->with("danger", "Invalid request.");}
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request.");
+        }
 
         $post = Post::where("id", $uuid)->first();
-        if (!$post) {return back()->with("danger", "Error fetching post details");}
+        if (!$post) {
+            return back()->with("danger", "Error fetching post details");
+        }
 
         $post->number_of_participants_applied = $post->applications()->count();
         $post->number_of_participants_confirmed = $post->applications()->where("status", "confirmed")->count();
@@ -305,7 +328,9 @@ class PostController extends Controller
      */
     public function confirm_decline_applicant($application_id, $action)
     {
-        if (!$application_id || !$action) {return back()->with("danger", "Invalid request");}
+        if (!$application_id || !$action) {
+            return back()->with("danger", "Invalid request");
+        }
 
         $application = JobApplication::where("id", $application_id)->first();
         if (!$application) {
@@ -342,7 +367,7 @@ class PostController extends Controller
             }
         } catch (QueryException $e) {
             Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);
-            return back()->with("danger","Error confirming applicant. Kindly try again.");
+            return back()->with("danger", "Error confirming applicant. Kindly try again.");
         }
 
         return back()->with("success", "Applicant confirmed successfully.");
@@ -377,6 +402,63 @@ class PostController extends Controller
         $post->other_relevant_information = $request->other_relevant_information;
         $post->user_id = auth()->id();
         $post->type = "VOLUNTEER";
+
+        try {
+            $post->save();
+            return redirect()->route("home")->with("success", "Post has been published successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while publishing your post. Kindly try again.");
+        }
+    }
+
+    public function create_quick_job_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'category' => 'required',
+            'description' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'location' => 'required',
+            'coords' => 'required',
+            'min_budget' => 'required',
+            'max_budget' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.");
+        }
+
+        $category = Skill::where("name", $request->category)->first();
+        if (!$category) {
+            return back()->with("danger", "Error fetching category details");
+        }
+
+        $post = new Post();
+        $post->category = $request->category;
+        $post->category_id = $category->id;
+        $post->description = $request->description;
+        $post->date = $request->date;
+        $post->time = $request->time;
+        $post->location = $request->location;
+        $post->coords = $request->coords;
+        $post->max_budget = $request->max_budget;
+        $post->min_budget = $request->min_budget;
+        $post->is_negotiable = $request->negotiable;
+        $post->is_includes_tax = $request->includes_tax;
+        $post->other_relevant_information = $request->other_relevant_information;
+        $post->user_id = auth()->id();
+        $post->type = "QUICK_JOB";
+
+        if ($post->post_image && $post->post_image != "") {
+            //save image
+            $image = $request->file('post_image');
+            $name = $post->user_id . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
+        }
 
         try {
             $post->save();
