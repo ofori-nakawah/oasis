@@ -6,9 +6,11 @@ use App\Helpers\Notifications as Notifications;
 use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 
 class PostController extends Controller
@@ -344,5 +346,44 @@ class PostController extends Controller
         }
 
         return back()->with("success", "Applicant confirmed successfully.");
+    }
+
+    public function create_volunteer_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'location' => 'required',
+            'coords' => 'required',
+            'maximum_number_of_volunteers' => 'required',
+            'volunteer_hours' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.");
+        }
+
+        $post = new Post();
+        $post->name = $request->name;
+        $post->description = $request->description;
+        $post->date = $request->date;
+        $post->time = $request->time;
+        $post->location = $request->location;
+        $post->coords = $request->coords;
+        $post->maximum_number_of_volunteers = $request->maximum_number_of_volunteers;
+        $post->volunteer_hours = $request->volunteer_hours;
+        $post->other_relevant_information = $request->other_relevant_information;
+        $post->user_id = auth()->id();
+        $post->type = "VOLUNTEER";
+
+        try {
+            $post->save();
+            return redirect()->route("home")->with("success", "Post has been published successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while publishing your post. Kindly try again.");
+        }
     }
 }
