@@ -38,7 +38,9 @@
                     <div class="card-body1">
                         <div class="input-group1 mb-3">
                             <label for="name"><b>Select Category</b></label>
-                            <select type="text" class="form-control form-control-l @error('category') is-invalid @enderror" name="category">
+                            <select type="text"
+                                    class="form-control form-control-l @error('category') is-invalid @enderror"
+                                    name="category">
                                 <option value="">Choose an option</option>
                                 @foreach($categories as $category)
                                     <option value="{{$category->name}}">{{$category->name}}</option>
@@ -54,7 +56,9 @@
 
                         <div class="input-group1 mb-3">
                             <label for="description"><b>Brief Job Description</b></label>
-                            <textarea class="form-control form-control-l @error('description') is-invalid @enderror" placeholder="Enter brief description of the project" name="description"></textarea>
+                            <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
+                                      placeholder="Enter brief description of the project"
+                                      name="description"></textarea>
 
                             @error('description')
                             <span class="invalid-feedback" role="alert">
@@ -63,13 +67,18 @@
                             @enderror
                         </div>
 
-                        <div class="card card-bordered" style="height: 180px;margin-bottom: 15px;border-style: dotted;cursor: pointer;">
-                            <div id="imageInputTrigger" class="text-center" style="padding: 15px;" onclick="document.getElementById('image_attachment').click();">
-                                <img src="{{asset('assets/html-template/src/images/photo.svg')}}" style="height: 120px;" alt="">
+                        <div class="card card-bordered"
+                             style="height: 180px;margin-bottom: 15px;border-style: dotted;cursor: pointer;">
+                            <div id="imageInputTrigger" class="text-center" style="padding: 15px;"
+                                 onclick="document.getElementById('image_attachment').click();">
+                                <img src="{{asset('assets/html-template/src/images/photo.svg')}}" style="height: 120px;"
+                                     alt="">
                                 <p class="text-muted">Add image attachment</p>
                             </div>
                             <img id="imageAttachment" style="height: 180px;"></img>
-                            <input type="file" accept="image/png, image/gif, image/jpeg, image/jpg" hidden name="image_attachment" id="image_attachment" onchange="displayImageAttachment(event)">
+                            <input type="file" accept="image/png, image/gif, image/jpeg, image/jpg" hidden
+                                   name="image_attachment" id="image_attachment"
+                                   onchange="displayImageAttachment(event)">
                         </div>
 
 
@@ -77,7 +86,9 @@
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
                                     <label for="date"><b>Date</b></label>
-                                    <input type="date" class="form-control form-control-l @error('date') is-invalid @enderror" placeholder="Select date of activity" name="date">
+                                    <input type="date"
+                                           class="form-control form-control-l @error('date') is-invalid @enderror"
+                                           placeholder="Select date of activity" name="date">
 
                                     @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -89,7 +100,9 @@
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
                                     <label for="time"><b>Time</b></label>
-                                    <input type="time" class="form-control form-control-l @error('time') is-invalid @enderror" placeholder="Select time of activity" name="time">
+                                    <input type="time"
+                                           class="form-control form-control-l @error('time') is-invalid @enderror"
+                                           placeholder="Select time of activity" name="time">
 
                                     @error('time')
                                     <span class="invalid-feedback" role="alert">
@@ -102,7 +115,10 @@
 
                         <div class="input-group1 mb-3">
                             <label for="name"><b>Location</b></label>
-                            <input type="text" class="form-control form-control-l @error('location') is-invalid @enderror" placeholder="Provide location of activity" readonly id="location" name="location" data-toggle="modal" data-target="#locationModal">
+                            <input type="text"
+                                   class="form-control form-control-l @error('location') is-invalid @enderror"
+                                   placeholder="Provide location of activity" readonly id="location" name="location"
+                                   data-toggle="modal" data-target="#locationModal">
                             <input type="hidden" name="location" id="onboardingLocationName">
                             <input type="hidden" name="coords" id="onboardingLocationCoords">
                             @error('location')
@@ -129,8 +145,10 @@
                                                     <div class="form-icon form-icon-left">
                                                         <em class="icon ni ni-search"></em>
                                                     </div>
-                                                    <input type="text" class="form-control form-control-lg" id="pac_input"
-                                                           placeholder="Search location closest to you" style="z-index: 999;">
+                                                    <input type="text" class="form-control form-control-lg"
+                                                           id="pac_input"
+                                                           placeholder="Search location closest to you"
+                                                           style="z-index: 999;">
                                                 </div>
                                                 <span class="help-block">
                                                <small><em class="icon ni ni-info"></em> The location in the search box is what we are going to proceed with. Ensure that is correct before proceeding.</small>
@@ -140,7 +158,8 @@
 
                                         <div class="row" style="margin-top: 15px;">
                                             <div class="col-md-12 text-right">
-                                                <a href="#" id="useMyCurrentLocation" class="link"><b><i class="icon ni ni-map-pin-fill"></i> <span
+                                                <a href="#" id="useMyCurrentLocation" class="link"><b><i
+                                                            class="icon ni ni-map-pin-fill"></i> <span
                                                             style="font-size: 16px;">Use my current location</span></b></a>
                                             </div>
                                         </div>
@@ -158,7 +177,8 @@
 
                                     </div>
                                     <div class="modal-footer bg-white text-right" style="float: right !important;">
-                                        <a href="#" role="button" style="float: right;" class="btn btn-outline-primary" onclick="updateLocationInput()"><b>Continue</b></a>
+                                        <a href="#" role="button" style="float: right;" class="btn btn-outline-primary"
+                                           onclick="updateLocationInput()"><b>Continue</b></a>
                                     </div>
                                 </div>
                             </div>
@@ -168,8 +188,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                                                        <label for="number_of_participants">Min Budget (GHS)</label>
-                                    <input type="number" class="form-control form-control-l @error('min_budget') is-invalid @enderror" placeholder="Min Budget (GHS)" name="min_budget">
+                                    <label for="number_of_participants">Min Budget (GHS)</label>
+                                    <input type="number"
+                                           class="form-control form-control-l @error('min_budget') is-invalid @enderror"
+                                           placeholder="Min Budget (GHS)" name="min_budget">
 
                                     @error('min_budget')
                                     <span class="invalid-feedback" role="alert">
@@ -180,8 +202,10 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                                                        <label for="name">Max Budget (GHS)</label>
-                                    <input type="number" class="form-control form-control-l @error('max_budget') is-invalid @enderror" placeholder="Maximum Budget (GHS)" name="max_budget">
+                                    <label for="name">Max Budget (GHS)</label>
+                                    <input type="number"
+                                           class="form-control form-control-l @error('max_budget') is-invalid @enderror"
+                                           placeholder="Maximum Budget (GHS)" name="max_budget">
 
                                     @error('max_budget')
                                     <span class="invalid-feedback" role="alert">
@@ -194,8 +218,10 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="custom-control custom-control-lg custom-checkbox" style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="negotiable" id="negotiable">
+                                <div class="custom-control custom-control-lg custom-checkbox"
+                                     style="margin-bottom: 15px;">
+                                    <input type="checkbox" class="custom-control-input" name="negotiable"
+                                           id="negotiable">
                                     <label class="custom-control-label" for="negotiable">Negotiable</label>
                                 </div>
                             </div>
@@ -203,8 +229,10 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="custom-control custom-control-lg custom-checkbox" style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="includes_tax" id="includes_tax">
+                                <div class="custom-control custom-control-lg custom-checkbox"
+                                     style="margin-bottom: 15px;">
+                                    <input type="checkbox" class="custom-control-input" name="includes_tax"
+                                           id="includes_tax">
                                     <label class="custom-control-label" for="includes_tax">Includes WHT @ 5%</label>
                                 </div>
                             </div>
@@ -212,7 +240,10 @@
 
                         <div class="input-group1 mb-3">
                             <label for="other_relevant_information"><b>Other Relevant Information</b></label>
-                            <textarea type="tel" class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror" placeholder="Specify any other relevant information" name="other_relevant_information"></textarea>
+                            <textarea type="tel"
+                                      class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror"
+                                      placeholder="Specify any other relevant information"
+                                      name="other_relevant_information"></textarea>
 
                             @error('other_relevant_information')
                             <span class="invalid-feedback" role="alert">
@@ -293,6 +324,13 @@
             $(document).ready(function () {
                 $(document).on("click", "#useMyCurrentLocation", function (e) {
                     e.preventDefault();
+
+                    if ($(this).hasClass('clicked')) {
+                        return false;
+                    } else {
+                        $(this).addClass('clicked').trigger('click');
+                    }
+
                     if (navigator.geolocation) {
                         var options = {
                             enableHighAccuracy: true,
@@ -468,7 +506,7 @@
             $("#imageAttachment").show()
             var output = document.getElementById('imageAttachment');
             output.src = URL.createObjectURL(event.target.files[0]);
-            output.onload = function() {
+            output.onload = function () {
                 URL.revokeObjectURL(output.src) // free memory
             }
         }
