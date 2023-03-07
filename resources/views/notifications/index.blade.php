@@ -61,7 +61,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                            <a href="{{route('user.notifications.show', ["notification_group_id", $notification->group_id])}}"
+                            <a href="{{route('user.notifications.show', ["notification_group_id" => $notification->group_id])}}"
                                class="btn btn-outline-secondary">View Details</a>
                         </div>
                     </div>
