@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Post;
 use App\Models\Skill;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -88,8 +87,8 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[1];
-            $post_location_lng = explode(',', $post->coords)[0];
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
@@ -141,8 +140,8 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat = explode(',', $post->coords)[1];
-            $post_location_lng = explode(',', $post->coords)[0];
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
             if ($distance <= self::JOB_SEARCH_RADIUS) {
@@ -230,8 +229,8 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[1];
-            $post_location_lng = explode(',', $post->coords)[0];
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
