@@ -209,19 +209,6 @@ class PostController extends Controller
         $user_location_lat = explode(',', $user_location)[0];
         $user_location_lng = explode(',', $user_location)[1];
 
-        $_user_interests = auth()->user()->skills;
-        $user_interests = array();
-        foreach ($_user_interests as $interest) {
-            array_push($user_interests, $interest->skill->id);
-        }
-
-        /**
-         * filter using:
-         * post type
-         * interests | skills
-         */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->get();
-
         /**
          * filter using distance
          */
@@ -251,6 +238,76 @@ class PostController extends Controller
         return view("volunteerism.show", compact("original_post", "posts"));
     }
 
+    public function show_quick_job($uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request. Kindly try again.");
+        }
+
+        $original_post = Post::where("id", $uuid)->first();
+        if (!$original_post) {
+            return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+        }
+        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
+        if ($has_already_applied) {
+            $original_post->has_already_applied = "yes";
+        }
+        $original_post->user;
+
+        $posts = [];
+
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return back()->with("danger", "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = explode(',', $user_location)[0];
+        $user_location_lng = explode(',', $user_location)[1];
+
+        $_user_interests = auth()->user()->skills;
+        $user_interests = array();
+        foreach ($_user_interests as $interest) {
+            array_push($user_interests, $interest->skill->id);
+        }
+
+        /**
+         * filter using:
+         * post type
+         * interests | skills
+         */
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->get();
+
+        /**
+         * filter using distance
+         */
+        $jobs_near_me = collect();
+        foreach ($posts as $post) {
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+
+            if ($distance <= self::JOB_SEARCH_RADIUS) {
+                $post["organiser_name"] = $post->user->name;
+                $post["distance"] = number_format($distance, 2);
+                $jobs_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }
+        }
+        $posts = $jobs_near_me;
+
+        return view("work.quick_jobs.show", compact("original_post", "posts"));
+    }
+
+
+    /**
+     * @param $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function apply_for_job($uuid)
     {
         if (!$uuid) {

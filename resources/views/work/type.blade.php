@@ -35,7 +35,6 @@
     </div><!-- .nk-block-head -->
 
     <div class="row">
-        <div class="col-md-3"></div>
         <div class="col-md-6 mb-3">
             <a href="{{route("user.work.jobs", ["type_of_user" => $type_of_user, "type_of_work" => "quick-job"])}}">
                 <div class="card card-bordered">

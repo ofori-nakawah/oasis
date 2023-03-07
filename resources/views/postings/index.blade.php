@@ -25,31 +25,47 @@
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
-
-    <div class="row">
-        <div class="col-md-5">
-            @foreach($posts as $post)
-                <div class="card card-bordered">
-                    <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->type}} <span style="float: right">{{$post->created_at}}</span></b></div>                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">{{($post->type !== 'VOLUNTEER') ? 'Category' : 'Activity Name'}}</div>
-                                <div class="issuer"><b>{{($post->type !== 'VOLUNTEER') ? $post->category : $post->name}}</b></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                        <a href="{{route('user.posts.edit', ['uuid' => $post->id])}}" class="btn btn-outline-warning">Edit</a>
-                        <a href="{{route('user.posts.show', ['uuid' => $post->id])}}" class="btn btn-outline-secondary">Status</a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-        <div class="col-md-7 d-none d-md-block">
-            <div class="text-center">
-                <img src="{{asset('assets/html-template/src/images/details.svg')}}" alt="" style="height: 250px; width: 250px;">
-                <p style="color: #777;">Select an activity to view more details.</p>
+    @if(count($posts) <= 0)
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <img src="{{asset('assets/html-template/src/images/nd.svg')}}" style="height: 250px; width: 250px;"
+                     alt="">
+                <p style="color: #777;">You haven't published any post yet.</p>
             </div>
         </div>
-    </div>
+    @else
+        <div class="row">
+            <div class="col-md-5">
+                @foreach($posts as $post)
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->type}}
+                                <span style="float: right">{{$post->created_at}}</span></b></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="title"
+                                         style="font-size: 10px;color: #777;">{{($post->type !== 'VOLUNTEER') ? 'Category' : 'Activity Name'}}</div>
+                                    <div class="issuer">
+                                        <b>{{($post->type !== 'VOLUNTEER') ? $post->category : $post->name}}</b></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
+                            <a href="{{route('user.posts.edit', ['uuid' => $post->id])}}"
+                               class="btn btn-outline-warning">Edit</a>
+                            <a href="{{route('user.posts.show', ['uuid' => $post->id])}}"
+                               class="btn btn-outline-secondary">Status</a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="col-md-7 d-none d-md-block">
+                <div class="text-center">
+                    <img src="{{asset('assets/html-template/src/images/details.svg')}}" alt=""
+                         style="height: 250px; width: 250px;">
+                    <p style="color: #777;">Select an activity to view more details.</p>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
