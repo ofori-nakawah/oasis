@@ -46,7 +46,7 @@ Route::group(['middleware'=>'auth'], function () {
      * notifications
      */
     Route::get('/notifications', 'Web\UserController@get_user_notifications')->name('user.notifications');
-    Route::get('/notifications/{notification_group_id}', 'Web\UserController@get_user_notification_details')->name('user.notifications.show');
+    Route::get('/notifications/{notification_group_id}/show', 'Web\UserController@get_user_notification_details')->name('user.notifications.show');
 
     /**
      * wallet

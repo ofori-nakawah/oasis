@@ -53,19 +53,31 @@ class UserController extends Controller
     {
         if (!$notification_group_id) {return back()->with("danger", "Invalid request.");}
 
-        $notifications = auth()->user()->notifications->where("group_id", $notification_group_id);
+        $group_notifications = auth()->user()->notifications->where("group_id", $notification_group_id);
+        if (!$group_notifications || count($group_notifications) <= 0) {
+            return back()->with("danger", "Invalid request.");
+        }
+
+        $location_coordinates = null;
 
         /**
          * mark notification as read
          */
-        if (count($notifications) > 0) {
-            foreach ($notifications as $notification) {
+        if (count($group_notifications) > 0) {
+            foreach ($group_notifications as $notification) {
                 $notification->markAsRead();
-                $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
+                $notification->created_at= date('d-m-Y H:i:s', strtotime($notification->created_at));
+                if (!$location_coordinates) {
+                    $location_coordinates = $notification->data["post"]["coords"];
+                }
             }
         }
 
-        return view("notifications.show", compact("notifications"));
+        $notifications = auth()->user()->notifications->map(function ($notification) {
+            return $notification;
+        })->unique("group_id");
+
+        return view("notifications.show", compact("notifications", "group_notifications", "location_coordinates"));
     }
 
     public function my_wallet()
