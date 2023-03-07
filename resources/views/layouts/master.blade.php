@@ -11,6 +11,7 @@
     <title>VORK | @section("title") @show</title>
     <!-- StyleSheets  -->
     <link rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/dashlite.css?ver=1.4.0")}}">
+    <link rel="stylesheet" href="{{asset("assets/html-template/src/js/ratings/dist/star-rating.min.css")}}">
     <link id="skin-default" rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/skins/theme-egyptian.css?ver=1.4.0")}}">
     {{--    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;display=swap">--}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -242,8 +243,9 @@
 <script src="{{asset("assets/html-template/src/assets/js/bundle.js?ver=1.4.0")}}"></script>
 <script src="{{asset("assets/html-template/src/assets/js/scripts.js?ver=1.4.0")}}"></script>
 <script src="{{asset("assets/html-template/src/assets/js/charts/gd-general.js?ver=1.4.0")}}"></script>
-
+<script src="{{asset("assets/html-template/src/js/ratings/dist/star-rating.min.js")}}"></script>
 <script>
+    var stars = new StarRating('.star-rating');
     oTable = $('.appDataTable').DataTable({
         sDom: 'lrtip',
         "bPaginate": true,
