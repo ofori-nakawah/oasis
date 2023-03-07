@@ -6,7 +6,11 @@ use App\Helpers\Notifications as Notifications;
 use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Post;
+use App\Models\RatingReview;
 use App\Models\Skill;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -524,4 +528,137 @@ class PostController extends Controller
             return back()->with("danger", "Oops. We encountered an issue while publishing your post. Kindly try again.");
         }
     }
+
+    public function close_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'job_post_id' => 'required',
+            'job_type' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Oops. We encountered an issue while closing job. Kindly try again.");
+        }
+
+        $post = Post::where("id", $request->job_post_id)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching post details");
+        }
+
+        /**
+         * seperate activity or job closing logic by switching on the
+         * type of post
+         */
+        switch ($request->job_type) {
+            case "VOLUNTEER":
+                /**
+                 * assign volunteer hours to participants
+                 */
+                $volunteer_details = $request->volunteer_details;
+                for ($i = 0; $i < count($volunteer_details); $i++) {
+                    $participant = User::where("id", $volunteer_details[$i]["user_id"])->first();
+                    if (!$participant) {
+                        Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"]);
+                    }
+
+                    $application = JobApplication::where("user_id", $volunteer_details[$i]["user_id"])->where("post_id", $request->job_post_id)->first();
+                    if (!$application) {
+                        Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"] . " AND POST ID >>>>> " . $request->job_post_id);
+                    }
+
+                    $participant->volunteer_hours += (float)$volunteer_details[$i]["volunteer_hours"];
+                    $application->volunteer_hours = (float)$volunteer_details[$i]["volunteer_hours"];
+                    try {
+                        $participant->update();
+                        $application->update();
+
+                        /**
+                         * create notification
+                         */
+                        $post->user;
+                        Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    } catch (QueryException $e) {
+                        Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
+                        continue;
+                    }
+                }
+                break;
+            case "QUICK_JOB":
+                $participant = User::where("id", $request->user_id)->first();
+                if (!$participant) {
+                    Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id);
+                }
+
+                $application = JobApplication::where("user_id", $request->user_id)->where("post_id", $request->job_post_id)->first();
+                if (!$application) {
+                    Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id . " AND POST ID >>>>> " . $request->job_post_id);
+                }
+
+                /**
+                 * create feedback and rating for vorker
+                 */
+                $ratingReview = new RatingReview();
+                $ratingReview->user_id = $participant->id;
+                $ratingReview->job_application_id = $application->id;
+                $ratingReview->post_id = $post->id;
+                $ratingReview->expertise_rating = $request->expertise_rating;
+                $ratingReview->work_ethic_rating = $request->work_ethic_rating;
+                $ratingReview->professionalism_rating = $request->professionalism_rating;
+                $ratingReview->customer_service_rating = $request->customer_service_rating;
+                $ratingReview->rating = ((float) $request->expertise_rating + (float) $request->work_ethic_rating + (float) $request->professionalism_rating + (float) $request->customer_service_rating) / 4;
+                $ratingReview->feedback_message = $request->feedback_message;
+                try {
+                    $ratingReview->save();
+                }  catch (QueryException $e) {
+                    Log::error("ERROR SAVING RATING REVIEW >>>>>>>>>> " . $ratingReview . " >>>>>>>>> " . $e);
+                }
+
+                /**
+                 * application with final amount
+                 */
+                $post->final_payment_amount = $request->final_payment_amount;
+                $post->payment_channel = "cash"; // to be update when we start using in-app wallets
+
+                /**
+                 * update user earnings
+                 */
+                $participant->total_earnings = (float) $participant->total_earnings + (float) $request->final_payment_amount;
+
+                /**
+                 * update vorker rating
+                 */
+                $user_review_rating = 0;
+                if ($participant->rating_and_reviews->count() >= 1) {
+                    $user_review_rating = $participant->rating_and_reviews->sum("rating") / $participant->rating_and_reviews->count();
+                }
+
+                $participant->rating = $user_review_rating;
+                try {
+                    /**
+                     * create notification
+                     */
+                    $post->user;
+                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    $participant->update();
+                }  catch (QueryException $e) {
+                    Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
+                }
+                break;
+        }
+
+        /**
+         * close the post
+         */
+        $post->status = "closed";
+        $post->closed_at = Carbon::now();
+        try {
+            $post->update();
+        } catch (QueryException $e) {
+            Log::error("ERROR closing JOB post >>>>>>>>>> " . $post . " >>>>>>>>> " . $e);
+            return back()->with("danger", "Ooops...we encountered an error while closing job. Kindly try again later.");
+        }
+
+        return redirect()->route("user.posts.list")->with("success", "Post has been closed successfully.");
+    }
+
 }

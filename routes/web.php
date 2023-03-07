@@ -59,6 +59,7 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/posts', 'Web\UserController@user_postings')->name('user.posts.list');
     Route::get('/posts/{uuid}/edit', 'Web\UserController@user_posts')->name('user.posts.edit');
     Route::get('/posts/{uuid}/show', 'Web\PostController@show_user_post_details')->name('user.posts.show');
+    Route::post('/close-post', 'Web\PostController@close_post')->name("user.posts.close");
 
     Route::get('/posts/{application_id}/{action}', 'Web\PostController@confirm_decline_applicant')->name('user.posts.confirm_decline_applicant');
 

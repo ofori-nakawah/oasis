@@ -71,6 +71,7 @@
                         </div>
                     </div>
                     <div class="card-footer bg-white border-top">
+                        <span style="font-size: 10px;"><b>Post is {{$post->status}}</b></span>
                         <span
                             style="font-size: 10px;float: right;"><b>Published {{$post->created_at->diffForHumans()}}</b></span>
                     </div>
@@ -146,16 +147,146 @@
                                         </div>
                                     </div>
                                 @endif
+
+                                    <form action="{{route('user.posts.close')}}" method="POST">
+                                        {{csrf_field()}}
+                                        <input type="hidden" name="job_post_id" value="{{$post->id}}">
+                                        <input type="hidden" name="job_type" value="{{$post->type}}">
+                                        <input type="hidden" name="user_id" value="{{$post->confirmed_applicant_id}}">
+                                        <div class="modal modal-lg fade" tabindex="-1" id="closeJobModal">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <em class="icon ni ni-cross"></em>
+                                                    </a>
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"><b>Close Job</b></h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <p class="text-muted">Complete below information to close job.</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row" style="margin-top: 15px;">
+                                                            <div class="col-md-9 col-xs-9 col-sm-9">
+                                                                <label style="font-size: 16px; margin-top: 10px;"><b>Final Payment (GHS)</b></label>
+                                                            </div>
+                                                            <div class="col-md-3 col-xs-3 col-sm-3">
+                                                                <input type="number" class="form-control form-control-lg" required value="{{$post->min_budget}}">
+                                                            </div>
+                                                        </div>
+
+                                                        <hr>
+
+                                                        <p style="font-size: 16px;"><b>Rating</b></p>
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-sm-4">
+                                                                <div class="text-color-gray" style="font-size: 10px;">Expertise</div>
+                                                            </div>
+                                                            <div class="col-md-8 col-sm-8">
+                                                                <div class="stars">
+                                                                    <select class="star-rating" name="expertise_rating" required id="quickJobExpertise">
+                                                                        <option value=""></option>
+                                                                        <option value="5">Excellent</option>
+                                                                        <option value="4">Very Good</option>
+                                                                        <option value="3">Average</option>
+                                                                        <option value="2">Fair</option>
+                                                                        <option value="1">Poor</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <br>
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-sm-4">
+                                                                <div class="text-color-gray" style="font-size: 10px;">Work Ethic</div>
+                                                            </div>
+                                                            <div class="col-md-8 col-sm-8">
+                                                                <div class="stars">
+                                                                    <select class="star-rating" name="work_ethic_rating" required id="quickJobWorkEthic">
+                                                                        <option value=""></option>
+                                                                        <option value="5">Excellent</option>
+                                                                        <option value="4">Very Good</option>
+                                                                        <option value="3">Average</option>
+                                                                        <option value="2">Fair</option>
+                                                                        <option value="1">Poor</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-sm-4">
+                                                                <div class="text-color-gray" style="font-size: 10px;">Professionalism</div>
+                                                            </div>
+                                                            <div class="col-md-8 col-sm-8">
+                                                                <div class="stars">
+                                                                    <select class="star-rating" name="professionalism_rating" required id="quickJobProfessionalism">
+                                                                        <option value=""></option>
+                                                                        <option value="5">Excellent</option>
+                                                                        <option value="4">Very Good</option>
+                                                                        <option value="3">Average</option>
+                                                                        <option value="2">Fair</option>
+                                                                        <option value="1">Poor</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <br>
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-sm-4">
+                                                                <div class="text-color-gray" style="font-size: 10px;">Customer Service</div>
+                                                            </div>
+                                                            <div class="col-md-8 col-sm-8">
+                                                                <div class="stars">
+                                                                    <select class="star-rating" name="customer_service_rating" required id="quickJobCustomerService">
+                                                                        <option value=""></option>
+                                                                        <option value="5">Excellent</option>
+                                                                        <option value="4">Very Good</option>
+                                                                        <option value="3">Average</option>
+                                                                        <option value="2">Fair</option>
+                                                                        <option value="1">Poor</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <br>
+
+                                                        <p style="font-size: 16px;"><b>Review or feedback message</b></p>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="input-group1 mb-3">
+                                                                    <textarea type="tel" class="form-control form-control-lg @error('feedback_message') is-invalid @enderror" placeholder="Kindly share your review or feedback of the job done." name="feedback_message"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer bg-white text-right" style="float: right !important;">
+                                                        <button style="float: right;" class="btn btn-outline-primary"><b>Continue</b></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                             @endforeach
                         </div>
                     </div>
                 @endif
 
                 <br>
-
-                <div class="pull-right">
-                    <a href="#" class="btn btn-outline-danger" style="float: right">Close Job</a>
-                </div>
+                @if($post->status != "closed")
+                    <div class="pull-right">
+                        <a href="#" class="btn btn-outline-danger btn-lg" data-toggle="modal" data-target="#closeJobModal" style="float: right"><b>Close Job</b></a>
+                    </div>
+                @endif
             @endif
 
             {{------------------------------------ VOLUNTEER -----------------------------------------}}
@@ -269,9 +400,11 @@
                 </div>
                 <br>
 
-                <div class="pull-right">
-                    <a href="#" class="btn btn-outline-danger" style="float: right">Close Activity</a>
-                </div>
+                @if($post->status != "closed")
+                    <div class="pull-right">
+                        <a href="#" class="btn btn-outline-danger" style="float: right">Close Activity</a>
+                    </div>
+                @endif
             @endif
 
         </div>
