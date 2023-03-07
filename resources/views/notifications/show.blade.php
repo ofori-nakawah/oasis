@@ -138,9 +138,9 @@
 @section("scripts")
     <script>
         const coords = '{{$location_coordinates}}'
-        const lat = parseFloat(coords.split(', ')[0])
-        const lng = parseFloat(coords.split(', ')[1])
-        console.log(lat)
+        const lat = parseFloat(coords.split(',')[0])
+        const lng = parseFloat(coords.split(',')[1])
+        console.log(coords)
     </script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key={{env("GOOGLE_MAPS_KEY")}}&libraries=places&callback=mountMap"
@@ -149,8 +149,8 @@
         function mountMap() {
             var mapOptions = {
                 center: {
-                    lat: parseFloat(coords.split(', ')[0]),
-                    lng: parseFloat(coords.split(', ')[1])
+                    lat: parseFloat(coords.split(',')[0]),
+                    lng: parseFloat(coords.split(',')[1])
                 },
                 zoom: 14,
                 componentRestrictions: {country: "gh"}
@@ -161,13 +161,11 @@
              * show marker of user's current location
              * @type {google.maps.Marker}
              */
-            const _latlng = new google.maps.LatLng(lng, lat);
+            const _latlng = new google.maps.LatLng(lat, lng);
             map.panTo(_latlng)
             const marker = new google.maps.Marker({
                 position: _latlng,
                 map: map,
-
-
             });
         }
     </script>
