@@ -72,7 +72,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="issuer"><b>{{$notify->data["message"]}}</b></div>
+                                <div class="issuer">{{$notify->data["message"]}}</div>
                             </div>
                         </div>
                     </div>
