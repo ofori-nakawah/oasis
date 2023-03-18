@@ -107,7 +107,7 @@
 
                     </ul><!-- .nav-tabs -->
                     <div class="tab-content" style="padding: 0px;min-height: 250px;">
-                        <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;">
+                        <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;height: 250px;overflow-y: scroll">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -117,20 +117,17 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>0.6</td>
-                                    <td><a href="">Desilting of gutter at Accra Academy school</a></td>
-                                    <td>5</td>
-                                </tr>
-                                <tr>
-                                    <td>2.6</td>
-                                    <td>Beach cleaning at labadi</td>
-                                    <td>5</td>
-                                </tr>
+                                @foreach($opportunities["volunteer_activities"] as $activity)
+                                    <tr>
+                                        <td>{{$activity->distance}}</td>
+                                        <td><a href="{{route("user.volunteerism.show", ["uuid" => $activity->id])}}">{{$activity->name}}</a></td>
+                                        <td>{{$activity->volunteer_hours}}</td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane card-inner" id="quick_job" style="padding: 0px;">
+                        <div class="tab-pane card-inner" id="quick_job" style="padding: 0px;height: 250px;overflow-y: scroll">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -140,16 +137,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>0.6</td>
-                                    <td><a href="">Desilting of gutter at Accra Academy school</a></td>
-                                    <td>500</td>
-                                </tr>
-                                <tr>
-                                    <td>2.6</td>
-                                    <td>Beach cleaning at labadi</td>
-                                    <td>500</td>
-                                </tr>
+                                @foreach($opportunities["quick_jobs"] as $job)
+                                    <tr>
+                                        <td>{{$job->distance}}</td>
+                                        <td><a href="{{route('user.quick_job.show', ['uuid' => $job->id])}}">{{$job->description}}</a></td>
+                                        <td>{{$job->min_budget}} - {{$job->max_budget}}</td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -177,13 +171,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>QJ-234333</td>
-                            <td>Bernard Ofori</td>
-                            <td>Painting</td>
-                            <td>400</td>
-                            <td>3.5</td>
-                        </tr>
+                        @foreach($job_history as $work)
+                            @if($work->job_post)
+                                <tr>
+                                    <td>{{$work->ref_id}}</td>
+                                    <td>{{$work->job_post->user->name}}</td>
+                                    <td>{{$work->job_post->category}}</td>
+                                    <td>GHS {{number_format($work->job_post->final_payment_amount, 2)}}</td>
+                                    <td>{{number_format($work->rating_and_reviews->rating, 2)}}</td>
+                                </tr>
+                            @endif
+                        @endforeach
                         </tbody>
                     </table>
                 </div>

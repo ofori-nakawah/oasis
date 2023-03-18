@@ -5,11 +5,16 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Skill;
+use App\Traits\OpportunitiesAroundMe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
+    use OpportunitiesAroundMe;
+
+    const JOB_SEARCH_RADIUS = 7;
+    const VOLUNTEER_SEARCH_RADIUS = 10;
 
     /**
      * Create a new controller instance.
@@ -82,6 +87,11 @@ class HomeController extends Controller
             "total_earnings" => number_format($total_earnings, 2),
         );
 
-        return view('home', compact("dashboard_analytics", "job_history"));
+        /**
+         * get available opportunities for user
+         */
+        $opportunities = self::GetOpportunitiesAroundMe(self::VOLUNTEER_SEARCH_RADIUS);
+
+        return view('home', compact("dashboard_analytics", "job_history", "opportunities"));
     }
 }
