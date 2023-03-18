@@ -33,7 +33,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Overall Rating</p>
-                            <h5>4.65</h5>
+                            <h5>{{$dashboard_analytics["average_rating"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Jobs Executed</p>
-                            <h5>8</h5>
+                            <h5>{{$dashboard_analytics["number_of_jobs"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Volunteer Hours</p>
-                            <h5>44</h5>
+                            <h5>{{$dashboard_analytics["volunteer_hours"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Activities</p>
-                            <h5>3</h5>
+                            <h5>{{$dashboard_analytics["number_of_activities"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                             <div class="mt-2">
                                 <div><b>Income</b></div>
                                 <h4><b class="text-success">GHS</b> <br>
-                                <b class="text-success">64,000</b></h4>
+                                <b class="text-success">{{$dashboard_analytics["total_earnings"]}}</b></h4>
 
                                 <br>
 

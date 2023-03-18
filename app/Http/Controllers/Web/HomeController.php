@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -45,6 +46,42 @@ class HomeController extends Controller
             return view("onboarding.languages", compact("languages"));
         }
 
-        return view('home');
+        /**
+         * get dashboard values
+         */
+        $job_history = auth()->user()->job_applications->where("status", "confirmed");
+        $average_rating = auth()->user()->rating;
+        $volunteer_hours = auth()->user()->volunteer_hours;
+        $total_earnings = auth()->user()->total_earnings;
+
+        $jobs_count = 0;
+        $volunteer_count = 0;
+
+        foreach ($job_history as $vork) {
+            if ($vork->job_post && $vork->job_post->status == "closed") {
+                if ($vork->job_post->type === "VOLUNTEER") {
+                    $vork->ref_id = "VO" . explode("-", $vork->id)[0];
+                    $volunteer_count++;
+                } else {
+                    $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
+                    $jobs_count++;
+                }
+
+                $vork->job_post;
+                $vork->rating_and_reviews;
+            }
+        }
+
+        $dashboard_analytics = array(
+            "number_of_jobs" => $jobs_count,
+            "number_of_activities" => $volunteer_count,
+            "average_rating" => number_format($average_rating, 2),
+            "location" => auth()->user()->location_name,
+            "location_coords" => auth()->user()->location_coords,
+            "volunteer_hours" => $volunteer_hours,
+            "total_earnings" => number_format($total_earnings, 2),
+        );
+
+        return view('home', compact("dashboard_analytics", "job_history"));
     }
 }
