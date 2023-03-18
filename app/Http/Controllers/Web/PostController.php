@@ -617,6 +617,9 @@ class PostController extends Controller
                 /**
                  * application with final amount
                  */
+                if (!$request->final_payment_amount || $request->final_payment_amount == 0) {
+                    return back()->with("danger", "Invalid final payment amount. Kindly check and try again.");
+                }
                 $post->final_payment_amount = $request->final_payment_amount;
                 $post->payment_channel = "cash"; // to be update when we start using in-app wallets
 

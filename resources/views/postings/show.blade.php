@@ -177,7 +177,7 @@
                                                                     Payment (GHS)</b></label>
                                                         </div>
                                                         <div class="col-md-3 col-xs-3 col-sm-3">
-                                                            <input type="number" class="form-control form-control-lg"
+                                                            <input type="number" class="form-control form-control-lg" name="final_payment_amount"
                                                                    required value="{{$post->min_budget}}">
                                                         </div>
                                                     </div>
