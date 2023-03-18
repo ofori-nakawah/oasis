@@ -555,19 +555,20 @@ class PostController extends Controller
                  * assign volunteer hours to participants
                  */
                 $volunteer_details = $request->volunteer_details;
-                for ($i = 0; $i < count($volunteer_details); $i++) {
-                    $participant = User::where("id", $volunteer_details[$i]["user_id"])->first();
+                $user_id = $request->user_id;
+                for ($i = 0; $i < count($user_id); $i++) {
+                    $participant = User::where("id", $user_id[$i])->first();
                     if (!$participant) {
-                        Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"]);
+                        Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $user_id[$i]);
                     }
 
-                    $application = JobApplication::where("user_id", $volunteer_details[$i]["user_id"])->where("post_id", $request->job_post_id)->first();
+                    $application = JobApplication::where("user_id", $user_id[$i])->where("post_id", $request->job_post_id)->first();
                     if (!$application) {
                         Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $volunteer_details[$i]["user_id"] . " AND POST ID >>>>> " . $request->job_post_id);
                     }
 
-                    $participant->volunteer_hours += (float)$volunteer_details[$i]["volunteer_hours"];
-                    $application->volunteer_hours = (float)$volunteer_details[$i]["volunteer_hours"];
+                    $participant->volunteer_hours += (float)$volunteer_details[$i];
+                    $application->volunteer_hours = (float)$volunteer_details[$i];
                     try {
                         $participant->update();
                         $application->update();
@@ -616,6 +617,9 @@ class PostController extends Controller
                 /**
                  * application with final amount
                  */
+                if (!$request->final_payment_amount || $request->final_payment_amount == 0) {
+                    return back()->with("danger", "Invalid final payment amount. Kindly check and try again.");
+                }
                 $post->final_payment_amount = $request->final_payment_amount;
                 $post->payment_channel = "cash"; // to be update when we start using in-app wallets
 

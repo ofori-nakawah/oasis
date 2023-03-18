@@ -72,7 +72,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="issuer"><b>{{$notify->data["message"]}}</b></div>
+                                <div class="issuer">{{$notify->data["message"]}}</div>
                             </div>
                         </div>
                     </div>
@@ -108,6 +108,34 @@
                                         </div>
                                     </div>
                                 @endif
+
+                                @if($notify->data["event"] == "JOB_CLOSED")
+                                    @if($notify->data["post"]["type"] != "VOLUNTEER")
+                                        <br>
+                                        <p><b  style="color: #777;">Payment (GHS)</b></p>
+                                        <table class="table table-striped">
+                                            <body>
+                                            <tr>
+                                                <td class="text-muted">Job</td>
+                                                <td>{{$notify->data["post"]["category"]}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">WHT Allocation (5%)</td>
+                                                <td>{{(5/ 100) * $notify->data["post"]["final_payment_amount"]}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Vork Charge (1%)</td>
+                                                <td>{{(1/ 100) * $notify->data["post"]["final_payment_amount"]}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Total Amount</b></td>
+                                                <td>{{$notify->data["post"]["final_payment_amount"]}}</td>
+                                            </tr>
+                                            </body>
+                                        </table>
+                                    @endif
+                                @endif
+
                             </div>
                         </div>
                     </div>
