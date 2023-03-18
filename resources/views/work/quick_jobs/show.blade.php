@@ -103,7 +103,7 @@
                         <div class="col-md-8">
                             <div class="title" style="font-size: 10px;color: #777;">Budget (GHS)</div>
                             <b>
-                                <div class="date text-success">{{$post->min_budget}} - {{$post->max_budget}} <br> <small>@if($post->is_negotiable == "on") <span style="font-style: italic; color: #777;">Negotiable</span> @endif @if($post->is_includes_tax == "on") <span style="font-style: italic; color: #777;"> & Includes WHT @ 5%.</span> @endif</small></div>
+                                <div class="date text-success">{{$original_post->min_budget}} - {{$original_post->max_budget}} <br> <small>@if($original_post->is_negotiable == "on") <span style="font-style: italic; color: #777;">Negotiable</span> @endif @if($original_post->is_includes_tax == "on") <span style="font-style: italic; color: #777;"> & Includes WHT @ 5%.</span> @endif</small></div>
                             </b>
                         </div>
                         <div class="col-md-4">

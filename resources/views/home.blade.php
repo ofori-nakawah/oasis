@@ -67,9 +67,9 @@
 
             <div class="row">
                 <div class="col-md-3">
-                    <div class="card card-bordered" style="height: 240px;">
+                    <div class="card card-bordered" style="height: 270px;">
                         <div class="card-body">
-                            <div class="mt-2">
+                            <div class="mt-4">
                                 <div><b>Income</b></div>
                                 <h4><b class="text-success">GHS</b> <br>
                                 <b class="text-success">{{$dashboard_analytics["total_earnings"]}}</b></h4>
@@ -83,9 +83,12 @@
                     </div>
                 </div>
                 <div class="col-md-9">
-                    <div class="card card-bordered" style="height: 240px;">
-                        <div class="card-body">
-
+                    <div class="card card-bordered" style="height: 270px;">
+                        <div class="card-body" >
+                            <div style="margin-top: -15px">
+                                <div class="text-center"><b>Income Trend</b></div>
+                                <canvas id="chart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,7 +109,7 @@
                             </li>
 
                     </ul><!-- .nav-tabs -->
-                    <div class="tab-content" style="padding: 0px;min-height: 250px;">
+                    <div class="tab-content" style="padding: 0px;min-height: 280px;">
                         <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;height: 250px;overflow-y: scroll">
                             <table class="table table-striped">
                                 <thead>
@@ -127,7 +130,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane card-inner" id="quick_job" style="padding: 0px;height: 250px;overflow-y: scroll">
+                        <div class="tab-pane card-inner" id="quick_job" style="padding: 0px;height: 280px;overflow-y: scroll">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -171,17 +174,23 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($job_history as $work)
-                            @if($work->job_post)
-                                <tr>
-                                    <td>{{$work->ref_id}}</td>
-                                    <td>{{$work->job_post->user->name}}</td>
-                                    <td>{{$work->job_post->category}}</td>
-                                    <td>GHS {{number_format($work->job_post->final_payment_amount, 2)}}</td>
-                                    <td>{{number_format($work->rating_and_reviews->rating, 2)}}</td>
-                                </tr>
-                            @endif
-                        @endforeach
+                        @if($dashboard_analytics["number_of_jobs"] <= 0)
+                            <tr>
+                                <td colspan="5"><p class="text-center">You have no completed jobs at the moment</p></td>
+                            </tr>
+                        @else
+                            @foreach($job_history as $work)
+                                @if($work->job_post && $work->job_post->type != "VOLUNTEER")
+                                    <tr>
+                                        <td>{{$work->ref_id}}</td>
+                                        <td>{{$work->job_post->user->name}}</td>
+                                        <td>{{$work->job_post->category}}</td>
+                                        <td>GHS {{number_format($work->job_post->final_payment_amount, 2)}}</td>
+                                        <td>{{number_format(($work->rating_and_reviews) ? $work->rating_and_reviews->rating : 0, 2)}}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -189,4 +198,55 @@
         </div>
     </div>
 
+@endsection
+
+@section("scripts")
+    <script src="{{asset('assets/html-template/src/assets/js/example-chart.js?ver=1.4.0"')}}"></script>
+
+    <script>
+        const ctx = document.getElementById('chart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'In-flow',
+                    data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
+                    borderWidth: 1,
+                    fill: false,
+                    borderColor: 'green'
+                },
+                {
+                    label: 'Out-flow',
+                    data: [7, 9, 3, 15, 2, 3, 7, 9, 3, 15, 2, 3],
+                    borderWidth: 1,
+                    fill: false,
+                    borderColor: 'red'
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Income Trend',
+                    }
+                },
+                animations: {
+                    tension: {
+                        duration: 1000,
+                        easing: 'linear',
+                        from: 1,
+                        to: 0,
+                        loop: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            },
+        });
+    </script>
 @endsection

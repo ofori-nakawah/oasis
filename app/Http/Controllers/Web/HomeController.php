@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Skill;
 use App\Traits\OpportunitiesAroundMe;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
