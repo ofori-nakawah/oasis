@@ -148,6 +148,7 @@
                                         @endif
                                     </div>
                                 </div>
+                                <br>
                             @endforeach
                         @endif
                     </div>
@@ -164,7 +165,7 @@
                                             @if($applicant->user->image_link)
                                                 <img src="{{$applicant->user->image_link}}" alt="">
                                             @else
-                                                <em class="icon ni ni-user" style="font-size: 80px;"></em>
+                                                <em class="icon ni ni-user" style="font-size: 40px;"></em>
                                             @endif
                                         </div>
                                         <div class="col-md-7">
@@ -179,6 +180,7 @@
                                                     style="font-size: 30px;float: right;"></em></a>
                                         </div>
                                     </div>
+                                    <br>
                                 @endif
 
                                 <form action="{{route('user.posts.close')}}" method="POST">
@@ -400,7 +402,7 @@
                                                 class="font-italic">See profile</a></div>
                                     </div>
                                     <div class="col-md-2">
-                                        @if ($applicant->status != "confirmed")
+                                        @if ($applicant->status != "confirmed" && $applicant->status != "declined")
                                             <a href="{{route('user.posts.confirm_decline_applicant', ['application_id' => $applicant->id, 'action' => 'decline'])}}"
                                                onclick="return confirm('Are you sure?')"><em
                                                     class="icon ni ni-cross-circle text-danger"
@@ -413,6 +415,7 @@
                                         @endif
                                     </div>
                                 </div>
+                                <br>
                             @endforeach
                         @endif
                     </div>
@@ -435,7 +438,7 @@
                                             @if($applicant->user->image_link)
                                                 <img src="{{$applicant->user->image_link}}" alt="">
                                             @else
-                                                <em class="icon ni ni-user" style="font-size: 80px;"></em>
+                                                <em class="icon ni ni-user" style="font-size: 40px;"></em>
                                             @endif
                                         </div>
                                         <div class="col-md-7">
@@ -453,6 +456,7 @@
                                                     style="font-size: 30px;float: right;"></em></a>
                                         </div>
                                     </div>
+                                    <br>
                                 @endif
                             @endforeach
                         @endif
@@ -484,25 +488,26 @@
 
                                     @foreach($post->applications->where("status", "confirmed") as $applicant)
                                         <div class="row">
-                                            <div class="col-md-2 text-center">
+                                            <div class="col-md-2 col-lg-2 col-sm-2 text-center">
                                                 @if($applicant->user->image_link)
                                                     <img src="{{$applicant->user->image_link}}" alt="">
                                                 @else
                                                     <em class="icon ni ni-user" style="font-size: 40px;"></em>
                                                 @endif
                                             </div>
-                                            <div class="col-md-7">
+                                            <div class="col-md-7 col-sm-7 col-lg-7">
                                                 <div><b>{{$applicant->user->name}}</b></div>
                                                 <div class="text-muted"><em
                                                         class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-3 col-sm-3 col-lg-3">
                                                 <input type="number" name="volunteer_details[]" class="form-control form-control-lg" required
                                                        value="{{$post->volunteer_hours}}">
                                                 <input type="hidden" name="user_id[]" value="{{$applicant->user->id}}">
                                             </div>
                                         </div>
+                                        <br>
                                     @endforeach
 
                                 </div>

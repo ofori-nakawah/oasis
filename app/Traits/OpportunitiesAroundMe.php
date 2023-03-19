@@ -37,7 +37,7 @@ trait OpportunitiesAroundMe
         $user_location_lng = explode(',', $user_location)[1];
 
         $volunteer_near_me = collect();
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $search_radius) {
             //get post coordinates
             $post_location_lat = explode(',', $post->coords)[0];
@@ -81,7 +81,7 @@ trait OpportunitiesAroundMe
          * post type
          * interests | skills
          */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->get();
 
         /**
          * filter using distance

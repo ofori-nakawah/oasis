@@ -61,6 +61,7 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/posts/{uuid}/show', 'Web\PostController@show_user_post_details')->name('user.posts.show');
     Route::post('/posts/{uuid}/update', 'Web\PostController@updatePostInformation')->name('user.posts.update');
     Route::post('/close-post', 'Web\PostController@close_post')->name("user.posts.close");
+    Route::get('/posts/{uuid}/remove-post', 'Web\PostController@removePost')->name("user.posts.remove");
 
     Route::get('/posts/{application_id}/{action}', 'Web\PostController@confirm_decline_applicant')->name('user.posts.confirm_decline_applicant');
 

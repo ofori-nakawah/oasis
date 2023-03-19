@@ -189,7 +189,7 @@
 
                     </div>
                     <div class="text-right">
-                        <a href="" onclick="return confirm('Delete post?')" class="btn btn-outline-danger" style="float: left !important;"><b>Remove Post</b></a>
+                        <a href="{{route('user.posts.remove', ['uuid' => $post->id])}}" onclick="return confirm('Are you sure you want to remove post?')" class="btn btn-outline-danger" style="float: left !important;"><b>Remove Post</b></a>
                         <button class="btn btn-success btn-l"><b>Save Changes</b></button>
                     </div>
                 </div>

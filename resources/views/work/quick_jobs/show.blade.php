@@ -94,9 +94,6 @@
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Location</div>
                             <b><div class="location">{{$original_post->location}}</div></b>
-                            <div class="map" id="locationMap" style="height: 300px;width: 100%;border-radius: 4px;">
-
-                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -130,40 +127,3 @@
     </div>
 @endsection
 
-@section("scripts")
-    <script>
-        /**
-         * get coordinatesg
-         * @type {string}
-         */
-        const coords = '{{$original_post->coords}}'
-        console.log(coords)
-    </script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key={{env("GOOGLE_MAPS_KEY")}}&libraries=places&callback=mountMap"
-        async defer></script>
-    <script>
-        function mountMap() {
-            var mapOptions = {
-                center: {
-                    lat: parseFloat(coords.split(', ')[0]),
-                    lng: parseFloat(coords.split(', ')[1])
-                },
-                zoom: 14,
-                componentRestrictions: {country: "gh"}
-            };
-            var map = new google.maps.Map(document.getElementById("locationMap"), mapOptions);
-
-            /**
-             * show marker of user's current location
-             * @type {google.maps.Marker}
-             */
-            const _latlng = new google.maps.LatLng(parseFloat(coords.split(', ')[0]), parseFloat(coords.split(', ')[1]));
-            map.panTo(_latlng)
-            const marker = new google.maps.Marker({
-                position: _latlng,
-                map: map,
-            });
-        }
-    </script>
-@endsection
