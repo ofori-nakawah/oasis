@@ -89,14 +89,26 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
-                                        <div>
-                                            <b>{{$notify->data["post"]["date"]}} {{$notify->data["post"]["time"]}}</b>
-                                        </div>
+                                        @if($notify->data["post"]["status"] == "closed")
+                                            <div class="title" style="font-size: 10px;color: #777;">Closure Date</div>
+                                            <div>
+                                                <b>{{$notify->data["post"]["closed_at"]}}</b>
+                                            </div>
+                                        @elseif($notify->data["post"]["deleted_at"])
+                                            <div class="title" style="font-size: 10px;color: #777;">Removal Date</div>
+                                            <div>
+                                                <b>{{$notify->data["post"]["deleted_at"]}}</b>
+                                            </div>
+                                        @else
+                                            <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
+                                            <div>
+                                                <b>{{$notify->data["post"]["date"]}} {{$notify->data["post"]["time"]}}</b>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
 
-                                @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION")
+                                @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED")
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="title" style="font-size: 10px;color: #777;">Location</div>

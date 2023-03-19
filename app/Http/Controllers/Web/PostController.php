@@ -87,7 +87,7 @@ class PostController extends Controller
         $user_location_lng = explode(',', $user_location)[1];
 
         $volunteer_near_me = collect();
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
             $post_location_lat = explode(',', $post->coords)[0];
@@ -136,7 +136,7 @@ class PostController extends Controller
          * post type
          * interests | skills
          */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->get();
 
         /**
          * filter using distance
@@ -195,6 +195,14 @@ class PostController extends Controller
         if (!$original_post) {
             return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
         }
+
+        /**
+         * 404
+         */
+        if ($original_post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
+        }
+
         $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
         if ($has_already_applied) {
             $original_post->has_already_applied = "yes";
@@ -216,7 +224,7 @@ class PostController extends Controller
          * filter using distance
          */
         $volunteer_near_me = collect();
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
             $post_location_lat = explode(',', $post->coords)[0];
@@ -251,6 +259,14 @@ class PostController extends Controller
         if (!$original_post) {
             return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
         }
+
+        /**
+         * 404@alias
+         */
+        if ($original_post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
+        }
+
         $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
         if ($has_already_applied) {
             $original_post->has_already_applied = "yes";
@@ -279,7 +295,7 @@ class PostController extends Controller
          * post type
          * interests | skills
          */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->get();
 
         /**
          * filter using distance
@@ -320,6 +336,13 @@ class PostController extends Controller
         $post = Post::where("id", $uuid)->first();
         if (!$post) {
             return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+        }
+
+        /**
+         * 404
+         */
+        if ($post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
         }
 
         //check if user has applied already
@@ -365,6 +388,13 @@ class PostController extends Controller
         $post = Post::where("id", $uuid)->first();
         if (!$post) {
             return back()->with("danger", "Error fetching post details");
+        }
+
+        /**
+         * 404
+         */
+        if ($post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
         }
 
         $post->number_of_participants_applied = $post->applications()->count();
@@ -429,7 +459,7 @@ class PostController extends Controller
             return back()->with("danger", "Error confirming applicant. Kindly try again.");
         }
 
-        return back()->with("success", "Applicant confirmed successfully.");
+        return back()->with("success", $message);
     }
 
     public function create_volunteer_post(Request $request)
@@ -679,6 +709,13 @@ class PostController extends Controller
             return back()->with("danger", "Error fetching post details");
         }
 
+        /**
+         * 404
+         */
+        if ($post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
+        }
+
         switch ($post->type) {
             case "VOLUNTEER":
                 return view("volunteerism.edit", compact("post"));
@@ -699,6 +736,13 @@ class PostController extends Controller
         $post = Post::where("id", $uuid)->first();
         if (!$post) {
             return back()->with("danger", "Error fetching post details");
+        }
+
+        /**
+         * 404
+         */
+        if ($post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
         }
 
         if ($post->user->id !== auth()->id()) {
@@ -752,9 +796,56 @@ class PostController extends Controller
             $post->update();
             return redirect()->route("user.posts.show", ["uuid" => $post->id])->with("success", "Post has been updated successfully.");
         } catch (QueryException $e) {
-            Log::error("ERROR UPDATING post >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            Log::error("ERROR UPDATING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return back()->with("danger", "Oops. We encountered an issue while updating your post. Kindly try again.");
         }
     }
 
+    /**
+     * @param $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function removePost($uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request");
+        }
+
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching post details");
+        }
+
+        /**
+         * 404
+         */
+        if ($post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
+        }
+
+        if ($post->user->id !== auth()->id() || $post->status === "closed") {
+            return back()->with("danger", "Unauthorized operation");
+        }
+
+        /**
+         * update only the deleted_at so if it's restored the user can get the previous status
+         */
+        $post->deleted_at = Carbon::now();
+
+        /**
+         * get applicants and send them notifications
+         */
+        $confirmedApplicants = $post->applications->where("status", "confirmed");
+        foreach ($confirmedApplicants as $application) {
+            Notifications::PushUserNotification($post, $application, $application->user, "JOB_REMOVED");
+        }
+
+        try {
+            $post->update();
+            return redirect()->route("user.posts.list")->with("success", "Post has been removed successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR UPDATING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while removing your post. Kindly try again.");
+        }
+    }
 }

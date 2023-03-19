@@ -77,6 +77,7 @@ class UserController extends Controller
             return $notification;
         })->unique("group_id");
 
+
         return view("notifications.show", compact("notifications", "group_notifications", "location_coordinates"));
     }
 
@@ -87,7 +88,7 @@ class UserController extends Controller
 
     public function user_postings()
     {
-        $posts = auth()->user()->posts;
+        $posts = auth()->user()->posts->whereNull('deleted_at');
         return view("postings.index", compact("posts"));
     }
 
