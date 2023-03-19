@@ -78,7 +78,7 @@
                 @endforeach
             </div>
             <div class="col-md-7 d-none d-md-block">
-                <div class="text-center">
+                <div class="text-center" style="margin-top: 120px;">
                     <img src="{{asset('assets/html-template/src/images/details.svg')}}" alt=""
                          style="height: 250px; width: 250px;">
                     <p style="color: #777;">Select any job to view more details.</p>

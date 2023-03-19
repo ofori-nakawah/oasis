@@ -43,9 +43,11 @@
                         </div>
                     </div>
                     <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                        <a href="#" onclick="shareLink()"  style="float: left !important;margin-top: 5px;" data-toggle="modal"
-                           data-target="#sharePostbModal-{{$post->id}}"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
-                        <div class="modal modal-lg fade" tabindex="-1" id="sharePostbModal-{{$post->id}}">
+                        @if($_post->status !== "closed")
+                            <a href="#" onclick="shareLink()"  style="float: left !important;margin-top: 5px;" data-toggle="modal"
+                               data-target="#sharePostbModal-{{$_post->id}}"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
+                        @endif
+                        <div class="modal modal-lg fade" tabindex="-1" id="sharePostbModal-{{$_post->id}}">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <a href="#" class="close" data-dismiss="modal" aria-label="Close">
@@ -68,7 +70,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if($post->status === "closed")
+                        @if($_post->status === "closed")
                             <span>Post Closed</span>
                         @else
                             <a href="{{route('user.posts.edit', ['uuid' => $_post->id])}}"

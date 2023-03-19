@@ -701,6 +701,10 @@ class PostController extends Controller
             return back()->with("danger", "Error fetching post details");
         }
 
+        if ($post->user->id !== auth()->id()) {
+            return back()->with("danger", "Unauthorized operation");
+        }
+
         switch ($post->type) {
             case "VOLUNTEER":
                 $post->name = $request->name;
