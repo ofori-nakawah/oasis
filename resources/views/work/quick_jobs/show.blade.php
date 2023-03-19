@@ -88,6 +88,9 @@
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Description</div>
                             <div class="issuer"><b>{{$original_post->description}}</b></div>
+                            @if($original_post->post_image_link)
+                                <img src="{{$original_post->post_image_link}}" style="height: 300px;width: 100%;border-radius: 4px;" alt="">
+                            @endif
                         </div>
                     </div>
                     <div class="row">

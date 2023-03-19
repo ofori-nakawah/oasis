@@ -29,7 +29,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.quick_jobs.publish')}}" method="POST">
+            <form action="{{route('user.quick_jobs.publish')}}" method="POST" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <div class="">
                     <div class="mb-3">
@@ -77,7 +77,7 @@
                             </div>
                             <img id="imageAttachment" style="height: 180px;"></img>
                             <input type="file" accept="image/png, image/gif, image/jpeg, image/jpg" hidden
-                                   name="image_attachment" id="image_attachment"
+                                   name="post_image" id="image_attachment"
                                    onchange="displayImageAttachment(event)">
                         </div>
 
