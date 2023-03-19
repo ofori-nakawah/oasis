@@ -665,4 +665,42 @@ class PostController extends Controller
         return redirect()->route("user.posts.list")->with("success", "Post has been closed successfully.");
     }
 
+    /**
+     * @param $uuid
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function updateUserPost($uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request");
+        }
+
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching post details");
+        }
+
+        switch ($post->type) {
+            case "VOLUNTEER":
+                return view("volunteerism.edit", compact("post"));
+            case "QUICK_JOB":
+                $categories = Skill::all();
+                return view("work.quick_jobs.edit", compact("post", "categories"));
+        }
+
+        return back()->with("danger", "Invalid request");
+    }
+
+    public function updatePostInformation(Request $request, $uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request");
+        }
+
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching post details");
+        }
+    }
+
 }

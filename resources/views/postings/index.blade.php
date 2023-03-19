@@ -51,6 +51,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
+                            <a href=""  style="float: left !important;margin-top: 5px;"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
                             <a href="{{route('user.posts.edit', ['uuid' => $post->id])}}"
                                class="btn btn-outline-warning">Edit</a>
                             <a href="{{route('user.posts.show', ['uuid' => $post->id])}}"
