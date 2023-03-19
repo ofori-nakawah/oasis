@@ -43,6 +43,31 @@
                         </div>
                     </div>
                     <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
+                        <a href="#" onclick="shareLink()"  style="float: left !important;margin-top: 5px;" data-toggle="modal"
+                           data-target="#sharePostbModal-{{$post->id}}"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
+                        <div class="modal modal-lg fade" tabindex="-1" id="sharePostbModal-{{$post->id}}">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                        <em class="icon ni ni-cross"></em>
+                                    </a>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title"><b>Share Post</b></h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p style="float: left !important;">Copy post and share it with your family and friends on all platforms.</p>
+                                                <input value="{{($_post->type === "VOLUNTEER") ? route("user.volunteerism.show", ["uuid" => $_post->id]) : route("user.quick_job.show", ["uuid" => $_post->id])}}" id="shareLink-{{$_post->id}}" type="text" readonly class="form-control">
+                                                <br>
+                                                <button class="btn btn-outline-primary copyLinkButton" onclick="copyLinkToClipboard(`{{$_post->id}}`)"><b>Copy</b></button>
+                                                <span class="copyStatus"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <a href="{{route('user.posts.edit', ['uuid' => $_post->id])}}" class="btn btn-outline-warning">Edit</a>
                         <a href="{{route('user.posts.show', ['uuid' => $_post->id])}}"
                            class="btn btn-outline-secondary">Status</a>
@@ -493,4 +518,30 @@
 
         </div>
     </div>
+@endsection
+
+@section("scripts")
+    <script>
+        function shareLink() {
+            $(".copyStatus").hide()
+            $(".copyStatus").html("")
+            $(`.copyLinkButton`).show();
+        }
+
+        function copyLinkToClipboard(uuid) {
+            var copyText = document.getElementById(`shareLink-${uuid}`);
+
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the text field
+            navigator.clipboard.writeText(copyText.value);
+
+            $(`.copyLinkButton`).hide();
+            const successMessage = `<div class="text-success"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
+            $(".copyStatus").append(successMessage);
+            $(".copyStatus").show();
+        }
+    </script>
 @endsection
