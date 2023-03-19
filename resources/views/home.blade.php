@@ -77,7 +77,7 @@
                                 <br>
 
                                 <div><b>Est. Income Tax</b></div>
-                                <div><b class="text-danger">GHS 3,000</b></div>
+                                <div><b class="text-danger">GHS {{$dashboard_analytics["estIncomeTax"]}}</b></div>
                             </div>
                         </div>
                     </div>
@@ -212,14 +212,14 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                 datasets: [{
                     label: 'In-flow',
-                    data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
+                    data: [{{$incomeData["janIncome"]}}, {{$incomeData["febIncome"]}}, {{$incomeData["marIncome"]}}, {{$incomeData["aprIncome"]}}, {{$incomeData["mayIncome"]}}, {{$incomeData["junIncome"]}}, {{$incomeData["julIncome"]}}, {{$incomeData["augIncome"]}}, {{$incomeData["sepIncome"]}}, {{$incomeData["octIncome"]}}, {{$incomeData["novIncome"]}}, {{$incomeData["decIncome"]}}],
                     borderWidth: 1,
                     fill: false,
                     borderColor: 'green'
                 },
                 {
                     label: 'Out-flow',
-                    data: [7, 9, 3, 15, 2, 3, 7, 9, 3, 15, 2, 3],
+                    data: [{{$taxData["janTax"]}}, {{$taxData["febTax"]}}, {{$taxData["marTax"]}}, {{$taxData["aprTax"]}}, {{$taxData["mayTax"]}}, {{$taxData["junTax"]}}, {{$taxData["julTax"]}}, {{$taxData["augTax"]}}, {{$taxData["sepTax"]}}, {{$taxData["octTax"]}}, {{$taxData["novTax"]}}, {{$taxData["decTax"]}}],
                     borderWidth: 1,
                     fill: false,
                     borderColor: 'red'
@@ -230,20 +230,6 @@
                     title: {
                         display: true,
                         text: 'Income Trend',
-                    }
-                },
-                animations: {
-                    tension: {
-                        duration: 1000,
-                        easing: 'linear',
-                        from: 1,
-                        to: 0,
-                        loop: true
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
                     }
                 }
             },

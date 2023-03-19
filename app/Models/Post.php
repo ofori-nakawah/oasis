@@ -11,6 +11,8 @@ class Post extends Model
 {
     use HasFactory, Uuids, Notifiable;
 
+    protected $dates = ['closed_at'];
+
     public function user()
     {
         return $this->belongsTo("App\Models\User", "user_id");

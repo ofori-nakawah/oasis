@@ -59,6 +59,7 @@ class HomeController extends Controller
 
         $jobs_count = 0;
         $volunteer_count = 0;
+        $estIncomeTax = 0;
 
         foreach ($job_history as $vork) {
             if ($vork->job_post && $vork->job_post->status == "closed") {
@@ -68,6 +69,11 @@ class HomeController extends Controller
                 } else {
                     $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
                     $jobs_count++;
+
+                    /**
+                     * calculate income tax
+                     */
+                    $estIncomeTax += (5/100) * $vork->job_post->final_payment_amount;
                 }
 
                 $vork->job_post;
@@ -83,13 +89,117 @@ class HomeController extends Controller
             "location_coords" => auth()->user()->location_coords,
             "volunteer_hours" => $volunteer_hours,
             "total_earnings" => number_format($total_earnings, 2),
+            "estIncomeTax" => number_format($estIncomeTax, 2),
         );
 
         /**
          * get available opportunities for user
          */
         $opportunities = self::GetOpportunitiesAroundMe(self::VOLUNTEER_SEARCH_RADIUS);
+        $incomeData = self::GetIncomeTrendData()["income"];
+        $taxData = self::GetIncomeTrendData()["tax"];
 
-        return view('home', compact("dashboard_analytics", "job_history", "opportunities"));
+        return view('home', compact("dashboard_analytics", "job_history", "opportunities", "incomeData", "taxData"));
+    }
+
+    private static function GetIncomeTrendData()
+    {
+        $trendYear = date('Y');
+        $janIncome = 0;
+        $janTax = 0;
+        $febIncome = 0;
+        $febTax = 0;
+        $marIncome = 0;
+        $marTax = 0;
+        $aprIncome = 0;
+        $aprTax = 0;
+        $mayIncome = 0;
+        $mayTax = 0;
+        $junIncome = 0;
+        $junTax = 0;
+        $julIncome = 0;
+        $julTax = 0;
+        $augIncome = 0;
+        $augTax = 0;
+        $sepIncome = 0;
+        $sepTax = 0;
+        $octIncome = 0;
+        $octTax = 0;
+        $novIncome = 0;
+        $novTax = 0;
+        $decIncome = 0;
+        $decTax = 0;
+
+        $job_history = auth()->user()->job_applications->where("status", "confirmed");
+        foreach ($job_history as $vork) {
+            /**
+             * make sure job is closed and is actually a job not volunteer activity
+             */
+            if ($vork->job_post && $vork->job_post->status == "closed" && $vork->job_post->type != "VOLUNTEER") {
+                /**
+                 * let's get monthly income for the current year
+                 */
+                $amount = $vork->job_post->final_payment_amount;
+                $jobMonth = $vork->job_post->closed_at->format('M');
+                $jobYear = $vork->job_post->closed_at->format('Y');
+                if ($trendYear === $jobYear) {
+                    switch ($jobMonth) {
+                        case "Jan":
+                            $janIncome += $amount;
+                            $janTax += $amount * (5 / 100);
+                            break;
+                        case "Feb":
+                            $febIncome += $amount;
+                            $febTax += $amount * (5 / 100);
+                            break;
+                        case "Mar":
+                            $marIncome += $amount;
+                            $marTax += $amount * (5 / 100);
+                            break;
+                        case "Apr":
+                            $aprIncome += $amount;
+                            $aprTax += $amount * (5 / 100);
+                            break;
+                        case "May":
+                            $mayIncome += $amount;
+                            $mayTax += $amount * (5 / 100);
+                            break;
+                        case "Jun":
+                            $junIncome += $amount;
+                            $junTax += $amount * (5 / 100);
+                            break;
+                        case "Jul":
+                            $julIncome += $amount;
+                            $julTax += $amount * (5 / 100);
+                            break;
+                        case "Aug":
+                            $augIncome += $amount;
+                            $augTax += $amount * (5 / 100);
+                            break;
+                        case "Sep":
+                            $sepIncome += $amount;
+                            $sepTax += $amount * (5 / 100);
+                            break;
+                        case "Oct":
+                            $octIncome += $amount;
+                            $octTax += $amount * (5 / 100);
+                            break;
+                        case "Nov":
+                            $novIncome += $amount;
+                            $novTax += $amount * (5 / 100);
+                            break;
+                        case "Dec":
+                            $decIncome += $amount;
+                            $decTax += $amount * (5 / 100);
+                            break;
+                    }
+                }
+            }
+        }
+        $incomeTrendData = array(
+            "income" => ["janIncome" => $janIncome, "febIncome" => $febIncome, "marIncome" => $marIncome, "aprIncome" =>$aprIncome, "mayIncome" => $mayIncome, "junIncome" => $junIncome, "julIncome" => $julIncome, "augIncome" => $augIncome, "sepIncome" => $sepIncome, "octIncome" => $octIncome, "novIncome" => $novIncome, "decIncome" => $decIncome],
+            "tax" => ["janTax" => $janTax, "febTax" => $febTax, "marTax" => $marTax, "aprTax" =>$aprTax, "mayTax" => $mayTax, "junTax" => $junTax, "julTax" => $julTax, "augTax" => $augTax, "sepTax" => $sepTax, "octTax" => $octTax, "novTax" => $novTax, "decTax" => $decTax],
+        );
+        return $incomeTrendData;
     }
 }
