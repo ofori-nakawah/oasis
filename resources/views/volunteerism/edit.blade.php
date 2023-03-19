@@ -29,7 +29,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.volunteerism.publish')}}" method="POST">
+            <form action="{{route('user.posts.update', ["uuid" => $post->id])}}" method="POST">
                 {{csrf_field()}}
                 <div class="">
                     <div class="mb-3">
@@ -190,7 +190,7 @@
                     </div>
                     <div class="text-right">
                         <a href="" onclick="return confirm('Delete post?')" class="btn btn-outline-danger" style="float: left !important;"><b>Remove Post</b></a>
-                        <button class="btn btn-success btn-l"><b>Update</b></button>
+                        <button class="btn btn-success btn-l"><b>Save Changes</b></button>
                     </div>
                 </div>
             </form>

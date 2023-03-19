@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <img src="{{asset('assets/html-template/src/images/nd.svg')}}" style="height: 250px; width: 250px;" alt="">
-                <p style="color: #777;">There are upcoming activities near you at the moment. Come back later.</p>
+                <p style="color: #777;">There are no upcoming activities near you at the moment. Come back later.</p>
             </div>
         </div>
     @else
