@@ -33,7 +33,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Overall Rating</p>
-                            <h5>4.65</h5>
+                            <h5>{{$dashboard_analytics["average_rating"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Jobs Executed</p>
-                            <h5>8</h5>
+                            <h5>{{$dashboard_analytics["number_of_jobs"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Volunteer Hours</p>
-                            <h5>44</h5>
+                            <h5>{{$dashboard_analytics["volunteer_hours"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                     <div class="card card-bordered">
                         <div class="card-body">
                             <p>Activities</p>
-                            <h5>3</h5>
+                            <h5>{{$dashboard_analytics["number_of_activities"]}}</h5>
                         </div>
                     </div>
                 </div>
@@ -67,25 +67,28 @@
 
             <div class="row">
                 <div class="col-md-3">
-                    <div class="card card-bordered" style="height: 240px;">
+                    <div class="card card-bordered" style="height: 270px;">
                         <div class="card-body">
-                            <div class="mt-2">
+                            <div class="mt-4">
                                 <div><b>Income</b></div>
                                 <h4><b class="text-success">GHS</b> <br>
-                                <b class="text-success">64,000</b></h4>
+                                <b class="text-success">{{$dashboard_analytics["total_earnings"]}}</b></h4>
 
                                 <br>
 
                                 <div><b>Est. Income Tax</b></div>
-                                <div><b class="text-danger">GHS 3,000</b></div>
+                                <div><b class="text-danger">GHS {{$dashboard_analytics["estIncomeTax"]}}</b></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-9">
-                    <div class="card card-bordered" style="height: 240px;">
-                        <div class="card-body">
-
+                    <div class="card card-bordered" style="height: 270px;">
+                        <div class="card-body" >
+                            <div style="margin-top: -15px">
+                                <div class="text-center"><b>Income Trend</b></div>
+                                <canvas id="chart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,8 +109,8 @@
                             </li>
 
                     </ul><!-- .nav-tabs -->
-                    <div class="tab-content" style="padding: 0px;min-height: 250px;">
-                        <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;">
+                    <div class="tab-content" style="padding: 0px;min-height: 280px;">
+                        <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;height: 250px;overflow-y: scroll">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -117,20 +120,17 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>0.6</td>
-                                    <td><a href="">Desilting of gutter at Accra Academy school</a></td>
-                                    <td>5</td>
-                                </tr>
-                                <tr>
-                                    <td>2.6</td>
-                                    <td>Beach cleaning at labadi</td>
-                                    <td>5</td>
-                                </tr>
+                                @foreach($opportunities["volunteer_activities"] as $activity)
+                                    <tr>
+                                        <td>{{$activity->distance}}</td>
+                                        <td><a href="{{route("user.volunteerism.show", ["uuid" => $activity->id])}}">{{$activity->name}}</a></td>
+                                        <td>{{$activity->volunteer_hours}}</td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane card-inner" id="quick_job" style="padding: 0px;">
+                        <div class="tab-pane card-inner" id="quick_job" style="padding: 0px;height: 280px;overflow-y: scroll">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -140,16 +140,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>0.6</td>
-                                    <td><a href="">Desilting of gutter at Accra Academy school</a></td>
-                                    <td>500</td>
-                                </tr>
-                                <tr>
-                                    <td>2.6</td>
-                                    <td>Beach cleaning at labadi</td>
-                                    <td>500</td>
-                                </tr>
+                                @foreach($opportunities["quick_jobs"] as $job)
+                                    <tr>
+                                        <td>{{$job->distance}}</td>
+                                        <td><a href="{{route('user.quick_job.show', ['uuid' => $job->id])}}">{{$job->description}}</a></td>
+                                        <td>{{$job->min_budget}} - {{$job->max_budget}}</td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -177,13 +174,23 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>QJ-234333</td>
-                            <td>Bernard Ofori</td>
-                            <td>Painting</td>
-                            <td>400</td>
-                            <td>3.5</td>
-                        </tr>
+                        @if($dashboard_analytics["number_of_jobs"] <= 0)
+                            <tr>
+                                <td colspan="5"><p class="text-center">You have no completed jobs at the moment</p></td>
+                            </tr>
+                        @else
+                            @foreach($job_history as $work)
+                                @if($work->job_post && $work->job_post->type != "VOLUNTEER")
+                                    <tr>
+                                        <td>{{$work->ref_id}}</td>
+                                        <td>{{$work->job_post->user->name}}</td>
+                                        <td>{{$work->job_post->category}}</td>
+                                        <td>GHS {{number_format($work->job_post->final_payment_amount, 2)}}</td>
+                                        <td>{{number_format(($work->rating_and_reviews) ? $work->rating_and_reviews->rating : 0, 2)}}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -191,4 +198,41 @@
         </div>
     </div>
 
+@endsection
+
+@section("scripts")
+    <script src="{{asset('assets/html-template/src/assets/js/example-chart.js?ver=1.4.0"')}}"></script>
+
+    <script>
+        const ctx = document.getElementById('chart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'In-flow',
+                    data: [{{$incomeData["janIncome"]}}, {{$incomeData["febIncome"]}}, {{$incomeData["marIncome"]}}, {{$incomeData["aprIncome"]}}, {{$incomeData["mayIncome"]}}, {{$incomeData["junIncome"]}}, {{$incomeData["julIncome"]}}, {{$incomeData["augIncome"]}}, {{$incomeData["sepIncome"]}}, {{$incomeData["octIncome"]}}, {{$incomeData["novIncome"]}}, {{$incomeData["decIncome"]}}],
+                    borderWidth: 1,
+                    fill: false,
+                    borderColor: 'green'
+                },
+                {
+                    label: 'Out-flow',
+                    data: [{{$taxData["janTax"]}}, {{$taxData["febTax"]}}, {{$taxData["marTax"]}}, {{$taxData["aprTax"]}}, {{$taxData["mayTax"]}}, {{$taxData["junTax"]}}, {{$taxData["julTax"]}}, {{$taxData["augTax"]}}, {{$taxData["sepTax"]}}, {{$taxData["octTax"]}}, {{$taxData["novTax"]}}, {{$taxData["decTax"]}}],
+                    borderWidth: 1,
+                    fill: false,
+                    borderColor: 'red'
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Income Trend',
+                    }
+                }
+            },
+        });
+    </script>
 @endsection
