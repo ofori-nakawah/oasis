@@ -68,7 +68,12 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{route('user.posts.edit', ['uuid' => $_post->id])}}" class="btn btn-outline-warning">Edit</a>
+                        @if($post->status === "closed")
+                            <span>Post Closed</span>
+                        @else
+                            <a href="{{route('user.posts.edit', ['uuid' => $_post->id])}}"
+                               class="btn btn-outline-warning">Edit</a>
+                        @endif
                         <a href="{{route('user.posts.show', ['uuid' => $_post->id])}}"
                            class="btn btn-outline-secondary">Status</a>
                     </div>
