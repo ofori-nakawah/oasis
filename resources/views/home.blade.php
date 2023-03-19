@@ -87,7 +87,7 @@
                         <div class="card-body" >
                             <div style="margin-top: -15px">
                                 <div class="text-center"><b>Income Trend</b></div>
-                                <canvas id="chart"></canvas>
+                                <canvas id="chart" style="height: 230px;"></canvas>
                             </div>
                         </div>
                     </div>
