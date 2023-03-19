@@ -51,8 +51,10 @@
                             </div>
                         </div>
                         <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                            <a href="#" onclick="shareLink()"  style="float: left !important;margin-top: 5px;" data-toggle="modal"
-                               data-target="#sharePostbModal-{{$post->id}}"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
+                            @if($post->status !== "closed")
+                                <a href="#" onclick="shareLink()"  style="float: left !important;margin-top: 5px;" data-toggle="modal"
+                                   data-target="#sharePostbModal-{{$post->id}}"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
+                            @endif
                             <div class="modal modal-lg fade" tabindex="-1" id="sharePostbModal-{{$post->id}}">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -90,7 +92,7 @@
                 @endforeach
             </div>
             <div class="col-md-7 d-none d-md-block">
-                <div class="text-center">
+                <div class="text-center" style="margin-top: 120px;">
                     <img src="{{asset('assets/html-template/src/images/details.svg')}}" alt=""
                          style="height: 250px; width: 250px;">
                     <p style="color: #777;">Select an activity to view more details.</p>
