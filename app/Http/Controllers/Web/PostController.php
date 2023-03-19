@@ -10,7 +10,6 @@ use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -606,11 +605,11 @@ class PostController extends Controller
                 $ratingReview->work_ethic_rating = $request->work_ethic_rating;
                 $ratingReview->professionalism_rating = $request->professionalism_rating;
                 $ratingReview->customer_service_rating = $request->customer_service_rating;
-                $ratingReview->rating = ((float) $request->expertise_rating + (float) $request->work_ethic_rating + (float) $request->professionalism_rating + (float) $request->customer_service_rating) / 4;
+                $ratingReview->rating = ((float)$request->expertise_rating + (float)$request->work_ethic_rating + (float)$request->professionalism_rating + (float)$request->customer_service_rating) / 4;
                 $ratingReview->feedback_message = $request->feedback_message;
                 try {
                     $ratingReview->save();
-                }  catch (QueryException $e) {
+                } catch (QueryException $e) {
                     Log::error("ERROR SAVING RATING REVIEW >>>>>>>>>> " . $ratingReview . " >>>>>>>>> " . $e);
                 }
 
@@ -626,7 +625,7 @@ class PostController extends Controller
                 /**
                  * update user earnings
                  */
-                $participant->total_earnings = (float) $participant->total_earnings + (float) $request->final_payment_amount;
+                $participant->total_earnings = (float)$participant->total_earnings + (float)$request->final_payment_amount;
 
                 /**
                  * update vorker rating
@@ -644,7 +643,7 @@ class PostController extends Controller
                     $post->user;
                     Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     $participant->update();
-                }  catch (QueryException $e) {
+                } catch (QueryException $e) {
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
                 }
                 break;
@@ -700,6 +699,57 @@ class PostController extends Controller
         $post = Post::where("id", $uuid)->first();
         if (!$post) {
             return back()->with("danger", "Error fetching post details");
+        }
+
+        switch ($post->type) {
+            case "VOLUNTEER":
+                $post->name = $request->name;
+                $post->description = $request->description;
+                $post->date = $request->date;
+                $post->time = $request->time;
+                $post->location = $request->location;
+                $post->coords = $request->coords;
+                $post->maximum_number_of_volunteers = $request->maximum_number_of_volunteers;
+                $post->volunteer_hours = $request->volunteer_hours;
+                $post->other_relevant_information = $request->other_relevant_information;
+                break;
+            case "QUICK_JOB":
+                $category = Skill::where("name", $request->category)->first();
+                if (!$category) {
+                    return back()->with("danger", "Error fetching category details");
+                }
+
+                $post->category = $request->category;
+                $post->category_id = $category->id;
+                $post->description = $request->description;
+                $post->date = $request->date;
+                $post->time = $request->time;
+                $post->location = $request->location;
+                $post->coords = $request->coords;
+                $post->max_budget = $request->max_budget;
+                $post->min_budget = $request->min_budget;
+                $post->is_negotiable = $request->negotiable;
+                $post->is_includes_tax = $request->includes_tax;
+                $post->other_relevant_information = $request->other_relevant_information;
+
+                if ($post->post_image && $post->post_image != "") {
+                    //save image
+                    $image = $request->file('post_image');
+                    $name = $post->user_id . '_' . time() . '.' . $image->getClientOriginalExtension();
+                    $destinationPath = public_path('/uploads');
+                    $image->move($destinationPath, $name);
+
+                    $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
+                }
+            break;
+        }
+
+        try {
+            $post->update();
+            return redirect()->route("user.posts.show", ["uuid" => $post->id])->with("success", "Post has been updated successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR UPDATING post >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while updating your post. Kindly try again.");
         }
     }
 

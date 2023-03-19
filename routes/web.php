@@ -59,6 +59,7 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/posts', 'Web\UserController@user_postings')->name('user.posts.list');
     Route::get('/posts/{uuid}/edit', 'Web\PostController@updateUserPost')->name('user.posts.edit');
     Route::get('/posts/{uuid}/show', 'Web\PostController@show_user_post_details')->name('user.posts.show');
+    Route::post('/posts/{uuid}/update', 'Web\PostController@updatePostInformation')->name('user.posts.update');
     Route::post('/close-post', 'Web\PostController@close_post')->name("user.posts.close");
 
     Route::get('/posts/{application_id}/{action}', 'Web\PostController@confirm_decline_applicant')->name('user.posts.confirm_decline_applicant');
@@ -74,6 +75,11 @@ Route::group(['middleware'=>'auth'], function () {
     Route::post('/onboarding/location', 'Web\UserController@update_user_location')->name('onboarding.location.update');
     Route::post('/onboarding/skills-and-interest', 'Web\UserController@update_user_core_skills')->name('onboarding.skills_and_interest.update');
     Route::post('/onboarding/languages', 'Web\UserController@update_user_languages')->name('onboarding.languages.update');
+
+    /**
+     * trainings
+     */
+    Route::get('/training/recommended', 'Web\TrainingController@index')->name('training.index');
 
 });
 
