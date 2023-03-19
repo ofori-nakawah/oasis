@@ -539,11 +539,11 @@ class PostController extends Controller
         $post->user_id = auth()->id();
         $post->type = "QUICK_JOB";
 
-        if ($post->post_image && $post->post_image != "") {
+        if ($request->post_image && $request->post_image != "") {
             //save image
             $image = $request->file('post_image');
-            $name = $post->user_id . '_' . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads');
+            $name = $post->user->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads/quick_jobs');
             $image->move($destinationPath, $name);
 
             $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
