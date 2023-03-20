@@ -156,7 +156,7 @@
                             </li><!-- .nk-menu-item -->
                         </ul><!-- .nk-menu -->
 
-                        <ul class="nk-menu nk-menu-sm" style="margin-top: 70%;">
+                        <ul class="nk-menu nk-menu-sm" >
                             <!-- Menu -->
                             <li class="nk-menu-heading">
                                 <span style="color: #777;">Help Center</span>
@@ -207,10 +207,10 @@
                         <div class="nk-header-tools">
                             <ul class="nk-quick-nav">
                                 <li>
-                                    <a href="{{route("user.volunteerism")}}" class="btn btn-outline-primary"><b>Volunteer</b></a>
+                                    <a href="{{route("user.volunteerism")}}" class="btn btn-outline-success"><b>Volunteer</b></a>
                                 </li>
                                 <li>
-                                    <a href="{{route("user.work")}}" class="btn btn-outline-success"><b>Work</b></a>
+                                    <a href="{{route("user.work")}}" class="btn btn-outline-primary"><b>Work</b></a>
                                 </li>
                                 <li class="dropdown user-dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
