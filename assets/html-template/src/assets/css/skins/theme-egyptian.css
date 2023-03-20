@@ -7,11 +7,11 @@
 **/
 .nk-sidebar.is-dark { background: #0f192a; border-right-color: #1c2f50; }
 
-.nk-sidebar.is-theme { background: #02274d; border-right-color: #03407f; }
+.nk-sidebar.is-theme { background: #02274d; border-right-color: #353299; }
 
 .is-dark .nk-sidebar-head { border-color: #1c2f50; }
 
-.is-theme .nk-sidebar-head { border-color: #03407f; }
+.is-theme .nk-sidebar-head { border-color: #353299; }
 
 .nk-sidebar.is-dark .user-balance-alt, .nk-sidebar.is-theme .user-balance-alt { color: rgba(255, 255, 255, 0.8); }
 
@@ -43,11 +43,11 @@
 
 .is-theme .nk-menu-icon { color: #c9d9ec; }
 
-.is-theme .nk-menu-badge { color: #86b2e8; background: #03407f; }
+.is-theme .nk-menu-badge { color: #9f9ddf; background: #353299; }
 
 .is-theme .short-menu .nk-menu-item.active .nk-menu-link, .is-theme .short-menu .nk-menu-link:hover, .is-theme .short-menu .nk-menu-link.active { background-color: #011325; }
 
-.is-theme .nk-news-icon .icon { color: #4689dc; }
+.is-theme .nk-news-icon .icon { color: #9f9ddf; }
 
 .is-theme .nk-news-text .icon, .is-theme .nk-quick-nav-icon, .is-theme .overline-title { color: #b2c9e4; }
 
@@ -85,11 +85,11 @@ a:hover { color: #1b5091; }
 
 .text-primary-dim { color: #e9eff7 !important; }
 
-.alert-primary, .badge-dim.badge-outline-primary { background-color: #e9eff7; border-color: #a7c1e1; }
+.alert-primary, .badge-dim.badge-outline-primary { background-color: #e9eff7; border-color: #9f9ddf; }
 
 .alert-pro.alert-primary, .badge-primary, .sp-package-choose:checked ~ label, .plan-control:checked + .plan-item-card, .form-control:focus, .form-control.focus, .custom-file-input:focus ~ .custom-file-label, .custom-control-input:focus:not(:checked) ~ .custom-control-label::before, .select2-container--default .select2-selection--single:focus, .select2-container--default.select2-container--focus .select2-selection--multiple { border-color: #353299; }
 
-.nk-order-ovwg-data.sell, .badge-outline-primary { border-color: #a7c1e1; }
+.nk-order-ovwg-data.sell, .badge-outline-primary { border-color: #9f9ddf; }
 
 .dropdown-menu-s1 { border-top-color: #353299; }
 
@@ -127,7 +127,7 @@ a:hover { color: #1b5091; }
 
 .btn-primary.btn-dim { color: #353299; background-color: #e7eef7; border-color: #e7eef7; }
 
-.btn-dim.btn-outline-primary { color: #353299; background-color: #e7eef7; border-color: #a7c1e1; }
+.btn-dim.btn-outline-primary { color: #353299; background-color: #e7eef7; border-color: #9f9ddf; }
 
 .btn-dim.btn-outline-primary.btn-white { background-color: #ffffff; }
 
@@ -167,7 +167,7 @@ a:hover { color: #1b5091; }
 
 .nk-menu-badge { color: #6492ca; background-color: #e9eff7; }
 
-.is-theme .nk-sidebar-footer, .nk-apps-sidebar.is-theme, .is-theme .nk-sidebar-profile-fixed { background: #02274d; border-color: #03407f; }
+.is-theme .nk-sidebar-footer, .nk-apps-sidebar.is-theme, .is-theme .nk-sidebar-profile-fixed { background: #02274d; border-color: #353299; }
 
 .is-theme .wallet-name, .is-theme .wallet-icon, .is-theme .wallet-balance span, .is-theme .nk-menu-footer .nk-menu-link, .is-theme .sub-text, .is-theme .lead-text span { color: #b2c9e4; }
 
