@@ -240,6 +240,6 @@ class UserController extends Controller
 
         auth()->user()->update();
 
-        return redirect()->route("home")->with("success", "Your profile has been updated successfully");
+        return redirect()->route("user.profile", ["user_id" => auth()->id()])->with("success", "Your profile has been updated successfully");
     }
 }

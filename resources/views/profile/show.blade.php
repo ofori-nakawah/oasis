@@ -22,6 +22,17 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-12">
+            <div style="margin-top: 10px;margin-bottom: 18px;">
+                <span
+                    class="@if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"><em
+                        class="icon ni ni-circle-fill @if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"></em> {{($user->status == 1) ? 'active' : 'inactive'}}</span>
+                <span class="text-primary"><em class="icon ni ni-live text-primary"></em> Member since {{$user->created_at}}</span>
+                <span><em class="icon ni ni-eye"></em> Last seen was {{$user->created_at->diffForHumans()}}</span>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-4 text-center">
@@ -119,15 +130,6 @@
             </form>
         </div>
         <div class="col-md-8">
-            <div style="margin-top: 10px;margin-bottom: 18px;">
-                <span
-                    class="@if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"><em
-                        class="icon ni ni-circle-fill @if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"></em> {{($user->status == 1) ? 'active' : 'inactive'}}</span>
-                <span class="text-primary"><em class="icon ni ni-live text-primary"></em> Member since {{$user->created_at}}</span>
-                <span><em class="icon ni ni-eye"></em> Last seen was {{$user->created_at->diffForHumans()}}</span>
-            </div>
-
-
             <div class="row">
                 <div class="col-md-6">
                     <div id="languagesInterestsBox">
@@ -135,10 +137,10 @@
                             <div class="card-header bg-white border-bottom">
                                 <b>Skills & Interests @if($user->id == auth()->user()->id) <a href="{{route("user.profile.skills_and_interest")}}"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b>
                             </div>
-                            <div class="card-body" style="height: 100px;padding-top: 10px;padding-bottom: 10px;">
+                            <div class="card-body" style="height: 125px;padding-top: 10px;padding-bottom: 10px;">
                                 @foreach($skills as $skill)
                                     <span
-                                        class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$skill->skill->name}}</span>
+                                        class="badge badge-md badge-dim badge-pill badge-outline-dark" style="margin-bottom: 5px;">{{$skill->skill->name}}</span>
                                 @endforeach
                             </div>
                         </div>
@@ -146,10 +148,10 @@
                             <div class="card-header bg-white border-bottom">
                                 <b>Languages  @if($user->id == auth()->user()->id) <a href="{{route("user.profile.languages")}}"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b>
                             </div>
-                            <div class="card-body" style="height: 100px;padding-top: 10px;padding-bottom: 10px;">
+                            <div class="card-body" style="height: 125px;padding-top: 10px;padding-bottom: 10px;">
                                 @foreach($languages as $language)
                                     <span
-                                        class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$language->language->name}}</span>
+                                        class="badge badge-md badge-dim badge-pill badge-outline-dark" style="margin-bottom: 5px;">{{$language->language->name}}</span>
                                 @endforeach
                             </div>
                         </div>
@@ -158,26 +160,26 @@
                 <div class="col-md-6">
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom"><b>Analytics</b></div>
-                        <div class="card-body" style="height: 275px;">
-                            <div class="row" style="margin-top: 30px;">
+                        <div class="card-body" style="height: 325px;">
+                            <div class="row" style="margin-top: 80px;">
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-briefcase" style="font-size: 65px;"></em></div>
+                                            <div><em class="icon ni ni-briefcase" style="font-size: 25px;"></em></div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div style="margin-top: 15px;"><b>Jobs</b> <br> {{$number_of_jobs}}</div>
+                                            <div style="margin-top: 0px;"><b>Jobs</b> <br> {{$number_of_jobs}}</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-activity-alt" style="font-size: 65px;"></em>
+                                            <div><em class="icon ni ni-activity-alt" style="font-size: 25px;"></em>
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div style="margin-top: 15px;"><b>Activities</b>
+                                            <div style="margin-top: 0px;"><b>Activities</b>
                                                 <br> {{$number_of_activities}}
                                             </div>
                                         </div>
@@ -189,11 +191,11 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 col-sm-4 col-xs-4 text-center">
-                                            <div><em class="icon ni ni-star-half-fill" style="font-size: 65px;"></em>
+                                            <div><em class="icon ni ni-star-half-fill" style="font-size: 25px;"></em>
                                             </div>
                                         </div>
                                         <div class="col-md-8 col-sm-8 col-xs-8">
-                                            <div style="margin-top: 15px;"><b>Average Rating</b> <br> {{$user->rating}}
+                                            <div style="margin-top: 0px;"><b>Average Rating</b> <br> {{$user->rating}}
                                             </div>
                                         </div>
                                     </div>
@@ -201,10 +203,10 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-clock-fill" style="font-size: 65px;"></em></div>
+                                            <div><em class="icon ni ni-clock-fill" style="font-size: 25px;"></em></div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div style="margin-top: 15px;"><b>Volunteer Hours</b>
+                                            <div style="margin-top: 0px;"><b>Volunteer Hours</b>
                                                 <br> {{$volunteer_hours}}
                                             </div>
                                         </div>
