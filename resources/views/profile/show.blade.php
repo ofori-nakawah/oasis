@@ -146,22 +146,22 @@
         <div class="col-md-4">
             <div class="card card-bordered undelineLinks" style="text-align: left !important;">
                 <div class="card-header bg-white"><b>User Profile Information</b></div>
-                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
                     <a id="vorkHistoryLink" href="#" class="text-muted">Recent VORK History <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
-                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
                     <a id="jobExperienceLink" href="#" class="text-muted">Job Experience Outside VORK <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
-                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
                     <a id="certificationsLink" href="#" class="text-muted">Certifications <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
-                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
                     <a id="educationLink" href="#" class="text-muted">Education <span style="float: right;"><em
                                 class="icon ni ni-chevron-right" style="font-size: 22px;"></em></span></a>
                 </div>
