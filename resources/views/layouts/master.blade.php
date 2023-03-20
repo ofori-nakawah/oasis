@@ -27,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        *, .link, .btn, .nk-block-title, h1, h2, h3, h4, h5, h6, table, div, span, a, p, .nk-iv-wg2-title .title{
+        *, .link, .btn, .nk-block-title, h1, h2, h3, h4, h5, h6, table, div, span, p, .nk-iv-wg2-title .title, .badge{
             /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
             /*font-family: 'Lilita One', cursive;*/
             /*font-family: 'Poppins', sans-serif;*/
@@ -36,7 +36,7 @@
             /*font-family: 'Mukta', Helvetica, 'lato', sans-serif;*/
             /*font-weight: 600 !important;*/
             line-height: 1.5;
-            color: #000;
+            /*color: #000;*/
         }
 
         hr {
@@ -92,6 +92,10 @@
         .modal{z-index: 1060;}
         .modal-backdrop {
             z-index: -1;
+        }
+
+        .undelineLinks a:hover{
+            text-decoration: underline;
         }
 
 
@@ -151,6 +155,31 @@
                                 </a>
                             </li><!-- .nk-menu-item -->
                         </ul><!-- .nk-menu -->
+
+                        <ul class="nk-menu nk-menu-sm" style="margin-top: 70%;">
+                            <!-- Menu -->
+                            <li class="nk-menu-heading">
+                                <span style="color: #777;">Help Center</span>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="https://myvork.com/frequently-asked-questions/" class="nk-menu-link" data-original-title="" title="">
+                                    <span class="nk-menu-text">FAQs</span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=info@myvork.com" onclick="return confirm('Send us an email?')" class="nk-menu-link" data-original-title="" title="">
+                                    <span class="nk-menu-text">Contact</span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=info@myvork.com" class="nk-menu-link" data-original-title="" title=""  onclick="return confirm('Send us an email?')">
+                                    <span class="nk-menu-text">Support</span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item" style="padding: 25px;">
+                                <p><small>Powered by VORK Technologies &copy;{{date('Y')}}</small> <br> <span style="margin-left: 70px;"><small><b> version 1.0.0</b></small></span>
+                            </li>
+                        </ul>
                     </div><!-- .nk-sidebar-menu -->
                 </div><!-- .nk-sidebar-content -->
             </div><!-- .nk-sidebar-element -->

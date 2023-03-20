@@ -32,7 +32,6 @@
             /*font-family: 'Mukta', Helvetica, 'lato', sans-serif;*/
             /*font-weight: 600 !important;*/
             line-height: 1.5;
-            color: #000;
         }
 
         hr {
