@@ -26,11 +26,13 @@
     <div class="row">
         <div class="col-md-4 text-center">
             <div class="card card-bordered">
-                <div class="card-body" style="padding: 0px;height:  240px;">
+                <div class="card-body" style="padding: 0px;height:  270px;">
                     @if($user->image_link)
-                        <img src="{{$user->image_link}}" alt="" style="height: 240px;">
+                        <div class="text-center">
+                            <img src="{{$user->image_link}}" alt="" style="height: 220px;">
+                        </div>
                     @else
-                        <div style="margin-top: 60px;">
+                        <div style="margin-top: 80px;">
                             <em class="icon ni ni-user" style="font-size: 105px"></em>
                         </div>
                     @endif
@@ -51,25 +53,26 @@
                 <span><em class="icon ni ni-eye"></em> Last seen was {{$user->created_at->diffForHumans()}}</span>
             </div>
 
+
             <div class="row">
                 <div class="col-md-6">
                     <div id="languagesInterestsBox">
-                        <div class="card card-bordered1 bg-white">
+                        <div class="card card-bordered bg-white">
                             <div class="card-header bg-white border-bottom">
                                 <b>Skills & Interests</b>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="height: 100px;padding-top: 10px;padding-bottom: 10px;">
                                 @foreach($skills as $skill)
                                     <span
                                         class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$skill->skill->name}}</span>
                                 @endforeach
                             </div>
                         </div>
-                        <div class="card card-bordered1 bg-white" style="margin-top:-15px !important;">
+                        <div class="card card-bordered bg-white">
                             <div class="card-header bg-white border-bottom">
                                 <b>Languages</b>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="height: 100px;padding-top: 10px;padding-bottom: 10px;">
                                 @foreach($languages as $language)
                                     <span
                                         class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$language->language->name}}</span>
@@ -81,7 +84,7 @@
                 <div class="col-md-6">
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom"><b>Analytics</b></div>
-                        <div class="card-body" style="height: 245px;">
+                        <div class="card-body" style="height: 275px;">
                             <div class="row" style="margin-top: 30px;">
                                 <div class="col-md-6">
                                     <div class="row">
@@ -140,9 +143,8 @@
             </div>
         </div>
     </div>
-    <br>
 
-    <div class="row">
+    <div class="row" style="margin-top: 25px;">
         <div class="col-md-4">
             <div class="card card-bordered undelineLinks" style="text-align: left !important;">
                 <div class="card-header bg-white"><b>User Profile Information</b></div>
