@@ -197,22 +197,22 @@
             <div class="card card-bordered undelineLinks" style="text-align: left !important;">
                 <div class="card-header bg-white"><b>User Profile Information</b></div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="vorkHistoryLink" href="#" class="text-muted">Recent VORK History <span
+                    <a id="vorkHistoryLink" href="javascript:void(0)" class="text-muted">Recent VORK History <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="jobExperienceLink" href="#" class="text-muted">Job Experience Outside VORK <span
+                    <a id="jobExperienceLink" href="javascript:void(0)" class="text-muted">Job Experience Outside VORK <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="certificationsLink" href="#" class="text-muted">Certifications <span
+                    <a id="certificationsLink" href="javascript:void(0)" class="text-muted">Certifications <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="educationLink" href="#" class="text-muted">Education <span style="float: right;"><em
+                    <a id="educationLink" href="javascript:void(0)" class="text-muted">Education <span style="float: right;"><em
                                 class="icon ni ni-chevron-right" style="font-size: 22px;"></em></span></a>
                 </div>
             </div>
