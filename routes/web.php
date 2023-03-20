@@ -66,16 +66,20 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/posts/{application_id}/{action}', 'Web\PostController@confirm_decline_applicant')->name('user.posts.confirm_decline_applicant');
 
     /**
-     * profile
-     */
-    Route::get('/profile/{user_id}', 'Web\UserController@user_profile')->name('user.profile');
-
-    /**
      * onboarding
      */
     Route::post('/onboarding/location', 'Web\UserController@update_user_location')->name('onboarding.location.update');
+    Route::get('/profile/update-user-location', 'Web\UserController@set_location')->name('user.profile.updateLocation');
+    Route::get('/profile/update-skills-and-interest', 'Web\UserController@setSkillsAndInterest')->name('user.profile.skills_and_interest');
+    Route::get('/profile/update-languages', 'Web\UserController@setLanguages')->name('user.profile.languages');
     Route::post('/onboarding/skills-and-interest', 'Web\UserController@update_user_core_skills')->name('onboarding.skills_and_interest.update');
     Route::post('/onboarding/languages', 'Web\UserController@update_user_languages')->name('onboarding.languages.update');
+
+    /**
+     * profile
+     */
+    Route::post('/profile/update/{module}', 'Web\UserController@updateProfileInformation')->name('user.updateProfileInformation');
+    Route::get('/profile/{user_id}', 'Web\UserController@user_profile')->name('user.profile');
 
     /**
      * trainings

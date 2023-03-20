@@ -27,22 +27,96 @@
         <div class="col-md-4 text-center">
             <div class="card card-bordered">
                 <div class="card-body" style="padding: 0px;height:  270px;">
-                    @if($user->image_link)
+                    @if($user->profile_picture)
                         <div class="text-center">
-                            <img src="{{$user->image_link}}" alt="" style="height: 220px;">
+                            <img src="{{$user->profile_picture}}" alt="" style="height: 220px;width: 220px;border: 1px solid #ccc;border-radius: 50%;margin-top: 25px;">
+                            <div>@if($user->id == auth()->user()->id) <a href="#"  data-toggle="modal" data-target="#editProfilePicModal"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</div>
+
                         </div>
                     @else
                         <div style="margin-top: 80px;">
                             <em class="icon ni ni-user" style="font-size: 105px"></em>
+                            <div>@if($user->id == auth()->user()->id) <a href="#"  data-toggle="modal" data-target="#editProfilePicModal"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</div>
                         </div>
                     @endif
                 </div>
                 <div class="card-footer bg-white border-top" style="padding-left: 0px;padding-right: 0px;;">
-                    <div><b>{{$user->name}}</b></div>
+                    <div><b>{{$user->name}} @if($user->id == auth()->user()->id) <a href="#"  data-toggle="modal" data-target="#editNameModal"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b></div>
                     <hr>
-                    <div><em class="icon ni ni-map-pin"></em>{{$user->location_name}}</div>
+                    <div><em class="icon ni ni-map-pin"></em>{{$user->location_name}} @if($user->id == auth()->user()->id) <a href="{{route("user.profile.updateLocation")}}"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</div>
                 </div>
             </div>
+
+            <form action="{{route("user.updateProfileInformation", ["module" => "display-name"])}}" method="POST" enctype="multipart/form-data">
+                {{csrf_field()}}
+            <div class="modal modal-lg fade" tabindex="-1" id="editNameModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                            <em class="icon ni ni-cross"></em>
+                        </a>
+                        <div class="modal-header">
+                            <h5 class="modal-title">Update your name</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-control-wrajhgp">
+                                        <input type="text" class="form-control form-control-lg"
+                                               id="name" name="name"
+                                               placeholder="Enter your new name">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-white text-right" style="float: right !important;">
+                            <button style="float: right;" class="btn btn-outline-primary"><b>Save Changes</b></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+            <form action="{{route("user.updateProfileInformation", ["module" => "profile-picture"])}}" method="POST" enctype="multipart/form-data">
+                {{csrf_field()}}
+                <div class="modal modal-lg fade" tabindex="-1" id="editProfilePicModal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                <em class="icon ni ni-cross"></em>
+                            </a>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update your profile picture</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p style="text-align: left;">Choose a picture you want to use as your profile picture</p>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @if($user->profile_picture)
+                                            <div class="text-center">
+                                                <img src="{{$user->profile_picture}}" alt="" style="height: 220px;">
+                                            </div>
+                                        @else
+                                            <div style="margin-top: 20px;margin-bottom: 20px;">
+                                                <em class="icon ni ni-user" style="font-size: 145px"></em>
+                                            </div>
+                                        @endif
+
+                                        <div class="form-control-wrajhgp">
+                                            <input type="file" class="form-control form-control-lg"
+                                                   id="profile_picture" name="profile_picture" accept="image/png, image/gif, image/jpeg, image/jpg"
+                                                   placeholder="Choose a picture">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-white text-right" style="text-align: right !important;">
+                                <button style="float: right;" class="btn btn-outline-primary"><b>Save Changes</b></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="col-md-8">
             <div style="margin-top: 10px;margin-bottom: 18px;">
@@ -59,7 +133,7 @@
                     <div id="languagesInterestsBox">
                         <div class="card card-bordered bg-white">
                             <div class="card-header bg-white border-bottom">
-                                <b>Skills & Interests</b>
+                                <b>Skills & Interests @if($user->id == auth()->user()->id) <a href="{{route("user.profile.skills_and_interest")}}"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b>
                             </div>
                             <div class="card-body" style="height: 100px;padding-top: 10px;padding-bottom: 10px;">
                                 @foreach($skills as $skill)
@@ -70,7 +144,7 @@
                         </div>
                         <div class="card card-bordered bg-white">
                             <div class="card-header bg-white border-bottom">
-                                <b>Languages</b>
+                                <b>Languages  @if($user->id == auth()->user()->id) <a href="{{route("user.profile.languages")}}"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b>
                             </div>
                             <div class="card-body" style="height: 100px;padding-top: 10px;padding-bottom: 10px;">
                                 @foreach($languages as $language)
@@ -217,18 +291,21 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($job_history as $job)
-                                            @if($job->type !== "VOLUNTEER" && $job->status === "closed")
-                                                <tr>
-                                                    <td>{{$job->created_at->diffForHumans()}}</td>
-                                                    <td>{{$job->category}}</td>
-                                                    <td>
-                                                        <div>starts</div>
-                                                        <div>{{$job->rating_and_reviews->feedback_message}}</div>
-                                                    </td>
-                                                </tr>
-                                            @endif
-                                        @endforeach
+                                        @if($number_of_jobs <= 0)
+                                            <tr>
+                                                <td colspan="3"><p class="text-center">You have no completed jobs at the moment</p></td>
+                                            </tr>
+                                        @else
+                                            @foreach($job_history as $work)
+                                                @if($work->job_post && $work->job_post->type != "VOLUNTEER")
+                                                    <tr>
+                                                        <td>{{$work->ref_id}}</td>
+                                                        <td>{{$work->job_post->category}}</td>
+                                                        <td>{{$work->rating_and_reviews->feedback_message}}</td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        @endif
                                         </tbody>
                                     </table>
                                 </div>
@@ -329,6 +406,16 @@
             $("#jobExperienceBox").hide()
             $("#educationBox").hide()
             $("#certificationsBox").hide()
+        }
+
+        function displayImageAttachment(event) {
+            $("#imageInputTrigger").hide()
+            $("#imageAttachment").show()
+            var output = document.getElementById('imageAttachment');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src) // free memory
+            }
         }
     </script>
 @endsection

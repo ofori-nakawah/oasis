@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Language;
 use App\Models\LanguageUser;
 use App\Models\Post;
 use App\Models\Skill;
@@ -195,5 +196,50 @@ class UserController extends Controller
         auth()->user()->update();
 
         return redirect()->route("home")->with("success", "Your languages have been updated successfully");
+    }
+
+    public function set_location()
+    {
+        return view("profile.updateLocation");
+    }
+
+    public function setSkillsAndInterest()
+    {
+        $skills_and_interest = Skill::all();
+        return view("profile.updateSkills", compact("skills_and_interest"));
+    }
+
+    public function setLanguages()
+    {
+        $languages = Language::all();
+        return view("profile.updateLanguages", compact("languages"));
+    }
+
+    public function updateProfileInformation(Request $request, $module)
+    {
+        if (!$module) {
+            return back()->with("danger", "Invalid request");
+        }
+
+        switch($module) {
+            case "display-name":
+                auth()->user()->name = $request->name;
+                break;
+            case "profile-picture":
+                if ($request->profile_picture && $request->profile_picture != "") {
+                    //save image
+                    $image = $request->file('profile_picture');
+                    $name = auth()->user()->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+                    $destinationPath = public_path('/uploads/profile_pics');
+                    $image->move($destinationPath, $name);
+
+                    auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
+                }
+                break;
+        }
+
+        auth()->user()->update();
+
+        return redirect()->route("home")->with("success", "Your profile has been updated successfully");
     }
 }
