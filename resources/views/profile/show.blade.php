@@ -89,21 +89,21 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-briefcase" style="font-size: 30px;"></em></div>
+                                            <div><em class="icon ni ni-briefcase" style="font-size: 65px;"></em></div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div style="margin-top: 0px;;"><b>Jobs</b> <br> {{$number_of_jobs}}</div>
+                                            <div style="margin-top: 15px;"><b>Jobs</b> <br> {{$number_of_jobs}}</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-activity-alt" style="font-size: 30px;"></em>
+                                            <div><em class="icon ni ni-activity-alt" style="font-size: 65px;"></em>
                                             </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div style="margin-top: 0px;"><b>Activities</b>
+                                            <div style="margin-top: 15px;"><b>Activities</b>
                                                 <br> {{$number_of_activities}}
                                             </div>
                                         </div>
@@ -115,11 +115,11 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 col-sm-4 col-xs-4 text-center">
-                                            <div><em class="icon ni ni-star-half-fill" style="font-size: 30px;"></em>
+                                            <div><em class="icon ni ni-star-half-fill" style="font-size: 65px;"></em>
                                             </div>
                                         </div>
                                         <div class="col-md-8 col-sm-8 col-xs-8">
-                                            <div style="margin-top: 0px;;"><b>Average Rating</b> <br> {{$user->rating}}
+                                            <div style="margin-top: 15px;"><b>Average Rating</b> <br> {{$user->rating}}
                                             </div>
                                         </div>
                                     </div>
@@ -127,10 +127,10 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-clock-fill" style="font-size: 30px;"></em></div>
+                                            <div><em class="icon ni ni-clock-fill" style="font-size: 65px;"></em></div>
                                         </div>
                                         <div class="col-md-8">
-                                            <div style="margin-top: 0px;;"><b>Volunteer Hours</b>
+                                            <div style="margin-top: 15px;"><b>Volunteer Hours</b>
                                                 <br> {{$volunteer_hours}}
                                             </div>
                                         </div>
@@ -172,7 +172,7 @@
         <div class="col-md-8">
             <div id="infoContentBox">
                 <div id="emptyState">
-                    <div class="text-center" style="margin-top: 0px;">
+                    <div class="text-center" style="margin-top: 10px;">
                         <img src="{{asset('assets/html-template/src/images/details.svg')}}" alt=""
                              style="height: 200px; width: 200px;">
                         <p style="color: #777;">Click on link you get information.</p>
