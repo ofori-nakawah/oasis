@@ -122,8 +122,8 @@
                             @foreach($post->applications as $applicant)
                                 <div class="row">
                                     <div class="col-md-3 text-center">
-                                        @if($applicant->user->image_link)
-                                            <img src="{{$applicant->user->image_link}}" alt="">
+                                        @if($applicant->user->profile_picture)
+                                            <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
                                         @else
                                             <em class="icon ni ni-user" style="font-size: 80px;"></em>
                                         @endif
@@ -162,8 +162,8 @@
                                 @if($applicant->user->id == $post->confirmed_applicant_id)
                                     <div class="row">
                                         <div class="col-md-3 text-center">
-                                            @if($applicant->user->image_link)
-                                                <img src="{{$applicant->user->image_link}}" alt="">
+                                            @if($applicant->user->profile_picture)
+                                                <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
                                             @else
                                                 <em class="icon ni ni-user" style="font-size: 40px;"></em>
                                             @endif
@@ -384,8 +384,8 @@
                             @foreach($post->applications as $applicant)
                                 <div class="row">
                                     <div class="col-md-3 text-center">
-                                        @if($applicant->user->image_link)
-                                            <img src="{{$applicant->user->image_link}}" alt="">
+                                        @if($applicant->user->profile_picture)
+                                            <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
                                         @else
                                             <em class="icon ni ni-user" style="font-size: 80px;"></em>
                                         @endif
@@ -435,8 +435,8 @@
                                 @if($applicant->status == "confirmed")
                                     <div class="row">
                                         <div class="col-md-3 text-center">
-                                            @if($applicant->user->image_link)
-                                                <img src="{{$applicant->user->image_link}}" alt="">
+                                            @if($applicant->user->profile_picture)
+                                                <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
                                             @else
                                                 <em class="icon ni ni-user" style="font-size: 40px;"></em>
                                             @endif
@@ -489,8 +489,8 @@
                                     @foreach($post->applications->where("status", "confirmed") as $applicant)
                                         <div class="row">
                                             <div class="col-md-2 col-lg-2 col-sm-2 text-center">
-                                                @if($applicant->user->image_link)
-                                                    <img src="{{$applicant->user->image_link}}" alt="">
+                                                @if($applicant->user->profile_picture)
+                                                    <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
                                                 @else
                                                     <em class="icon ni ni-user" style="font-size: 40px;"></em>
                                                 @endif
