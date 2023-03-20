@@ -26,11 +26,11 @@
     <div class="row">
         <div class="col-md-4 text-center">
             <div class="card card-bordered">
-                <div class="card-body" style="padding: 0px;height:  180px;">
+                <div class="card-body" style="padding: 0px;height:  240px;">
                     @if($user->image_link)
-                        <img src="{{$user->image_link}}" alt="" style="height: 180px;">
+                        <img src="{{$user->image_link}}" alt="" style="height: 240px;">
                     @else
-                        <div style="margin-top: 25px;">
+                        <div style="margin-top: 60px;">
                             <em class="icon ni ni-user" style="font-size: 105px"></em>
                         </div>
                     @endif
@@ -51,52 +51,86 @@
                 <span><em class="icon ni ni-eye"></em> Last seen was {{$user->created_at->diffForHumans()}}</span>
             </div>
 
-
-            <div class="card card-bordered">
-                <div class="card-header bg-white border-bottom"><b>Analytics</b></div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-4 text-center">
-                                    <div><em class="icon ni ni-briefcase" style="font-size: 60px;"></em></div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div style="margin-top: 15px;"><b>Jobs</b> <br> {{$number_of_jobs}}</div>
-                                </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="languagesInterestsBox">
+                        <div class="card card-bordered1 bg-white">
+                            <div class="card-header bg-white border-bottom">
+                                <b>Skills & Interests</b>
+                            </div>
+                            <div class="card-body">
+                                @foreach($skills as $skill)
+                                    <span
+                                        class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$skill->skill->name}}</span>
+                                @endforeach
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-4 text-center">
-                                    <div><em class="icon ni ni-activity-alt" style="font-size: 60px;"></em></div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div style="margin-top: 15px;"><b>Activities</b> <br> {{$number_of_activities}}
-                                    </div>
-                                </div>
+                        <div class="card card-bordered1 bg-white" style="margin-top:-15px !important;">
+                            <div class="card-header bg-white border-bottom">
+                                <b>Languages</b>
+                            </div>
+                            <div class="card-body">
+                                @foreach($languages as $language)
+                                    <span
+                                        class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$language->language->name}}</span>
+                                @endforeach
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-4 col-sm-4 col-xs-4 text-center">
-                                    <div><em class="icon ni ni-star-half-fill" style="font-size: 60px;"></em></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white border-bottom"><b>Analytics</b></div>
+                        <div class="card-body" style="height: 245px;">
+                            <div class="row" style="margin-top: 30px;">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <div><em class="icon ni ni-briefcase" style="font-size: 30px;"></em></div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div style="margin-top: 0px;;"><b>Jobs</b> <br> {{$number_of_jobs}}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-8 col-sm-8 col-xs-8">
-                                    <div style="margin-top: 15px;"><b>Average Rating</b> <br> {{$user->rating}}</div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <div><em class="icon ni ni-activity-alt" style="font-size: 30px;"></em>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div style="margin-top: 0px;"><b>Activities</b>
+                                                <br> {{$number_of_activities}}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-4 text-center">
-                                    <div><em class="icon ni ni-clock-fill" style="font-size: 60px;"></em></div>
+                            <br>
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4 col-xs-4 text-center">
+                                            <div><em class="icon ni ni-star-half-fill" style="font-size: 30px;"></em>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8 col-xs-8">
+                                            <div style="margin-top: 0px;;"><b>Average Rating</b> <br> {{$user->rating}}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div style="margin-top: 15px;"><b>Volunteer Hours</b> <br> {{$volunteer_hours}}
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <div><em class="icon ni ni-clock-fill" style="font-size: 30px;"></em></div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div style="margin-top: 0px;;"><b>Volunteer Hours</b>
+                                                <br> {{$volunteer_hours}}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -104,8 +138,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
     <br>
@@ -113,76 +145,58 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card card-bordered undelineLinks" style="text-align: left !important;">
-                <div class="card-header bg-white border-bottom"><b>User Profile Information</b></div>
-                <div class="card-body">
-                    <a id="skillsInterestLanguageLink" href="#" class="text-muted">Skills, Interests and Languages</a>
+                <div class="card-header bg-white"><b>User Profile Information</b></div>
+                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                    <a id="vorkHistoryLink" href="#" class="text-muted">Recent VORK History <span
+                            style="float: right;"><em class="icon ni ni-chevron-right"
+                                                      style="font-size: 22px;"></em></span></a>
                 </div>
-                <div class="card-body border-top">
-                    <a id="educationLink" href="#" class="text-muted">Education</a>
+                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                    <a id="jobExperienceLink" href="#" class="text-muted">Job Experience Outside VORK <span
+                            style="float: right;"><em class="icon ni ni-chevron-right"
+                                                      style="font-size: 22px;"></em></span></a>
                 </div>
-                <div class="card-body border-top">
-                    <a id="vorkHistoryLink" href="#" class="text-muted">Recent VORK History</a>
+                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                    <a id="certificationsLink" href="#" class="text-muted">Certifications <span
+                            style="float: right;"><em class="icon ni ni-chevron-right"
+                                                      style="font-size: 22px;"></em></span></a>
                 </div>
-                <div class="card-body border-top">
-                    <a id="jobExperienceLink" href="#" class="text-muted">Job Experience Outside VORK</a>
-                </div>
-                <div class="card-body border-top">
-                    <a id="certificationsLink" href="#" class="text-muted">Certifications</a>
+                <div class="card-body border-top" style="padding-top: 10px;padding-bottom: 5px;">
+                    <a id="educationLink" href="#" class="text-muted">Education <span style="float: right;"><em
+                                class="icon ni ni-chevron-right" style="font-size: 22px;"></em></span></a>
                 </div>
             </div>
         </div>
         <div class="col-md-8">
             <div id="infoContentBox">
                 <div id="emptyState">
-                    <div class="text-center" style="margin-top: 25px;">
+                    <div class="text-center" style="margin-top: 0px;">
                         <img src="{{asset('assets/html-template/src/images/details.svg')}}" alt=""
-                             style="height: 250px; width: 250px;">
+                             style="height: 200px; width: 200px;">
                         <p style="color: #777;">Click on link you get information.</p>
                     </div>
                 </div>
                 <div id="loadingState">
                     <p class="text-center" style="color: #777;margin-top: 25px;">Loading...</p>
                 </div>
-                <div id="languagesInterestsBox">
-                    <div class="card card-bordered bg-white">
-                        <div class="card-header bg-white border-bottom">
-                            <b>Skills & Interests</b>
-                        </div>
-                        <div class="card-body">
-                            @foreach($skills as $skill)
-                                <span
-                                    class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$skill->skill->name}}</span>
-                            @endforeach
-                        </div>
-                    </div>
-                    <br>
-                    <div class="card card-bordered bg-white">
-                        <div class="card-header bg-white border-bottom">
-                            <b>Languages</b>
-                        </div>
-                        <div class="card-body">
-                            @foreach($languages as $language)
-                                <span
-                                    class="badge badge-md badge-dim badge-pill badge-outline-dark">{{$language->language->name}}</span>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
                 <div id="educationBox">
-                    <div class="text-center" style="margin-top: 25px;">
-                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}" style="height: 250px;width: 250px;" alt="">
+                    <div class="text-center" style="margin-top: 0px;">
+                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"
+                             style="height: 200px; width: 200px" alt="">
                         <p style="color: #777;">This feature is in maintenance mode. Come back later</p>
                     </div>
                 </div>
                 <div id="jobExperienceBox">
-                    <div class="text-center" style="margin-top: 25px;">
-                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}" style="height: 250px;width: 250px;" alt="">
+                    <div class="text-center" style="margin-top: 0px;">
+                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"
+                             style="height: 200px; width: 200px" alt="">
                         <p style="color: #777;">This feature is in maintenance mode. Come back later</p>
                     </div>
                 </div>
                 <div id="certificationsBox">
-                    <div class="text-center" style="margin-top: 25px;">
-                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}" style="height: 250px;width: 250px;" alt="">
+                    <div class="text-center" style="margin-top: 0px;">
+                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"
+                             style="height: 200px; width: 200px" alt="">
                         <p style="color: #777;">This feature is in maintenance mode. Come back later</p>
                     </div>
                 </div>
@@ -229,25 +243,25 @@
     <script>
         $("#emptyState").show()
         $("#loadingState").hide()
-        $("#languagesInterestsBox").hide()
+        // $("#languagesInterestsBox").hide()
         $("#vorkHistoryBox").hide()
         $("#jobExperienceBox").hide()
         $("#educationBox").hide()
         $("#certificationsBox").hide()
 
-        $("#skillsInterestLanguageLink").on("click", function () {
-            clearContentBox()
-            $("#loadingState").show()
-            $("#emptyState").hide()
-            $("#vorkHistoryBox").hide()
-            $("#jobExperienceBox").hide()
-            $("#educationBox").hide()
-            $("#certificationsBox").hide()
-            setTimeout(function () {
-                $("#loadingState").hide()
-                $("#languagesInterestsBox").show()
-            }, 2000)
-        })
+        // $("#skillsInterestLanguageLink").on("click", function () {
+        //     clearContentBox()
+        //     $("#loadingState").show()
+        //     $("#emptyState").hide()
+        //     $("#vorkHistoryBox").hide()
+        //     $("#jobExperienceBox").hide()
+        //     $("#educationBox").hide()
+        //     $("#certificationsBox").hide()
+        //     setTimeout(function () {
+        //         $("#loadingState").hide()
+        //         $("#languagesInterestsBox").show()
+        //     }, 2000)
+        // })
 
         $("#educationLink").on("click", function () {
             clearContentBox()
@@ -255,7 +269,7 @@
             $("#emptyState").hide()
             $("#vorkHistoryBox").hide()
             $("#jobExperienceBox").hide()
-            $("#languagesInterestsBox").hide()
+            // $("#languagesInterestsBox").hide()
             $("#certificationsBox").hide()
             setTimeout(function () {
                 $("#loadingState").hide()
@@ -269,7 +283,7 @@
             $("#emptyState").hide()
             $("#vorkHistoryBox").hide()
             $("#jobExperienceBox").hide()
-            $("#languagesInterestsBox").hide()
+            // $("#languagesInterestsBox").hide()
             $("#certificationsBox").hide()
             setTimeout(function () {
                 $("#loadingState").hide()
@@ -283,7 +297,7 @@
             $("#emptyState").hide()
             $("#vorkHistoryBox").hide()
             $("#jobExperienceBox").hide()
-            $("#languagesInterestsBox").hide()
+            // $("#languagesInterestsBox").hide()
             $("#certificationsBox").hide()
             setTimeout(function () {
                 $("#loadingState").hide()
@@ -297,7 +311,7 @@
             $("#emptyState").hide()
             $("#vorkHistoryBox").hide()
             $("#jobExperienceBox").hide()
-            $("#languagesInterestsBox").hide()
+            // $("#languagesInterestsBox").hide()
             $("#certificationsBox").hide()
             setTimeout(function () {
                 $("#loadingState").hide()
@@ -308,7 +322,7 @@
         function clearContentBox() {
             $("#emptyState").hide()
             $("#loadingState").hide()
-            $("#languagesInterestsBox").hide()
+            // $("#languagesInterestsBox").hide()
             $("#vorkHistoryBox").hide()
             $("#jobExperienceBox").hide()
             $("#educationBox").hide()
