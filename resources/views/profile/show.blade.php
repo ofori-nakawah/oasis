@@ -58,6 +58,8 @@
                 </div>
             </div>
 
+            <br>
+
             <form action="{{route("user.updateProfileInformation", ["module" => "display-name"])}}" method="POST" enctype="multipart/form-data">
                 {{csrf_field()}}
             <div class="modal modal-lg fade" tabindex="-1" id="editNameModal">
@@ -144,7 +146,8 @@
                                 @endforeach
                             </div>
                         </div>
-                        <div class="card card-bordered bg-white">
+                        <br>
+                        <div class="card card-bordered bg-white" style="margin-top: 5px;">
                             <div class="card-header bg-white border-bottom">
                                 <b>Languages  @if($user->id == auth()->user()->id) <a href="{{route("user.profile.languages")}}"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b>
                             </div>
@@ -156,61 +159,29 @@
                             </div>
                         </div>
                     </div>
+                    <br>
                 </div>
                 <div class="col-md-6">
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom"><b>Analytics</b></div>
-                        <div class="card-body" style="height: 325px;">
-                            <div class="row" style="margin-top: 80px;">
+                        <div class="card-body" style="min-height: 325px;">
+                            <div class="row" style="margin-top: 60px;">
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-briefcase" style="font-size: 25px;"></em></div>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div style="margin-top: 0px;"><b>Jobs</b> <br> {{$number_of_jobs}}</div>
-                                        </div>
-                                    </div>
+                                    <h6 class="ndf"><em class="icon ni ni-briefcase"></em> Jobs <br style="color: #000;"> {{$number_of_jobs}}</h6>
+                                    <br>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-activity-alt" style="font-size: 25px;"></em>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div style="margin-top: 0px;"><b>Activities</b>
-                                                <br> {{$number_of_activities}}
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <h6 class="nk-blosdfck-title pafge-title"><em class="icon ni ni-activity-alt"></em> Activities <br style="color: #000;"> {{$number_of_activities}}</h6>
                                 </div>
                             </div>
-                            <br>
+
                             <div class="row" style="margin-top: 20px;">
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-4 col-sm-4 col-xs-4 text-center">
-                                            <div><em class="icon ni ni-star-half-fill" style="font-size: 25px;"></em>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8 col-sm-8 col-xs-8">
-                                            <div style="margin-top: 0px;"><b>Average Rating</b> <br> {{$user->rating}}
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <h6><em class="icon ni ni-star-half-fill"></em> Average Rating <br style="color: #000;"> {{$user->rating}}</h6>
+                                    <br>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-4 text-center">
-                                            <div><em class="icon ni ni-clock-fill" style="font-size: 25px;"></em></div>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div style="margin-top: 0px;"><b>Volunteer Hours</b>
-                                                <br> {{$volunteer_hours}}
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <h6><em class="icon ni ni-clock"></em> Volunteer Hours <br style="color: #000;"> {{$volunteer_hours}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -219,8 +190,9 @@
             </div>
         </div>
     </div>
+    <br>
 
-    <div class="row" style="margin-top: 25px;">
+    <div class="row">
         <div class="col-md-4">
             <div class="card card-bordered undelineLinks" style="text-align: left !important;">
                 <div class="card-header bg-white"><b>User Profile Information</b></div>
@@ -244,6 +216,7 @@
                                 class="icon ni ni-chevron-right" style="font-size: 22px;"></em></span></a>
                 </div>
             </div>
+            <br>
         </div>
         <div class="col-md-8">
             <div id="infoContentBox">
