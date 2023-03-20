@@ -39,6 +39,10 @@
             /*color: #000;*/
         }
 
+        .chartjs-render-monitor{
+            height: 235px;
+        }
+
         hr {
             border-top: none;
             border-bottom: 1px solid #dbdfea;
