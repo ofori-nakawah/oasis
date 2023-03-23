@@ -23,6 +23,17 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $request->email_or_phone_number, 'password' => $request->password], $request->remember) || Auth::attempt(['phone_number' => $request->email_or_phone_number, 'password' => $request->password], $request->remember)){
+            /**
+             * check the user verification status
+             */
+            if (!Auth::user()->phone_number_verified_at) {
+                /**
+                 * remove all user sessions
+                 */
+                session()->flush();
+
+                return redirect()->route('onboarding.verify_phone_number', ['uuid' => Auth::id()])->with("info", "We noticed you haven't verified your account. A verification code was sent to your phone number.");
+            }
             return redirect()->intended(route('home'));
         }
 
