@@ -276,7 +276,7 @@
                                                     <tr>
                                                         <td>{{$work->ref_id}}</td>
                                                         <td>{{$work->job_post->category}}</td>
-                                                        <td>{{$work->rating_and_reviews->feedback_message}}</td>
+                                                        <td>{{$work->rating_and_reviews && $work->rating_and_reviews->feedback_message}}</td>
                                                     </tr>
                                                 @endif
                                             @endforeach
