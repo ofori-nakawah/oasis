@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -227,6 +228,11 @@ class UserController extends Controller
         return view("profile.updateLanguages", compact("languages"));
     }
 
+    public function updatePassword()
+    {
+        return view("profile.updatePassword");
+    }
+
     public function updateProfileInformation(Request $request, $module)
     {
         if (!$module) {
@@ -248,9 +254,30 @@ class UserController extends Controller
                     auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
                 }
                 break;
-        }
+            case "update-password":
+                $errors = new MessageBag();
+                if (!Hash::check($request->old_password, auth()->user()->password)){
+                    $errors->add("old_password", "The old password you entered does not match.");
+                    return back()->withErrors($errors)->with("danger", "Oops...something went wrong.");
+                }
 
-        auth()->user()->update();
+                $validation = Validator::make($request->all(), [
+                    'old_password' => 'required',
+                    'password' => 'required|confirmed',
+                    'password_confirmation' => 'required',
+                ]);
+
+                if ($validation->fails()) {
+                    return back()->withErrors($validation->errors())->with("danger", "Oops. We encountered an issue updating your password. Kindly try again.");
+                }
+
+                auth()->user()->password = Hash::make($request->password);
+                auth()->user()->update();
+
+                return redirect()->route("home")->with("success", "Your password has been changed successfully");
+
+                break;
+        }
 
         return redirect()->route("user.profile", ["user_id" => auth()->id()])->with("success", "Your profile has been updated successfully");
     }

@@ -243,7 +243,7 @@
                                         <div class="dropdown-inner">
                                             <ul class="link-list">
                                                 <li><a href="{{route('user.profile', ['user_id' => auth()->id()])}}"><em class="icon ni ni-user-alt"></em><span>View Profile</span></a></li>
-                                                {{--                                                <li><a href="javascript:void(0);"><em class="icon ni ni-setting-alt"></em><span>Account Setting</span></a></li>--}}
+                                                                                                <li><a href="{{route('user.updatePassword')}}"><em class="icon ni ni-lock-alt"></em><span>Change My Password</span></a></li>
                                                 {{--                                                <li><a href="javascript:void(0);"><em class="icon ni ni-activity-alt"></em><span>Login Activity</span></a></li>--}}
                                             </ul>
                                         </div>
