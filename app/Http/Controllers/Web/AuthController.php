@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -36,6 +37,13 @@ class AuthController extends Controller
         }
 
         if (Auth::attempt(['email' => $request->email_or_phone_number, 'password' => $request->password], $request->remember) || Auth::attempt(['phone_number' => $request->email_or_phone_number, 'password' => $request->password], $request->remember)){
+            /**
+             * update users last seen and online status
+             */
+            Auth::user()->last_seen = Carbon::now();
+            Auth::user()->is_online = true;
+            Auth::user()->update();
+
             return redirect()->intended(route('home'));
         }
 
@@ -44,10 +52,17 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        /**
+         * update online status
+         */
+        Auth::user()->is_online = false;
+        Auth::user()->update();
+
+        /**
+         * logout user
+         */
         Auth::guard('user')->logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/login');

@@ -20,23 +20,47 @@ class CreateSkillsTable extends Migration
         });
 
         $skill = new \App\Models\Skill();
+        $skill->name = "Actor";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "App developer";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "Architecture/Draftsman";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "Audio engineer";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "Baker";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "Barber";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "Barrister/Lawyer/Solicitor";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "Camera/Video operations";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
+        $skill->name = "Carer";
+        $skill->save();
+
+        $skill = new \App\Models\Skill();
         $skill->name = "Carpenter";
         $skill->save();
 
         $skill = new \App\Models\Skill();
-        $skill->name = "Hairdresser";
-        $skill->save();
-
-        $skill = new \App\Models\Skill();
-        $skill->name = "Plumber";
-        $skill->save();
-
-        $skill = new \App\Models\Skill();
-        $skill->name = "Shoemaker";
-        $skill->save();
-
-        $skill = new \App\Models\Skill();
-        $skill->name = "Mason";
+        $skill->name = "Chef/Caterer";
         $skill->save();
     }
 
