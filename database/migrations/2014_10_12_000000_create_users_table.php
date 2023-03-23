@@ -27,7 +27,9 @@ class CreateUsersTable extends Migration
             $table->string('profile_picture')->nullable();
             $table->string('location_name')->nullable();
             $table->string('location_coords')->nullable();
+            $table->dateTime('last_seen')->nullable();
             $table->string('fcm_token')->nullable();
+            $table->boolean('is_online')->default(false);
             $table->string('volunteer_hours')->default(0);
             $table->string('is_core_skills_set')->default(0);
             $table->string('is_languages_set')->default(0);

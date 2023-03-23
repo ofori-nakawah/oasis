@@ -160,7 +160,7 @@
                             </li><!-- .nk-menu-item -->
                         </ul><!-- .nk-menu -->
 
-                        <ul class="nk-menu nk-menu-sm" >
+                        <ul class="nk-menu nk-menu-sm" style="bottom: 10px !important;position: absolute">
                             <!-- Menu -->
                             <li class="nk-menu-heading">
                                 <span style="color: #777;">Help Center</span>

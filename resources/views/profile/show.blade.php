@@ -29,7 +29,7 @@
                     class="@if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"><em
                         class="icon ni ni-circle-fill @if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"></em> {{($user->status == 1) ? 'active' : 'inactive'}}</span>
                 <span class="text-primary"><em class="icon ni ni-live text-primary"></em> Member since {{$user->created_at}}</span>
-                <span><em class="icon ni ni-eye"></em> Last seen was {{$user->created_at->diffForHumans()}}</span>
+                <span><em class="icon ni ni-eye"></em> @if($user->is_online) <span class="text-success">online</span> @else Last seen was {{($user->last_seen) ? $user->last_seen->diffForHumans() : ' a while back'}} @endif</span>
             </div>
         </div>
     </div>
