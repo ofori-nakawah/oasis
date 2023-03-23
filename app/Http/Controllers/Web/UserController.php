@@ -84,7 +84,19 @@ class UserController extends Controller
 
     public function my_wallet()
     {
-        return view("wallet.index");
+        $jobCount = 0;
+        $job_history = auth()->user()->job_applications->where("status", "confirmed");
+        foreach ($job_history as $vork) {
+            $vork->hasTransaction = false;
+            if ($vork->job_post->type !== "VOLUNTEER" && $vork->status === "closed") {
+                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
+                $vork->hasTransaction = true;
+                $jobCount++;
+            }
+
+            $vork->job_post;
+        }
+        return view("wallet.index", compact("job_history", "jobCount"));
     }
 
     public function user_postings()
