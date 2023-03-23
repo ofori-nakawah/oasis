@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\Country;
+use App\Models\Country as CountryConfig;
 use App\Models\User;
 use App\Traits\Responses;
 use Carbon\Carbon;
@@ -12,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
-use App\Models\Country as CountryConfig;
 use App\Models\OneTimePassword as OTP;
 use Illuminate\Support\Str;
 
@@ -34,6 +34,7 @@ class OnboardingController extends Controller
         ]);
 
         if ($validation->fails()) {return back()->withErrors($validation->errors());}
+
 //        /**
 //         * Let get country config and check if phone number is required
 //         * Get the verification medium based on the users country
@@ -41,10 +42,19 @@ class OnboardingController extends Controller
         $country = CountryConfig::GetCountry($request->input("country"));
         if (!$country) {return back()->with("danger", "Error fetching countries list");}
 
+        $errors = new MessageBag();
+
+        $isPhoneNumberTaken = User::where("phone_number", CountryConfig::GetIntPhoneNumber($country["name"], $request->input("phone_number")))->count();
+
+        if ($isPhoneNumberTaken != 0) {
+            $errors->add("phone_number", "This phone number is already taken");
+            {return back()->withErrors($errors);}
+        }
+
+
         if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
-            $errors = new MessageBag();
             $errors->add("phone_number", "The phone number field is required");
-            {return back()->withErrors($validation->errors());}
+            {return back()->withErrors($errors);}
         }
 
         $user = new User();

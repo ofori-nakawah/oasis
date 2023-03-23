@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -22,18 +24,18 @@ class AuthController extends Controller
             'password' => 'required|min:4'
         ]);
 
-        if (Auth::attempt(['email' => $request->email_or_phone_number, 'password' => $request->password], $request->remember) || Auth::attempt(['phone_number' => $request->email_or_phone_number, 'password' => $request->password], $request->remember)){
-            /**
-             * check the user verification status
-             */
-            if (!Auth::user()->phone_number_verified_at) {
-                /**
-                 * remove all user sessions
-                 */
-                session()->flush();
+        $user = User::where("email", $request->email_or_phone_number)->orWhere("phone_number",  $request->email_or_phone_number)->first();
+        if (!$user) {
+            return redirect()->back()->withInput($request->only('email', 'remember'))->with("danger","Error. Invalid login credentials.");
+        }
 
-                return redirect()->route('onboarding.verify_phone_number', ['uuid' => Auth::id()])->with("info", "We noticed you haven't verified your account. A verification code was sent to your phone number.");
+        if (Hash::check($request->password, $user->password)){
+            if ($user->phone_number_verified_at === null) {
+                return redirect()->route('onboarding.verify_phone_number', ['uuid' => $user->id])->with("info", "We noticed your phone number has not been verified. A confirmation code has been sent to your phone number.");
             }
+        }
+
+        if (Auth::attempt(['email' => $request->email_or_phone_number, 'password' => $request->password], $request->remember) || Auth::attempt(['phone_number' => $request->email_or_phone_number, 'password' => $request->password], $request->remember)){
             return redirect()->intended(route('home'));
         }
 
