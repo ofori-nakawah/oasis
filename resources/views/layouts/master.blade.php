@@ -176,7 +176,7 @@
                                 </a>
                             </li>
                             <li class="nk-menu-item">
-                                <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=info@myvork.com" class="nk-menu-link" data-original-title="" title=""  onclick="return confirm('Send us an email?')">
+                                <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=support@myvork.com" class="nk-menu-link" data-original-title="" title=""  onclick="return confirm('Send us an email?')">
                                     <span class="nk-menu-text">Support</span>
                                 </a>
                             </li>
