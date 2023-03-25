@@ -38,7 +38,7 @@ class UserController extends Controller
      */
     public function get_user_notifications()
     {
-        $notifications = auth()->user()->notifications->map(function ($notification) {
+        $notifications = auth()->user()->notifications->sortByDesc("created_at")->map(function ($notification) {
             $notification["group_id"] = $notification->data["post"]["id"];
             $notification->update();
             $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
@@ -76,7 +76,7 @@ class UserController extends Controller
             }
         }
 
-        $notifications = auth()->user()->notifications->map(function ($notification) {
+        $notifications = auth()->user()->notifications->sortByDesc("created_at")->map(function ($notification) {
             return $notification;
         })->unique("group_id");
 
@@ -103,7 +103,7 @@ class UserController extends Controller
 
     public function user_postings()
     {
-        $posts = auth()->user()->posts->whereNull('deleted_at');
+        $posts = auth()->user()->posts->sortByDesc("created_at")->whereNull('deleted_at');
         return view("postings.index", compact("posts"));
     }
 

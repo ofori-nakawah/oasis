@@ -55,7 +55,7 @@ trait OpportunitiesAroundMe
 
             return $post;
         });
-        return $volunteer_near_me;
+        return $volunteer_near_me->sortBy("distance");;
     }
 
     private static function QuickJobs($search_radius)
@@ -101,7 +101,7 @@ trait OpportunitiesAroundMe
                 }
             }
         }
-        return $jobs_near_me;
+        return $jobs_near_me->sortBy("distance");;
     }
 
     public static function GetOpportunitiesAroundMe($search_radius) {

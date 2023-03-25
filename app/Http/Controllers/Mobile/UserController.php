@@ -39,6 +39,10 @@ class UserController extends Controller
      */
     public function update_user_core_skills(Request $request)
     {
+        if (count($request->skills_and_interest) > 3) {
+            return $this->general_error_response([], "Choose at most three skills or items you have interest in.");
+        }
+
         foreach (auth()->user()->skills as $skill) {
             $skill->delete();
         }
