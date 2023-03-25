@@ -249,6 +249,7 @@ class UserController extends Controller
         switch($module) {
             case "display-name":
                 auth()->user()->name = $request->name;
+                auth()->user()->update();
                 break;
             case "profile-picture":
                 if ($request->profile_picture && $request->profile_picture != "") {
@@ -259,6 +260,7 @@ class UserController extends Controller
                     $image->move($destinationPath, $name);
 
                     auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
+                    auth()->user()->update();
                 }
                 break;
             case "update-password":
