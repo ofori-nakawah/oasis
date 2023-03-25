@@ -75,8 +75,6 @@ class PostController extends Controller
 
     public function list_volunteer_activities()
     {
-        $posts = [];
-
         //get user coordinates
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
@@ -107,15 +105,13 @@ class PostController extends Controller
 
             return $post;
         });
-        $posts = $volunteer_near_me;
+        $posts = $volunteer_near_me->sortBy("distance");
 
         return view("volunteerism.list", compact("posts"));
     }
 
     public function list_quick_jobs()
     {
-        $posts = [];
-
         //get user coordinates
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
@@ -158,7 +154,7 @@ class PostController extends Controller
                 $post->has_already_applied = "yes";
             }
         }
-        $posts = $jobs_near_me;
+        $posts = $jobs_near_me->sortBy("distance");;;
 
         return view("work.quick_jobs.index", compact("posts"));
     }
@@ -244,7 +240,7 @@ class PostController extends Controller
 
             return $post;
         });
-        $posts = $volunteer_near_me;
+        $posts = $volunteer_near_me->sortBy("distance");;
 
         return view("volunteerism.show", compact("original_post", "posts"));
     }
@@ -317,7 +313,7 @@ class PostController extends Controller
                 $post->has_already_applied = "yes";
             }
         }
-        $posts = $jobs_near_me;
+        $posts = $jobs_near_me->sortBy("distance");;
 
         return view("work.quick_jobs.show", compact("original_post", "posts"));
     }

@@ -175,7 +175,7 @@ class PostController extends Controller
                     }
                     return $post;
                 });
-                $posts = $volunteer_near_me;
+                $posts = $volunteer_near_me->sortBy("distance");
 
                 break;
             case "QUICK_JOB":
@@ -200,11 +200,12 @@ class PostController extends Controller
                     $post_location_lat = explode(',', $post->coords)[1];
                     $post_location_lng = explode(',', $post->coords)[0];
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+                    $post["distance"] = number_format($distance, 2);
                     if ($distance <= self::JOB_SEARCH_RADIUS) {
                         $jobs_near_me->push($post);
                     }
                 }
-                $posts = $jobs_near_me;
+                $posts = $jobs_near_me->sortBy("distance");
                 break;
         }
 
@@ -614,11 +615,12 @@ class PostController extends Controller
 
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+            $post["distance"] = number_format($distance, 2);
             if ($distance <= self::JOB_SEARCH_RADIUS) {
                 $jobs_near_me->push($post);
             }
         }
-        $posts = $jobs_near_me;
+        $posts = $jobs_near_me->sortBy("distance");;
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 }
