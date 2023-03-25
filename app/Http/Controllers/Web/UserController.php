@@ -163,10 +163,16 @@ class UserController extends Controller
 
     public function update_user_core_skills(Request $request)
     {
+        $errors = new MessageBag();
+
         if ($request->skills_and_interest == null || count($request->skills_and_interest) <= 0) {
-            $errors = new MessageBag();
             $errors->add("skills_and_interest", "Choose at least one skill or an item you have interest in.");
             return back()->withErrors($errors)->with("danger", "Choose at least one skill or an item you have interest in.");
+        }
+
+        if (count($request->skills_and_interest) > 3) {
+            $errors->add("skills_and_interest", "Choose at most three skills or items you have interest in.");
+            return back()->withErrors($errors)->with("danger", "Choose at most three skills or items you have interest in.");
         }
 
         foreach (auth()->user()->skills as $skill) {
