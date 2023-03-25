@@ -198,6 +198,50 @@
         </div>
     </div>
 
+   <br>
+
+   <div class="row">
+       <div class="col-md-12">
+           <div class="card card-bordered">
+               <div class="card-header bg-white border-bottom">
+                   <b>Volunteer History</b>
+               </div>
+               <div class="card-body" style="padding: 0px;">
+                   <table class="table table-striped">
+                       <thead>
+                       <tr>
+                           <th>Activity ID</th>
+                           <th>Date</th>
+                           <th>Organiser</th>
+                           <th>Description</th>
+                           <th>Volunteer Hours</th>
+                       </tr>
+                       </thead>
+                       <tbody>
+                       @if($dashboard_analytics["number_of_activities"] <= 0)
+                           <tr>
+                               <td colspan="5"><p class="text-center">You have no completed volunteer activities at the moment</p></td>
+                           </tr>
+                       @else
+                           @foreach($job_history as $work)
+                               @if($work->job_post && $work->job_post->type == "VOLUNTEER")
+                                   <tr>
+                                       <td>{{$work->ref_id}}</td>
+                                       <td>{{$work->job_post->date}}</td>
+                                       <td>{{$work->job_post->user->name}}</td>
+                                       <td>{{$work->job_post->description}}</td>
+                                       <td>{{$work->volunteer_hours}}</td>
+                                   </tr>
+                               @endif
+                           @endforeach
+                       @endif
+                       </tbody>
+                   </table>
+               </div>
+           </div>
+       </div>
+   </div>
+
 @endsection
 
 @section("scripts")
