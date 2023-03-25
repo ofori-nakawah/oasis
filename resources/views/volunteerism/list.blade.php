@@ -47,9 +47,9 @@
                                     <div class="issuer"><b>{{$post->user->name}}</b></div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="title" style="font-size: 10px;color: #777;">Date</div>
+                                    <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
                                     <b>
-                                        <div class="date text-danger">{{$post->date}}</div>
+                                        <div class="date text-danger">{{$post->date}} {{$post->time}}</div>
                                     </b>
                                 </div>
                             </div>
