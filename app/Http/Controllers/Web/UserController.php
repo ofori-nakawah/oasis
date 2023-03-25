@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -263,8 +264,8 @@ class UserController extends Controller
 
                 $validation = Validator::make($request->all(), [
                     'old_password' => 'required',
-                    'password_confirmation' => 'required|min:6|alpha_dash',
-                    'password' => 'required|confirmed|min:6|alpha_dash'
+                    'password_confirmation' => 'required|min:6',
+                    'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()]
                 ]);
 
                 if ($validation->fails()) {
