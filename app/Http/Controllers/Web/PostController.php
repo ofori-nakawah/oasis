@@ -351,6 +351,16 @@ class PostController extends Controller
             return back()->with("warning", "You have already applied for this job.");
         }
 
+//        /**
+//         * validate the number of volunteers required
+//        */
+//        if ($post->type === "VOLUNTEER") {
+//            $countOfConfirmedVolunteers = $post->applications->where("status", "confirmed")->count();
+//            if ($countOfConfirmedVolunteers >= $post->maximum_number_of_volunteers) {
+//                return back()->with("danger", "Maximum number of volunteers reached.");
+//            }
+//        }
+
         $job_application = new JobApplication();
         $job_application->user_id = auth()->id();
         $job_application->post_id = $uuid;
