@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use App\Models\OneTimePassword as OTP;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 
 class OnboardingController extends Controller
 {
@@ -29,8 +30,8 @@ class OnboardingController extends Controller
             'email' => 'email|unique:users',
             'phone_number' => 'unique:users',
             'country' => 'required',
-            'password_confirmation' => 'required',
-            'password' => 'required|confirmed'
+            'password_confirmation' => 'required|min:6',
+            'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()]
         ]);
 
         if ($validation->fails()) {return back()->withErrors($validation->errors());}
