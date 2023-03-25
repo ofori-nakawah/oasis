@@ -426,6 +426,16 @@ class PostController extends Controller
             return back()->with("danger", "Error fetching application details");
         }
 
+        /**
+         * validate the number of volunteers required
+         */
+        if ($application->job_post->type === "VOLUNTEER") {
+            $countOfConfirmedVolunteers = $application->job_post->applications->where("status", "confirmed")->count();
+            if ($countOfConfirmedVolunteers >= $application->job_post->maximum_number_of_volunteers) {
+                return back()->with("danger", "Maximum number of volunteers reached.");
+            }
+        }
+
         $message = "";
         if ($action === "confirm") {
             $application->status = "confirmed";
@@ -471,7 +481,7 @@ class PostController extends Controller
             'time' => 'required',
             'location' => 'required',
             'coords' => 'required',
-            'maximum_number_of_volunteers' => 'required',
+            'maximum_number_of_volunteers' => 'required|numeric',
             'volunteer_hours' => 'required',
         ]);
 

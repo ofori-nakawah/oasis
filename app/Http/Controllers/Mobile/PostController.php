@@ -397,6 +397,16 @@ class PostController extends Controller
             return $this->not_found_response([], "Error fetching application details");
         }
 
+        /**
+         * validate the number of volunteers required
+         */
+        if ($application->job_post->type === "VOLUNTEER") {
+            $countOfConfirmedVolunteers = $application->job_post->applications->where("status", "confirmed")->count();
+            if ($countOfConfirmedVolunteers >= $application->job_post->maximum_number_of_volunteers) {
+                return $this->general_error_response([], "Maximum number of volunteers reached");
+            }
+        }
+
         $message = "";
         if ($request->action === "confirm") {
             $application->status = "confirmed";
