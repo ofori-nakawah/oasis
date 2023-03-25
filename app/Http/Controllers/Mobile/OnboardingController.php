@@ -30,7 +30,7 @@ class OnboardingController extends Controller
             'email' => 'email|unique:users',
             'phone_number' => 'unique:users',
             'country' => 'required',
-            'password' => 'required'
+            'password' => 'required|confirmed|min:6|alpha_dash'
         ]);
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}

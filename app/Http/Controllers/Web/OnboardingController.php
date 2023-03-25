@@ -29,8 +29,8 @@ class OnboardingController extends Controller
             'email' => 'email|unique:users',
             'phone_number' => 'unique:users',
             'country' => 'required',
-            'password_confirmation' => 'required',
-            'password' => 'required|confirmed'
+            'password_confirmation' => 'required|min:6|alpha_dash',
+            'password' => 'required|confirmed|min:6|alpha_dash'
         ]);
 
         if ($validation->fails()) {return back()->withErrors($validation->errors());}
