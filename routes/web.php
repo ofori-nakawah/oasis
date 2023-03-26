@@ -102,7 +102,20 @@ Route::get('/register', 'Web\OnboardingController@registration_form')->name('onb
 Route::post('/register', 'Web\OnboardingController@register')->name('onboarding.register.submit');
 Route::get('/register/{uuid}/verify-phone-number', 'Web\OnboardingController@verify_onboarding_phone_number')->name('onboarding.verify_phone_number');
 Route::post('/register/verify-phone-number', 'Web\OnboardingController@verify_phone_number')->name('onboarding.verify_phone_number.submit');
-
 Route::get('/auth/otp/resend/{user}', 'Web\OnboardingController@resend_otp')->name('auth.resend_otp');
+
+/**
+ * forgot password
+ */
+Route::get('auth/forgot-password', 'Web\AuthController@forgotPassword')->name('auth.forgotPassword');
+Route::post('auth/forgot-password', 'Web\AuthController@verifyAccount')->name('auth.verifyAccount.submit');
+Route::get('/auth/password-reset/{uuid}/confirm-password-reset', 'Web\AuthController@confirmPasswordReset')->name('auth.password_reset.verify_phone_number');
+Route::post('/auth/password-reset/confirm-password-reset', 'Web\AuthController@confirmPasswordResetViaCode')->name('auth.password_reset.confirmPasswordReset');
+Route::get('/auth/password-reset/resend-code/{user}', 'Web\AuthController@resendCode')->name('auth.password_reset.resendCode');
+Route::post('/auth/password-reset', 'Web\AuthController@executePasswordReset')->name('auth.password_reset.executePasswordReset');
+Route::get('/auth/{user}/password-reset', 'Web\AuthController@readyPasswordReset')->name('auth.passwordReset.ready');
+
+
+
 
 require __DIR__.'/auth.php';

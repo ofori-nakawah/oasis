@@ -70,7 +70,7 @@
                     <div class="card card-bordered" style="height: 270px;">
                         <div class="card-body">
                             <div class="mt-4">
-                                <div><b>Income</b></div>
+                                <div><b>Total Earned Income</b></div>
                                 <h4><b class="text-success">GHS</b> <br>
                                 <b class="text-success">{{$dashboard_analytics["total_earnings"]}}</b></h4>
 
