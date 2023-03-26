@@ -20,7 +20,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Pending Acceptance By Issuer";
                     $category = $post->name;
-                    $message = "Hello ". $user->name .", \n \n Your application for the Volunteer work with reference ID (" . $ref_id .") has been received. \n \n You will be notified when the issuer confirms your attendance. \n \n Thank You \n The VORK Team ";
+                    $message = "Hello ". $user->name .", \n \n Your application for the Volunteer work with reference ID (" . $ref_id .") has been received. \n \n You will be notified when the issuer confirms your attendance.  ";
                 }
                 /**
                  * user confirmed for volunteer work
@@ -29,7 +29,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Attendance Confirmed";
                     $category = $post->name;
-                    $message = "Congratulations ". $user->name .", \n \n Your participation for the volunteering activity with REF ID (". $ref_id .") has been confirmed by the Issuer ". $post->user->name . ". \n \n Please contact the number below for any further enquiries. \n \n Thank You \n The VORK Team";
+                    $message = "Congratulations ". $user->name .", \n \n Your participation for the volunteering activity with REF ID (". $ref_id .") has been confirmed by the Issuer ". $post->user->name . ". \n \n Please contact the number below for any further enquiries. ";
                 }
                 /**
                  * user declined for volunteer work
@@ -38,7 +38,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Participation Declined";
                     $category = $post->name;
-                    $message = "Unfortunately, your application to participate in the volunteering activity with reference ID (". $ref_id .") has been declined by the issuer.. \n \n Thank You \n The VORK Team";
+                    $message = "Unfortunately, your application to participate in the volunteering activity with reference ID (". $ref_id .") has been declined by the issuer.. ";
                 }
                 /**
                  * volunteer activity closed
@@ -47,7 +47,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Project Closed";
                     $category = $post->name;
-                    $message = "Thank you for participating in the Volunteering activity with REF ID (".$ref_id."). \n \n Your volunteer hours has been credited to your account.. \n \n Thank You \n The VORK Team";
+                    $message = "Thank you for participating in the Volunteering activity with REF ID (".$ref_id."). \n \n Your volunteer hours has been credited to your account.. ";
                 }
                 /**
                  * Job removed
@@ -67,7 +67,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Pending Acceptance By Issuer";
                     $category = $post->category;
-                    $message = "Hello ". $user->name .", \n \n Your application for the Quick Job with reference ID (" . $ref_id .") has been received and under review. \n \n You will  be notified when the issuer completes their review. \n \n Thank You \n The VORK Team ";
+                    $message = "Hello ". $user->name .", \n \n Your application for the Quick Job with reference ID (" . $ref_id .") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
                 }
                 /**
                  * User selected for quick job
@@ -76,7 +76,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Application Accepted";
                     $category = $post->category;
-                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Quick Job issued by ". $post->user->name . ". \n \n The issuer will contact you for further arrangements. \n \n Thank You \n The VORK Team";
+                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Quick Job issued by ". $post->user->name . ". \n \n The issuer will contact you for further arrangements. ";
                 }
                 /**
                  * User selected for quick job
@@ -94,7 +94,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Job Closed";
                     $category = $post->category;
-                    $message = "You have successfully completed the Quick Job with the REF ID (". $ref_id ."). \n \n Please see below for the closure details. \n \n Thank You \n The VORK Team";
+                    $message = "You have successfully completed the Quick Job with the REF ID (". $ref_id ."). \n \n Please see below for the closure details. ";
                 }
                 /**
                  * Job removed

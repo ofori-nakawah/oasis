@@ -180,4 +180,5 @@ class OnboardingController extends Controller
 //
 //        return $this->success_response([], "Password set successful.");
 //    }
+
 }
