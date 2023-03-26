@@ -108,7 +108,7 @@
                                     </div>
                                 </div>
 
-                                @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED")
+                                @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED")
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="title" style="font-size: 10px;color: #777;">Location</div>
