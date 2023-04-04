@@ -133,6 +133,13 @@
             $(document).ready(function () {
                 $(document).on("click", "#useMyCurrentLocation", function (e) {
                     e.preventDefault();
+
+                    if ($(this).hasClass('clicked')) {
+                        return false;
+                    } else {
+                        $(this).addClass('clicked').trigger('click');
+                    }
+
                     if (navigator.geolocation) {
                         var options = {
                             enableHighAccuracy: true,

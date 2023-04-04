@@ -23,4 +23,9 @@ class Post extends Model
         return $this->hasMany("App\Models\JobApplication");
     }
 
+    public function formattedCreatedAt()
+    {
+        return $this->created_at->diffForHumans();
+    }
+
 }

@@ -39,7 +39,8 @@ class UserController extends Controller
      */
     public function update_user_core_skills(Request $request)
     {
-        if (count($request->skills_and_interest) > 3) {
+        Log::debug("REQUEST >>>>>>>>>>>>> " . $request);
+        if (count($request->skills) > 3) {
             return $this->general_error_response([], "Choose at most three skills or items you have interest in.");
         }
 
@@ -70,10 +71,10 @@ class UserController extends Controller
             $language->delete();
         }
 
-        for ($i = 0; $i < count($request->languages); $i++) {
+        for ($i = 0; $i < count($request->preferredLanguages); $i++) {
             $language_user = new LanguageUser();
             $language_user->user_id = auth()->id();
-            $language_user->language_id = $request->languages[$i];
+            $language_user->language_id = $request->preferredLanguages[$i];
             $language_user->save();
         }
 
