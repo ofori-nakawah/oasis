@@ -237,26 +237,34 @@ class UserController extends Controller
     {
         $job_history = auth()->user()->job_applications->where("status", "confirmed");
         $average_rating = auth()->user()->rating;
+        $total_earnings = auth()->user()->total_earnings;
 
         $jobs_count = 0;
         $volunteer_count = 0;
+        $volunteer_hours = 0;
         foreach ($job_history as $vork) {
-            if ($vork->job_post->type === "VOLUNTEER") {
-                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
-                $volunteer_count++;
-            } else {
-                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
-                $jobs_count++;
-            }
+            if ($vork->job_post->status === "closed") {
+                if ($vork->job_post->type === "VOLUNTEER") {
+                    $vork->ref_id = "VO" . explode("-", $vork->id)[0];
+                    $volunteer_hours += $vork->volunteer_hours;
+                    $volunteer_count++;
+                } else {
+                    $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
+                    $jobs_count++;
+                }
 
-            $vork->job_post;
-            $vork->rating_and_reviews;
+                $vork->job_post;
+                $vork->rating_and_reviews;
+            }
         }
 
         $user_profile = array(
             "number_of_jobs" => $jobs_count,
+            "number_of_volunteer_activities" => $volunteer_count,
             "job_history" => $job_history,
             "average_rating" => $average_rating,
+            "volunteer_hours" => $volunteer_hours,
+            "total_earnings" => $total_earnings
         );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");

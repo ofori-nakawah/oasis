@@ -136,6 +136,12 @@ class PostController extends Controller
     public function get_user_posts(Request $request)
     {
         $posts = auth()->user()->posts;
+        foreach($posts as $post) {
+            $post->createdAt = $post->created_at->diffForHumans();
+            $time = strtotime($post->date . ' '. $post->time);
+            $newformat = date('d-m-Y H:i',$time);
+            $post->postedDateTime = Carbon::parse($newformat)->toDayDateTimeString();
+        }
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 
@@ -170,7 +176,9 @@ class PostController extends Controller
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $post["postedDateTime"] = Carbon::parse($post->date . " " . $post->time)->toDayDateTimeString();
+                    $time = strtotime($post->date . ' '. $post->time);
+                    $newformat = date('d-m-Y H:i',$time);
+                    $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
                     if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                         $volunteer_near_me->push($post);
                     }
@@ -203,7 +211,9 @@ class PostController extends Controller
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $post["postedDateTime"] = Carbon::parse($post->date . " " . $post->time)->toDayDateTimeString();
+                    $time = strtotime($post->date . ' '. $post->time);
+                    $newformat = date('d-m-Y H:i',$time);
+                    $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
 
                     $post->user;
                     if ($distance <= self::JOB_SEARCH_RADIUS) {
@@ -283,7 +293,9 @@ class PostController extends Controller
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);
         $post["postedOn"] = $post->created_at->diffForHumans();
-        $post["postedDateTime"] = Carbon::parse($post->date . " " . $post->time)->toDayDateTimeString();
+        $time = strtotime($post->date . ' '. $post->time);
+                    $newformat = date('d-m-Y H:i',$time);
+                    $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
@@ -358,6 +370,11 @@ class PostController extends Controller
             $application->user;
             $application->rating_and_reviews;
         }
+
+        $post->createdAt = $post->created_at->diffForHumans();
+        $time = strtotime($post->date . ' '. $post->time);
+        $newformat = date('d-m-Y H:i',$time);
+        $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
