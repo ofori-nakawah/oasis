@@ -512,6 +512,7 @@ class PostController extends Controller
 
                     $participant->volunteer_hours += (float)$volunteer_details[$i]["volunteer_hours"];
                     $application->volunteer_hours = (float)$volunteer_details[$i]["volunteer_hours"];
+
                     try {
                         $participant->update();
                         $application->update();
@@ -562,6 +563,7 @@ class PostController extends Controller
                  */
                 $post->final_payment_amount = $request->final_payment_amount;
                 $post->payment_channel = "cash"; // to be update when we start using in-app wallets
+                $post->job_done_overall_rating = $ratingReview->rating;
 
                 /**
                  * update user earnings

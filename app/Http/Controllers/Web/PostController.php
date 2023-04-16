@@ -687,8 +687,12 @@ class PostController extends Controller
                      * create notification
                      */
                     $post->user;
-                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    $post->job_done_overall_rating = $ratingReview->rating;
+
                     $participant->update();
+                    $post->update();
+
+                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                 } catch (QueryException $e) {
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
                 }

@@ -36,6 +36,7 @@ class CreatePostsTable extends Migration
             $table->string("is_job_applicant_confirmed")->default(0);
             $table->string("confirmed_applicant_id")->nullable();
             $table->string("final_payment_amount")->nullable();
+            $table->string("job_done_overall_rating")->nullable();
             $table->string("payment_channel")->nullable();
             $table->string("status")->default("active");
             $table->string("closed_at")->nullable();
