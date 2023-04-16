@@ -24,6 +24,9 @@ Route::prefix('/v1')->group(function () {
 
         Route::prefix('/auth')->group(function () {
             Route::post('/login', 'Mobile\AuthController@login');
+            Route::post('/get-password-reset-otp', 'Mobile\AuthController@passwordResetPhoneNumberVerification');
+            Route::post('/verify-password-reset-otp', 'Mobile\AuthController@verifyOTPForPasswordReset');
+            Route::post('/reset-password', 'Mobile\AuthController@executePasswordReset');
         });
     });
 
@@ -58,6 +61,8 @@ Route::prefix('/v1')->group(function () {
             Route::get('/kyc', 'Mobile\UserController@get_user_kyc_status');
             Route::get('/', 'Mobile\UserController@get_user_full_profile');
             Route::get('/job-history', 'Mobile\UserController@get_job_history');
+
+            Route::post('/update-user-display-name', 'Mobile\UserController@updateProfileInformation');
 
             /**
              * other user profile routes

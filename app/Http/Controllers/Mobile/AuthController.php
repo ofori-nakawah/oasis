@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use App\Models\OneTimePassword as OTP;
 use App\Traits\Responses;
 use App\Models\User;
 use App\Models\Country as Country;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\MessageBag;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -46,4 +49,73 @@ class AuthController extends Controller
         ]);
     }
 
+    public function passwordResetPhoneNumberVerification(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'phoneNumber' => 'required',
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $user = User::where("email", $request->phoneNumber)->orWhere("phone_number", $request->phoneNumber)->first();
+        if (!$user) {return $this->not_found_response([], "Oops. We could not find any records");}
+
+        if (!OTP::Generate($user)) {return $this->general_error_response([], "Oops. We couldn't send confirmation code. Try again");}
+
+        return $this->success_response([
+            "phoneNumber" => $user->phone_number
+        ], "An SMS with confirmation code has been sent to your phone number");
+    }
+
+    public function verifyOTPForPasswordReset(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'phone_number' => 'required',
+            'code' => 'required'
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $verification_status = OTP::Validate("phone_number", $request->input("phone_number"), $request->input("code"));
+
+        $errors = new MessageBag();
+
+        switch ($verification_status) {
+            case OTP::INVALID_STATUS:
+                $errors->add("code", "Code is invalid");
+                return $this->data_validation_error_response($errors, "Code is invalid");
+                break;
+            case OTP::ALREADY_USED_STATUS:
+                $errors->add("code", "Code has already been used.");
+                return $this->data_validation_error_response($errors, "Code has already been used.");
+                break;
+            case OTP::EXPIRED_STATUS:
+                $errors->add("code", "Code has expired. Go back and try again.");
+                return $this->data_validation_error_response($errors, "Code has expired. Go back and try again.");
+                break;
+        }
+
+        $user = User::where("phone_number", $request->input("phone_number"))->first();
+        if (!$user) {return $this->not_found_response([], "Oops. Something went wrong. Error fetching data."); }
+
+        return $this->success_response([], "Code verification successful");
+    }
+
+    public function executePasswordReset(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()],
+            'phoneNumber' => 'required'
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $user = User::where("phone_number", $request->input("phoneNumber"))->first();
+        if (!$user) {return $this->not_found_response([], "Oops..Something went wrong. Error fetching data.");}
+
+        $user->password = Hash::make($request->password);
+        $user->update();
+
+        return $this->success_response([], "Password reset successful");
+    }
 }

@@ -135,7 +135,7 @@ class PostController extends Controller
      */
     public function get_user_posts(Request $request)
     {
-        $posts = auth()->user()->posts;
+        $posts = auth()->user()->posts->sortBy("created_at")->whereNull('deleted_at');
         foreach($posts as $post) {
             $post->createdAt = $post->created_at->diffForHumans();
             $time = strtotime($post->date . ' '. $post->time);

@@ -6,10 +6,14 @@ use App\Models\LanguageUser;
 use App\Models\SkillUser;
 use App\Models\User;
 use App\Services\PushNotification;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\Responses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\MessageBag;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -337,5 +341,61 @@ class UserController extends Controller
         );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");
+    }
+
+    public function updateProfileInformation(Request $request)
+    {
+        if (!$request->module) {
+            return back()->with("danger", "Invalid request");
+        }
+        $errors = new MessageBag();
+
+        Log::debug($request->all());
+
+        switch($request->module) {
+            case "display-name":
+                if (!$request->name) {
+                    $errors->add("name", "The name field is required.");
+                    return $this->data_validation_error_response($errors);
+                }
+                auth()->user()->name = $request->name;
+                auth()->user()->update();
+                break;
+            case "profile-picture":
+                if ($request->profile_picture && $request->profile_picture != "") {
+                    //save image
+                    $image = $request->file('profile_picture');
+                    $name = auth()->user()->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+                    $destinationPath = public_path('/uploads/profile_pics');
+                    $image->move($destinationPath, $name);
+
+                    auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
+                    auth()->user()->update();
+                }
+                break;
+            case "update-password":
+                if (!Hash::check($request->old_password, auth()->user()->password)){
+                    $errors->add("old_password", "The old password you entered does not match.");
+                    return $this->data_validation_error_response($errors);
+                }
+
+                $validation = Validator::make($request->all(), [
+                    'old_password' => 'required',
+                    'password_confirmation' => 'required|min:6',
+                    'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()]
+                ]);
+
+                if ($validation->fails()) {
+                    return $this->data_validation_error_response($validation->errors());
+                }
+
+                auth()->user()->password = Hash::make($request->password);
+                auth()->user()->update();
+
+                return $this->success_response([], "Your password has been changed successfully.");
+                break;
+        }
+
+        return $this->success_response([], "Profile updated successfully.");
     }
 }
