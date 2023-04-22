@@ -257,7 +257,7 @@ class UserController extends Controller
                     $jobs_count++;
                 }
 
-                $vork->period = $vork->job_post->closed_at->format('d M');
+                $vork->period = $vork->job_post->closed_at->format('M Y');
 
                 $vork->job_post;
                 $vork->rating_and_reviews;
@@ -325,7 +325,7 @@ class UserController extends Controller
                     $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
                 }
 
-                $vork->period = $vork->job_post->closed_at->format('d M');
+                $vork->period = $vork->job_post->closed_at->format('M Y');
 
                 $vork->job_post;
                 $vork->rating_and_reviews;

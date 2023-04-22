@@ -188,22 +188,35 @@ class PostController extends Controller
 
                 break;
             case "QUICK_JOB":
+                $searchCategories = $request->categories;
                 $_user_interests = auth()->user()->skills;
                 $user_interests = array();
                 foreach ($_user_interests as $interest) {
                     array_push($user_interests, $interest->skill->id);
                 }
 
-                /**
-                 * filter using:
-                 * post type
-                 * interests | skills
-                 */
-                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->get();
+                Log::debug($user_interests);
 
                 /**
-                 * filter using distance
+                 * filter using search categories
                  */
+                if ($searchCategories && count($searchCategories) > 0) {
+                    $_searchCategories = array();
+                    foreach ($searchCategories as $interest) {
+                        array_push($_searchCategories, $interest);
+                    }
+
+                    Log::debug($_searchCategories);
+
+
+                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $_searchCategories)->get();
+                } else {
+                    /**
+                     * default search categories
+                     */
+                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->get();
+                }
+
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
                     $post_location_lat = explode(',', $post->coords)[0];
@@ -216,10 +229,40 @@ class PostController extends Controller
                     $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
 
                     $post->user;
-                    if ($distance <= self::JOB_SEARCH_RADIUS) {
-                        $jobs_near_me->push($post);
+                    /**
+                     * filter using distance
+                     */
+                    if ($request->searchRadius && $request->searchRadius != "") {
+                        if ($distance <= $request->searchRadius) {
+                            $jobs_near_me->push($post);
+                        }
+                    } else {
+                        if ($distance <= self::JOB_SEARCH_RADIUS) {
+                            $jobs_near_me->push($post);
+                        }
                     }
                 }
+
+                /**
+                 * filter by minBudget
+                 */
+                $minBudget = $request->minBudget;
+                if ($minBudget && $minBudget != "") {
+                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use($minBudget){
+                        return $value['min_budget'] >= $minBudget;
+                    });
+                }
+
+                /**
+                 * filter by maxBudget
+                 */
+                $maxBudget = $request->maxBudget;
+                if ($maxBudget && $maxBudget != "") {
+                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use($maxBudget){
+                        return $value['max_budget'] <= $maxBudget;
+                    });
+                }
+
                 $posts = $jobs_near_me->sortBy("distance");
                 break;
         }
@@ -607,9 +650,17 @@ class PostController extends Controller
         return $this->success_response($post, "Post has been closed successfully.");
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * filterng is going to be done by
+     * distance
+     * category
+     * budget range
+     */
     public function filter_jobs(Request $request)
     {
-        $interests = $request->interests;
+        $searchCategories = $request->categories;
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
             return $this->not_found_response([], "Could not retrieve user's current location");
@@ -621,12 +672,23 @@ class PostController extends Controller
             array_push($user_interests, $interest->skill->id);
         }
 
+        $posts = null;
         /**
-         * filter using:
-         * post type
-         * interests | skills
+         * filter using search categories
          */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->get();
+        if (count($searchCategories) > 1) {
+            $_searchCategories = array();
+            foreach ($searchCategories as $category) {
+                array_push($_searchCategories, $category->id);
+            }
+
+            $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $_searchCategories)->get();
+        } else {
+            /**
+             * default search categories
+             */
+            $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->get();
+        }
 
         /**
          * filter using distance
@@ -642,8 +704,14 @@ class PostController extends Controller
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["distance"] = number_format($distance, 2);
-            if ($distance <= self::JOB_SEARCH_RADIUS) {
-                $jobs_near_me->push($post);
+            if ($request->searchRadius && $request->searchRadius != "") {
+                if ($distance <= $request->searchRadius) {
+                    $jobs_near_me->push($post);
+                }
+            } else {
+                if ($distance <= self::JOB_SEARCH_RADIUS) {
+                    $jobs_near_me->push($post);
+                }
             }
         }
         $posts = $jobs_near_me->sortBy("distance");;

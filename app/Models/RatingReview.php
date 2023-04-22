@@ -19,4 +19,9 @@ class RatingReview extends Model
     {
         return $this->belongsTo("App\Models\JobApplication", "job_application_id");
     }
+
+    public function setRatingAttribute($value)
+    {
+        $this->attributes['rating'] = number_format((float)$value, 2, '.', '');
+    }
 }
