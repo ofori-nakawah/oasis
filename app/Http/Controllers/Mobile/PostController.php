@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use App\Helpers\Notifications as Notifications;
 use App\Models\JobApplication;
 use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
 use App\Traits\Responses;
-use App\Helpers\Notifications as Notifications;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class PostController extends Controller
 {
     use Responses;
+
     const JOB_SEARCH_RADIUS = 10;
     const VOLUNTEER_SEARCH_RADIUS = 10;
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * create a volunteer post
      */
     public function create_volunteer_post(Request $request)
@@ -68,7 +70,7 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * Create a quick job post
      */
     public function create_quick_job_post(Request $request)
@@ -130,16 +132,16 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * Get posts created by user
      */
     public function get_user_posts(Request $request)
     {
         $posts = auth()->user()->posts->sortBy("created_at")->whereNull('deleted_at');
-        foreach($posts as $post) {
+        foreach ($posts as $post) {
             $post->createdAt = $post->created_at->diffForHumans();
-            $time = strtotime($post->date . ' '. $post->time);
-            $newformat = date('d-m-Y H:i',$time);
+            $time = strtotime($post->date . ' ' . $post->time);
+            $newformat = date('d-m-Y H:i', $time);
             $post->postedDateTime = Carbon::parse($newformat)->toDayDateTimeString();
         }
         return $this->success_response($posts, "Posts fetched successfully.");
@@ -147,7 +149,7 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * Get posts based on user location and category
      */
     public function get_posts_closest_to_me(Request $request)
@@ -176,9 +178,8 @@ class PostController extends Controller
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $time = strtotime($post->date . ' '. $post->time);
-                    $newformat = date('d-m-Y H:i',$time);
-                    $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
+                    $time = $post->date . ' ' . $post->time;
+                    $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
                     if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                         $volunteer_near_me->push($post);
                     }
@@ -224,9 +225,8 @@ class PostController extends Controller
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $time = strtotime($post->date . ' '. $post->time);
-                    $newformat = date('d-m-Y H:i',$time);
-                    $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
+                    $time = $post->date . ' ' . $post->time;
+                    $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
 
                     $post->user;
                     /**
@@ -248,7 +248,7 @@ class PostController extends Controller
                  */
                 $minBudget = $request->minBudget;
                 if ($minBudget && $minBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use($minBudget){
+                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($minBudget) {
                         return $value['min_budget'] >= $minBudget;
                     });
                 }
@@ -258,7 +258,7 @@ class PostController extends Controller
                  */
                 $maxBudget = $request->maxBudget;
                 if ($maxBudget && $maxBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use($maxBudget){
+                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($maxBudget) {
                         return $value['max_budget'] <= $maxBudget;
                     });
                 }
@@ -298,7 +298,7 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function get_post_details(Request $request)
     {
@@ -336,16 +336,15 @@ class PostController extends Controller
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);
         $post["postedOn"] = $post->created_at->diffForHumans();
-        $time = strtotime($post->date . ' '. $post->time);
-                    $newformat = date('d-m-Y H:i',$time);
-                    $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
+        $time = $post->date . ' ' . $post->time;
+        $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function apply_for_job(Request $request)
     {
@@ -389,7 +388,7 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function get_user_post_status(Request $request)
     {
@@ -415,16 +414,15 @@ class PostController extends Controller
         }
 
         $post->createdAt = $post->created_at->diffForHumans();
-        $time = strtotime($post->date . ' '. $post->time);
-        $newformat = date('d-m-Y H:i',$time);
-        $post["postedDateTime"] = Carbon::parse($newformat)->toDayDateTimeString();
+        $time = $post->date . ' ' . $post->time;
+        $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * Get the post details for the post creator to make modifications
      */
     public function get_user_post_details(Request $request)
@@ -447,7 +445,7 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function confirm_decline_applicant(Request $request)
     {
@@ -513,7 +511,7 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * we are also setting the volunteer hours here
      */
     public function close_post(Request $request)
@@ -593,11 +591,11 @@ class PostController extends Controller
                 $ratingReview->work_ethic_rating = $request->work_ethic_rating;
                 $ratingReview->professionalism_rating = $request->professionalism_rating;
                 $ratingReview->customer_service_rating = $request->customer_service_rating;
-                $ratingReview->rating = ((float) $request->expertise_rating + (float) $request->work_ethic_rating + (float) $request->professionalism_rating + (float) $request->customer_service_rating) / 4;
+                $ratingReview->rating = ((float)$request->expertise_rating + (float)$request->work_ethic_rating + (float)$request->professionalism_rating + (float)$request->customer_service_rating) / 4;
                 $ratingReview->feedback_message = $request->feedback_message;
                 try {
                     $ratingReview->save();
-                }  catch (QueryException $e) {
+                } catch (QueryException $e) {
                     Log::error("ERROR SAVING RATING REVIEW >>>>>>>>>> " . $ratingReview . " >>>>>>>>> " . $e);
                 }
 
@@ -611,7 +609,7 @@ class PostController extends Controller
                 /**
                  * update user earnings
                  */
-                $participant->total_earnings = (float) $participant->total_earnings + (float) $request->final_payment_amount;
+                $participant->total_earnings = (float)$participant->total_earnings + (float)$request->final_payment_amount;
 
                 /**
                  * update vorker rating
@@ -629,7 +627,7 @@ class PostController extends Controller
                     $post->user;
                     Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     $participant->update();
-                }  catch (QueryException $e) {
+                } catch (QueryException $e) {
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
                 }
                 break;
@@ -652,7 +650,7 @@ class PostController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * filterng is going to be done by
      * distance
      * category
@@ -714,7 +712,7 @@ class PostController extends Controller
                 }
             }
         }
-        $posts = $jobs_near_me->sortBy("distance");;
+        $posts = $jobs_near_me->sortBy("distance");
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 }
