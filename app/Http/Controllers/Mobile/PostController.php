@@ -178,8 +178,8 @@ class PostController extends Controller
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $time = $post->date . ' ' . $post->time;
-                    $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
+
+                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
                     if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                         $volunteer_near_me->push($post);
                     }
@@ -225,8 +225,7 @@ class PostController extends Controller
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $time = $post->date . ' ' . $post->time;
-                    $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
+                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
 
                     $post->user;
                     /**
@@ -336,8 +335,8 @@ class PostController extends Controller
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);
         $post["postedOn"] = $post->created_at->diffForHumans();
-        $time = $post->date . ' ' . $post->time;
-        $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
+        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
@@ -414,8 +413,8 @@ class PostController extends Controller
         }
 
         $post->createdAt = $post->created_at->diffForHumans();
-        $time = $post->date . ' ' . $post->time;
-        $post["postedDateTime"] = Carbon::parse($date = str_replace('/', '-', $time))->toDayDateTimeString();
+        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
@@ -591,7 +590,7 @@ class PostController extends Controller
                 $ratingReview->work_ethic_rating = $request->work_ethic_rating;
                 $ratingReview->professionalism_rating = $request->professionalism_rating;
                 $ratingReview->customer_service_rating = $request->customer_service_rating;
-                $ratingReview->rating = ((float)$request->expertise_rating + (float)$request->work_ethic_rating + (float)$request->professionalism_rating + (float)$request->customer_service_rating) / 4;
+                $ratingReview->rating = number_format(((float)$request->expertise_rating + (float)$request->work_ethic_rating + (float)$request->professionalism_rating + (float)$request->customer_service_rating) / 4, 2);
                 $ratingReview->feedback_message = $request->feedback_message;
                 try {
                     $ratingReview->save();
@@ -616,7 +615,7 @@ class PostController extends Controller
                  */
                 $user_review_rating = 0;
                 if ($participant->rating_and_reviews->count() >= 1) {
-                    $user_review_rating = $participant->rating_and_reviews->sum("rating") / $participant->rating_and_reviews->count();
+                    $user_review_rating = number_format($participant->rating_and_reviews->sum("rating") / $participant->rating_and_reviews->count(), 2);
                 }
 
                 $participant->rating = $user_review_rating;
@@ -702,6 +701,7 @@ class PostController extends Controller
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["distance"] = number_format($distance, 2);
+
             if ($request->searchRadius && $request->searchRadius != "") {
                 if ($distance <= $request->searchRadius) {
                     $jobs_near_me->push($post);

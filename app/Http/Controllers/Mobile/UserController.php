@@ -199,7 +199,7 @@ class UserController extends Controller
         }
 
         $job_history = auth()->user()->job_applications->where("status", "confirmed");
-        $average_rating = auth()->user()->rating;
+        $average_rating = number_format(auth()->user()->rating, 2);
         $volunteer_hours = auth()->user()->volunteer_hours;
         $total_earnings = auth()->user()->total_earnings;
 
@@ -240,7 +240,7 @@ class UserController extends Controller
     public function get_job_history(Request $request)
     {
         $job_history = auth()->user()->job_applications->where("status", "confirmed");
-        $average_rating = auth()->user()->rating;
+        $average_rating = number_format(auth()->user()->rating, 2);
         $total_earnings = auth()->user()->total_earnings;
 
         $jobs_count = 0;
@@ -308,7 +308,7 @@ class UserController extends Controller
         }
 
         $job_history = $user->job_applications->where("status", "confirmed");
-        $average_rating = $user->rating;
+        $average_rating = number_format($user->rating, 2);
         $volunteer_hours = $user->volunteer_hours;
         $total_earnings = $user->total_earnings;
 
