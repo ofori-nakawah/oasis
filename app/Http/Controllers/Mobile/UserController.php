@@ -356,8 +356,6 @@ class UserController extends Controller
         }
         $errors = new MessageBag();
 
-        Log::debug($request->all());
-
         switch($request->module) {
             case "display-name":
                 if (!$request->name) {
@@ -370,13 +368,19 @@ class UserController extends Controller
             case "profile-picture":
                 if ($request->profile_picture && $request->profile_picture != "") {
                     //save image
-                    $image = $request->file('profile_picture');
-                    $name = auth()->user()->name . '_' . time() . '.' . $image->getClientOriginalExtension();
-                    $destinationPath = public_path('/uploads/profile_pics');
-                    $image->move($destinationPath, $name);
+                    $image = $request->profile_picture;
+                    $name = auth()->user()->name . '_' . time() . '.png';
+                    $destinationPath = public_path('/uploads/profile_pics/');
+
+                    $image_parts = explode(";base64,", $image);
+                    $image_base64 = base64_decode($image_parts[1]);
+                    $file = $destinationPath . $name;
+                    file_put_contents($file, $image_base64);
 
                     auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
                     auth()->user()->update();
+
+                    return $this->success_response(["image" => auth()->user()->profile_picture], "Profile picture updated successfully.");
                 }
                 break;
             case "update-password":
