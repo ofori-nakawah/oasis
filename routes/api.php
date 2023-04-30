@@ -33,10 +33,12 @@ Route::prefix('/v1')->group(function () {
     Route::middleware("auth:sanctum")->group(function () {
         Route::prefix('/volunteer')->group(function () {
             Route::post('/create-post', 'Mobile\PostController@create_volunteer_post');
+            Route::post('/update-post', 'Mobile\PostController@updatePost');
         });
 
         Route::prefix('/quick-jobs')->group(function () {
             Route::post('/create-post', 'Mobile\PostController@create_quick_job_post');
+            Route::post('/update-post', 'Mobile\PostController@updatePost');
         });
 
         Route::prefix('/activities')->group(function () {

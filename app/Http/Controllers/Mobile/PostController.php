@@ -10,6 +10,7 @@ use App\Models\Skill;
 use App\Models\User;
 use App\Traits\Responses;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -64,6 +65,74 @@ class PostController extends Controller
             return $this->success_response($post, "Post has been published successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->db_operation_error_response([]);
+        }
+    }
+
+    public function updatePost(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'uuid' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $post = Post::where("id", $request->uuid)->first();
+        if (!$post) {
+            return $this->not_found_response([], "Error fetching post details");
+        }
+
+        switch ($request->type) {
+            case "VOLUNTEER":
+                $post->name = $request->name;
+                $post->description = $request->description;
+                $post->date = $request->date;
+                $post->time = $request->time;
+                $post->location = $request->location;
+                $post->coords = $request->coords;
+                $post->maximum_number_of_volunteers = $request->maximum_number_of_volunteers;
+                $post->volunteer_hours = $request->volunteer_hours;
+                $post->other_relevant_information = $request->other_relevant_information;
+                break;
+            case "QUICK_JOB":
+                $category = Skill::where("name", $request->category)->first();
+                if (!$category) {
+                    return $this->not_found_response([], "Error fetching category details");
+                }
+
+                $post->category = $request->category;
+                $post->category_id = $category->id;
+                $post->description = $request->description;
+                $post->date = $request->date;
+                $post->time = $request->time;
+                $post->location = $request->location;
+                $post->coords = $request->coords;
+                $post->max_budget = $request->max_budget;
+                $post->min_budget = $request->min_budget;
+                $post->is_negotiable = $request->is_negotiable;
+                $post->is_includes_tax = $request->is_includes_tax;
+                $post->other_relevant_information = $request->other_relevant_information;
+
+                if ($post->post_image && $post->post_image != "") {
+                    //save image
+                    $image = $request->file('post_image');
+                    $name = $post->user_id . '_' . time() . '.' . $image->getClientOriginalExtension();
+                    $destinationPath = public_path('/uploads');
+                    $image->move($destinationPath, $name);
+
+                    $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
+                }
+
+                break;
+        }
+
+        try {
+            $post->update();
+            return $this->success_response($post, "Post has been updated successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR UPDATING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
         }
     }
