@@ -115,7 +115,10 @@ class PostController extends Controller
                 $post->is_includes_tax = $request->is_includes_tax;
                 $post->other_relevant_information = $request->other_relevant_information;
 
-                if ($post->post_image && $post->post_image != "") {
+                Log::debug($request->post_image);
+
+
+                if ($request->post_image && $request->post_image != "") {
                     $image = $request->post_image;
                     $name = $post->id . '_' . time() . '.png';
                     $destinationPath = public_path('/uploads/quick_jobs/');
