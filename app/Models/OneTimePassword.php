@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\SMS as SMS;
 use App\Traits\Uuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -58,6 +59,9 @@ class OneTimePassword extends Model
         }
 
         //return existing code
+        //send code to user
+        $message = $otp->code . " is your VORK verification code.";
+        SMS::notify($user->phone_number, $message);
         return $otp->code;
     }
 
