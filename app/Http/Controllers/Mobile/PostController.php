@@ -186,12 +186,15 @@ class PostController extends Controller
         $post->user_id = auth()->id();
         $post->type = "QUICK_JOB";
 
-        if ($post->post_image && $post->post_image != "") {
-            //save image
-            $image = $request->file('post_image');
-            $name = $post->user_id . '_' . time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads');
-            $image->move($destinationPath, $name);
+        if ($request->post_image && $request->post_image != "") {
+            $image = $request->post_image;
+            $name = $post->id . '_' . time() . '.png';
+            $destinationPath = public_path('/uploads/quick_jobs/');
+
+            $image_parts = explode(";base64,", $image);
+            $image_base64 = base64_decode($image_parts[1]);
+            $file = $destinationPath . $name;
+            file_put_contents($file, $image_base64);
 
             $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
         }
