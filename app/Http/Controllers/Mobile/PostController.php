@@ -268,8 +268,6 @@ class PostController extends Controller
                     array_push($user_interests, $interest->skill->id);
                 }
 
-                Log::debug($user_interests);
-
                 /**
                  * filter using search categories
                  */
@@ -278,9 +276,6 @@ class PostController extends Controller
                     foreach ($searchCategories as $interest) {
                         array_push($_searchCategories, $interest);
                     }
-
-                    Log::debug($_searchCategories);
-
 
                     $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $_searchCategories)->get();
                 } else {
