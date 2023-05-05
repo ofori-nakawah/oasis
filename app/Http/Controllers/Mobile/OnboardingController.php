@@ -75,7 +75,7 @@ class OnboardingController extends Controller
         }
 
         //Generate & send otp to user
-        if (!OTP::Generate($user)) {
+        if (!OTP::Get($user)) {
             return $this->success_response([], "Oops. We couldn't send confirmation. Try again");
         }
 

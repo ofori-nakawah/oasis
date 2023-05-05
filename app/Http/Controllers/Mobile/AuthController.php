@@ -60,7 +60,7 @@ class AuthController extends Controller
         $user = User::where("email", $request->phoneNumber)->orWhere("phone_number", $request->phoneNumber)->first();
         if (!$user) {return $this->not_found_response([], "Oops. We could not find any records");}
 
-        if (!OTP::Generate($user)) {return $this->general_error_response([], "Oops. We couldn't send confirmation code. Try again");}
+        if (!OTP::Get($user)) {return $this->general_error_response([], "Oops. We couldn't send confirmation code. Try again");}
 
         return $this->success_response([
             "phoneNumber" => $user->phone_number
