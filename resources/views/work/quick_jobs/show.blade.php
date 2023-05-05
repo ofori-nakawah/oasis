@@ -34,7 +34,7 @@
                 <div class="card card-bordered">
                     <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->category}}</b></div>
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row mb-2">
                             <div class="col-md-6">
                                 <div class="title" style="font-size: 10px;color: #777;">Issuer</div>
                                 <div class="issuer"><b>{{$post->user->name}}</b></div>
@@ -72,9 +72,9 @@
             @include("utilities.alerts.alerts")
             <div class="card card-bordered">
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-md-8">
-                            <div class="title" style="font-size: 10px;color: #777;">Activity Name</div>
+                            <div class="title" style="font-size: 10px;color: #777;">Category</div>
                             <div class="issuer"><b>{{$original_post->category}}</b></div>
                         </div>
                         <div class="col-md-4">
@@ -84,7 +84,7 @@
                             </b>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Description</div>
                             <div class="issuer"><b>{{$original_post->description}}</b></div>
@@ -93,13 +93,13 @@
                             @endif
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Location</div>
                             <b><div class="location">{{$original_post->location}}</div></b>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-md-8">
                             <div class="title" style="font-size: 10px;color: #777;">Budget (GHS)</div>
                             <b>
@@ -109,7 +109,7 @@
                         <div class="col-md-4">
                             <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
                             <b>
-                                <div class="date text-success">{{$original_post->date}} {{$original_post->time}}</div>
+                                <div class="date text-red">{{$original_post->date}} {{$original_post->time}}</div>
                             </b>
                         </div>
                     </div>
