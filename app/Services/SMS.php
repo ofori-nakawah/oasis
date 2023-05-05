@@ -17,7 +17,7 @@ class SMS
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "http://smsbolt.com/sms/api?action=send-sms&api_key=dm9yay10ZWNoOkBDMGQzTjFuamE&to=$phone&from=VORK&sms=$message",
+            CURLOPT_URL => "http://smsbolt.com/sms/api?action=send-sms&api_key=dm9yay10ZWNoOkBDMGQzTjFuamE=&to=$phone&from=VORK&sms=$message",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,

@@ -7,8 +7,6 @@ use App\Traits\Uuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
-use App\Models\Country as CountryConfig;
 
 class OneTimePassword extends Model
 {
@@ -49,13 +47,19 @@ class OneTimePassword extends Model
         $otp = OneTimePassword::where("user_id", $user->id)->where("status", self::VALID_STATUS)->latest()->first();
         if (!$otp) {
             //generate a new code for user
-            return self::Generate($user);
+            $code = self::Generate($user);
+            $message = $code . " is your VORK verification code.";
+            SMS::notify($user->phone_number, $message);
+            return $code;
         }
 
         //check if it has not expired
         if (self::Validate($user->id, "user_id", $otp->code) != self::VALID_STATUS) {
             //generate a new code for user if it has expired
-            return self::Generate($user);
+            $code = self::Generate($user);
+            $message = $code . " is your VORK verification code.";
+            SMS::notify($user->phone_number, $message);
+            return $code;
         }
 
         //return existing code
