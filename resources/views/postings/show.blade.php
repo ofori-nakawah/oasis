@@ -173,6 +173,12 @@
                                             <div class="text-muted"><em
                                                     class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
                                             </div>
+                                            @if($post->status === "closed")
+                                                <div class="text-muted"><em class="icon ni ni-money"></em> GHS {{$post->final_payment_amount}}
+                                                </div>
+                                                <div class="text-muted"><em class="icon ni ni-star-fill"></em> {{$post->job_done_overall_rating}}
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="col-md-2">
                                             <a href="" onclick="return confirm('Are you sure?')"><em
