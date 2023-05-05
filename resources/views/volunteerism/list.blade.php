@@ -41,7 +41,7 @@
                         <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
                             <b>{{$post->name}}</b></div>
                         <div class="card-body">
-                            <div class="row">
+                            <div class="row mb-2">
                                 <div class="col-md-6">
                                     <div class="title" style="font-size: 10px;color: #777;">Issuer</div>
                                     <div class="issuer"><b>{{$post->user->name}}</b></div>
