@@ -108,7 +108,7 @@
                                     </div>
                                 </div>
 
-                                @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED")
+                                @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED" && $notify->data["event"] != "JOB_CLOSED")
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="title" style="font-size: 10px;color: #777;">Location</div>
@@ -128,20 +128,20 @@
                                         <table class="table table-striped">
                                             <body>
                                             <tr>
-                                                <td class="text-muted">Job</td>
-                                                <td>{{$notify->data["post"]["category"]}}</td>
+                                                <td class="text-muted">Gross Amount</td>
+                                                <td>{{$notify->data["post"]["final_payment_amount"]}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="text-muted">WHT Allocation (5%)</td>
-                                                <td>{{(5/ 100) * $notify->data["post"]["final_payment_amount"]}}</td>
+                                                <td>{{number_format((5/ 100) * $notify->data["post"]["final_payment_amount"], 2)}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="text-muted">Vork Charge (1%)</td>
-                                                <td>{{(1/ 100) * $notify->data["post"]["final_payment_amount"]}}</td>
+                                                <td>{{number_format((1/ 100) * $notify->data["post"]["final_payment_amount"], 2)}}</td>
                                             </tr>
                                             <tr>
-                                                <td><b>Total Amount</b></td>
-                                                <td>{{$notify->data["post"]["final_payment_amount"]}}</td>
+                                                <td><b>Net Amount</b></td>
+                                                <td>{{$notify->data["post"]["final_payment_amount"] - number_format((5/ 100) * $notify->data["post"]["final_payment_amount"], 2) - number_format((1/ 100) * $notify->data["post"]["final_payment_amount"], 2) }}</td>
                                             </tr>
                                             </body>
                                         </table>
