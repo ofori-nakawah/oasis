@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Log;
 
 class PushNotification {
     public static function notify($title,$body,$event,$details,$user_fcm_tokens){
+        Log::debug($user_fcm_tokens);
+        Log::debug("checking ......");
         $server_api_key = env("FIREBASE_SERVER_API_KEY");
         if (!$server_api_key) {
             Log::debug("MISSING FIREBASE_SERVER_API_KEY IN ENV FILE");
