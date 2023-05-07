@@ -31,7 +31,8 @@ class OnboardingController extends Controller
             'phone_number' => 'unique:users',
             'country' => 'required',
             'password_confirmation' => 'required|min:6',
-            'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()]
+            'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()],
+            'captcha' => 'required|captcha'
         ]);
 
         if ($validation->fails()) {return back()->withErrors($validation->errors());}
@@ -93,6 +94,11 @@ class OnboardingController extends Controller
         //send code to user
 
         return redirect()->route("onboarding.verify_phone_number", ["uuid" => $user->id]);
+    }
+
+    public function reloadCaptcha()
+    {
+        return response()->json(['captcha'=> captcha_img()]);
     }
 
     public function resend_otp(User $user)
