@@ -380,6 +380,8 @@ class UserController extends Controller
                     auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
                     auth()->user()->update();
 
+                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+
                     return $this->success_response(["image" => auth()->user()->profile_picture], "Profile picture updated successfully.");
                 }
                 break;
