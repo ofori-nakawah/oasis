@@ -76,7 +76,7 @@
 
                                 <br>
 
-                                <div><b>Est. Income Tax</b></div>
+                                <div><b>Estimated Income Tax</b></div>
                                 <div><b class="text-danger">GHS {{$dashboard_analytics["estIncomeTax"]}}</b></div>
                             </div>
                         </div>
@@ -114,9 +114,9 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th>Dist(km)</th>
+                                    <th>Distance(km)</th>
                                     <th>Description</th>
-                                    <th>V.Hours</th>
+                                    <th>Volunteer Hours</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -134,7 +134,7 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th>Dist(km)</th>
+                                    <th>Distance(km)</th>
                                     <th>Description</th>
                                     <th>Budget</th>
                                 </tr>
