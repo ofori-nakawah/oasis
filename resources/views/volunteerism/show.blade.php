@@ -80,7 +80,7 @@
                         <div class="col-md-4">
                             <div class="title" style="font-size: 10px;color: #777;">Issuer</div>
                             <b>
-                                <div class="date text-success">{{$original_post->user->name}}</div>
+                                <div class="date">{{$original_post->user->name}}</div>
                             </b>
                         </div>
                     </div>
@@ -102,12 +102,12 @@
                     <div class="row mb-2">
                         <div class="col-md-8">
                             <div class="title" style="font-size: 10px;color: #777;">Volunteer Hours</div>
-                            <div class="issuer"><b>{{$original_post->volunteer_hours}}</b></div>
+                            <div class="issuer text-success"><b>{{$original_post->volunteer_hours}}</b></div>
                         </div>
                         <div class="col-md-4">
                             <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
                             <b>
-                                <div class="date text-success">{{$original_post->date}} {{$original_post->time}}</div>
+                                <div class="date text-danger">{{$original_post->date}} {{$original_post->time}}</div>
                             </b>
                         </div>
                     </div>

@@ -16,7 +16,7 @@ class Post extends Model
 
     public function getDateAttribute($date)
     {
-        return $this->attributes['date'] = Carbon::parse($date)->format('Y-m-d');
+        return $this->attributes['date'] = Carbon::parse(str_replace("/", "-", $date))->format('Y-m-d');
     }
 
     public function user()
