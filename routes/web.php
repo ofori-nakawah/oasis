@@ -115,7 +115,7 @@ Route::get('/auth/password-reset/resend-code/{user}', 'Web\AuthController@resend
 Route::post('/auth/password-reset', 'Web\AuthController@executePasswordReset')->name('auth.password_reset.executePasswordReset');
 Route::get('/auth/{user}/password-reset', 'Web\AuthController@readyPasswordReset')->name('auth.passwordReset.ready');
 
-
+Route::get('/auth/reload-captcha', 'Web\OnboardingController@reloadCaptcha')->name('captcha.reload');
 
 
 require __DIR__.'/auth.php';
