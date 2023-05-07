@@ -42,7 +42,7 @@
                         <img src="{{asset("assets/html-template/src/images/join.svg")}}"
                              style="height: 120px; width: 120px;" alt="">
                         <h2>Join</h2>
-                        <p>Join an activity in your community</p>
+                        <p>Volunteer for an activity in your community</p>
                     </div>
                 </div>
             </a>

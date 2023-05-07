@@ -48,7 +48,7 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <p>Choose at most 3 languages you are familiar with and can conduct business in.</p>
+                    <p>Choose the languages you are familiar with and can conduct business in.</p>
 
                     <div class="row mb-4 mt-2">
                         <div class="col-sm-12">
