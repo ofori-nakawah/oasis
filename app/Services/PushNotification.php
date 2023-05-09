@@ -5,7 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class PushNotification {
-    public static function notify($title,$body,$event,$details,$user_fcm_tokens){
+    public static function Notify($event,$details,$user_fcm_token){
         $server_api_key = env("FIREBASE_SERVER_API_KEY");
         if (!$server_api_key) {
             Log::debug("MISSING FIREBASE_SERVER_API_KEY IN ENV FILE");
@@ -16,26 +16,65 @@ class PushNotification {
             'Content-Type: application/json'
         ];
 
-        $notification_data = [
-            'title' => $title,
-            'body' => $body,
-            'icon' => '',
-            'image' => '',
-            'event' => $event
-        ];
+        $notification_data = null;
+        $notification_payload = null;
+        $notification_body = null;
 
-        $notification_payload = [
-            'event' => $event,
-            'details' => $details,
-            'title' => $title,
-            'body' => $body
-        ];
+        switch ($event) {
+            case "APPLICATION_CONFIRMED" || "APPLICATION_DECLINED":
+                $title = ($event === 'APPLICATION_CONFIRMED') ? 'Your application has been confirmed!' : 'Your application has been declined';
+                $body = ($event === 'APPLICATION_CONFIRMED') ? 'The issuer for a job you applied to has confirmed you for the position. Go to your notifications to view more details.': 'ok';
 
-        $notification_body = [
-            'notification' => $notification_data,
-            'data' => $notification_payload,
-            'to' => $user_fcm_tokens,
-        ];
+                $notification_data = [
+                    'title' => $title,
+                    'body' => $body,
+                    'icon' => '',
+                    'image' => '',
+                    'sound' => 'default'
+                ];
+
+                $notification_payload = [
+                    'event' => $event,
+                    'details' => $details,
+                    'title' => $title,
+                    'body' => $body
+                ];
+
+                $notification_body = [
+                    'notification' => $notification_data,
+                    'data' => $notification_payload,
+                    'to' => $user_fcm_token,
+                ];
+                break;
+            case "JOB_CANCELLED || JOB_CLOSED":
+                $notification_data = [
+                    'title' => 'New delivery request!',
+                    'body' => 'A new delivery request has been made. Dive into your Delivery Request Pool and accept delivery. Remember, the more deliveries you make the more you earn!',
+                    'icon' => '',
+                    'image' => '',
+                    'sound' => 'default'
+                ];
+
+                $notification_payload = [
+                    'title' => 'New delivery request!',
+                    'details' => 'A new delivery request has been made. Dive into your Delivery Request Pool and accept delivery. Remember, the more deliveries you make the more you earn!',
+                    'type' => 'new-open-delivery-request',
+                    'is_open_delivery_request_pool' => "true",
+                    'app_route' => "/delivery-request-pool/",
+                ];
+
+                $notification_body = [
+                    'notification' => $notification_data,
+                    'data' => $notification_payload,
+                    'registration_ids' => self::GetFCMTokenOfParticipants($details),
+                    'android' => [
+                        'notification' => [
+                            'sound' => 'default'
+                        ]
+                    ]
+                ];
+                break;
+        }
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -81,7 +120,7 @@ class PushNotification {
      */
     private static function GetFCMTokenOfParticipants($post)
     {
-        $selectedApplications = $post->applicacations->where("status", "confirmed");
+        $selectedApplications = $post->applications->where("status", "confirmed");
         $fcm_tokens = array();
         foreach ($selectedApplications as $application) {
             if ($application->user->fcm_token) {

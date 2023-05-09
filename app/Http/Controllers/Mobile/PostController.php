@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
+use App\Services\PushNotification;
 use App\Traits\Responses;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -556,6 +557,9 @@ class PostController extends Controller
         try {
             $application->update();
 
+            $application->user;
+            $application->job_post;
+
             /**
              * job applicant confirmed
              */
@@ -567,11 +571,13 @@ class PostController extends Controller
                  * create notification
                  */
                 Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_CONFIRMED");
+                PushNotification::Notify("APPLICATION_CONFIRMED", $application, $application->user->fcm_token);
             } else {
                 /**
                  * create notification
                  */
                 Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_DECLINED");
+                PushNotification::Notify("APPLICATION_DECLINED", $application, $application->user->fcm_token);
             }
         } catch (QueryException $e) {
             Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);
@@ -634,7 +640,11 @@ class PostController extends Controller
                          * create notification
                          */
                         $post->user;
+                        $application->job_post;
+
                         Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                        PushNotification::Notify("JOB_CLOSED", $application, null);
+
                     } catch (QueryException $e) {
                         Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
                         continue;
@@ -697,7 +707,10 @@ class PostController extends Controller
                      * create notification
                      */
                     $post->user;
+                    $application->job_post;
                     Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    PushNotification::Notify("JOB_CLOSED", $application, null);
+
                     $participant->update();
                 } catch (QueryException $e) {
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);

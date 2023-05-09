@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\Skill;
+use App\Services\PushNotification;
 use App\Traits\OpportunitiesAroundMe;
 
 class HomeController extends Controller
