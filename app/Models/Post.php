@@ -12,12 +12,7 @@ class Post extends Model
 {
     use HasFactory, Uuids, Notifiable;
 
-    protected $dates = ['closed_at', 'date'];
-
-    public function getDateAttribute($date)
-    {
-        return $this->attributes['date'] = Carbon::parse(str_replace("/", "-", $date))->format('Y-m-d');
-    }
+    protected $dates = ['closed_at'];
 
     public function user()
     {

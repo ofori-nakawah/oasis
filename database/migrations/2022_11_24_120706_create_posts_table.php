@@ -41,6 +41,7 @@ class CreatePostsTable extends Migration
             $table->string("status")->default("active");
             $table->string("closed_at")->nullable();
             $table->string("deleted_at")->nullable();
+            $table->string("source")->nullable();
             $table->timestamps();
         });
     }
