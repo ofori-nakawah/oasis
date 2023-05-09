@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
+use App\Services\PushNotification;
 use App\Traits\Responses;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -567,6 +568,7 @@ class PostController extends Controller
                  * create notification
                  */
                 Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_CONFIRMED");
+                PushNotification::Notify("APPLICATION_CONFIRMED", $application, $application->user->fcm_token);
             } else {
                 /**
                  * create notification

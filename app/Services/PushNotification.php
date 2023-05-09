@@ -5,7 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class PushNotification {
-    public static function notify($title,$body,$event,$details,$user_fcm_tokens){
+    public static function Notify($event,$details,$user_fcm_token){
         $server_api_key = env("FIREBASE_SERVER_API_KEY");
         if (!$server_api_key) {
             Log::debug("MISSING FIREBASE_SERVER_API_KEY IN ENV FILE");
@@ -16,26 +16,37 @@ class PushNotification {
             'Content-Type: application/json'
         ];
 
-        $notification_data = [
-            'title' => $title,
-            'body' => $body,
-            'icon' => '',
-            'image' => '',
-            'event' => $event
-        ];
+        $notification_data = null;
+        $notification_payload = null;
+        $notification_body = null;
 
-        $notification_payload = [
-            'event' => $event,
-            'details' => $details,
-            'title' => $title,
-            'body' => $body
-        ];
+        switch ($event) {
+            case "APPLICATION_CONFIRMED" || "APPLICATION_DECLINED":
+                $title = ($event === 'APPLICATION_CONFIRMED') ? 'Your application has been confirmed!' : 'Your application has been declined';
+                $body = ($event === 'APPLICATION_CONFIRMED') ? 'The issuer for a job you applied to has confirmed you for the position. Go to your notifications to view more details.': 'ok';
 
-        $notification_body = [
-            'notification' => $notification_data,
-            'data' => $notification_payload,
-            'to' => $user_fcm_tokens,
-        ];
+                $notification_data = [
+                    'title' => $title,
+                    'body' => $body,
+                    'icon' => '',
+                    'image' => '',
+                    'sound' => 'default'
+                ];
+
+                $notification_payload = [
+                    'event' => $event,
+                    'details' => $details,
+                    'title' => $title,
+                    'body' => $body
+                ];
+
+                $notification_body = [
+                    'notification' => $notification_data,
+                    'data' => $notification_payload,
+                    'to' => $user_fcm_token,
+                ];
+                break;
+        }
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
