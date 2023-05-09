@@ -14,14 +14,6 @@ class Post extends Model
 
     protected $dates = ['closed_at'];
 
-//    public function getDateAttribute($date)
-//    {
-//        if (str_contains($date, '/') ) {
-//            $date = str_replace("/", "-", $date);
-//        }
-//        return $this->attributes['date'] = date('Y-m-d', strtotime($date));
-//    }
-
     public function user()
     {
         return $this->belongsTo("App\Models\User", "user_id");

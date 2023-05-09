@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use App\Helpers\DateFormatter;
 use App\Helpers\Notifications as Notifications;
 use App\Models\JobApplication;
 use App\Models\Post;
@@ -60,6 +61,7 @@ class PostController extends Controller
         $post->other_relevant_information = $request->other_relevant_information;
         $post->user_id = auth()->id();
         $post->type = "VOLUNTEER";
+        $post->source = "MOBILE";
 
         try {
             $post->save();
@@ -186,6 +188,7 @@ class PostController extends Controller
         $post->other_relevant_information = $request->other_relevant_information;
         $post->user_id = auth()->id();
         $post->type = "QUICK_JOB";
+        $post->source = "MOBILE";
 
         if ($request->post_image && $request->post_image != "") {
             $image = $request->post_image;
@@ -258,7 +261,7 @@ class PostController extends Controller
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
 
-                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
                     if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                         $volunteer_near_me->push($post);
                     }
@@ -299,7 +302,7 @@ class PostController extends Controller
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
                     $post->user;
                     /**
@@ -409,7 +412,7 @@ class PostController extends Controller
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);
         $post["postedOn"] = $post->created_at->diffForHumans();
-        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
 
         return $this->success_response($post, "Posts fetched successfully.");
@@ -487,7 +490,7 @@ class PostController extends Controller
         }
 
         $post->createdAt = $post->created_at->diffForHumans();
-        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
 
         return $this->success_response($post, "Posts fetched successfully.");
@@ -557,6 +560,9 @@ class PostController extends Controller
         try {
             $application->update();
 
+            $application->user;
+            $application->job_post;
+
             /**
              * job applicant confirmed
              */
@@ -574,6 +580,7 @@ class PostController extends Controller
                  * create notification
                  */
                 Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_DECLINED");
+                PushNotification::Notify("APPLICATION_DECLINED", $application, $application->user->fcm_token);
             }
         } catch (QueryException $e) {
             Log::error("ERROR confirming user for JOB APPLICATION >>>>>>>>>> " . $application . " >>>>>>>>> " . $e);
@@ -636,7 +643,11 @@ class PostController extends Controller
                          * create notification
                          */
                         $post->user;
+                        $application->job_post;
+
                         Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                        PushNotification::Notify("JOB_CLOSED", $application, null);
+
                     } catch (QueryException $e) {
                         Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
                         continue;
@@ -699,7 +710,10 @@ class PostController extends Controller
                      * create notification
                      */
                     $post->user;
+                    $application->job_post;
                     Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    PushNotification::Notify("JOB_CLOSED", $application, null);
+
                     $participant->update();
                 } catch (QueryException $e) {
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);

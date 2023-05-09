@@ -507,6 +507,7 @@ class PostController extends Controller
         $post->other_relevant_information = $request->other_relevant_information;
         $post->user_id = auth()->id();
         $post->type = "VOLUNTEER";
+        $post->source = "WEB";
 
         try {
             $post->save();
@@ -554,6 +555,7 @@ class PostController extends Controller
         $post->other_relevant_information = $request->other_relevant_information;
         $post->user_id = auth()->id();
         $post->type = "QUICK_JOB";
+        $post->source = "WEB";
 
         if ($request->post_image && $request->post_image != "") {
             //save image

@@ -46,6 +46,34 @@ class PushNotification {
                     'to' => $user_fcm_token,
                 ];
                 break;
+            case "JOB_CANCELLED || JOB_CLOSED":
+                $notification_data = [
+                    'title' => 'New delivery request!',
+                    'body' => 'A new delivery request has been made. Dive into your Delivery Request Pool and accept delivery. Remember, the more deliveries you make the more you earn!',
+                    'icon' => '',
+                    'image' => '',
+                    'sound' => 'default'
+                ];
+
+                $notification_payload = [
+                    'title' => 'New delivery request!',
+                    'details' => 'A new delivery request has been made. Dive into your Delivery Request Pool and accept delivery. Remember, the more deliveries you make the more you earn!',
+                    'type' => 'new-open-delivery-request',
+                    'is_open_delivery_request_pool' => "true",
+                    'app_route' => "/delivery-request-pool/",
+                ];
+
+                $notification_body = [
+                    'notification' => $notification_data,
+                    'data' => $notification_payload,
+                    'registration_ids' => self::GetFCMTokenOfParticipants($details),
+                    'android' => [
+                        'notification' => [
+                            'sound' => 'default'
+                        ]
+                    ]
+                ];
+                break;
         }
 
         $curl = curl_init();
@@ -92,7 +120,7 @@ class PushNotification {
      */
     private static function GetFCMTokenOfParticipants($post)
     {
-        $selectedApplications = $post->applicacations->where("status", "confirmed");
+        $selectedApplications = $post->applications->where("status", "confirmed");
         $fcm_tokens = array();
         foreach ($selectedApplications as $application) {
             if ($application->user->fcm_token) {

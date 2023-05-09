@@ -43,7 +43,6 @@ class UserController extends Controller
      */
     public function update_user_core_skills(Request $request)
     {
-        Log::debug("REQUEST >>>>>>>>>>>>> " . $request);
         if (count($request->skills) > 3) {
             return $this->general_error_response([], "Choose at most three skills or items you have interest in.");
         }
@@ -381,6 +380,8 @@ class UserController extends Controller
 
                     auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
                     auth()->user()->update();
+
+//                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
 
                     return $this->success_response(["image" => auth()->user()->profile_picture], "Profile picture updated successfully.");
                 }
