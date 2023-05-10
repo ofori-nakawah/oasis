@@ -9,14 +9,10 @@ class DateFormatter
     public static function Parse($date)
     {
         if (strpos($date, '-') !== false) {
-            $date = str_replace("-", "/", strrev($date));
+            $_date = explode("-",$date);
+            $date = $_date[2] ."/".$_date[1]."/".$_date[0];
         }
 
-        $array = explode('/', $date);
-        $tmp = $array[0];
-        $array[0] = $array[1];
-        $array[1] = $tmp;
-        unset($tmp);
-        return implode('/', $array);
+        return $date;
     }
 }
