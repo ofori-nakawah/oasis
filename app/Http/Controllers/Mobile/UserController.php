@@ -363,6 +363,8 @@ class UserController extends Controller
                 }
                 auth()->user()->name = $request->name;
                 auth()->user()->update();
+
+//                PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
                 break;
             case "profile-picture":
                 if ($request->profile_picture && $request->profile_picture != "") {
