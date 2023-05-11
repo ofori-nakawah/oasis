@@ -54,7 +54,7 @@ class OneTimePassword extends Model
         }
 
         //check if it has not expired
-        if (self::Validate($user->id, "user_id", $otp->code) != self::VALID_STATUS) {
+        if (self::Validate("user_id", $user->id, $otp->code) != self::VALID_STATUS) {
             //generate a new code for user if it has expired
             $code = self::Generate($user);
             $message = $code . " is your VORK verification code.";
