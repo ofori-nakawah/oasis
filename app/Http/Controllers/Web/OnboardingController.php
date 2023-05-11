@@ -35,7 +35,7 @@ class OnboardingController extends Controller
             'captcha' => 'required|captcha'
         ]);
 
-        if ($validation->fails()) {return back()->withErrors($validation->errors());}
+        if ($validation->fails()) {return back()->withErrors($validation->errors())->withInput();}
 
 //        /**
 //         * Let get country config and check if phone number is required
