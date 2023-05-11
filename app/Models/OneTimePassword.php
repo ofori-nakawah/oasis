@@ -28,7 +28,7 @@ class OneTimePassword extends Model
         $otp->user_id = $user->id;
         $otp->email = $user->email;
         $otp->phone_number = $user->phone_number;
-        $otp->code = "111111"; //substr(str_shuffle(self::PERMITTED_CHARS), 0, 6);
+        $otp->code = substr(str_shuffle(self::PERMITTED_CHARS), 0, 6);
         $otp->status = self::VALID_STATUS;
         if (!$otp->save()) {
             return null;
