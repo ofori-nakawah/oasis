@@ -492,7 +492,7 @@ class PostController extends Controller
         ]);
 
         if ($validation->fails()) {
-            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.");
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
         }
 
         $post = new Post();
@@ -532,7 +532,7 @@ class PostController extends Controller
         ]);
 
         if ($validation->fails()) {
-            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.");
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
         }
 
         $category = Skill::where("name", $request->category)->first();

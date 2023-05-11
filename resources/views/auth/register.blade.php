@@ -45,7 +45,7 @@
                         </div>
                         <input type="text"
                                class="form-control form-control-lg{{ $errors->has('name') ? ' error' : '' }}"
-                               name="name" id="default-01" placeholder="Enter your full name">
+                               name="name" id="default-01" placeholder="Enter your full name" value="{{ old('name') }}">
                     </div>
                     @if($errors->has('name'))
                         <span class="help-block text-danger">
@@ -64,7 +64,7 @@
                                 name="country" id="default-01">
                             <option value="">Choose an option</option>
                             @foreach($countries as $country)
-                                <option value="{{$country->id}}">{{$country->name}}
+                                <option value="{{$country->id}}" {{(old('country') == $country->id) ? 'selected' : ''}}>{{$country->name}}
                                     | {{$country->tel_code}}</option>
                             @endforeach
                         </select>
@@ -86,7 +86,7 @@
                         </div>
                         <input type="tel"
                                class="form-control form-control-lg{{ $errors->has('phone_number') ? ' error' : '' }}"
-                               name="phone_number" id="default-01" placeholder="Enter your phone number">
+                               name="phone_number" id="default-01" placeholder="Enter your phone number" value="{{ old('phone_number') }}">
                     </div>
                     @if($errors->has('phone_number'))
                         <span class="help-block text-danger">
@@ -105,7 +105,7 @@
                         <input type="email"
                                class="form-control form-control-lg{{ $errors->has('email') ? ' error' : '' }}"
                                name="email" id="default-01"
-                               placeholder="Enter your email address">
+                               placeholder="Enter your email address" value="{{ old('email') }}">
                     </div>
                     @if($errors->has('email'))
                         <span class="help-block text-danger">
@@ -128,7 +128,7 @@
                         </div>
                         <input type="password"
                                class="form-control form-control-lg{{ $errors->has('password') ? ' error' : '' }}"
-                               id="password" name="password" placeholder="Enter your password">
+                               id="password" name="password" placeholder="Enter your password" value="{{ old('password') }}">
                     </div>
                     @if($errors->has('password'))
                         <span class="help-block text-danger">
@@ -151,7 +151,7 @@
                         </div>
                         <input type="password"
                                class="form-control form-control-lg{{ $errors->has('password_confirmation') ? ' error' : '' }}"
-                               id="password_confirmation" name="password_confirmation"
+                               id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}"
                                placeholder="Confirm your password">
                     </div>
                     @if($errors->has('password_confirmation'))
