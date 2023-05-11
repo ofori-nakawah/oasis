@@ -10,7 +10,7 @@ class DateFormatter
     {
         if (strpos($date, '-') !== false) {
             $_date = explode("-",$date);
-            $date = $_date[2] ."/".$_date[1]."/".$_date[0];
+            $date = $_date[1] ."/".$_date[2]."/".$_date[0];
         }
 
         return $date;

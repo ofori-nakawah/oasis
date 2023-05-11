@@ -118,9 +118,6 @@ class PostController extends Controller
                 $post->is_includes_tax = $request->is_includes_tax;
                 $post->other_relevant_information = $request->other_relevant_information;
 
-                Log::debug($request->post_image);
-
-
                 if ($request->post_image && $request->post_image != "") {
                     $image = $request->post_image;
                     $name = $post->id . '_' . time() . '.png';
@@ -260,7 +257,6 @@ class PostController extends Controller
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-
                     $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
                     if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                         $volunteer_near_me->push($post);
