@@ -42,7 +42,7 @@
                         <img src="{{asset("assets/html-template/src/images/quick.svg")}}"
                              style="height: 120px; width: 120px;" alt="">
                         <h2>Quick Job</h2>
-                        <p>These are casual jobs (Side Gig)</p>
+                        <p>{{($type_of_user !== "employer") ? 'Apply for casual jobs or side gigs' : 'Post a casual job'}}</p>
                     </div>
                 </div>
             </a>
