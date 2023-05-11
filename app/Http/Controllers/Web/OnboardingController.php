@@ -32,7 +32,7 @@ class OnboardingController extends Controller
             'country' => 'required',
             'password_confirmation' => 'required|min:6',
             'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()],
-            'captcha' => 'required|captcha'
+            'g-recaptcha-response' => 'required|recaptchav3:register,0.5'
         ]);
 
         if ($validation->fails()) {return back()->withErrors($validation->errors())->withInput();}

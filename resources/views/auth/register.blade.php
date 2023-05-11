@@ -166,29 +166,38 @@
                     <label class="custom-control-label" for="customCheck2">Accept our <a href="https://myvork.com/terms-of-use/"><b>terms of use</b> </a> and <a href="https://myvork.com/privacy-policy-statement/"><b>privacy policy</b></a></label>
                 </div>
 
-                <div class="mt-1 mb-4">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6 col-xs-6">
-                            <div class="captcha mt-1">
-                                <span>{!! captcha_img() !!}</span>
-                                <button type="button" class="btn btn-danger" class="reload" id="reload">
-                                    &#x21bb;
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6">
-                            <div class="form-group">
-                                <input id="captcha" type="text" class="mt-1 form-control{{ $errors->has('captcha') ? ' error' : '' }}" required placeholder="Enter Captcha" name="captcha">
-                            </div>
-                        </div>
-                    </div>
-                    @if($errors->has('captcha'))
+                <div class="form-group{{ $errors->has('g-recaptcha-response') ? ' error' : '' }}">
+                    {!! RecaptchaV3::field('register') !!}
+                    @if ($errors->has('g-recaptcha-response'))
                         <span class="help-block text-danger">
-                                               <small
-                                                   class="text-danger">{{$errors->first('captcha')}}</small>
-                                            </span>
+                                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+                                </span>
                     @endif
                 </div>
+
+{{--                <div class="mt-1 mb-4">--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-6 col-sm-6 col-xs-6">--}}
+{{--                            <div class="captcha mt-1">--}}
+{{--                                <span>{!! captcha_img() !!}</span>--}}
+{{--                                <button type="button" class="btn btn-danger" class="reload" id="reload">--}}
+{{--                                    &#x21bb;--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <div class="col-md-6 col-sm-6 col-xs-6">--}}
+{{--                            <div class="form-group">--}}
+{{--                                <input id="captcha" type="text" class="mt-1 form-control{{ $errors->has('captcha') ? ' error' : '' }}" required placeholder="Enter Captcha" name="captcha">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    @if($errors->has('captcha'))--}}
+{{--                        <span class="help-block text-danger">--}}
+{{--                                               <small--}}
+{{--                                                   class="text-danger">{{$errors->first('captcha')}}</small>--}}
+{{--                                            </span>--}}
+{{--                    @endif--}}
+{{--                </div>--}}
 
                 <div class="form-group">
                     <button class="btn btn-lg btn-primary btn-block" type="submit"><b>Register</b></button>
