@@ -87,11 +87,9 @@ class OnboardingController extends Controller
         }
 
         //Generate & send otp to user
-        if (!OTP::Generate($user)) {
+        if (!OTP::Get($user)) {
             return back()->with("danger", "Oops. We couldn't send confirmation. Try again");
         }
-
-        //send code to user
 
         return redirect()->route("onboarding.verify_phone_number", ["uuid" => $user->id]);
     }
