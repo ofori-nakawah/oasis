@@ -95,7 +95,7 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validation->errors())->withInput($request->only('email_phone_number',))->with("danger", "No account found for entered information.");
         }
 
-        if (!OTP::Generate($user)) {
+        if (!OTP::Get($user)) {
             return back()->with("danger", "Oops. We couldn't send confirmation code. Try again");
         }
 
@@ -104,7 +104,7 @@ class AuthController extends Controller
 
     public function resendCode(User $user)
     {
-        if (!OTP::Generate($user)) {
+        if (!OTP::Get($user)) {
             return back()->with("danger", "Oops. We couldn't send confirmation code. Try again");
         }
 
