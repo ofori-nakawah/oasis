@@ -41,6 +41,15 @@ class OnboardingController extends Controller
         $country = CountryConfig::GetCountry($request->input("country"));
         if (!$country) {return $this->general_error_response([]);}
 
+        $errors = new MessageBag();
+
+        $isPhoneNumberTaken = User::where("phone_number", CountryConfig::GetIntPhoneNumber($country["name"], $request->input("phone_number")))->count();
+
+        if ($isPhoneNumberTaken != 0) {
+            $errors->add("phone_number", "This phone number is already taken");
+            {return $this->data_validation_error_response($errors->getMessages());}
+        }
+
         if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
             $errors = new MessageBag();
             $errors->add("phone_number", "The phone number field is required");
