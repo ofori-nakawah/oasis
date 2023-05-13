@@ -260,7 +260,7 @@
                                     <table class="table table-striped">
                                         <thead>
                                         <tr>
-                                            <th>Ref No.</th>
+                                            <th>Period</th>
                                             <th>Job</th>
                                             <th>Employer Feedback</th>
                                         </tr>
@@ -274,7 +274,7 @@
                                             @foreach($job_history as $work)
                                                 @if($work->job_post && $work->job_post->type != "VOLUNTEER")
                                                     <tr>
-                                                        <td>{{$work->ref_id}}</td>
+                                                        <td>{{($work->period) ? $work->period : 'N/A'}}</td>
                                                         <td>{{$work->job_post->category}}</td>
                                                         <td>{{($work->rating_and_reviews) ? $work->rating_and_reviews->feedback_message : 'N/A'}}</td>
                                                     </tr>

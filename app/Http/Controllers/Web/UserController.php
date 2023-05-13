@@ -142,6 +142,7 @@ class UserController extends Controller
 
             $vork->job_post;
             $vork->rating_and_reviews;
+            $vork->period = $vork->job_post->closed_at->format('M Y');
         }
 
             $number_of_jobs = $jobs_count;
@@ -149,6 +150,7 @@ class UserController extends Controller
             $location = $user->location_name;
             $location_coords = $user->location_coords;
             $skills = $core_skills;
+
 
         return view("profile.show", compact("number_of_activities", "number_of_jobs", "average_rating", "volunteer_hours", "total_earnings", "languages", "skills", "location", "user", "job_history"));
     }
