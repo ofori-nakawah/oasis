@@ -50,13 +50,13 @@ class OnboardingController extends Controller
 
         if ($isPhoneNumberTaken != 0) {
             $errors->add("phone_number", "This phone number is already taken");
-            {return back()->withErrors($errors);}
+            {return back()->withErrors($errors)->withInput();}
         }
 
 
         if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
             $errors->add("phone_number", "The phone number field is required");
-            {return back()->withErrors($errors);}
+            {return back()->withErrors($errors)->withInput();}
         }
 
         $user = new User();
