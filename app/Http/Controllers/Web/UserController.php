@@ -132,17 +132,19 @@ class UserController extends Controller
         $jobs_count = 0;
         $volunteer_count = 0;
         foreach ($job_history as $vork) {
-            if ($vork->job_post->type === "VOLUNTEER") {
-                $vork->ref_id = "VO" . explode("-", $vork->id)[0];
-                $volunteer_count++;
-            } else {
-                $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
-                $jobs_count++;
-            }
+            if ($vork->job_post->status === "closed") {
+                if ($vork->job_post->type === "VOLUNTEER") {
+                    $vork->ref_id = "VO" . explode("-", $vork->id)[0];
+                    $volunteer_count++;
+                } else {
+                    $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
+                    $jobs_count++;
+                }
 
-            $vork->job_post;
-            $vork->rating_and_reviews;
-            $vork->period = $vork->job_post->closed_at->format('M Y');
+                $vork->job_post;
+                $vork->rating_and_reviews;
+                $vork->period = $vork->job_post->closed_at->format('M Y');
+            }
         }
 
             $number_of_jobs = $jobs_count;
