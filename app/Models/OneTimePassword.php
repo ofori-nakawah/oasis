@@ -7,6 +7,7 @@ use App\Traits\Uuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class OneTimePassword extends Model
 {
@@ -32,6 +33,7 @@ class OneTimePassword extends Model
         $otp->status = self::VALID_STATUS;
         if (!$otp->save()) {
             return null;
+            Log::debug("ERROR GENERATING OTP FOR " . $user->phone_number);
         }
 
         return $otp->code;
@@ -43,30 +45,10 @@ class OneTimePassword extends Model
      * Fetch and resend code to user or generate new code for user based on the status
      */
     public static function Get(User $user) {
-        //check if otp exists with asset info provided
-        $otp = OneTimePassword::where("user_id", $user->id)->where("status", self::VALID_STATUS)->latest()->first();
-        if (!$otp) {
-            //generate a new code for user
-            $code = self::Generate($user);
-            $message = $code . " is your VORK verification code.";
-            SMS::notify($user->phone_number, $message);
-            return $code;
-        }
-
-        //check if it has not expired
-        if (self::Validate("user_id", $user->id, $otp->code) != self::VALID_STATUS) {
-            //generate a new code for user if it has expired
-            $code = self::Generate($user);
-            $message = $code . " is your VORK verification code.";
-            SMS::notify($user->phone_number, $message);
-            return $code;
-        }
-
-        //return existing code
-        //send code to user
-        $message = $otp->code . " is your VORK verification code.";
+        $code = self::Generate($user);
+        $message = $code . " is your VORK verification code.";
         SMS::notify($user->phone_number, $message);
-        return $otp->code;
+        return $code;
     }
 
     /**
