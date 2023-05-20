@@ -5,15 +5,11 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
 use App\Models\LanguageUser;
-use App\Models\Post;
 use App\Models\Skill;
 use App\Models\SkillUser;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
@@ -40,8 +36,8 @@ class UserController extends Controller
     {
         $notifications = auth()->user()->notifications->sortByDesc("created_at")->map(function ($notification) {
             $notification["group_id"] = $notification->data["post"]["id"];
-            $notification->update();
             $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
+            $notification->update();
             return $notification;
         })->unique("group_id");
 
@@ -54,7 +50,21 @@ class UserController extends Controller
      */
     public function get_user_notification_details($notification_group_id)
     {
-        if (!$notification_group_id) {return back()->with("danger", "Invalid request.");}
+        if (!$notification_group_id) {
+            return back()->with("danger", "Invalid request.");
+        }
+
+        /**
+         * refresh notification and ensure new notifiations
+         * have been added to existing notifications with the same
+         * group_id
+         */
+        auth()->user()->notifications->sortByDesc("created_at")->map(function ($notification) {
+            $notification["group_id"] = $notification->data["post"]["id"];
+            $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
+            $notification->update();
+            return $notification;
+        })->unique("group_id");
 
         $group_notifications = auth()->user()->notifications->where("group_id", $notification_group_id);
         if (!$group_notifications || count($group_notifications) <= 0) {
@@ -69,7 +79,7 @@ class UserController extends Controller
         if (count($group_notifications) > 0) {
             foreach ($group_notifications as $notification) {
                 $notification->markAsRead();
-                $notification->created_at= date('d-m-Y H:i:s', strtotime($notification->created_at));
+                $notification->created_at = date('d-m-Y H:i:s', strtotime($notification->created_at));
                 if (!$location_coordinates) {
                     $location_coordinates = $notification->data["post"]["coords"];
                 }
@@ -109,10 +119,14 @@ class UserController extends Controller
 
     public function user_profile($user_id)
     {
-        if (!$user_id) {return back()->with("danger", "Invalid request");}
+        if (!$user_id) {
+            return back()->with("danger", "Invalid request");
+        }
 
         $user = User::where("id", $user_id)->first();
-        if (!$user) {return back()->with("danger", "Error fetching user information");}
+        if (!$user) {
+            return back()->with("danger", "Error fetching user information");
+        }
 
         $core_skills = $user->skills;
         foreach ($core_skills as $skill) {
@@ -147,11 +161,11 @@ class UserController extends Controller
             }
         }
 
-            $number_of_jobs = $jobs_count;
-            $number_of_activities = $volunteer_count;
-            $location = $user->location_name;
-            $location_coords = $user->location_coords;
-            $skills = $core_skills;
+        $number_of_jobs = $jobs_count;
+        $number_of_activities = $volunteer_count;
+        $location = $user->location_name;
+        $location_coords = $user->location_coords;
+        $skills = $core_skills;
 
 
         return view("profile.show", compact("number_of_activities", "number_of_jobs", "average_rating", "volunteer_hours", "total_earnings", "languages", "skills", "location", "user", "job_history"));
@@ -250,7 +264,7 @@ class UserController extends Controller
             return back()->with("danger", "Invalid request");
         }
 
-        switch($module) {
+        switch ($module) {
             case "display-name":
                 auth()->user()->name = $request->name;
                 auth()->user()->update();
@@ -269,7 +283,7 @@ class UserController extends Controller
                 break;
             case "update-password":
                 $errors = new MessageBag();
-                if (!Hash::check($request->old_password, auth()->user()->password)){
+                if (!Hash::check($request->old_password, auth()->user()->password)) {
                     $errors->add("old_password", "The old password you entered does not match.");
                     return back()->withErrors($errors)->with("danger", "Oops...something went wrong.");
                 }
