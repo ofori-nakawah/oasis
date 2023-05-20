@@ -181,9 +181,33 @@
                                             @endif
                                         </div>
                                         <div class="col-md-2">
-                                            <a href="" onclick="return confirm('Are you sure?')"><em
+                                            <a href="#" onclick="shareLink()" data-toggle="modal"
+                                               data-target="#viewPhoneNumberModal-{{$applicant->id}}"><em
                                                     class="icon ni ni-mobile"
                                                     style="font-size: 30px;float: right;"></em></a>
+                                        </div>
+                                    </div>
+                                    <div class="modal modal-lg fade" tabindex="-1" id="viewPhoneNumberModal-{{$applicant->id}}">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <em class="icon ni ni-cross"></em>
+                                                </a>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"><b>Call Applicant</b></h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <p style="float: left !important;">View phone number of applicant and make the call.</p>
+                                                            <input value="{{$applicant->user->phone_number}}" id="showPhoneNumber-{{$applicant->id}}" type="text" readonly class="form-control">
+                                                            <br>
+                                                            <button class="btn btn-outline-primary copyLinkButton" onclick="copyApplicantPhoneNumberToClipboard(`{{$applicant->id}}`)"><b>Copy</b></button>
+                                                            <span class="copyStatus"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <br>
@@ -457,9 +481,33 @@
                                             @endif
                                         </div>
                                         <div class="col-md-2">
-                                            <a href="" onclick="return confirm('Are you sure?')"><em
+                                            <a href="#" onclick="shareLink()" data-toggle="modal"
+                                               data-target="#viewPhoneNumberModal-{{$applicant->id}}"><em
                                                     class="icon ni ni-mobile"
                                                     style="font-size: 30px;float: right;"></em></a>
+                                        </div>
+                                    </div>
+                                    <div class="modal modal-lg fade" tabindex="-1" id="viewPhoneNumberModal-{{$applicant->id}}">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <em class="icon ni ni-cross"></em>
+                                                </a>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"><b>Call Applicant</b></h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <p style="float: left !important;">View phone number of applicant and make the call.</p>
+                                                            <input value="{{$applicant->user->phone_number}}" id="showPhoneNumber-{{$applicant->id}}" type="text" readonly class="form-control">
+                                                            <br>
+                                                            <button class="btn btn-outline-primary copyLinkButton" onclick="copyApplicantPhoneNumberToClipboard(`{{$applicant->id}}`)"><b>Copy</b></button>
+                                                            <span class="copyStatus"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <br>
@@ -548,6 +596,22 @@
 
         function copyLinkToClipboard(uuid) {
             var copyText = document.getElementById(`shareLink-${uuid}`);
+
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the text field
+            navigator.clipboard.writeText(copyText.value);
+
+            $(`.copyLinkButton`).hide();
+            const successMessage = `<div class="text-success"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
+            $(".copyStatus").append(successMessage);
+            $(".copyStatus").show();
+        }
+
+        function copyApplicantPhoneNumberToClipboard(uuid) {
+            var copyText = document.getElementById(`showPhoneNumber-${uuid}`);
 
             // Select the text field
             copyText.select();
