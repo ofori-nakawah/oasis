@@ -44,27 +44,30 @@ class OnboardingController extends Controller
         $errors = new MessageBag();
 
         $isPhoneNumberTaken = User::where("phone_number", CountryConfig::GetIntPhoneNumber($country["name"], $request->input("phone_number")))->get();
-        $isEmailTaken = User::where("email", $request->input("email"))->get();
-
-        Log::debug("isPhone  " . $isPhoneNumberTaken);
-        Log::debug("isEmail  " . $isEmailTaken);
 
         if ($isPhoneNumberTaken && count($isPhoneNumberTaken) > 0) {
             if ($isPhoneNumberTaken->status != User::DELETED_STATUS) {
                 $errors->add("phone_number", "This phone number is already taken");
                 return $this->data_validation_error_response($errors->getMessages());
+            } else {
+                $isPhoneNumberTaken->phone_number .= "-000";
+                $isPhoneNumberTaken->update();
             }
-            $isPhoneNumberTaken->phone_number .= "-000";
-            $isPhoneNumberTaken->update();
         }
+
+        $isEmailTaken = User::where("email", $request->input("email"))->get();
+
+        Log::debug("isEmail  " . $isEmailTaken . " llll " . count($isEmailTaken));
+
 
         if ($isEmailTaken && count($isEmailTaken) > 0) {
             if ($isEmailTaken->status != User::DELETED_STATUS) {
                 $errors->add("email", "This email is already taken");
                 return $this->data_validation_error_response($errors->getMessages());
+            } else {
+                $isEmailTaken->email .= "-000";
+                $isEmailTaken->update();
             }
-            $isEmailTaken->email .= "-000";
-            $isEmailTaken->update();
         }
 
         if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
