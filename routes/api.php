@@ -78,7 +78,7 @@ Route::prefix('/v1')->group(function () {
             Route::get('/get-languages', 'Mobile\ConfigController@get_languages');
         });
 
-        Route::prefix('/account')->group(function () {
+        Route::prefix('/user-accounts')->group(function () {
             Route::get('/deleteAccount', 'Mobile\UserController@deleteAccount');
         });
     });
