@@ -28,8 +28,8 @@ class OnboardingController extends Controller
     public function register(Request $request){
         $validation = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'email|unique:users',
-            'phone_number' => 'unique:users',
+            'email' => 'email',
+            'phone_number' => 'required',
             'country' => 'required',
             'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()]        ]);
 
@@ -44,16 +44,30 @@ class OnboardingController extends Controller
         $errors = new MessageBag();
 
         $isPhoneNumberTaken = User::where("phone_number", CountryConfig::GetIntPhoneNumber($country["name"], $request->input("phone_number")))->count();
+        $isEmailTaken = User::where("email", $request->input("email"))->count();
 
         if ($isPhoneNumberTaken != 0) {
-            $errors->add("phone_number", "This phone number is already taken");
-            {return $this->data_validation_error_response($errors->getMessages());}
+            if ($isPhoneNumberTaken->status != User::DELETED_STATUS) {
+                $errors->add("phone_number", "This phone number is already taken");
+                return $this->data_validation_error_response($errors->getMessages());
+            }
+            $isPhoneNumberTaken->phone_number .= "-000";
+            $isPhoneNumberTaken->update();
+        }
+
+        if ($isEmailTaken != 0) {
+            if ($isEmailTaken->status != User::DELETED_STATUS) {
+                $errors->add("email", "This email is already taken");
+                return $this->data_validation_error_response($errors->getMessages());
+            }
+            $isEmailTaken->email .= "-000";
+            $isEmailTaken->update();
         }
 
         if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
             $errors = new MessageBag();
             $errors->add("phone_number", "The phone number field is required");
-            {return $this->data_validation_error_response($errors->getMessages());}
+            return $this->data_validation_error_response($errors->getMessages());
         }
 
         $user = new User();
