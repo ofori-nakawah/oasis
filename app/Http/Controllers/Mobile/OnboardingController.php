@@ -46,7 +46,6 @@ class OnboardingController extends Controller
         $isPhoneNumberTaken = User::where("phone_number", CountryConfig::GetIntPhoneNumber($country["name"], $request->input("phone_number")))->get();
 
         if ($isPhoneNumberTaken && count($isPhoneNumberTaken) > 0) {
-            Log::debug("ok");
             if ($isPhoneNumberTaken->status != User::DELETED_STATUS) {
                 $errors->add("phone_number", "This phone number is already taken");
                 return $this->data_validation_error_response($errors->getMessages());
@@ -59,6 +58,8 @@ class OnboardingController extends Controller
         $isEmailTaken = User::where("email", $request->input("email"))->get();
 
         if ($isEmailTaken && count($isEmailTaken) > 0) {
+            Log::debug("ok");
+
             if ($isEmailTaken->status != User::DELETED_STATUS) {
                 $errors->add("email", "This email is already taken");
                 return $this->data_validation_error_response($errors->getMessages());
