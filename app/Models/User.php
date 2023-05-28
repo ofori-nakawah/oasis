@@ -16,6 +16,7 @@ class User extends Authenticatable
     public const ONBOARDING_STATUS = 0;
     public const ACTIVE_STATUS = 1;
     public const INACTIVE_STATUS = 2;
+    public const DELETED_STATUS = 2;
     public const APP_USER_TYPE = 1;
     public const ADMIN_USER_TYPE = 0;
     public const UNVERIFIED_STATUS = 0;

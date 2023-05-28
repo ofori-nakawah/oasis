@@ -77,19 +77,9 @@ Route::prefix('/v1')->group(function () {
             Route::get('/get-skills', 'Mobile\ConfigController@get_skills');
             Route::get('/get-languages', 'Mobile\ConfigController@get_languages');
         });
-    });
 
-    /**
-     * sikagwa
-     */
-    Route::post("/soap", "CountryController@getSoapRequest");
-    Route::post("/hubtelCallback", "CountryController@callback");
-
-    Route::post('/initiate-request', 'CountryController@initiateRequest');
-    Route::post('/callback', 'CountryController@callback');
-
-    Route::prefix('/transactions')->group(function () {
-        Route::post('/initiate-transaction', 'CountryController@initiateRequest');
-        Route::get('/callback', 'CountryController@callback');
+        Route::prefix('/account')->group(function () {
+            Route::get('/deleteAccount', 'Mobile\UserController@deleteAccount');
+        });
     });
 });

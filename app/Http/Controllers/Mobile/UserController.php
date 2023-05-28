@@ -6,6 +6,7 @@ use App\Models\LanguageUser;
 use App\Models\SkillUser;
 use App\Models\User;
 use App\Services\PushNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -409,5 +410,22 @@ class UserController extends Controller
         }
 
         return $this->success_response([], "Profile updated successfully.");
+    }
+
+
+    public function deleteAccount(Request $request)
+    {
+        $errors = new MessageBag();
+        if (!Hash::check($request->old_password, auth()->user()->password)){
+            $errors->add("password", "Password confirmation failed. Kindly try again");
+            return $this->data_validation_error_response($errors);
+        }
+
+        auth()->user()->reason_for_leaving = $request->reasonForLeaving;
+        auth()->user()->deleted_at = Carbon::now();
+        auth()->user()->account_status = User::DELETED_STATUS;
+        auth()->user()->update();
+
+        return $this->success_response([], "Account deleted successfully.");
     }
 }

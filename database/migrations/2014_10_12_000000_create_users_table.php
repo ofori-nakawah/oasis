@@ -28,6 +28,8 @@ class CreateUsersTable extends Migration
             $table->string('location_name')->nullable();
             $table->string('location_coords')->nullable();
             $table->dateTime('last_seen')->nullable();
+            $table->dateTime('deleted_at')->nullable();
+            $table->string('reason_for_leaving')->nullable();
             $table->string('fcm_token')->nullable();
             $table->boolean('is_online')->default(false);
             $table->string('volunteer_hours')->default(0);
