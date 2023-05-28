@@ -37,7 +37,7 @@ class AuthController extends Controller
 //        }
 
         if (Hash::check($request->input("password"), $user->password)) {
-            if ($user->account_status != User::DELETED_STATUS) {
+            if ($user->status != User::DELETED_STATUS) {
                 Auth::login($user);
             } else {
                 return $this->not_found_response([], "Invalid account credentials.");
