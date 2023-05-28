@@ -49,7 +49,7 @@ class OnboardingController extends Controller
         Log::debug("isPhone  " . $isPhoneNumberTaken);
         Log::debug("isEmail  " . $isEmailTaken);
 
-        if (count($isPhoneNumberTaken) > 0) {
+        if ($isPhoneNumberTaken && count($isPhoneNumberTaken) > 0) {
             if ($isPhoneNumberTaken->status != User::DELETED_STATUS) {
                 $errors->add("phone_number", "This phone number is already taken");
                 return $this->data_validation_error_response($errors->getMessages());
@@ -58,7 +58,7 @@ class OnboardingController extends Controller
             $isPhoneNumberTaken->update();
         }
 
-        if (count($isEmailTaken) > 0) {
+        if ($isEmailTaken && count($isEmailTaken) > 0) {
             if ($isEmailTaken->status != User::DELETED_STATUS) {
                 $errors->add("email", "This email is already taken");
                 return $this->data_validation_error_response($errors->getMessages());
