@@ -416,7 +416,7 @@ class UserController extends Controller
     public function deleteAccount(Request $request)
     {
         $errors = new MessageBag();
-        if (!Hash::check($request->old_password, auth()->user()->password)){
+        if (!Hash::check($request->password, auth()->user()->password)){
             $errors->add("password", "Password confirmation failed. Kindly try again");
             return $this->data_validation_error_response($errors);
         }
