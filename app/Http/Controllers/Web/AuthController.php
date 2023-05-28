@@ -40,6 +40,10 @@ class AuthController extends Controller
             if ($user->phone_number_verified_at === null) {
                 return redirect()->route('onboarding.verify_phone_number', ['uuid' => $user->id])->with("info", "We noticed your phone number has not been verified. A confirmation code has been sent to your phone number.");
             }
+
+            if ($user->status == User::DELETED_STATUS) {
+                return redirect()->back()->withInput($request->only('email', 'remember'))->with("danger", "Error. Invalid login credentials.");
+            }
         }
 
         if (Auth::attempt(['email' => $request->email_or_phone_number, 'password' => $request->password], $request->remember) || Auth::attempt(['phone_number' => $request->email_or_phone_number, 'password' => $request->password], $request->remember)) {
