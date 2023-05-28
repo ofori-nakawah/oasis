@@ -421,10 +421,10 @@ class UserController extends Controller
             return $this->data_validation_error_response($errors);
         }
 
-        auth()->user()->reason_for_leaving = $request->reasonForLeaving;
-        auth()->user()->deleted_at = Carbon::now();
-        auth()->user()->account_status = User::DELETED_STATUS;
-        auth()->user()->update();
+//        auth()->user()->reason_for_leaving = $request->reasonForLeaving;
+//        auth()->user()->deleted_at = Carbon::now();
+//        auth()->user()->account_status = User::DELETED_STATUS;
+//        auth()->user()->update();
 
         return $this->success_response([], "Account deleted successfully.");
     }
