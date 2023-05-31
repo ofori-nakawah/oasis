@@ -189,7 +189,7 @@
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom"><b>Analytics</b></div>
                         <div class="card-body" style="min-height: 325px;">
-                            <div class="row" style="    margin-top: 70px;">
+                            <div class="row" style="margin-top: 65px;">
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
                                     <div class="text-center"><small><b>Number of Jobs</b></small></div>
                                     <div class="text-center text-primary tex"
@@ -202,7 +202,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" style="margin-top: 30px;">
                                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
                                     <div class="text-center"><small><b>Average Rating</b></small></div>
                                     <div class="text-center text-primary tex"
