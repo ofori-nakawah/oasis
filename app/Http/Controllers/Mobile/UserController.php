@@ -344,6 +344,7 @@ class UserController extends Controller
             "languages" => $languages,
             "username" => $user->name,
             "work_history" => $job_history,
+            "profile_picture" => $user->profile_picture
         );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");
