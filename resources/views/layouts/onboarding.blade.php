@@ -7,6 +7,8 @@
     <meta name="description" >
     <!-- Fav Icon  -->
     <link rel="shortcut icon" href="{{asset("assets/assets/images/favico.png")}}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}">
+
     <!-- Page Title  -->
     <title>VORK | @section("title") @show</title>
     <!-- StyleSheets  -->
