@@ -243,13 +243,13 @@ class UserController extends Controller
 
     public function setSkillsAndInterest()
     {
-        $skills_and_interest = Skill::all();
+        $skills_and_interest = Skill::orderBy('name')->get();
         return view("profile.updateSkills", compact("skills_and_interest"));
     }
 
     public function setLanguages()
     {
-        $languages = Language::all();
+        $languages = Language::orderBy('name')->get();
         return view("profile.updateLanguages", compact("languages"));
     }
 
