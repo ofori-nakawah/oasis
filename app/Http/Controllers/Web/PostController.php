@@ -64,7 +64,7 @@ class PostController extends Controller
                 if ($type_of_user == "seeker") {
                     return $this->list_quick_jobs();
                 } else {
-                    $categories = Skill::all();
+                    $categories = Skill::orderBy('name')->get();
                     return view("work.quick_jobs.create", compact("categories"));
                 }
                 break;
@@ -742,7 +742,7 @@ class PostController extends Controller
             case "VOLUNTEER":
                 return view("volunteerism.edit", compact("post"));
             case "QUICK_JOB":
-                $categories = Skill::all();
+                $categories = Skill::orderBy('name')->get();
                 return view("work.quick_jobs.edit", compact("post", "categories"));
         }
 
