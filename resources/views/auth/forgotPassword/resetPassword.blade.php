@@ -80,19 +80,9 @@
         </div>
     </div>
 
-    <div class="nk-block nk-auth-footer text-center" style="margin-top: 40px;">
-        <div class="nk-block-between">
-            <ul class="nav nav-sm">
-                <li class="nav-item">
-                    <a class="nav-link " href="#">Terms & Condition</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="#">Privacy Policy</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="#">Help</a>
-                </li>
-            </ul><!-- .nav -->
+    <div class="n" style="margin-top: 40px;text-align: center">
+        <div>
+            <a href="https://myvork.com/terms-of-use/" target="_blank"><b>Terms</b></a> | <a href="https://myvork.com/privacy-policy-statement/" target="_blank"><b>Privacy</b></a> | <a href="https://myvork.com/help-centre/" target="_blank"><b>Help</b></a>
         </div>
         <div class="mt-3">
             <p class="">&copy; {{date('Y')}} VORK Technologies. All Rights Reserved.</p>
