@@ -429,4 +429,9 @@ class UserController extends Controller
 
         return $this->success_response([], "Account deleted successfully.");
     }
+
+    public function isToolboxUser(Request $request)
+    {
+        return $this->success_response(["is_toolbox_user" => auth()->user()->is_toolbox_user], "successful request.");
+    }
 }
