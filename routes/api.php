@@ -71,7 +71,7 @@ Route::prefix('/v1')->group(function () {
              * other user profile routes
              */
             Route::get('/get-user-vork-profile', 'Mobile\UserController@get_user_vork_profile');
-            Route::get('/get-toolbox-user', 'Mobile\UserController@isToolboxUser');
+            Route::get('/is-toolbox-user', 'Mobile\UserController@isToolboxUser');
 
         });
 
