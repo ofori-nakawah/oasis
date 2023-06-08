@@ -6,6 +6,7 @@ use App\Models\OneTimePassword as OTP;
 use App\Traits\Responses;
 use App\Models\User;
 use App\Models\Country as Country;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -102,7 +103,14 @@ class AuthController extends Controller
         $user = User::where("phone_number", $request->input("phone_number"))->first();
         if (!$user) {return $this->not_found_response([], "Oops. Something went wrong. Error fetching data."); }
 
-        return $this->success_response([], "Code verification successful");
+        $isLatePhoneNumberVerification = "no";
+        if (!$user->phone_number_verified_at) {
+            $user->phone_number_verified_at = date("Y-m-d H:i:s");
+            $user->update();
+            $isLatePhoneNumberVerification = "yes";
+        }
+
+        return $this->success_response(["isLatePhoneNumberVerification" => $isLatePhoneNumberVerification], "Code verification successful");
     }
 
     public function executePasswordReset(Request $request)
