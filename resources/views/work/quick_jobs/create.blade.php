@@ -87,7 +87,7 @@
                                 <div class="input-group1 mb-3">
                                     <label for="date"><b>Date</b></label>
                                     <input type="date"
-                                           class="form-control form-control-l @error('date') is-invalid @enderror"
+                                           class="form-control date form-control-l @error('date') is-invalid @enderror"
                                            placeholder="Select date of activity" name="date" value="{{ old('date') }}">
 
                                     @error('date')
@@ -510,5 +510,19 @@
                 URL.revokeObjectURL(output.src) // free memory
             }
         }
+
+        $(function(){
+            var today = new Date();
+
+            var month = today.getMonth() + 1;
+            var day = today.getDate();
+            var year = today.getFullYear();
+            if(month < 10)
+                month = '0' + month.toString();
+            if(day < 10)
+                day = '0' + day.toString();
+            var minDate = year + '-' + month + '-' + day;
+            $('.date').attr('min', minDate);
+        });
     </script>
 @endsection

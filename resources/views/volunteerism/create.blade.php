@@ -37,7 +37,7 @@
                     </div>
                     <div class="card-body1">
                         <div class="input-group1 mb-3">
-{{--                            <label for="name"><b>Activity Name</b></label>--}}
+                            <label for="name"><b>Activity Name</b></label>
                             <input type="text" class="form-control form-control-l @error('name') is-invalid @enderror" placeholder="Enter name of activity or project" name="name" value="{{ old('name') }}">
 
                             @error('name')
@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-{{--                            <label for="description"><b>Description</b></label>--}}
+                            <label for="description"><b>Description</b></label>
                             <textarea class="form-control form-control-l @error('description') is-invalid @enderror" placeholder="Enter brief description of the project" name="description">{{old('description')}}</textarea>
 
                             @error('description')
@@ -61,8 +61,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-{{--                                    <label for="date"><b>Date</b></label>--}}
-                                    <input type="date" class="form-control form-control-l @error('date') is-invalid @enderror" placeholder="Select date of activity" value="{{ old('date') }}" name="date">
+                                    <label for="date"><b>Date</b></label>
+                                    <input type="date" class="form-control date form-control-l @error('date') is-invalid @enderror" placeholder="Select date of activity" value="{{ old('date') }}" name="date">
 
                                     @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -73,7 +73,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-{{--                                    <label for="time"><b>Time</b></label>--}}
+                                    <label for="time"><b>Time</b></label>
                                     <input type="time" class="form-control form-control-l @error('time') is-invalid @enderror" placeholder="Select time of activity" name="time" value="{{ old('time') }}">
 
                                     @error('time')
@@ -88,7 +88,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-{{--                                    <label for="number_of_participants"><b>Number of Participants</b></label>--}}
+                                    <label for="number_of_participants"><b>Number of Participants</b></label>
                                     <input type="number" class="form-control form-control-l @error('maximum_number_of_volunteers') is-invalid @enderror" placeholder="Specify number of participants" value="{{ old('maximum_number_of_volunteers') }}" name="maximum_number_of_volunteers">
 
                                     @error('maximum_number_of_volunteers')
@@ -100,7 +100,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-{{--                                    <label for="name"><b>Volunteer Hours</b></label>--}}
+                                    <label for="name"><b>Volunteer Hours</b></label>
                                     <input type="number" class="form-control form-control-l @error('volunteer_hours') is-invalid @enderror" placeholder="Specify volunteer hours" name="volunteer_hours" value="{{ old('volunteer_hours') }}">
 
                                     @error('volunteer_hours')
@@ -113,7 +113,7 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-{{--                            <label for="name"><b>Location</b></label>--}}
+                            <label for="name"><b>Location</b></label>
                             <input type="text" class="form-control form-control-l @error('location') is-invalid @enderror" placeholder="Provide location of activity" readonly id="location" value="{{ old('location') }}" name="location" data-toggle="modal" data-target="#locationModal">
                             <input type="hidden" value="{{old('onboardingLocationName')}}" name="location" id="onboardingLocationName">
                             <input type="hidden" value="{{old('onboardingLocationCoords')}}" name="coords" id="onboardingLocationCoords">
@@ -177,7 +177,7 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-{{--                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>--}}
+                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>
                             <textarea type="tel" class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror" placeholder="Specify any other relevant information" name="other_relevant_information">{{old('other_relevant_information')}}</textarea>
 
                             @error('other_relevant_information')
@@ -434,5 +434,19 @@
             $("#location").val($("#pac_input").val());
             $('#locationModal').modal('hide');
         }
+
+        $(function(){
+            var today = new Date();
+
+            var month = today.getMonth() + 1;
+            var day = today.getDate();
+            var year = today.getFullYear();
+            if(month < 10)
+                month = '0' + month.toString();
+            if(day < 10)
+                day = '0' + day.toString();
+            var minDate = year + '-' + month + '-' + day;
+            $('.date').attr('min', minDate);
+        });
     </script>
 @endsection
