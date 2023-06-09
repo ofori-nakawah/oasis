@@ -105,7 +105,8 @@ class AuthController extends Controller
 
         $isLatePhoneNumberVerification = "no";
         if (!$user->phone_number_verified_at) {
-            $user->phone_number_verified_at = date("Y-m-d H:i:s");
+            $user->phone_number_verified_at = Carbon::now();
+            $user->status = User::ACTIVE_STATUS;
             $user->update();
             $isLatePhoneNumberVerification = "yes";
         }
