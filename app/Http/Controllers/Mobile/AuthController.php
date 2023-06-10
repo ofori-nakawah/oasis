@@ -40,10 +40,11 @@ class AuthController extends Controller
             return $this->not_found_response([], "Invalid account credentials.");
         }
 
+        auth()->user()->skills;
+        auth()->user()->languages;
+
         return $this->success_response([
             "user" => auth()->user(),
-            "skills" =>  auth()->user()->skills,
-            "languages" => auth()->user()->languages,
             "country" => Country::GetCountry($user->country_id),
             "token" => auth()->user()->createToken('auth_token')->plainTextToken
         ]);
