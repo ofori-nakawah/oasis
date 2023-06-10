@@ -29,13 +29,6 @@ class AuthController extends Controller
 
         $user = User::where("phone_number", $request->input("email_phone_number"))->orWhere("email", $request->input("email_phone_number"))->first();
         if (!$user) {return $this->not_found_response([], "Invalid account credentials.");}
-        //fetch user tokens
-
-//        create new token for user
-//        if (!Auth::attempt([$user->email, $request->input("password")])) {
-//            Log::error("ERROR GENERATING USER API ACCESS TOKEN FOR >>>>>>>>>>>>>>>>>>>> " . $user->email);
-//            return $this->not_found_response([], "Invalid account credentials.");
-//        }
 
         if (Hash::check($request->input("password"), $user->password)) {
             if ($user->status != User::DELETED_STATUS) {
@@ -49,6 +42,8 @@ class AuthController extends Controller
 
         return $this->success_response([
             "user" => auth()->user(),
+            "skills" =>  auth()->user()->skills,
+            "languages" => auth()->user()->languages,
             "country" => Country::GetCountry($user->country_id),
             "token" => auth()->user()->createToken('auth_token')->plainTextToken
         ]);
