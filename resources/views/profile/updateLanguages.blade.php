@@ -43,7 +43,7 @@
                                 <div>
                                     @foreach($languages as $language)
                                         <div class="custom-control custom-checkbox" style="margin-right: 15px;margin-bottom: 15px;margin-top: 15px;">
-                                            <input type="checkbox" class="custom-control-input" value="{{$language->id}}" name="languages[]" id="{{$language->name}}">
+                                            <input type="checkbox" class="custom-control-input" @if(in_array($language->name, $userLanguages)) checked @endif  value="{{$language->id}}" name="languages[]" id="{{$language->name}}">
                                             <label class="custom-control-label" for="{{$language->name}}"><b>{{$language->name}}</b></label>
                                         </div>
                                     @endforeach

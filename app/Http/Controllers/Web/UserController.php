@@ -10,6 +10,7 @@ use App\Models\SkillUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
@@ -243,14 +244,24 @@ class UserController extends Controller
 
     public function setSkillsAndInterest()
     {
+        $userSkills = array();
+        $_userSkills = auth()->user()->skills;
+        foreach ($_userSkills as $skill) {
+            array_push($userSkills, $skill->skill->name);
+        }
         $skills_and_interest = Skill::orderBy('name')->get();
-        return view("profile.updateSkills", compact("skills_and_interest"));
+        return view("profile.updateSkills", compact("skills_and_interest", "userSkills"));
     }
 
     public function setLanguages()
     {
+        $userLanguages = array();
+        $_userLanguages = auth()->user()->languages;
+        foreach ($_userLanguages as $language) {
+            array_push($userLanguages, $language->language->name);
+        }
         $languages = Language::orderBy('name')->get();
-        return view("profile.updateLanguages", compact("languages"));
+        return view("profile.updateLanguages", compact("languages", "userLanguages"));
     }
 
     public function updatePassword()

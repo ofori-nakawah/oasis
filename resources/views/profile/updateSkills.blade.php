@@ -43,7 +43,7 @@
                                 <div>
                                     @foreach($skills_and_interest as $skills)
                                         <div class="custom-control custom-checkbox" style="margin-right: 15px;margin-bottom: 15px;margin-top: 15px;">
-                                            <input type="checkbox" class="custom-control-input" value="{{$skills->id}}" name="skills_and_interest[]" id="{{$skills->name}}">
+                                            <input type="checkbox" class="custom-control-input" @if(in_array($skills->name, $userSkills)) checked @endif value="{{$skills->id}}" name="skills_and_interest[]" id="{{$skills->name}}">
                                             <label class="custom-control-label" for="{{$skills->name}}"><b>{{$skills->name}}</b></label>
                                         </div>
                                     @endforeach
