@@ -214,7 +214,6 @@
                        <tr>
                            <th>Period</th>
                            <th>Activity ID</th>
-                           <th>Date</th>
                            <th>Organiser</th>
                            <th>Description</th>
                            <th>Volunteer Hours</th>
@@ -223,7 +222,7 @@
                        <tbody>
                        @if($dashboard_analytics["number_of_activities"] <= 0)
                            <tr>
-                               <td colspan="6"><p class="text-center">You have no completed volunteer activities at the moment</p></td>
+                               <td colspan="5"><p class="text-center">You have no completed volunteer activities at the moment</p></td>
                            </tr>
                        @else
                            @foreach($job_history as $work)
@@ -231,7 +230,6 @@
                                    <tr>
                                        <td>{{$work->period}}</td>
                                        <td>{{$work->ref_id}}</td>
-                                       <td>{{$work->job_post->date}}</td>
                                        <td>{{$work->job_post->user->name}}</td>
                                        <td>{{$work->job_post->description}}</td>
                                        <td>{{$work->volunteer_hours}}</td>
