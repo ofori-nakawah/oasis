@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     use OpportunitiesAroundMe;
 
-    const JOB_SEARCH_RADIUS = 7;
+    const JOB_SEARCH_RADIUS = 10;
     const VOLUNTEER_SEARCH_RADIUS = 10;
 
     /**
@@ -77,6 +77,7 @@ class HomeController extends Controller
                     $estIncomeTax += (5/100) * $vork->job_post->final_payment_amount;
                 }
 
+                $vork->period = $vork->job_post->closed_at->format('M Y');
                 $vork->job_post;
                 $vork->rating_and_reviews;
             }

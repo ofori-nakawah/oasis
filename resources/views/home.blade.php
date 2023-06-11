@@ -111,7 +111,7 @@
                     </ul><!-- .nav-tabs -->
                     <div class="tab-content" style="padding: 0px;min-height: 280px;">
                         <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;height: 250px;overflow-y: scroll">
-                            <table class="table table-striped">
+                            <table class="table table-striped table-responsive">
                                 <thead>
                                 <tr>
                                     <th>Distance(km)</th>
@@ -163,9 +163,10 @@
                     <b>Work History</b>
                 </div>
                 <div class="card-body" style="padding: 0px;">
-                    <table class="table table-striped">
+                    <table class="appDataTable table table-striped table-responsive-sm dataTable no-footer">
                         <thead>
                         <tr>
+                            <th>Period</th>
                             <th>Job ID</th>
                             <th>Issuer</th>
                             <th>Category</th>
@@ -176,12 +177,13 @@
                         <tbody>
                         @if($dashboard_analytics["number_of_jobs"] <= 0)
                             <tr>
-                                <td colspan="5"><p class="text-center">You have no completed jobs at the moment</p></td>
+                                <td colspan="6"><p class="text-center">You have no completed jobs at the moment</p></td>
                             </tr>
                         @else
                             @foreach($job_history as $work)
                                 @if($work->job_post && $work->job_post->type != "VOLUNTEER")
                                     <tr>
+                                        <td>{{$work->period}}</td>
                                         <td>{{$work->ref_id}}</td>
                                         <td>{{$work->job_post->user->name}}</td>
                                         <td>{{$work->job_post->category}}</td>
@@ -207,9 +209,10 @@
                    <b>Volunteer History</b>
                </div>
                <div class="card-body" style="padding: 0px;">
-                   <table class="table table-striped">
+                   <table class="appDataTable table table-striped table-responsive-sm dataTable no-footer">
                        <thead>
                        <tr>
+                           <th>Period</th>
                            <th>Activity ID</th>
                            <th>Date</th>
                            <th>Organiser</th>
@@ -220,12 +223,13 @@
                        <tbody>
                        @if($dashboard_analytics["number_of_activities"] <= 0)
                            <tr>
-                               <td colspan="5"><p class="text-center">You have no completed volunteer activities at the moment</p></td>
+                               <td colspan="6"><p class="text-center">You have no completed volunteer activities at the moment</p></td>
                            </tr>
                        @else
                            @foreach($job_history as $work)
                                @if($work->job_post && $work->job_post->type == "VOLUNTEER")
                                    <tr>
+                                       <td>{{$work->period}}</td>
                                        <td>{{$work->ref_id}}</td>
                                        <td>{{$work->job_post->date}}</td>
                                        <td>{{$work->job_post->user->name}}</td>
