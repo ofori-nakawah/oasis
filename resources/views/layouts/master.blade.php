@@ -111,7 +111,7 @@
 </head>
 
 <body class="nk-body bg-white npc-general has-sidebar ">
-<div class="nk-app-root">
+<div class="nk-app-root"
     <!-- main @s -->
     <div class="nk-main ">
         <!-- sidebar @s -->
@@ -194,7 +194,7 @@
         </div>
         <!-- sidebar @e -->
         <!-- wrap @s -->
-        <div class="nk-wrap bg-white">
+        <div class="nk-wrap bg-white" >
             <!-- main header @s -->
             <div class="nk-header nk-header-fixed is-light">
                 <div class="container-fluid">

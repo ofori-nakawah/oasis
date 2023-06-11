@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
-    const JOB_SEARCH_RADIUS = 7;
+    const JOB_SEARCH_RADIUS = 10;
     const VOLUNTEER_SEARCH_RADIUS = 10;
 
     public function volunteerism()
@@ -66,6 +66,13 @@ class PostController extends Controller
                 } else {
                     $categories = Skill::orderBy('name')->get();
                     return view("work.quick_jobs.create", compact("categories"));
+                }
+            case "fixed-term":
+                if ($type_of_user == "seeker") {
+                    return $this->list_fixed_term_jobs();
+                } else {
+                    $categories = Skill::orderBy('name')->get();
+                    return view("work.part_time_jobs.create", compact("categories"));
                 }
                 break;
         }
@@ -133,6 +140,55 @@ class PostController extends Controller
          * interests | skills
          */
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->get();
+
+        /**
+         * filter using distance
+         */
+        $jobs_near_me = collect();
+        foreach ($posts as $post) {
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+
+            if ($distance <= self::JOB_SEARCH_RADIUS) {
+                $post["organiser_name"] = $post->user->name;
+                $post["distance"] = number_format($distance, 2);
+                $jobs_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }
+        }
+        $posts = $jobs_near_me->sortBy("distance");;;
+
+        return view("work.quick_jobs.index", compact("posts"));
+    }
+
+    public function list_part_time_jobs()
+    {
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return back()->with("danger", "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = explode(',', $user_location)[0];
+        $user_location_lng = explode(',', $user_location)[1];
+
+        $_user_interests = auth()->user()->skills;
+        $user_interests = array();
+        foreach ($_user_interests as $interest) {
+            array_push($user_interests, $interest->skill->id);
+        }
+
+        /**
+         * filter using:
+         * post type
+         * interests | skills
+         */
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "PART_TIME_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->get();
 
         /**
          * filter using distance
