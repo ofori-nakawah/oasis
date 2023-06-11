@@ -13,7 +13,7 @@
                     <p class="hide-mb-sm hide-mb-xs md">
                     <nav>
                         <ul class="breadcrumb breadcrumb-arrow">
-                            <li class="breadcrumb-item"><a href="#">Quick Jobs, casual jobs or side hustles</a></li>
+                            <li class="breadcrumb-item"><a href="#">Update Quick Job</a></li>
                         </ul>
                     </nav>
                     </p>
@@ -29,11 +29,11 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.quick_jobs.publish')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{route('user.posts.update', ["uuid" => $post->id])}}" method="POST">
                 {{csrf_field()}}
                 <div class="">
                     <div class="mb-3">
-                        <h2><b>Create your opportunity</b></h2>
+                        <h2><b>Update your opportunity</b></h2>
                     </div>
                     <div class="card-body1">
                         <div class="input-group1 mb-3">
@@ -41,9 +41,9 @@
                             <select type="text"
                                     class="form-control form-control-l @error('category') is-invalid @enderror"
                                     name="category">
-                                <option value="">Choose an option</option>
+                                <option value="{{$post->category}}">{{$post->category}}</option>
                                 @foreach($categories as $category)
-                                    <option value="{{$category->name}}" {{(old('category') == $category->name) ? 'selected' : ''}}>{{$category->name}}</option>
+                                    <option value="{{$category->name}}">{{$category->name}}</option>
                                 @endforeach
                             </select>
 
@@ -58,7 +58,7 @@
                             <label for="description"><b>Brief Job Description</b></label>
                             <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
                                       placeholder="Enter brief description of the project"
-                                      name="description">{{ old('description') }}</textarea>
+                                      name="description">{{$post->description}}</textarea>
 
                             @error('description')
                             <span class="invalid-feedback" role="alert">
@@ -77,8 +77,8 @@
                             </div>
                             <img id="imageAttachment" style="height: 180px;"></img>
                             <input type="file" accept="image/png, image/gif, image/jpeg, image/jpg" hidden
-                                   name="post_image" id="image_attachment"
-                                   onchange="displayImageAttachment(event)" value="{{old('post_image')}}">
+                                   name="image_attachment" id="image_attachment"
+                                   onchange="displayImageAttachment(event)">
                         </div>
 
 
@@ -88,7 +88,7 @@
                                     <label for="date"><b>Date</b></label>
                                     <input type="date"
                                            class="form-control date form-control-l @error('date') is-invalid @enderror"
-                                           placeholder="Select date of activity" name="date" value="{{ old('date') }}">
+                                           placeholder="Select date of activity" name="date" value="{{$post->date}}">
 
                                     @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -102,7 +102,7 @@
                                     <label for="time"><b>Time</b></label>
                                     <input type="time"
                                            class="form-control form-control-l @error('time') is-invalid @enderror"
-                                           placeholder="Select time of activity" name="time" value="{{ old('time') }}">
+                                           placeholder="Select time of activity" name="time" value="{{$post->time}}">
 
                                     @error('time')
                                     <span class="invalid-feedback" role="alert">
@@ -115,12 +115,12 @@
 
                         <div class="input-group1 mb-3">
                             <label for="name"><b>Location</b></label>
-                            <input type="text"
+                            <input type="text" value="{{$post->location}}"
                                    class="form-control form-control-l @error('location') is-invalid @enderror"
-                                   placeholder="Provide location of activity" readonly id="location" value="{{ old('location') }}" name="location"
+                                   placeholder="Provide location of activity" readonly id="location" name="location"
                                    data-toggle="modal" data-target="#locationModal">
-                            <input type="hidden" name="location" value="{{ old('onboardingLocationName') }}" id="onboardingLocationName">
-                            <input type="hidden" name="coords" value="{{ old('onboardingLocationCoords') }}" id="onboardingLocationCoords">
+                            <input type="hidden" name="location" value="{{$post->location}}" id="onboardingLocationName">
+                            <input type="hidden" name="coords" value="{{$post->coords}}" id="onboardingLocationCoords">
                             @error('location')
                             <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
@@ -189,9 +189,9 @@
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
                                     <label for="number_of_participants">Min Budget (GHS)</label>
-                                    <input type="number"
+                                    <input type="number" value="{{$post->min_budget}}"
                                            class="form-control form-control-l @error('min_budget') is-invalid @enderror"
-                                           placeholder="Min Budget (GHS)" name="min_budget" value="{{ old('min_budget') }}">
+                                           placeholder="Min Budget (GHS)" name="min_budget">
 
                                     @error('min_budget')
                                     <span class="invalid-feedback" role="alert">
@@ -203,9 +203,9 @@
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
                                     <label for="name">Max Budget (GHS)</label>
-                                    <input type="number"
+                                    <input type="number" value="{{$post->max_budget}}"
                                            class="form-control form-control-l @error('max_budget') is-invalid @enderror"
-                                           placeholder="Maximum Budget (GHS)" name="max_budget" value="{{ old('max_budget') }}">
+                                           placeholder="Maximum Budget (GHS)" name="max_budget">
 
                                     @error('max_budget')
                                     <span class="invalid-feedback" role="alert">
@@ -220,7 +220,7 @@
                             <div class="col-md-12">
                                 <div class="custom-control custom-control-lg custom-checkbox"
                                      style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="negotiable"
+                                    <input type="checkbox" class="custom-control-input" name="negotiable" @if($post->is_negotiable == "on") checked @endif
                                            id="negotiable">
                                     <label class="custom-control-label" for="negotiable">Negotiable</label>
                                 </div>
@@ -231,7 +231,7 @@
                             <div class="col-md-12">
                                 <div class="custom-control custom-control-lg custom-checkbox"
                                      style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="includes_tax"
+                                    <input type="checkbox" @if($post->is_includes_tax == "on") checked @endif class="custom-control-input" name="includes_tax"
                                            id="includes_tax">
                                     <label class="custom-control-label" for="includes_tax">Includes WHT @ 5%</label>
                                 </div>
@@ -243,7 +243,7 @@
                             <textarea type="tel"
                                       class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror"
                                       placeholder="Specify any other relevant information"
-                                      name="other_relevant_information">{{ old('other_relevant_information') }}</textarea>
+                                      name="other_relevant_information">{{$post->other_relevant_information}}</textarea>
 
                             @error('other_relevant_information')
                             <span class="invalid-feedback" role="alert">
@@ -254,7 +254,8 @@
 
                     </div>
                     <div class="text-right">
-                        <button class="btn btn-success btn-l"><b>Create & Publish</b></button>
+                        <a href="{{route('user.posts.remove', ['uuid' => $post->id])}}" onclick="return confirm('Are you sure you want to remove post?')" class="btn btn-outline-danger" style="float: left !important;"><b>Remove Post</b></a>
+                        <button class="btn btn-success btn-l"><b>Save Changes</b></button>
                     </div>
                 </div>
             </form>
