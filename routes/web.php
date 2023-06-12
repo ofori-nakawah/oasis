@@ -33,6 +33,7 @@ Route::group(['middleware'=>'auth'], function () {
      */
     Route::get('/work', 'Web\PostController@work')->name('user.work');
     Route::post('/work/quick-jobs/publish', 'Web\PostController@create_quick_job_post')->name('user.quick_jobs.publish');
+    Route::post('/work/fixed-term-jobs/publish', 'Web\PostController@create_fixed_term_job_post')->name('user.fixed_term_jobs.publish');
     Route::get('/work/{type_of_user}', 'Web\PostController@type_of_work')->name('user.work.type');
     Route::get('/gigs/{uuid}', 'Web\PostController@show_quick_job')->name('user.quick_job.show');
     Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');

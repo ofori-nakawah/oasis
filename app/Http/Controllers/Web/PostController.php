@@ -10,6 +10,7 @@ use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -69,7 +70,7 @@ class PostController extends Controller
                 }
             case "fixed-term":
                 if ($type_of_user == "seeker") {
-                    return $this->list_fixed_term_jobs();
+                    return $this->list_part_time_jobs();
                 } else {
                     $categories = Skill::orderBy('name')->get();
                     return view("work.part_time_jobs.create", compact("categories"));
@@ -188,7 +189,7 @@ class PostController extends Controller
          * post type
          * interests | skills
          */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "PART_TIME_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
 
         /**
          * filter using distance
@@ -212,7 +213,7 @@ class PostController extends Controller
         }
         $posts = $jobs_near_me->sortBy("distance");;;
 
-        return view("work.quick_jobs.index", compact("posts"));
+        return view("work.part_time_jobs.index", compact("posts"));
     }
 
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
@@ -628,6 +629,86 @@ class PostController extends Controller
             return redirect()->route("home")->with("success", "Post has been published successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while publishing your post. Kindly try again.");
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * create a fixed term job post
+     */
+    public function create_fixed_term_job_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'title' => 'required',
+            'employer' => 'required',
+            'description' => 'required',
+            'qualifications' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'location' => 'required',
+            'coords' => 'required',
+            'min_budget' => 'required',
+            'max_budget' => 'required',
+            'tags' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
+        }
+
+        $tags = array();
+        foreach ($request->tags as $tag) {
+            $category = Skill::where("name", $tag)->first();
+            if ($category) {
+                array_push($tags, $tag);
+            }
+        }
+
+        $post = new Post();
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->qualifications = $request->qualifications;
+        $post->date = $request->date;
+        $post->time = $request->time;
+        $post->location = $request->location;
+        $post->coords = $request->coords;
+        $post->start_date = $request->start_date;
+        $post->end_date = $request->end_date;
+        $post->max_budget = $request->max_budget;
+        $post->min_budget = $request->min_budget;
+
+        if ($request->negotiable === "on") {
+            $post->is_negotiable = "yes";
+        } else {
+            $post->is_negotiable = "no";
+        }
+
+        if ($request->renewable === "on") {
+            $post->is_renewable = "yes";
+        } else {
+            $post->is_renewable = "no";
+        }
+
+        if ($request->is_internship === "on") {
+            $post->is_internship = "yes";
+        } else {
+            $post->is_internship = "no";
+        }
+
+        $post->tags = json_encode($tags);
+        $post->user_id = auth()->id();
+        $post->type = "FIXED_TERM_JOB";
+        $post->source = "WEB";
+
+        try {
+            $post->save();
+            return redirect()->route("home")->with("success", "Post has been published successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return back()->with("danger", "Oops. We encountered an issue while publishing your post. Kindly try again.");
         }
     }
