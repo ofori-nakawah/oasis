@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.quick_jobs.publish')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{route('user.fixed_term_jobs.publish')}}" method="POST">
                 {{csrf_field()}}
                 <div class="">
                     <div class="mb-3">
@@ -54,25 +54,25 @@
                             <div class="col-md-12">
                                 <div class="custom-control custom-control-lg custom-checkbox"
                                      style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="negotiable"
-                                           id="negotiable">
-                                    <label class="custom-control-label" for="negotiable">Internship</label>
+                                    <input type="checkbox" class="custom-control-input" name="is_internship"
+                                           id="is_internship">
+                                    <label class="custom-control-label" for="is_internship">Internship</label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="name"><b>Select Applicable Categories (Tags)</b></label>
+                            <label for="tags"><b>Select Applicable Categories (Tags)</b></label>
                             <select type="text" data-search="" multiple data-placeholder="Select applicable skills that match job role"
-                                    class="form-control form-select form-control-l @error('category') is-invalid @enderror"
-                                    name="category">
+                                    class="form-control form-select form-control-l @error('tags') is-invalid @enderror"
+                                    name="tags[]" required>
                                 <option value="">Choose an option</option>
                                 @foreach($categories as $category)
-                                    <option value="{{$category->name}}" {{(old('category') == $category->name) ? 'selected' : ''}}>{{$category->name}}</option>
+                                    <option value="{{$category->name}}" {{(old('tags') == $category->name) ? 'selected' : ''}}>{{$category->name}}</option>
                                 @endforeach
                             </select>
 
-                            @error('category')
+                            @error('tags')
                             <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -80,10 +80,10 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="title"><b>Who is hiring?</b></label>
-                            <input type="text" class="form-control form-control-l @error('title') is-invalid @enderror" placeholder="Name of company or employer" name="title" value="{{ old('title') }}">
+                            <label for="employer"><b>Who is hiring?</b></label>
+                            <input type="text" class="form-control form-control-l @error('employer') is-invalid @enderror" placeholder="Name of company or employer" name="employer" value="{{ old('employer') }}">
 
-                            @error('title')
+                            @error('employer')
                             <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -104,12 +104,12 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="description"><b>Qualifications</b></label>
-                            <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
+                            <label for="qualifications"><b>Qualifications</b></label>
+                            <textarea class="form-control form-control-l @error('qualifications') is-invalid @enderror"
                                       placeholder="Enter required qualifications"
-                                      name="description">{{ old('description') }}</textarea>
+                                      name="qualifications">{{ old('qualifications') }}</textarea>
 
-                            @error('description')
+                            @error('qualifications')
                             <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -267,12 +267,12 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                    <label for="number_of_participants">Start Date</label>
+                                    <label for="start_date">Start Date</label>
                                     <input type="date"
-                                           class="form-control form-control-l @error('min_budget') is-invalid @enderror"
-                                           placeholder="Start Date" name="min_budget" value="{{ old('min_budget') }}">
+                                           class="form-control form-control-l @error('start_date') is-invalid @enderror"
+                                           placeholder="Start Date" name="start_date" value="{{ old('start_date') }}">
 
-                                    @error('min_budget')
+                                    @error('start_date')
                                     <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -281,12 +281,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group1 mb-3">
-                                    <label for="name">End Date</label>
+                                    <label for="end_date">End Date</label>
                                     <input type="date"
-                                           class="form-control form-control-l @error('max_budget') is-invalid @enderror"
-                                           placeholder="End Date" name="max_budget" value="{{ old('max_budget') }}">
+                                           class="form-control form-control-l @error('end_date') is-invalid @enderror"
+                                           placeholder="End Date" name="end_date" value="{{ old('end_date') }}">
 
-                                    @error('max_budget')
+                                    @error('end_date')
                                     <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -299,15 +299,29 @@
                             <div class="col-md-12">
                                 <div class="custom-control custom-control-lg custom-checkbox"
                                      style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="negotiable"
-                                           id="negotiable">
-                                    <label class="custom-control-label" for="negotiable">Renewable</label>
+                                    <input type="checkbox" class="custom-control-input" name="renewable"
+                                           id="renewable">
+                                    <label class="custom-control-label" for="renewable">Renewable</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <button class="btn btn-success btn-l"><b>Create & Publish</b></button>
+                    <div class="text-right mb-3" id="publishBtn">
+                        <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Create & Publish</b></button>
+                    </div>
+                    <div class="alert alert-primary mt-3" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
+                        <h4>Are you sure?</h4>
+                        <p>Confirm all the entered information above are accurate before proceeding to publish post.</p>
+                        <div class="text-right" >
+                            <button class="btn btn-outline-secondary btn-l" type="button" onclick="cancelPublish()"><b>Cancel</b></button>
+                            <button class="btn btn-success btn-l" type="submit"><b>Yes, publish!</b></button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -323,6 +337,8 @@
         var markers = [];
         $('#mapLoading').hide();
         $('#imageAttachment').hide();
+        $("#publishConfirmationBox").hide()
+
 
         function mountMap() {
             var mapOptions = {
@@ -577,5 +593,17 @@
             var minDate = year + '-' + month + '-' + day;
             $('.date').attr('min', minDate);
         });
+
+        function confirmPublish() {
+            $("#publishBtn").hide()
+            $("#publishConfirmationBox").show("slow")
+            $("#publishConfirmationBox").addClass("mb-3");
+            $('html, body').animate({ scrollTop:  $("#publishConfirmationBox").offset().top - 50 }, 'slow');
+        }
+
+        function cancelPublish() {
+            $("#publishBtn").show()
+            $("#publishConfirmationBox").hide("slow")
+        }
     </script>
 @endsection

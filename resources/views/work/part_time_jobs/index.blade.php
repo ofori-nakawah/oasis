@@ -5,7 +5,10 @@
 @endsection
 
 @section("content")
-    <div class="nk-block-head nk-block-head-sm">
+    <div class="nk-block-head nk-block-head-sm" style=" background: url('{{asset('assets/images/bg/bg'.mt_rand(1,19).'.svg')}}');
+        background-repeat: no-repeat;
+        object-fit: cover;
+        background-attachment: fixed;">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
                 <h3 class="nk-block-title page-title"><em class="icon ni ni-briefcase"></em> Work </h3>
@@ -13,8 +16,7 @@
                     <p class="hide-mb-sm hide-mb-xs md">
                     <nav>
                         <ul class="breadcrumb breadcrumb-arrow">
-                            <li class="breadcrumb-item"><a href="#">Work</a></li>
-                            <li class="breadcrumb-item"><a href="#">Part Time</a></li>
+                            <li class="breadcrumb-item"><a href="#">fixed term opportunities</a></li>
                         </ul>
                     </nav>
                     </p>
@@ -26,6 +28,14 @@
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h2 style="font-weight: 800;">Fixed term (Part time) <br> jobs near you</h2>
+        </div>
+    </div>
+
+
     @if(count($posts) <= 0)
         <div class="row">
             <div class="col-md-12 text-center">
