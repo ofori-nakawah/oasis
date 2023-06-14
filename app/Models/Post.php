@@ -12,7 +12,7 @@ class Post extends Model
 {
     use HasFactory, Uuids, Notifiable;
 
-    protected $dates = ['closed_at'];
+    protected $dates = ['closed_at', 'start_date', 'end_date'];
 
     public function user()
     {

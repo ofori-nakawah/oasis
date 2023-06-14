@@ -32,7 +32,7 @@ class SMS
                 );
 
                 curl_setopt_array($curl, [
-                    CURLOPT_URL => "https://smsc.hubtel.com/v1/messages/send?" . http_build_query($query),
+                        CURLOPT_URL => "`https://smsc.hubtel.com/v1/messages/send?`" . http_build_query($query),
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_CUSTOMREQUEST => "GET",
                 ]);

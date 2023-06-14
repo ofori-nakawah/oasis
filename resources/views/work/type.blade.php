@@ -5,10 +5,7 @@
 @endsection
 
 @section("content")
-    <div class="nk-block-head nk-block-head-sm" style=" background: url('{{asset('assets/images/bg/bg'.mt_rand(1,19).'.svg')}}');
-        background-repeat: no-repeat;
-        object-fit: cover;
-        background-attachment: fixed;">
+    <div class="nk-block-head nk-block-head-sm" >
         <div class="nk-block-between">
             <div class="nk-block-head-content">
                 <h3 class="nk-block-title page-title"><em class="icon ni ni-briefcase"></em> Work </h3>

@@ -200,6 +200,10 @@ class PostController extends Controller
             $post_location_lng = explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
+            $toDate = Carbon::parse($post->end_date);
+            $fromDate = Carbon::parse($post->start_date);
+            $post["duration"] = $toDate->diffInMonths($fromDate);
+
             if ($distance <= self::JOB_SEARCH_RADIUS) {
                 $post["organiser_name"] = $post->user->name;
                 $post["distance"] = number_format($distance, 2);
@@ -373,6 +377,77 @@ class PostController extends Controller
         $posts = $jobs_near_me->sortBy("distance");;
 
         return view("work.quick_jobs.show", compact("original_post", "posts"));
+    }
+
+    public function show_fixed_term_job_details($uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request. Kindly try again.");
+        }
+
+        $original_post = Post::where("id", $uuid)->first();
+        if (!$original_post) {
+            return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+        }
+
+        /**
+         * 404
+         */
+        if ($original_post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
+        }
+
+        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
+        if ($has_already_applied) {
+            $original_post->has_already_applied = "yes";
+        }
+        $original_post->user;
+        $toDate = Carbon::parse($original_post->end_date);
+        $fromDate = Carbon::parse($original_post->start_date);
+        $original_post["duration"] = $toDate->diffInMonths($fromDate);
+        $original_post["postedOn"] = $original_post->created_at->diffForHumans();
+
+        $posts = [];
+
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return back()->with("danger", "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = explode(',', $user_location)[0];
+        $user_location_lng = explode(',', $user_location)[1];
+
+        /**
+         * filter using distance
+         */
+        $volunteer_near_me = collect();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+        $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
+            //get post coordinates
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
+
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+            $post["organiser_name"] = $post->user->name;
+            $post["distance"] = number_format($distance, 2);
+            $toDate = Carbon::parse($post->end_date);
+            $fromDate = Carbon::parse($post->start_date);
+            $post["duration"] = $toDate->diffInMonths($fromDate);
+            if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
+                $volunteer_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }
+
+            return $post;
+        });
+        $posts = $volunteer_near_me->sortBy("distance");;
+
+        return view("work.part_time_jobs.show", compact("original_post", "posts"));
     }
 
 
@@ -675,6 +750,7 @@ class PostController extends Controller
         $post->date = $request->date;
         $post->time = $request->time;
         $post->location = $request->location;
+        $post->employer = $request->employer;
         $post->coords = $request->coords;
         $post->start_date = $request->start_date;
         $post->end_date = $request->end_date;

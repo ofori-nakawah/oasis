@@ -5,10 +5,7 @@
 @endsection
 
 @section("content")
-    <div class="nk-block-head nk-block-head-sm" style=" background: url('{{asset('assets/images/bg/bg'.mt_rand(1,19).'.svg')}}');
-        background-repeat: no-repeat;
-        object-fit: cover;
-        background-attachment: fixed;">
+    <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
                 <h3 class="nk-block-title page-title"><em class="icon ni ni-briefcase"></em> Work </h3>
@@ -30,11 +27,22 @@
     </div><!-- .nk-block-head -->
 
     <div class="row mb-3">
-        <div class="col-md-12">
-            <h2 style="font-weight: 800;">Fixed term (Part time) <br> jobs near you</h2>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="form-control-wrap" style="margin-bottom: 15px;">
+                        <div class="form-icon form-icon-left">
+                            <em class="icon ni ni-search"></em>
+                        </div>
+                        <input type="text" class="form-control form-control-lg" name="search" id="default-01" placeholder="Search posts">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <a href="#" class="btn btn-outline-primary" style="float: right;"><em class="icon ni ni-filter"></em></a>
+                </div>
+            </div>
         </div>
     </div>
-
 
     @if(count($posts) <= 0)
         <div class="row">
@@ -45,55 +53,47 @@
         </div>
     @else
         <div class="row">
-            <div class="col-md-5">
                 @foreach($posts as $post)
-                    <div class="card card-bordered">
-                        <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
-                            <b>{{$post->category}}</b></div>
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-md-6">
-                                    <div class="title" style="font-size: 10px;color: #777;">Issuer</div>
-                                    <div class="issuer"><b>{{$post->user->name}}</b></div>
+                <div class="col-md-4">
+                    <a href="{{route('user.show_fixed_term_job_details.show', ["uuid" => $post->id])}}" style="text-decoration: none !important;">
+                        <div class="card card-bordered mb-3" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid rgba(255, 255, 255, 0.3);">
+                            <div class="card-header bg-white text-primary" style="border-bottom: 1px solid #dbdfea;">
+                                <b>{{$post->title}}</b> @if($post->is_internship === "yes") <span class="badge badge-secondary">Internship</span> @endif</div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-md-12">
+                                        <div class="title" style="font-size: 10px;color: #777;">Company</div>
+                                        <div class="issuer text-danger"><b>{{$post->employer}}</b></div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
-                                    <b>
-                                        <div class="date text-danger">{{$post->date}} {{$post->time}}</div>
-                                    </b>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <div class="title" style="font-size: 10px;color: #777;">Budget (GHS/month)</div>
+                                        <div class="issuer text-success"><b>{{$post->min_budget}} - {{$post->max_budget}}</b></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                                        <div class="issuer "><b>{{$post->duration}} month(s)</b></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                    <div class="issuer"><b>{{$post->location}} ({{$post->distance}}km)</b></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="title" style="font-size: 10px;color: #777;">Budget (GHS)</div>
-                                    <b>
-                                        <div class="date text-success">{{$post->min_budget}}
-                                            - {{$post->max_budget}}</div>
-                                    </b>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="title" style="font-size: 10px;color: #777;">Location</div>
+                                        <div class="issuer text-dark"><b>{{$post->location}} ({{$post->distance}}km)</b></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                        <span class="pull-left" style="float: left !important;">
-                            @if($post->has_already_applied === "yes") <span>Already applied</span> @endif
-                        </span>
-                            <a href="{{route('user.quick_job.show', ['uuid' => $post->id])}}"
-                               class="btn btn-outline-secondary">View Details</a>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-            <div class="col-md-7 d-none d-md-block">
-                <div class="text-center" style="margin-top: 120px;">
-                    <img src="{{asset('assets/html-template/src/images/details.svg')}}" alt=""
-                         style="height: 250px; width: 250px;">
-                    <p style="color: #777;">Select any job to view more details.</p>
+                    </a>
                 </div>
-            </div>
+
+            @endforeach
         </div>
     @endif
 @endsection
