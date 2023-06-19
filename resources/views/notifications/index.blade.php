@@ -36,35 +36,40 @@
         <div class="row">
             <div class="col-md-5">
                 @foreach($notifications as $notification)
-                    <div class="card card-bordered">
-                        <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
-                            <b>{{$notification->data["post"]["type"]}} <span
-                                    style="float: right">{{$notification->created_at}}</span></b></div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="title" style="font-size: 10px;color: #777;">Ref ID</div>
-                                    <div class="issuer"><b>{{$notification->data["ref_id"]}}</b></div>
+                    <a href="{{route('user.notifications.show', ["notification_group_id" => ($notification->group_id) ? $notification->group_id : $notification->data["post"]["id"]])}}" style="text-decoration: none !important;" >
+                        <div class="card card-bordered" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 16px;
+/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
+backdrop-filter: blur(5px);
+margin-bottom: 15px;
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid #dbdfea;">
+                            <div class="card-header bg-gray-100" style="border: 1px solid #dbdfea;border-radius: 16px; margin:5px;">
+                                <b>{{$notification->data["post"]["type"]}} <span
+                                        style="float: right">{{$notification->created_at}}</span></b></div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="title" style="font-size: 10px;color: #777;">Ref ID</div>
+                                        <div class="issuer"><b>{{$notification->data["ref_id"]}}</b></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="title" style="font-size: 10px;color: #777;">{{ ($notification->data["post"]["type"] != "VOLUNTEER") ? 'Category' : 'Activity Name' }}</div>
+                                        <b>
+                                            <div class="date text-danger">{{($notification->data["post"]["type"] != "VOLUNTEER") ? $notification->data["post"]["category"] : $notification->data["post"]["name"]}}</div>
+                                        </b>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="title" style="font-size: 10px;color: #777;">{{ ($notification->data["post"]["type"] != "VOLUNTEER") ? 'Category' : 'Activity Name' }}</div>
-                                    <b>
-                                        <div class="date text-danger">{{($notification->data["post"]["type"] != "VOLUNTEER") ? $notification->data["post"]["category"] : $notification->data["post"]["name"]}}</div>
-                                    </b>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="title" style="font-size: 10px;color: #777;">Status</div>
-                                    <div class="issuer"><b>{{$notification->data["status"]}}</b></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="title" style="font-size: 10px;color: #777;">Status</div>
+                                        <div class="issuer"><b>{{$notification->data["status"]}}</b></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                            <a href="{{route('user.notifications.show', ["notification_group_id" => ($notification->group_id) ? $notification->group_id : $notification->data["post"]["id"]])}}"
-                               class="btn btn-outline-secondary">View Details</a>
-                        </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
             <div class="col-md-7 d-none d-md-block">

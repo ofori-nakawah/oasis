@@ -37,8 +37,15 @@
         <div class="row">
             <div class="col-md-5">
                 @foreach($posts as $post)
-                    <div class="card card-bordered">
-                        <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
+                    <div class="card card-bordered" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 16px;
+/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
+backdrop-filter: blur(5px);
+margin-bottom: 15px;
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid #dbdfea;">
+                        <div class="card-header bg-gray-100" style="border: 1px solid #dbdfea;border-radius: 16px; margin:5px;">
                             <b>{{$post->category}}</b></div>
                         <div class="card-body">
                             <div class="row mb-2">

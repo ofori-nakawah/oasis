@@ -12,6 +12,7 @@
     <title>VORK | @section("title") @show</title>
     <!-- StyleSheets  -->
     <link rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/dashlite.css?ver=1.4.0")}}">
+    <link rel="stylesheet" href="{{asset("public/css/shimmer-loader.css")}}">
     <link rel="stylesheet" href="{{asset("assets/html-template/src/js/ratings/dist/star-rating.min.css")}}">
     <link id="skin-default" rel="stylesheet" href="{{asset("assets/html-template/src/assets/css/skins/theme-egyptian.css?ver=1.4.0")}}">
     {{--    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&amp;display=swap">--}}
@@ -52,9 +53,22 @@
             border-bottom: 1px solid #dbdfea;
         }
 
+        .text-black{
+            color: #000 !important;
+        }
+
         table{
             /*border-bottom: 1px solid #8094ae;*/
             border-bottom: 1px solid #e5e9f2;
+        }
+
+        .text{
+            color: #526484 !important;
+        }
+
+        .spinner-border {
+            width: 1rem !important;
+            height: 1rem !important;
         }
 
         .alignDataTablePaginationCenter{
@@ -97,28 +111,29 @@
         .pac-container {
             z-index: 1061;
         }
-        .modal{z-index: 1060;}
-        .modal-backdrop {
-            z-index: -1;
-        }
+       
 
         .undelineLinks a:hover{
             text-decoration: underline;
         }
 
 
+
+        .cardContainer:hover {
+            border-color: #353299 !important;
+        }
     </style>
 </head>
 
 <body class="nk-body bg-white npc-general has-sidebar ">
-<div class="nk-app-root"
+<div class="nk-app-root">
     <!-- main @s -->
     <div class="nk-main ">
         <!-- sidebar @s -->
         <div class="nk-sidebar nk-sidebar-fixed is-light " data-content="sidebarMenu">
-            <div class="nk-sidebar-element nk-sidebar-head">
-                <div class="nk-sidebar-brand">
-                    <a href="" class="logo-link nk-sidebar-logo">
+            <div class="nk-sidebar-element nk-sidebar-head" style="border-bottom: none !important;">
+                <div class="nk-sidebar-brand text-center">
+                    <a href="" class="logo-link text-center nk-sidebar-logo">
                         <img class="logo-light logo-img" src="{{asset("assets/html-template/src/images/logo_white_bg.png")}}" srcset="{{asset("assets/html-template/src/images/logo_white_bg.png")}} 2x" alt="logo">
                         <img class="logo-dark logo-img" src="{{asset("assets/html-template/src/images/logo_white_bg.png")}}" srcset="{{asset("assets/html-template/src/images/logo_white_bg.png")}} 2x" alt="logo-dark" style="min-width: 120px !important;min-height: 60px;">
                         {{--                        <span class="nio-version">Vendors</span>--}}
@@ -130,8 +145,20 @@
             </div><!-- .nk-sidebar-element -->
             <div class="nk-sidebar-element">
                 <div class="nk-sidebar-content">
-                    <div class="nk-sidebar-menu" data-simplebar>
-                        <ul class="nk-menu">
+                    <div class="nk-sidebar-menu" data-simplebar >
+                        <div style="padding-left: 20px;margin-top: 20px;">
+                        <div class="user-toggle" >
+                            <div class="user-avatar sm" style="width: 80px;height: 80px;">
+                                <em class="icon ni ni-user-alt"></em>
+                            </div>
+                            <div class="user-info d-none d-md-block">
+                                <div class="nk-menu-text1"><b>{{auth()->user()->name}}</b></div>
+                                <div ><a href="#" class="text-muted"><small>View profile</small></a></div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <ul class="nk-menu mt-5" >
                             <li class="nk-menu-item">
                                 <a href="{{route("home")}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-growth"></em></span>
@@ -277,7 +304,12 @@
                 <div class="container-fluid">
                     <div class="nk-content-inner">
                         <div class="nk-content-body">
-                            @section("content") @show
+                            <div class="row">
+                                <div class="col-md-11">
+                                    @section("content") @show
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
