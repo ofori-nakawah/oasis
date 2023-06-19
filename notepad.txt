@@ -68,3 +68,70 @@ profile update
 - location
 - skills
 - languages
+
+
+
+<div class="col-md-6">
+                            <a href="{{route('user.show_fixed_term_job_details.show', ["uuid" => $post->id])}}"
+                               style="text-decoration: none !important;" class="cardContainer">
+                                <div class="card card-bordered cardContainer" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 16px;
+/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
+backdrop-filter: blur(5px);
+margin-bottom: 15px;
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid #dbdfea;">
+                                    <div class="card-header text bg-lighter" style="border-radius: 16px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
+                                        <div style="flex: 1;"><b>{{$post->title}}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> 2 days ago</span></div> @if($post->is_internship === "yes") <div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
+                                            <em class="icon ni ni-book-read"></em>
+                                        </div> @endif</div>
+                                    <div class="card-body">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12">
+                                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
+                                                <div class="issuer text-danger"><em
+                                                            class="icon ni ni-building"></em> {{$post->employer}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-6">
+                                                <div class="title" style="font-size: 10px;color: #777;">Budget
+                                                    (GHS/month)
+                                                </div>
+                                                <div class="issuer text-success"><em
+                                                            class="icon ni ni-coins"></em> {{$post->min_budget}}
+                                                        - {{$post->max_budget}}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
+                                                    <div style="font-size: 22px;margin-top:20px;">
+                                                        <b>{{$post->duration}}</b></div>
+                                                    <div>month(s)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
+                                                <div class="issuer text"><em
+                                                            class="icon ni ni-map-pin"></em> {{$post->location}}
+                                                        ({{$post->distance}}
+                                                        km)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-header text-dark bg-lighter"
+                                         style="border-radius: 16px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
+                                        <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" href="" class="btn btn-outline-light bg-white"><em
+                                                class="icon ni ni-bookmark"></em></a>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="right" title="Share with family and friends" href="" class="btn btn-outline-light bg-white"><em
+                                                class="icon ni ni-share"></em></a>
+                                        <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-light bg-white"><em
+                                                class="icon ni ni-list-round"></em></a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>

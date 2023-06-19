@@ -29,37 +29,42 @@
     <div class="row">
         <div class="col-md-5 d-none d-md-block">
             @foreach($notifications as $notification)
-                <div class="card card-bordered">
-                    <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
-                        <b>{{$notification->data["post"]["type"]}} <span
-                                style="float: right">{{$notification->created_at}}</span></b></div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Ref ID</div>
-                                <div class="issuer"><b>{{$notification->data["ref_id"]}}</b></div>
+                <a href="#" style="text-decoration: none !important;">
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
+                            <b>{{$notification->data["post"]["type"]}} <span
+                                    style="float: right">{{$notification->created_at}}</span></b></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="title" style="font-size: 10px;color: #777;">Ref ID</div>
+                                    <div class="issuer"><b>{{$notification->data["ref_id"]}}</b></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="title"
+                                         style="font-size: 10px;color: #777;">@if($notification->data["post"]["type"] === "VOLUNTEER") Activity Name @endif @if($notification->data["post"]["type"] === "QUICK_JOB") Category @endif @if($notification->data["post"]["type"] === "FIXED_TERM_JOB") Title @endif</div>
+                                    <b>
+                                        <div
+                                            class="date text-danger">@if($notification->data["post"]["type"] === "VOLUNTEER")
+                                            {{$notification->data["post"]["name"]}} @endif @if($notification->data["post"]["type"] === "QUICK_JOB")
+                                            {{$notification->data["post"]["category"]}} @endif @if($notification->data["post"]["type"] === "FIXED_TERM_JOB")
+                                            {{$notification->data["post"]["title"]}} @endif</div>
+                                    </b>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="title"
-                                     style="font-size: 10px;color: #777;">{{ ($notification->data["post"]["type"] != "VOLUNTEER") ? 'Category' : 'Activity Name' }}</div>
-                                <b>
-                                    <div
-                                        class="date text-danger">{{($notification->data["post"]["type"] != "VOLUNTEER") ? $notification->data["post"]["category"] : $notification->data["post"]["name"]}}</div>
-                                </b>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="title" style="font-size: 10px;color: #777;">Status</div>
+                                    <div class="issuer"><b>{{$notification->data["status"]}}</b></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Status</div>
-                                <div class="issuer"><b>{{$notification->data["status"]}}</b></div>
-                            </div>
+                        <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
+                            <a href="{{route('user.notifications.show', ["notification_group_id" => $notification->group_id])}}"
+                               class="btn btn-outline-secondary">View Details</a>
                         </div>
                     </div>
-                    <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                        <a href="{{route('user.notifications.show', ["notification_group_id" => $notification->group_id])}}"
-                           class="btn btn-outline-secondary">View Details</a>
-                    </div>
-                </div>
+                </a>
             @endforeach
         </div>
         <div class="col-md-7">

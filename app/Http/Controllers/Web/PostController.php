@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
+use App\Traits\Responses;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
@@ -22,6 +23,8 @@ class PostController extends Controller
 {
     const JOB_SEARCH_RADIUS = 10;
     const VOLUNTEER_SEARCH_RADIUS = 10;
+
+    use Responses;
 
     public function volunteerism()
     {
@@ -169,10 +172,15 @@ class PostController extends Controller
 
     public function list_part_time_jobs()
     {
-        //get user coordinates
+        return view("work.part_time_jobs.index");
+    }
+
+    public function getFixedTermOpportunities()
+    {
+        Log::debug("ok");
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
-            return back()->with("danger", "Could not retrieve user's current location");
+            return $this->data_validation_error_response();
         }
 
         $user_location_lat = explode(',', $user_location)[0];
@@ -203,6 +211,7 @@ class PostController extends Controller
             $toDate = Carbon::parse($post->end_date);
             $fromDate = Carbon::parse($post->start_date);
             $post["duration"] = $toDate->diffInMonths($fromDate);
+            $post["createdOn"] = $post->created_at->diffForHumans();
 
             if ($distance <= self::JOB_SEARCH_RADIUS) {
                 $post["organiser_name"] = $post->user->name;
@@ -215,9 +224,8 @@ class PostController extends Controller
                 $post->has_already_applied = "yes";
             }
         }
-        $posts = $jobs_near_me->sortBy("distance");;;
-
-        return view("work.part_time_jobs.index", compact("posts"));
+        $posts = $jobs_near_me->sortBy("distance");
+        return $this->success_response($posts, "Post has been updated successfully.");
     }
 
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
@@ -382,19 +390,27 @@ class PostController extends Controller
     public function show_fixed_term_job_details($uuid)
     {
         if (!$uuid) {
-            return back()->with("danger", "Invalid request. Kindly try again.");
+            return back()->with("danger", "Invalid request");
+        }
+        return view("work.part_time_jobs.show", compact("uuid"));
+    }
+
+    public function getFixedTermOpportunityDetails($uuid)
+    {
+        if (!$uuid) {
+            return $this->not_found_response([],  "Invalid request. Kindly try again.");
         }
 
         $original_post = Post::where("id", $uuid)->first();
         if (!$original_post) {
-            return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+            return $this->not_found_response([], "Oops...something went wrong. We could not retrieve post details.");
         }
 
         /**
          * 404
          */
         if ($original_post->deleted_at) {
-            return back()->with("info", "This post has been removed by the issuer.");
+            return $this->general_error_response([], "This post has been removed by the issuer.");
         }
 
         $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
@@ -406,23 +422,29 @@ class PostController extends Controller
         $fromDate = Carbon::parse($original_post->start_date);
         $original_post["duration"] = $toDate->diffInMonths($fromDate);
         $original_post["postedOn"] = $original_post->created_at->diffForHumans();
+        $original_post["createdOn"] = $original_post->created_at->diffForHumans();
 
         $posts = [];
 
         //get user coordinates
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
-            return back()->with("danger", "Could not retrieve user's current location");
+            return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
         $user_location_lat = explode(',', $user_location)[0];
         $user_location_lng = explode(',', $user_location)[1];
 
+        $_post_location_lat = explode(',', $original_post->coords)[0];
+        $_post_location_lng = explode(',', $original_post->coords)[1];
+        $distance = $this->get_distance($user_location_lat, $user_location_lng, $_post_location_lat, $_post_location_lng, "K");
+        $original_post["distance"] = number_format($distance, 2);
+
         /**
          * filter using distance
          */
         $volunteer_near_me = collect();
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->where("id", "!=", $original_post->id)->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
             $post_location_lat = explode(',', $post->coords)[0];
@@ -445,9 +467,12 @@ class PostController extends Controller
 
             return $post;
         });
-        $posts = $volunteer_near_me->sortBy("distance");;
+        $posts = $volunteer_near_me->sortBy("distance")->take(3);
 
-        return view("work.part_time_jobs.show", compact("original_post", "posts"));
+        return $this->success_response([
+            "opportunity" => $original_post,
+            "otherOpportunities" => $posts
+        ], "Post details fetched successfully");
     }
 
 
