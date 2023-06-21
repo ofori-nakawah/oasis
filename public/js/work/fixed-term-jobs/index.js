@@ -93,3 +93,14 @@ const searchFixedJobOpportunities = () => {
 }
 
 searchFixedJobOpportunities()
+
+const filterByCategories = () => {
+    /**
+     * get selected categories
+     */
+
+    /**
+     * do the filtering
+     * save filtered posts in filter local storage
+     */
+}

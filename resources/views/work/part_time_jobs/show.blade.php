@@ -296,7 +296,7 @@ animation: pulse 2s infinite;">
             return `
             <div
                style="text-decoration: none !important;" class="">
-                <div class="card card-bordered shadow-lg" style="/* From https://css.glass */
+                <div class="card card-bordered " style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
 border-radius: 4px;
 /*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
