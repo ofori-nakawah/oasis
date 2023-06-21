@@ -34,7 +34,7 @@
                             <div class="form-icon form-icon-left">
                                 <em class="icon ni ni-search"></em>
                             </div>
-                            <input type="text" class="form-control form-control-lg" name="search" id="default-01"
+                            <input type="text" class="form-control form-control-lg" name="search" id="searchFixedTermJobOpportunities"
                                    placeholder="Search keywords" style="border-radius: 4px;height: 60px;">
                         </div>
                         <button class="btn btn-outline-light d-md-none d-lg-none"
@@ -55,10 +55,8 @@
                                 </div>
                             </div>
                             <div class="custom-control custom-checkbox mt-1">
-                                <input type="checkbox" class="custom-control-input" id="customCheck1">
-
-                                <label class="custom-control-label" for="customCheck1">
-                                </label>
+                                <input type="checkbox" class="custom-control-input" id="isInternship" onclick="getFixedTermInternshipOpportunities()">
+                                <label class="custom-control-label" for="isInternship"></label>
                             </div>
                         </div>
                     </div>
@@ -131,10 +129,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and friends on all platforms.</p>
-                            <p class="alert alert-lighter bg-lighter text-primary no-border" style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;">
-                                <em class="icon ni ni-link font-weight-bolder"></em> <b>https://web.myvork.com/gigs/343ae34-23ser42-23sdf42-34234dfd</b>
+                            <p class="alert alert-lighter bg-lighter text-primary no-border" style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span id="shareableLink"></span></b>
                             </p>
-                            <div class="btn btn-outline-lighter copyLinkButton bold" style="float: right !important;" onclick="copyLinkToClipboard('${post.id}')"> <em class="icon ni ni-copy"></em> Copy link
+                            <div class="btn btn-outline-lighter copyLinkButton bold" style="float: right !important;" onclick="copyLinkToClipboard()"> <em class="icon ni ni-copy"></em> Copy link
                             </div>
                             <span class="copyStatus"></span>
                         </div>
@@ -375,7 +372,7 @@ border: 1px solid #dbdfea;">
                 </div></a>
 
 
-                <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                <a type="button"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
                     class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
 
 
@@ -415,6 +412,7 @@ border: 1px solid #dbdfea;">
                 crossDomain: true,
                 success: function (_data) {
                     const data = _data.data
+                    localStorage.setItem("fixedTermPosts", JSON.stringify(data))
                     $("#fixedTermOpportunitiesListing").html("")
                     let fixedTermOpportunitiesList = `<div class="row">`
                     let counter = 0;
@@ -468,21 +466,6 @@ border: 1px solid #dbdfea;">
              */
 
         }
-
-        const copyLinkToClipboard = (uuid) => {
-            var copyText = document.getElementById(`shareLink-${uuid}`);
-
-            // Select the text field
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
-
-            // Copy the text inside the text field
-            navigator.clipboard.writeText(copyText.value);
-
-            $(`.copyLinkButton`).hide();
-            const successMessage = `<div class="text-color-green text-align-center"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
-            $(".copyStatus").append(successMessage);
-            $(".copyStatus").show();
-        }
     </script>
+    <script src="{{asset('public/js/work/fixed-term-jobs/index.js')}}"></script>
 @endsection

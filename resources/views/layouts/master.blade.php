@@ -360,6 +360,49 @@
     NioApp.Toast('{{ Session::get('warning') }}', 'warning', {position: 'top-right'});
     @endif
 
+    /**
+     * build shareable link
+     * thin about moving this to the backend as a db field
+     * when we have a url shortner
+     * @param type
+     * @param uuid
+     */
+    const setupShareableLink = (type, uuid) => {
+        $(".copyStatus").hide()
+        $(".copyStatus").html("")
+        $(`.copyLinkButton`).show();
+
+        let shareableLink = `{{env("BACKEND_URL")}}/`
+        switch (type) {
+            case "VOLUNTEER":
+                shareableLink += `volunteerism/`
+                break;
+            case "QUICK_JOB":
+                shareableLink += `gigs/`
+                break;
+            case "FIXED_TERM_JOB":
+                shareableLink += `part-time-jobs/`
+                break;
+        }
+        shareableLink += `${uuid}`
+        $("#shareableLink").html(`<input value="${shareableLink}" id="shareLink" type="text" readonly="" class="form-control">`)
+    }
+
+    const copyLinkToClipboard = () => {
+        var copyText = document.getElementById(`shareLink`);
+
+        // // Select the text field
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text inside the text field
+        navigator.clipboard.writeText(copyText.value);
+
+        $(`.copyLinkButton`).hide();
+        const successMessage = `<div class="text-color-green text-align-center"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
+        $(".copyStatus").append(successMessage);
+        $(".copyStatus").show();
+    }
 
     // NioApp.Toast('This is a note for bottom right toast message.', 'info', {position: 'bottom-full'});
 </script>
