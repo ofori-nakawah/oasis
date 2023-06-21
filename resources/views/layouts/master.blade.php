@@ -117,7 +117,7 @@
             text-decoration: underline;
         }
 
-        .btn, .card, .badge {
+        .btn, .card, .card-header, .badge {
             border-radius: 16px !important;
         }
 
