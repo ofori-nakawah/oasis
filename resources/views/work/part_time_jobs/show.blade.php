@@ -24,7 +24,7 @@
     </div><!-- .nk-block-head -->
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 .d-none .d-sm-none">
             <div id="fixedTermOpportunityShimmerLoader"></div>
             <div id="fixedTermOpportunitySnapshot"></div>
 
@@ -329,6 +329,13 @@ border: 1px solid #dbdfea;">
                         </div> `
             }
 
+            const applicationURL = `{{env("BACKEND_URL")}}/posts/${post.id}/apply`
+
+            let applicationConfirmation = `<a data-bs-toggle="tooltip" data-bs-placement="right" title="Apply" href="${applicationURL}" onclick="return confirm('Are your sure?')" class="btn btn-primary"> <b>Apply</b></a>`;
+            if (post.has_already_applied === "yes") {
+                applicationConfirmation = `<div class="btn btn-outline-lighter"> <b>Application sent!</b></div>`
+            }
+
             return `
                <div class="card card-bordered" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
@@ -413,7 +420,7 @@ border: 1px solid #dbdfea;">
                             class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
 
 
-                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-primary"> <b>Apply</b></a>
+                    ${applicationConfirmation}
 
                 </div>
 

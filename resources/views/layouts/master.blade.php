@@ -111,13 +111,15 @@
         .pac-container {
             z-index: 1061;
         }
-       
+
 
         .undelineLinks a:hover{
             text-decoration: underline;
         }
 
-
+        .btn, .card, .badge {
+            border-radius: 16px !important;
+        }
 
         .cardContainer:hover {
             border-color: #353299 !important;
