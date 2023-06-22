@@ -65,9 +65,9 @@
 
                     <div class="mb-2">
                         <label class="form-label">Categories</label>
-                        <div class="card card-bordered pt-2 pl-3 pr-2"
-                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">
-                            <div class="text-muted" style="flex: 1">Eg. Barber, Fashion Designer</div>
+                        <div class="card card-bordered pt-2 pl-3 pr-2" id="catBox"
+                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row" data-toggle="modal" data-target="#skillsModal">
+                            <div class="text-muted" style="flex: 1" id="selectedSkillsBox">Eg. Barber, Fashion Designer</div>
                             <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                         </div>
                     </div>
@@ -140,11 +140,33 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade zoom" tabindex="-1" id="skillsModal" style="border-radius: 16px;">
+        <div class="modal-dialog" role="document" style="border-radius: 16px;">
+            <div class="modal-content" style="border-radius: 16px;">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+                <div class="modal-header" style="border-bottom: none !important;">
+                    <h4 class="modal-title"><b>Skills</b></h4>
+                </div>
+                <div class="modal-body">
+                    <hr style=" margin-top: -25px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="categoriesListing" style="display: flex; flex-direction: column;height: 400px; overflow-y: scroll;gap: 5px;"></div>
+                            <div class="btn btn-primary btn-lg bold" style="float: right !important;" onclick="applyCategoriesFilter()"> Apply filter
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section("scripts")
     <script>
-
+        localStorage.removeItem("filteredFixedTermPosts")
 
         /**
          * setup fixed term opportunities
@@ -297,6 +319,8 @@ animation: pulse 2s infinite;">
                 $("#fixedTermOpportunitiesListingLoader").html(fixedTermOpportunitiesShimmerLoader)
                 $("#fixedTermOpportunitiesCountShimmerLoader").show()
                 $("#fixedTermOpportunitiesListingLoader").show()
+                $("#fixedTermOpportunitiesListing").html("")
+                $("#fixedTermOpportunitiesCount").html("")
             } else {
                 $("#fixedTermOpportunitiesCountShimmerLoader").hide()
                 $("#fixedTermOpportunitiesListingLoader").hide("slow")
@@ -466,6 +490,36 @@ border: 1px solid #dbdfea;">
              */
 
         }
+
+        /**
+         * get categories
+         */
+        const getCategories = () => {
+            $.ajax({
+                url: "{{env("BACKEND_URL")}}/getCategories",
+                method: "GET",
+                dataType: "json",
+                contentType: "application/json",
+                data: {},
+                crossDomain: true,
+                success: function (_data) {
+                    const data = _data.data
+                    let categories = ``;
+                    data.map(category => {
+                        categories += ` <div class="custom-control custom-checkbox mt-1">
+                            <input type="checkbox" class="custom-control-input" value="${category.name}" name="categories" id="${category.name}">
+                            <label class="custom-control-label bold" for="${category.name}">${category.name}</label>
+                        </div>`
+                    })
+                    $("#categoriesListing").html(categories)
+                },
+                error: function (e) {
+                    $("#categoriesListing").html(ComponentFixedTermOpportunitiesFetchError())
+                    isLoadingFixedTermOpportunities(false)
+                }
+            })
+        }
+        getCategories()
     </script>
     <script src="{{asset('public/js/work/fixed-term-jobs/index.js')}}"></script>
 @endsection

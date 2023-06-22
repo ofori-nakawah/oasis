@@ -172,7 +172,8 @@ class PostController extends Controller
 
     public function list_part_time_jobs()
     {
-        return view("work.part_time_jobs.index");
+        $skills = Skill::all();
+        return view("work.part_time_jobs.index", compact("skills"));
     }
 
     public function getFixedTermOpportunities()
@@ -1107,5 +1108,11 @@ class PostController extends Controller
             Log::error("ERROR UPDATING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return back()->with("danger", "Oops. We encountered an issue while removing your post. Kindly try again.");
         }
+    }
+
+    public function getCategories()
+    {
+        $categories = Skill::all();
+        return $this->success_response($categories, "success");
     }
 }

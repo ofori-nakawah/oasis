@@ -40,8 +40,11 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');
 
 
-    Route::get('/getFixedTermOpportunities', 'Web\PostController@getFixedTermOpportunities')->name('work.getFixedTermOpportunities');
-    Route::get('/getFixedTermOpportunityDetails/{uuid}', 'Web\PostController@getFixedTermOpportunityDetails')->name('work.getFixedTermOpportunityDetails');
+   Route::group(["prefix" => "/api/a0abaee2-d6c2-4f06-9c14-24c4da21eac9"], function () {
+       Route::get('/getFixedTermOpportunities', 'Web\PostController@getFixedTermOpportunities')->name('work.getFixedTermOpportunities');
+       Route::get('/getCategories', 'Web\PostController@getCategories')->name('work.getCategories');
+       Route::get('/getFixedTermOpportunityDetails/{uuid}', 'Web\PostController@getFixedTermOpportunityDetails')->name('work.getFixedTermOpportunityDetails');
+   });
 
 
 

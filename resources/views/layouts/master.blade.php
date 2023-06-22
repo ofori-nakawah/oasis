@@ -124,6 +124,10 @@
         .cardContainer:hover {
             border-color: #353299 !important;
         }
+
+        .borderActive {
+            border: 2px solid #353299 !important;
+        }
     </style>
 </head>
 
