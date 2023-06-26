@@ -79,176 +79,20 @@
          * setup selected fixed term opportunities
          * shimmer loader
          */
-        const fixedTermOpportunityShimmerLoader = `<div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                </div> </div>
-            <div class="card-body">
-                <div class="company-line mt-3"></div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="company-line"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="company-line" style="height: 100px;"></div>
-                    </div>
-                </div>
-                <div class="company-line mt-3"></div>
-            </div>
-        </div>`
+        const fixedTermOpportunityShimmerLoader = `<div>Loading...</div>`
 
         /**
          * fixed term opportunity details
          * shiller loader
          */
 
-         const fixedTermOpportunityDetailsShimmerLoader = `<div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
-        /*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-        backdrop-filter: blur(5px);
-        margin-bottom: 15px;
-        -webkit-backdrop-filter: blur(5px);
-        border: 1px solid #dbdfea;transform: scale(1);
-        animation: pulse 2s infinite;">
-        <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-            <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-            </div> </div>
-        <div class="card-body">
-            <div class="company-line mt-3"></div>
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <div class="company-line"></div>
-            </div>
-            <div class="col-md-6">
-                <div class="company-line" style="height: 100px;"></div>
-            </div>
-        </div>
-        <div class="company-line mt-3" style="height: 150px;"></div>
-        <div class="company-line mt-3" style="height: 150px;"></div>
-
-        <div class="company-line mt-3"></div>
-
-        <div class="company-line mt-3"></div>
-        </div>
-         <div class="card-header text-dark bg-lighter"
-                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 65px;height:45px;"></div>
-            </div>
-        </div>`
+         const fixedTermOpportunityDetailsShimmerLoader = `<div>Loading...</div>`
 
         /**
          * other fixed term opportunities shimmer loader
          * @param isLoading
          */
-        const otherFixedTermOpportunitiesShimmerLoader = `
-<div class="row mt-1">
-    <div class="col-md-12">
-        <div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                </div> </div>
-            <div class="card-body">
-                <div class="company-line mt-3"></div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="company-line"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="company-line" style="height: 100px;"></div>
-                    </div>
-                </div>
-                <div class="company-line mt-3"></div>
-            </div>
-            <div class="card-header text-dark bg-lighter"
-                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-            </div>
-        </div>
-        <div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                </div> </div>
-            <div class="card-body">
-                <div class="company-line mt-3"></div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="company-line"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="company-line" style="height: 100px;"></div>
-                    </div>
-                </div>
-                <div class="company-line mt-3"></div>
-            </div>
-            <div class="card-header text-dark bg-lighter"
-                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-            </div>
-        </div>
-        <div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                </div> </div>
-            <div class="card-body">
-                <div class="company-line mt-3"></div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="company-line"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="company-line" style="height: 100px;"></div>
-                    </div>
-                </div>
-                <div class="company-line mt-3"></div>
-            </div>
-            <div class="card-header text-dark bg-lighter"
-                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-            </div>
-        </div>
-    </div>
-</div>`
+        const otherFixedTermOpportunitiesShimmerLoader = `<div>Loading...</div>`
 
         const isLoadingFixedTermOpportunity = (isLoading) => {
             if (isLoading) {
@@ -288,9 +132,9 @@ animation: pulse 2s infinite;">
         const ComponentFixedTermOpportunity = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                            <em class="icon ni ni-book-read"></em>
-                        </div> `
+                isInternship += `<div class="badge badge-primary" style="height: 20px;">
+                            Internship
+                        </div>`
             }
 
             return `
@@ -350,9 +194,9 @@ border: 1px solid #dbdfea;">
         const ComponentFixedTermOpportunityDetails = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                            <em class="icon ni ni-book-read"></em>
-                        </div> `
+                isInternship += `<div class="badge badge-primary" style="height: 20px;">
+                            Internship
+                        </div>`
             }
 
             const applicationURL = `{{env("BACKEND_URL")}}/posts/${post.id}/apply`
@@ -457,9 +301,9 @@ border: 1px solid #dbdfea;">
         const ComponentOtherFixedTermOpportunities = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                            <em class="icon ni ni-book-read"></em>
-                        </div> `
+                isInternship += `<div class="badge badge-primary" style="height: 20px;">
+                            Internship
+                        </div>`
             }
 
             const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
@@ -515,20 +359,25 @@ border: 1px solid #dbdfea;">
                 </div>
                 </div>
                 </div>
-                <div class="card-header text-dark bg-lighter"
-                style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
-                <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
+                <div class="card-header text-center text-dark bg-lighter"
+                style="border-radius: 4px; margin:5px;align-items: center;">
+                    <div class="row text-center">
+                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
 <div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
                         <div class="spinner-border" role="status"></div>
                 </div></a>
+</div>
+                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a type="button" data-toggle="modal" onclick="setupShareableLink('${post.type}', '${post.id}')" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a></div>
+                        <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-primary btn-block" style="height: 40px;margin-top: 0px;">Details</a></div>
+                    </div>
 
 
-                <a type="button" data-toggle="modal" onclick="setupShareableLink('${post.type}', '${post.id}')" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
 
 
-                <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-list-round"></em></a>
+
+
+
 
                 </div>
 

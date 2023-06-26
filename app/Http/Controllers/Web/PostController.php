@@ -476,6 +476,58 @@ class PostController extends Controller
         ], "Post details fetched successfully");
     }
 
+    public function getFixedTermOpportunitiesBySearchRadius($radius)
+    {
+        if (!$radius) {
+            return $this->not_found_response([], "Invalid request.");
+        }
+
+        $posts = [];
+
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return $this->not_found_response([], "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = explode(',', $user_location)[0];
+        $user_location_lng = explode(',', $user_location)[1];
+
+        /**
+         * filter using distance
+         */
+        $volunteer_near_me = collect();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+        $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $radius) {
+            //get post coordinates
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
+
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+            $post["organiser_name"] = $post->user->name;
+            $post["distance"] = number_format($distance, 2);
+            $toDate = Carbon::parse($post->end_date);
+            $fromDate = Carbon::parse($post->start_date);
+            $post["duration"] = $toDate->diffInMonths($fromDate);
+            Log::debug($distance ." >>>>>>>>>>>>>>> " . $radius);
+            if ($distance <= $radius) {
+                $volunteer_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }
+
+            return $post;
+        });
+        $posts = $volunteer_near_me->sortBy("distance");
+
+        return $this->success_response([
+            "opportunities" => $posts
+        ], "Post details fetched successfully");
+    }
+
 
     /**
      * @param $uuid

@@ -16,10 +16,10 @@
                     </p>
                 </div>
             </div>
-                        <div class="nk-block-head-content">
-                            <a href="{{URL::previous()}}"
-                               class="btn btn-outline-light"><span>Back</span></a>
-                        </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <a href="{{URL::previous()}}"
+                   class="btn btn-outline-light"><span>Back</span></a>
+            </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
 
@@ -34,7 +34,8 @@
                             <div class="form-icon form-icon-left">
                                 <em class="icon ni ni-search"></em>
                             </div>
-                            <input type="text" class="form-control form-control-lg" name="search" id="searchFixedTermJobOpportunities"
+                            <input type="text" class="form-control form-control-lg" name="search"
+                                   id="searchFixedTermJobOpportunities"
                                    placeholder="Search keywords" style="border-radius: 4px;height: 60px;">
                         </div>
                         <button class="btn btn-outline-light d-md-none d-lg-none"
@@ -55,63 +56,62 @@
                                 </div>
                             </div>
                             <div class="custom-control custom-checkbox mt-1">
-                                <input type="checkbox" class="custom-control-input" id="isInternship" onclick="getFixedTermInternshipOpportunities()">
+                                <input type="checkbox" class="custom-control-input" id="isInternship"
+                                       onclick="getFixedTermInternshipOpportunities()">
                                 <label class="custom-control-label" for="isInternship"></label>
                             </div>
                         </div>
                     </div>
 
                     <hr>
-
                     <div class="mb-2">
-                        <label class="form-label">Categories</label>
-                        <div class="card card-bordered pt-2 pl-3 pr-2" id="catBox"
-                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row" data-toggle="modal" data-target="#skillsModal">
-                            <div class="text-muted" style="flex: 1" id="selectedSkillsBox">Eg. Barber, Fashion Designer</div>
+                        <label class="form-label">Search radius</label>
+                        <div id="radBox" class="card card-bordered pt-2 pl-3 pr-2" data-toggle="modal"
+                             data-target="#searchRadiusModal"
+                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">
+                            <div class="text-muted" style="flex: 1" id="searchRadiusTrigger">Eg. 11km from me</div>
                             <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label class="form-label">Search radius</label>
-                        <div class="card card-bordered pt-2 pl-3 pr-2"
-                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">
-                            <div class="text-muted" style="flex: 1">Eg. 11km from me</div>
+                        <label class="form-label">Categories</label>
+                        <div class="card card-bordered pt-2 pl-3 pr-2" id="catBox"
+                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row"
+                             data-toggle="modal" data-target="#skillsModal">
+                            <div class="text-muted" style="flex: 1" id="selectedSkillsBox">Eg. Barber, Fashion
+                                Designer
+                            </div>
                             <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                         </div>
                     </div>
                     <div class="mb-2">
                         <label class="form-label">Budget range</label>
-                        <div class="card card-bordered pt-2 pl-3 pr-2"
-                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">
-                            <div class="text-muted" style="flex: 1">Eg. Between GHS240 and GHS490</div>
+                        <div class="card card-bordered pt-2 pl-3 pr-2" id="bugBox"
+                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row" data-toggle="modal" data-target="#budgetModal">
+                            <div class="text-muted" style="flex: 1" id="budgetRange">Eg. Between GHS240 and GHS490</div>
                             <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                         </div>
                     </div>
-
-                    <hr>
-
-
-                    <button class="btn btn-block btn-outline-light btn-lg">Reset filter</button>
 
                 </div>
             </div>
         </div>
         <div class="col-md-8" style="margin-top: 50px;">
-                <div class="text-dark mb-3" style="display: flex; flex-direction: row;">
-                    <div style="flex:1" id="fixedTermOpportunitiesCountShimmerLoader"></div>
-                    <div style="flex:1" id="fixedTermOpportunitiesCount"></div>
-                    <div style="display:flex; gap: 20px;border-bottom: 1px solid #dbdfea;">
-                        <span class="text-primary" style="border-bottom: 3px solid #353299;"><b>All</b></span>
-                        <a href="#" class="text-dark">Saved</a>
-                    </div>
+            <div class="text-dark mb-3" style="display: flex; flex-direction: row;">
+                <div style="flex:1" id="fixedTermOpportunitiesCountShimmerLoader"></div>
+                <div style="flex:1" id="fixedTermOpportunitiesCount"></div>
+                <div style="display:flex; gap: 20px;border-bottom: 1px solid #dbdfea;">
+                    <span class="text-primary" style="border-bottom: 3px solid #353299;"><b>All</b></span>
+                    <a href="#" class="text-dark">Saved</a>
                 </div>
+            </div>
 
-                <div class="row" style="margin-top: -5px;">
-                    <div id="fixedTermOpportunitiesListingLoader" class="col-md-12"></div>
-                    <div class="col-md-12">
-                        <div id="fixedTermOpportunitiesListing"></div>
-                    </div>
+            <div class="row" style="margin-top: -5px;">
+                <div id="fixedTermOpportunitiesListingLoader" class="col-md-12"></div>
+                <div class="col-md-12">
+                    <div id="fixedTermOpportunitiesListing"></div>
                 </div>
+            </div>
         </div>
     </div>
 
@@ -128,10 +128,14 @@
                     <hr style=" margin-top: -25px;">
                     <div class="row">
                         <div class="col-md-12">
-                            <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and friends on all platforms.</p>
-                            <p class="alert alert-lighter bg-lighter text-primary no-border" style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span id="shareableLink"></span></b>
+                            <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and
+                                friends on all platforms.</p>
+                            <p class="alert alert-lighter bg-lighter text-primary no-border"
+                               style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span
+                                        id="shareableLink"></span></b>
                             </p>
-                            <div class="btn btn-outline-lighter copyLinkButton bold" style="float: right !important;" onclick="copyLinkToClipboard()"> <em class="icon ni ni-copy"></em> Copy link
+                            <div class="btn btn-outline-lighter copyLinkButton bold" style="float: right !important;"
+                                 onclick="copyLinkToClipboard()"><em class="icon ni ni-copy"></em> Copy link
                             </div>
                             <span class="copyStatus"></span>
                         </div>
@@ -154,9 +158,86 @@
                     <hr style=" margin-top: -25px;">
                     <div class="row">
                         <div class="col-md-12">
-                            <div id="categoriesListing" style="display: flex; flex-direction: column;height: 400px; overflow-y: scroll;gap: 5px;"></div>
-                            <div class="btn btn-primary btn-lg bold" style="float: right !important;" onclick="applyCategoriesFilter()"> Apply filter
+                            <div id="categoriesListing"
+                                 style="display: flex; flex-direction: column;height: 400px; overflow-y: scroll;gap: 5px;"></div>
+                            <div class="btn btn-primary btn-lg bold" style="float: right !important;"
+                                 onclick="applyCategoriesFilter()"> Apply filter
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade zoom" tabindex="-1" id="searchRadiusModal" style="border-radius: 16px;">
+        <div class="modal-dialog" role="document" style="border-radius: 16px;">
+            <div class="modal-content" style="border-radius: 16px;">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+                <div class="modal-header" style="border-bottom: none !important;">
+                    <h4 class="modal-title"><b>Search Radius</b></h4>
+                </div>
+                <div class="modal-body">
+                    <hr style=" margin-top: -25px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <p><em class="icon ni ni-bulb"></em> Open up job search radius by updating the search
+                                    radius input below. The bigger the value, the wider the search radius.</p>
+                            </div>
+                            <div class="input-group1 mb-3 mt-3">
+                                <label for="radiusInput">Search Radius (km)</label>
+                                <input type="number" min="2" value="10" max="100" class="form-control"
+                                       placeholder="Number between 1 and 100" name="radiusInput" id="radiusInput">
+                            </div>
+                            <div class="btn btn-primary btn-lg bold" style="float: right !important;"
+                                 onclick="getFixedTermOpportunitiesBySearchRadius()"> Apply filter
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade zoom" tabindex="-1" id="budgetModal" style="border-radius: 16px;">
+        <div class="modal-dialog" role="document" style="border-radius: 16px;">
+            <div class="modal-content" style="border-radius: 16px;">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+                <div class="modal-header" style="border-bottom: none !important;">
+                    <h4 class="modal-title"><b>Budget Range</b></h4>
+                </div>
+                <div class="modal-body">
+                    <hr style=" margin-top: -25px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <p><em class="icon ni ni-bulb"></em> Filter job opportunities based on the budget range</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group1 mb-3 mt-3">
+                                        <label for="radiusInput">Min budget (GHS)</label>
+                                        <input type="number" min="2" value="10" max="100" class="form-control"
+                                               placeholder="Min budget" name="radiusInput" id="radiusInput">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group1 mb-3 mt-3">
+                                        <label for="radiusInput">Max budget (GHS)</label>
+                                        <input type="number" min="2" value="10" max="100" class="form-control"
+                                               placeholder="Max budget" name="radiusInput" id="radiusInput">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn btn-primary btn-lg bold" style="float: right !important;"
+                                 onclick="getFixedTermOpportunitiesBySearchRadius()"> Apply filter
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,145 +254,7 @@
          * shimmer loader
          */
         const isLoadingFixedTermOpportunities = (isLoading) => {
-            const fixedTermOpportunitiesShimmerLoader = `
-<div class="row mt-1">
-    <div class="col-md-6">
-                        <div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-                            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                                </div> </div>
-                            <div class="card-body">
-                                <div class="company-line mt-3"></div>
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <div class="company-line"></div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="company-line" style="height: 100px;"></div>
-                                    </div>
-                                </div>
-                                <div class="company-line mt-3"></div>
-                            </div>
-                            <div class="card-header text-dark bg-lighter"
-                                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                                <div class="company-line" style="width: 45px;height:45px;"></div>
-                                <div class="company-line" style="width: 45px;height:45px;"></div>
-                                <div class="company-line" style="width: 45px;height:45px;"></div>
-                            </div>
-                        </div>
-                    </div>
-    <div class="col-md-6">
-        <div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                </div> </div>
-            <div class="card-body">
-                <div class="company-line mt-3"></div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="company-line"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="company-line" style="height: 100px;"></div>
-                    </div>
-                </div>
-                <div class="company-line mt-3"></div>
-            </div>
-            <div class="card-header text-dark bg-lighter"
-                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-            </div>
-        </div>
-</div>
-    </div>
-    <div class="row">
-    <div class="col-md-6">
-        <div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                </div> </div>
-            <div class="card-body">
-                <div class="company-line mt-3"></div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="company-line"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="company-line" style="height: 100px;"></div>
-                    </div>
-                </div>
-                <div class="company-line mt-3"></div>
-            </div>
-            <div class="card-header text-dark bg-lighter"
-                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-            </div>
-        </div>
-
-    </div>
-    <div class="col-md-6">
-        <div class="card card-bordered s-fixed-term-card" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;transform: scale(1);
-animation: pulse 2s infinite;">
-            <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                <div style="flex: 1;" class="role-line"> <br> <div class="date-line" style="font-size: 10px;"> </div></div> <div class="user-avatar bg-secondary-dim sm internship-line" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                </div> </div>
-            <div class="card-body">
-                <div class="company-line mt-3"></div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="company-line"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="company-line" style="height: 100px;"></div>
-                    </div>
-                </div>
-                <div class="company-line mt-3"></div>
-            </div>
-            <div class="card-header text-dark bg-lighter"
-                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between">
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-                <div class="company-line" style="width: 45px;height:45px;"></div>
-            </div>
-        </div>
-
-    </div>
-</div>`
+            const fixedTermOpportunitiesShimmerLoader = `<div class="text-center" >Loading...</div>`
             const fixedTermOpportunitiesCountShimmerLoader = `<div class="s-fixed-term-card" style="width: 130px !important;"><div class="date-line" style="width: 130px !important;"></div></div>`
 
             if (isLoading) {
@@ -330,8 +273,8 @@ animation: pulse 2s infinite;">
         const ComponentFixedTermOpportunity = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                            <em class="icon ni ni-book-read"></em>
+                isInternship += `<div class="badge badge-primary" style="height: 20px;">
+                            Internship
                         </div> `
             }
 
@@ -350,7 +293,7 @@ margin-bottom: 15px;
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid #dbdfea;">
                     <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
+                        <div style="flex: 1;" class="text-break"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col-md-12">
@@ -389,19 +332,20 @@ border: 1px solid #dbdfea;">
                 </div>
                 </div>
                 <div class="card-header text-dark bg-lighter"
-                style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
-                <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
+                style="border-radius: 4px; margin:5px;">
+                <div class="row text-center">
+                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
 <div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
                         <div class="spinner-border" role="status"></div>
                 </div></a>
+</div>
+                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a type="button"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a></div>
+                        <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-primary btn-block" style="height: 40px;margin-top: 0px;">Details</a></div>
+                    </div>
 
 
-                <a type="button"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
 
-
-                <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-list-round"></em></a>
 
                 </div>
 
@@ -520,6 +464,50 @@ border: 1px solid #dbdfea;">
             })
         }
         getCategories()
+
+        const getFixedTermOpportunitiesBySearchRadius = () => {
+            isLoadingFixedTermOpportunities(true)
+            const radiusInput = document.getElementById("radiusInput")
+            let radBox = document.getElementById("radBox")
+            const radius = radiusInput.value
+            $("#searchRadiusModal").modal('hide');
+            /**
+             * make api call
+             */
+            $.ajax({
+                url: `{{env("BACKEND_URL")}}/getFixedTermOpportunitiesBySearchRadius/${radius}`,
+                method: "GET",
+                dataType: "json",
+                contentType: "application/json",
+                data: {},
+                crossDomain: true,
+                success: function (_data) {
+                    const data = _data.data
+                    localStorage.setItem("fixedTermPosts", JSON.stringify(data.opportunities))
+
+                    $("#searchRadiusTrigger").html(`<span class="text-dark"><b>${radius}km from you</b></span>`)
+                    radBox.classList.add("borderActive")
+
+                    $("#fixedTermOpportunitiesListing").html("")
+                    let fixedTermOpportunitiesList = `<div class="row">`
+                    let counter = 0;
+                    $.each(data.opportunities, function (key, opportunity) {
+                        fixedTermOpportunitiesList += ComponentFixedTermOpportunity(opportunity)
+                        counter++;
+                    })
+                    $("#fixedTermOpportunitiesCount").html(`<p>${counter} jobs listed</p>`)
+                    $("#fixedTermOpportunitiesListing").html(fixedTermOpportunitiesList)
+                    fixedTermOpportunitiesList += `</div>`
+                    $(".savedFixedTermOpportunityIcon").hide()
+                    $(".saveFixedTermOpportunityLoader").hide()
+                    isLoadingFixedTermOpportunities(false)
+                },
+                error: function (e) {
+                    $("#fixedTermOpportunitiesListing").html(ComponentFixedTermOpportunitiesFetchError())
+                    isLoadingFixedTermOpportunities(false)
+                }
+            })
+        }
     </script>
     <script src="{{asset('public/js/work/fixed-term-jobs/index.js')}}"></script>
 @endsection
