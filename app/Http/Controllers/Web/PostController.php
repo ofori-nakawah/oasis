@@ -9,6 +9,8 @@ use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
+use App\Models\UserSavedPost;
+use App\Services\PushNotification;
 use App\Traits\Responses;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -621,6 +623,10 @@ class PostController extends Controller
             $application->rating_and_reviews;
         }
 
+        $toDate = Carbon::parse($post->final_end_date);
+        $fromDate = Carbon::parse($post->final_start_date);
+        $post["duration"] = $toDate->diffInMonths($fromDate);
+
         $posts = auth()->user()->posts;
 
         return view("postings.show", compact("post", "posts"));
@@ -990,6 +996,35 @@ class PostController extends Controller
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
                 }
                 break;
+            case "FIXED_TERM_JOB":
+                $participant = User::where("id", $request->user_id)->first();
+                if (!$participant) {
+                    Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id);
+                }
+
+                $application = JobApplication::where("user_id", $request->user_id)->where("post_id", $request->job_post_id)->first();
+                if (!$application) {
+                    Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id . " AND POST ID >>>>> " . $request->job_post_id);
+                }
+
+                $post->final_start_date = $request->start_date;
+                $post->final_end_date = $request->end_date;
+                $post->final_payment_amount = $request->monthly_payment;
+
+                try {
+                    /**
+                     * create notification
+                     */
+                    $post->user;
+                    $application->job_post;
+                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    PushNotification::Notify("JOB_CLOSED", $application, null);
+
+                    $participant->update();
+                } catch (QueryException $e) {
+                    Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
+                }
+                break;
         }
 
         /**
@@ -1166,5 +1201,54 @@ class PostController extends Controller
     {
         $categories = Skill::all();
         return $this->success_response($categories, "success");
+    }
+
+    /**
+     * get all user saved posts
+     */
+    public function savedOpportunities(Request $request)
+    {
+        switch ($request->action) {
+            case "get":
+                Log::debug(auth()->user()->savedPosts());
+                return $this->success_response(["code" => "0000"], "Removed successfully.");
+                break;
+            case "save":
+                if (!$request->uuid) {
+                    return $this->data_validation_error_response([]);
+                }
+
+                $isValidOpportunity = Post::where("id", $request->uuid)->get();
+                if (!$isValidOpportunity) {
+                    return $this->not_found_response([]);
+                }
+
+                $savedOpportunity = new UserSavedPost();
+                $savedOpportunity->user_id = auth()->id();
+                $savedOpportunity->post_id = $request->uuid;
+                $savedOpportunity->save();
+                Log::debug("Saving opportunity");
+                return $this->success_response(["code" => "0000"], "Saved successfully.");
+                break;
+            case "remove":
+                if (!$request->uuid) {
+                    return $this->data_validation_error_response([]);
+                }
+
+                $isValidOpportunity = Post::where("id", $request->uuid)->get();
+                if (!$isValidOpportunity) {
+                    return $this->not_found_response([]);
+                }
+
+                $isValidSavedOpportunity = UserSavedPost::where("post_id", $request->uuid)->get();
+                if (!$isValidSavedOpportunity) {
+                    return $this->not_found_response([], "Oops...something went wrong");
+                }
+
+                $isValidSavedOpportunity->delete();
+
+                return $this->success_response(["code" => "0000"], "Removed successfully.");
+                break;
+        }
     }
 }

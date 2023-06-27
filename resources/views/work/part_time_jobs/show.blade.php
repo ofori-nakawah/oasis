@@ -24,7 +24,7 @@
     </div><!-- .nk-block-head -->
 
     <div class="row">
-        <div class="col-md-4 .d-none .d-sm-none">
+        <div class="col-md-4 d-none d-md-block">
             <div id="fixedTermOpportunityShimmerLoader"></div>
             <div id="fixedTermOpportunitySnapshot"></div>
 
@@ -280,13 +280,9 @@ border: 1px solid #dbdfea;">
                 </div>
                 <div class="card-header text-dark bg-lighter"
                      style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
-                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
-                        <div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
-                            <div class="spinner-border" role="status"></div>
-                        </div></a>
 
 
-                    <a type="button" data-toggle="modal" data-target="#shareOpportunity" onclick="setupShareableLink('${post.type}', '${post.id}')" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                    <a type="button" data-toggle="modal" data-target="#shareOpportunity" style="float: left;" onclick="setupShareableLink('${post.type}', '${post.id}')" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
                             class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
 
 
@@ -361,13 +357,9 @@ border: 1px solid #dbdfea;">
                 </div>
                 <div class="card-header text-center text-dark bg-lighter"
                 style="border-radius: 4px; margin:5px;align-items: center;">
-                    <div class="row text-center">
-                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
-<div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
-                        <div class="spinner-border" role="status"></div>
-                </div></a>
-</div>
-                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a type="button" data-toggle="modal" onclick="setupShareableLink('${post.type}', '${post.id}')" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                    <div class="row">
+
+                        <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a type="button" style="float: left;" data-toggle="modal" onclick="setupShareableLink('${post.type}', '${post.id}')" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
                     class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a></div>
                         <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-primary btn-block" style="height: 40px;margin-top: 0px;">Details</a></div>
                     </div>

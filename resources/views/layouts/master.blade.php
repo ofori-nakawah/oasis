@@ -117,9 +117,10 @@
             text-decoration: underline;
         }
 
-        .btn, .card, .card-header, .badge {
-            border-radius: 16px !important;
-        }
+        /*.btn, .card, .card-header, .badge {*/
+        /*    border-radius: 16px !important;*/
+        /*}*/
+
 
         .cardContainer:hover {
             border-color: #353299 !important;

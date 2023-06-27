@@ -29,7 +29,6 @@
     <div class="row">
         <div class="col-md-5 d-none d-md-block">
             @foreach($notifications as $notification)
-                <a href="#" style="text-decoration: none !important;">
                     <div class="card card-bordered">
                         <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
                             <b>{{$notification->data["post"]["type"]}} <span
@@ -64,7 +63,6 @@
                                class="btn btn-outline-secondary">View Details</a>
                         </div>
                     </div>
-                </a>
             @endforeach
         </div>
         <div class="col-md-7">

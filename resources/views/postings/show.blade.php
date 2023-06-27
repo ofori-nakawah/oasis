@@ -36,9 +36,29 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="title"
-                                     style="font-size: 10px;color: #777;">{{($_post->type !== 'VOLUNTEER') ? 'Category' : 'Activity Name'}}</div>
+                                     style="font-size: 10px;color: #777;">@if($_post->type === "VOLUNTEER")
+                                        Activity Name
+                                    @endif
+
+                                    @if($_post->type === "QUICK_JOB")
+                                        Category
+                                    @endif
+
+                                    @if($_post->type === "FIXED_TERM_JOB")
+                                        Title
+                                    @endif</div>
                                 <div class="issuer">
-                                    <b>{{($_post->type !== 'VOLUNTEER') ? $_post->category : $_post->name}}</b></div>
+                                    <b>@if($_post->type === "VOLUNTEER")
+                                            {{$_post->name}}
+                                        @endif
+
+                                        @if($_post->type === "QUICK_JOB")
+                                            {{$_post->category}}
+                                        @endif
+
+                                        @if($_post->type === "FIXED_TERM_JOB")
+                                            {{$_post->title}}
+                                        @endif</b></div>
                             </div>
                         </div>
                     </div>
@@ -84,6 +104,262 @@
         </div>
         <div class="col-md-7">
             @include("utilities.alerts.alerts")
+
+            @if($post->type === "FIXED_TERM_JOB")
+                <div class="card card-bordered">
+                    <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->type}} <span
+                                style="float: right">{{$post->date}} {{$post->time}}</span></b></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="title"
+                                     style="font-size: 10px;color: #777;">Title</div>
+                                <div class="issuer">
+                                    <b>{{$post->title}}</b></div>
+                                <div>{{$post->number_of_participants_applied}} applicants shortlisted</div>
+                                @if($post->number_of_participants_confirmed > 0)
+                                    <div>{{$post->number_of_participants_confirmed}} selected</div> @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-top">
+                        <span style="font-size: 10px;"><b>Post is {{$post->status}}</b></span>
+                        <span
+                            style="font-size: 10px;float: right;"><b>Published {{$post->created_at->diffForHumans()}}</b></span>
+                    </div>
+                </div>
+
+                @if($post->status !== "closed")
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white border-bottom"><b>Shortlisted Applicants</b></div>
+                        <div class="card-body">
+                            @if(count($post->applications) <= 0)
+                                <div class="text-center">
+                                    <img src="{{asset('assets/html-template/src/images/n_a.svg')}}" alt=""
+                                         style="height: 120px; width: 120px;">
+                                    <p class="text-muted">There are no applicants yet</p>
+                                </div>
+                            @else
+                                @foreach($post->applications as $applicant)
+                                    <div class="row">
+                                        <div class="col-md-3 text-center">
+                                            @if($applicant->user->profile_picture)
+                                                <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
+                                            @else
+                                                <em class="icon ni ni-user" style="font-size: 80px;"></em>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div><b>{{$applicant->user->name}}</b></div>
+                                            <div class="text-muted"><em
+                                                    class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
+                                            </div>
+                                            <div><em
+                                                    class="icon ni ni-star-fill text-warning"></em> {{$applicant->user->rating}}
+                                            </div>
+                                            <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}"
+                                                    class="font-italic">See profile</a></div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            @if($post->is_job_applicant_confirmed != 1)
+                                                <a href="{{route('user.posts.confirm_decline_applicant', ['application_id' => $applicant->id, 'action' => 'confirm'])}}"
+                                                   onclick="return confirm('Are you sure?')"><em
+                                                        class="icon ni ni-plus-circle text-success"
+                                                        style="font-size: 30px;float: right;"></em></a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <br>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                @if($post->is_job_applicant_confirmed == 1)
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white border-bottom"><b>Selected Applicant</b></div>
+                        <div class="card-body">
+                            @foreach($post->applications as $applicant)
+                                @if($applicant->user->id == $post->confirmed_applicant_id)
+                                    <div class="row">
+                                        <div class="col-md-3 text-center">
+                                            @if($applicant->user->profile_picture)
+                                                <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
+                                            @else
+                                                <em class="icon ni ni-user" style="font-size: 40px;"></em>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div><b>{{$applicant->user->name}}</b></div>
+                                            @if($post->status !== "closed")
+                                                <div class="text-muted"><em
+                                                        class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
+                                                </div>
+
+                                            @endif
+                                            @if($post->status === "closed")
+                                                <div class="text-muted">Income: GHS {{$post->final_payment_amount}}/Month
+                                                </div>
+                                                <div class="text-muted"> Term: {{$post->duration}} months
+                                                </div>
+
+                                                <br>
+
+                                                <div class="card bg-lighter">
+                                                    <div class="card-body">
+                                                        <div class="title" style="font-size: 10px;color: #777;">Start Date </div>
+                                                        <div class="issuer"><b>{{($post->final_start_date) ? date ("l jS F Y", strtotime($post->final_start_date)) : 'N/A'}}</b></div>
+
+                                                        <br>
+
+                                                        <div class="title" style="font-size: 10px;color: #777;">End Date </div>
+                                                        <div class="issuer"><b>{{($post->final_end_date) ? date ("l jS F Y", strtotime($post->final_end_date)) : 'N/A'}}</b></div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a href="#" onclick="shareLink()" data-toggle="modal"
+                                               data-target="#viewPhoneNumberModal-{{$applicant->id}}"><em
+                                                    class="icon ni ni-mobile"
+                                                    style="font-size: 30px;float: right;"></em></a>
+                                        </div>
+                                    </div>
+                                    <div class="modal modal-lg fade" tabindex="-1" id="viewPhoneNumberModal-{{$applicant->id}}">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <em class="icon ni ni-cross"></em>
+                                                </a>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"><b>Call Applicant</b></h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <p style="float: left !important;">View phone number of applicant and make the call.</p>
+                                                            <input value="{{$applicant->user->phone_number}}" id="showPhoneNumber-{{$applicant->id}}" type="text" readonly class="form-control">
+                                                            <br>
+                                                            <button class="btn btn-outline-primary copyLinkButton" onclick="copyApplicantPhoneNumberToClipboard(`{{$applicant->id}}`)"><b>Copy</b></button>
+                                                            <span class="copyStatus"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                @endif
+
+                                <form action="{{route('user.posts.close')}}" method="POST">
+                                    {{csrf_field()}}
+                                    <input type="hidden" name="job_post_id" value="{{$post->id}}">
+                                    <input type="hidden" name="job_type" value="{{$post->type}}">
+                                    <input type="hidden" id="_start_date" name="start_date" value="{{$post->start_date}}">
+                                    <input type="hidden" id="_end_date" name="end_date" value="{{$post->end_date}}">
+                                    <input type="hidden" id="_monthly_payment" name="monthly_payment" value="{{$post->max_budget}}">
+                                    <input type="hidden" name="user_id" value="{{$post->confirmed_applicant_id}}">
+                                    <div class="modal fade" tabindex="-1" id="closeFixedTermJobModal">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                @php
+                                                    $selectedApplicant = $post->applications->where("status", "confirmed")->first()
+                                                @endphp
+                                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <em class="icon ni ni-cross"></em>
+                                                </a>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"><b>Close Job</b></h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @if(!$selectedApplicant)
+                                                        <div>
+                                                            <p>No applicant selected</p>
+                                                        </div>
+                                                    @else
+                                                        <div id="closeFixedTermJobContent">
+                                                            <div>
+                                                                <div class="title" style="font-size: 10px;color: #777;">Selected Applicant</div>
+                                                                <div class="issuer"><b>{{$selectedApplicant->user->name}}</b></div>
+                                                            </div>
+
+                                                            <div>
+                                                                <div class="row">
+                                                                    <div class="col-md-6 mt-3">
+                                                                        <div class="title" style="font-size: 10px;color: #777;">Start Date <a href="javascript:void(0)" onclick="changeStartDateClicked()"><em class="icon ni ni-pen-fill" style="font-size: 16px;"></em></a></div>
+                                                                        <div class="issuer"><b><span id="startDateValue">{{date ("l jS F Y", strtotime($post->start_date))}}</span></b></div>
+                                                                    </div>
+                                                                    <div class="col-md-6 mt-3">
+                                                                        <div class="title" style="font-size: 10px;color: #777;">End Date <a href="javascript:void(0)"><em class="icon ni ni-pen-fill" style="font-size: 16px;" onclick="changeEndDateClicked()"></em></a></div>
+                                                                        <div class="issuer"><b><span id="endDateValue">{{date ("l jS F Y", strtotime($post->end_date))}}</span></b>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mt-3">
+                                                                <div class="title" style="font-size: 10px;color: #777;">Estimated Monthly Payment <a href="javascript:void(0)" onclick="changeMonthlyPaymentClicked()"><em class="icon ni ni-pen-fill" style="font-size: 16px;"></em></a></div>
+                                                                <div class="issuer"><b>GHS <span id="monthlyPaymentValue">{{$post->max_budget}}</span></b></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="changeStartDate">
+                                                            <label for="startDate">Change Start Date</label>
+                                                            <input type="date" id="startDateInput" class="form-control">
+                                                            <div class="text-right">
+                                                                <button type="button" class="btn btn-primary mt-3 ml-2" style="float: right;" onclick="submitStartDateChangeClicked()">Save Changes</button>
+                                                                <button type="button" class="btn btn-lighter mt-3" onclick="cancelStartDateChangeClicked()" style="float: right;">Cancel</button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="changeEndDate">
+                                                            <label for="endDate">Change End Date</label>
+                                                            <input type="date" id="endDateInput" class="form-control">
+                                                            <div class="text-right">
+                                                                <button type="button" class="btn btn-primary mt-3 ml-2" style="float: right;" onclick="submitEndDateChangeClicked()">Save Changes</button>
+                                                                <button type="button" class="btn btn-lighter mt-3" onclick="cancelEndDateChangeClicked()" style="float: right;">Cancel</button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="changeMonthlyPayment">
+                                                            <label for="monthlyPayment">Change Estimated Monthly Payment</label>
+                                                            <input type="number" id="monthlyPaymentInput" class="form-control">
+                                                            <div class="text-right">
+                                                                <button type="button" class="btn btn-primary mt-3 ml-2" style="float: right;" onclick="submitMonthlyPaymentChangeClicked()">Save Changes</button>
+                                                                <button type="button" class="btn btn-lighter mt-3" onclick="cancelMonthlyPaymentChangeClicked()" style="float: right;">Cancel</button>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="modal-footer bg-white text-right" id="submitButton">
+                                                    <button style="float: right" type="button" class="btn btn-outline-primary" onclick="closeFixedTermJobClicked()"><b>Continue</b>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-footer bg-white " id="closeFixedTermJobConfirmation">
+                                                    <div>Are you sure you want to close job?</div>
+                                                    <div class="text-right" style="padding-bottom: 15px;">
+                                                        <button type="submit" class="btn btn-primary mt-3 ml-2" style="float: right;">Close Job</button>
+                                                        <button type="button" class="btn btn-lighter mt-3" onclick="cancelFixedTermJobClose()" style="float: right;">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <br>
+                @if($post->status != "closed")
+                    <div class="pull-right">
+                        <a href="#" class="btn btn-outline-danger btn-lg" data-toggle="modal"
+                           data-target="#closeFixedTermJobModal" style="float: right"><b>Close Job</b></a>
+                    </div>
+                @endif
+            @endif
 
             @if($post->type === "QUICK_JOB")
                 <div class="card card-bordered">
@@ -588,27 +864,157 @@
 
 @section("scripts")
     <script>
+        $("#changeStartDate").hide()
+        $("#changeEndDate").hide()
+        $("#changeMonthlyPayment").hide()
+        $("#closeFixedTermJobConfirmation").hide()
+
+        const formatDate = (date) => {
+            var date = new Date(date);
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+
+            var monthNames = [
+                "January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December"
+            ];
+
+            var options = { weekday: 'long' };
+            var dayOfWeek = date.toLocaleDateString('en-US', options);
+
+            var suffix = getNumberSuffix(day);
+
+            var formattedDate = dayOfWeek + " " + day + suffix + " " + monthNames[monthIndex] + " " + year;
+            return formattedDate;
+        }
+
+        function getNumberSuffix(day) {
+            if (day >= 11 && day <= 13) {
+                return "th";
+            }
+
+            switch (day % 10) {
+                case 1:
+                    return "st";
+                case 2:
+                    return "nd";
+                case 3:
+                    return "rd";
+                default:
+                    return "th";
+            }
+        }
+
+        const changeStartDateClicked = () => {
+            $("#closeFixedTermJobContent").hide()
+            $("#submitButton").hide()
+            $("#changeStartDate").show("slow")
+        }
+
+        const changeEndDateClicked = () => {
+            $("#closeFixedTermJobContent").hide()
+            $("#submitButton").hide()
+            $("#changeEndDate").show("slow")
+        }
+
+        const changeMonthlyPaymentClicked = () => {
+            $("#closeFixedTermJobContent").hide()
+            $("#submitButton").hide()
+            $("#changeMonthlyPayment").show("slow")
+        }
+
+        const cancelStartDateChangeClicked = () => {
+            $("#changeStartDate").hide()
+            $("#submitButton").show()
+            $("#closeFixedTermJobContent").show("slow")
+        }
+
+        const cancelEndDateChangeClicked = () => {
+            $("#changeEndDate").hide()
+            $("#submitButton").show()
+            $("#closeFixedTermJobContent").show("slow")
+        }
+
+        const cancelMonthlyPaymentChangeClicked = () => {
+            $("#changeMonthlyPayment").hide()
+            $("#submitButton").show()
+            $("#closeFixedTermJobContent").show("slow")
+        }
+
+        const closeFixedTermJobClicked = () => {
+            $("#submitButton").hide()
+            $("#closeFixedTermJobConfirmation").show("slow")
+        }
+
+        const cancelFixedTermJobClose = () => {
+            $("#submitButton").show()
+            $("#closeFixedTermJobConfirmation").hide()
+        }
+
+        const submitStartDateChangeClicked = () => {
+            const startDate = document.getElementById("startDateInput").value
+            if (startDate === "") {
+                cancelStartDateChangeClicked()
+                return
+            }
+
+            document.getElementById("startDateValue").innerHTML = formatDate(startDate);
+            document.getElementById("_start_date").value = startDate
+
+            cancelStartDateChangeClicked()
+        }
+
+        const submitEndDateChangeClicked = () => {
+            const endDate = document.getElementById("endDateInput").value
+            if (endDate === "") {
+                cancelEndDateChangeClicked()
+                return
+            }
+
+            document.getElementById("endDateValue").innerHTML = formatDate(endDate);
+            document.getElementById("_end_date").value = endDate
+
+            cancelEndDateChangeClicked()
+        }
+
+        const submitMonthlyPaymentChangeClicked = () => {
+            const monthlyPayment = document.getElementById("monthlyPaymentInput").value
+            if (monthlyPayment === "") {
+                cancelMonthlyPaymentChangeClicked()
+                return
+            }
+
+            document.getElementById("monthlyPaymentValue").innerHTML = monthlyPayment;
+            document.getElementById("_monthly_payment").value = monthlyPayment
+
+            cancelMonthlyPaymentChangeClicked()
+        }
+
+
+
+
         function shareLink() {
             $(".copyStatus").hide()
             $(".copyStatus").html("")
             $(`.copyLinkButton`).show();
         }
 
-        function copyLinkToClipboard(uuid) {
-            var copyText = document.getElementById(`shareLink-${uuid}`);
-
-            // Select the text field
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
-
-            // Copy the text inside the text field
-            navigator.clipboard.writeText(copyText.value);
-
-            $(`.copyLinkButton`).hide();
-            const successMessage = `<div class="text-success"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
-            $(".copyStatus").append(successMessage);
-            $(".copyStatus").show();
-        }
+        // function copyLinkToClipboard(uuid) {
+        //     var copyText = document.getElementById(`shareLink-${uuid}`);
+        //
+        //     // Select the text field
+        //     copyText.select();
+        //     copyText.setSelectionRange(0, 99999); // For mobile devices
+        //
+        //     // Copy the text inside the text field
+        //     navigator.clipboard.writeText(copyText.value);
+        //
+        //     $(`.copyLinkButton`).hide();
+        //     const successMessage = `<div class="text-success"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
+        //     $(".copyStatus").append(successMessage);
+        //     $(".copyStatus").show();
+        // }
 
         function copyApplicantPhoneNumberToClipboard(uuid) {
             var copyText = document.getElementById(`showPhoneNumber-${uuid}`);
@@ -625,5 +1031,6 @@
             $(".copyStatus").append(successMessage);
             $(".copyStatus").show();
         }
+
     </script>
 @endsection

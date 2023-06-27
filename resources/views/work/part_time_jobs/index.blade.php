@@ -38,59 +38,59 @@
                                    id="searchFixedTermJobOpportunities"
                                    placeholder="Search keywords" style="border-radius: 4px;height: 60px;">
                         </div>
-                        <button class="btn btn-outline-light d-md-none d-lg-none"
-                                style="height: 60px;border-radius: 4px;"><em class="icon ni ni-filter"></em></button>
                     </div>
                     <p class="mb-3"><em class="icon ni ni-bulb"></em> Hit enter to search</p>
-                    <hr>
+                    <div class="d-none d-sm-block .d-sm-none .d-md-block">
+                        <hr>
 
-                    <div class="mb-2">
-                        <label class="form-label">Open to</label>
-                        <div style="display: flex;flex-direction: row">
-                            <div class="user-toggle" style="flex: 1">
-                                <div class="user-avatar bg-secondary-dim sm">
-                                    <em class="icon ni ni-book-read"></em>
+                        <div class="mb-2">
+                            <label class="form-label">Open to</label>
+                            <div style="display: flex;flex-direction: row">
+                                <div class="user-toggle" style="flex: 1">
+                                    <div class="user-avatar bg-secondary-dim sm">
+                                        <em class="icon ni ni-book-read"></em>
+                                    </div>
+                                    <div class="user-info" style="">
+                                        <div class="nk-menu-text text"><b>Internships</b></div>
+                                    </div>
                                 </div>
-                                <div class="user-info" style="">
-                                    <div class="nk-menu-text text"><b>Internships</b></div>
+                                <div class="custom-control custom-checkbox mt-1">
+                                    <input type="checkbox" class="custom-control-input" id="isInternship"
+                                           onclick="getFixedTermInternshipOpportunities()">
+                                    <label class="custom-control-label" for="isInternship"></label>
                                 </div>
-                            </div>
-                            <div class="custom-control custom-checkbox mt-1">
-                                <input type="checkbox" class="custom-control-input" id="isInternship"
-                                       onclick="getFixedTermInternshipOpportunities()">
-                                <label class="custom-control-label" for="isInternship"></label>
                             </div>
                         </div>
-                    </div>
 
-                    <hr>
-                    <div class="mb-2">
-                        <label class="form-label">Search radius</label>
-                        <div id="radBox" class="card card-bordered pt-2 pl-3 pr-2" data-toggle="modal"
-                             data-target="#searchRadiusModal"
-                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">
-                            <div class="text-muted" style="flex: 1" id="searchRadiusTrigger">Eg. 11km from me</div>
-                            <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label">Categories</label>
-                        <div class="card card-bordered pt-2 pl-3 pr-2" id="catBox"
-                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row"
-                             data-toggle="modal" data-target="#skillsModal">
-                            <div class="text-muted" style="flex: 1" id="selectedSkillsBox">Eg. Barber, Fashion
-                                Designer
+                        <hr>
+{{--                        <div class="mb-2">--}}
+{{--                            <label class="form-label">Search radius</label>--}}
+{{--                            <div id="radBox" class="card card-bordered pt-2 pl-3 pr-2" data-toggle="modal"--}}
+{{--                                 data-target="#searchRadiusModal"--}}
+{{--                                 style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">--}}
+{{--                                <div class="text-muted" style="flex: 1" id="searchRadiusTrigger">Eg. 11km from me</div>--}}
+{{--                                <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+                        <div class="mb-2">
+                            <label class="form-label">Categories</label>
+                            <div class="card card-bordered pt-2 pl-3 pr-2" id="catBox"
+                                 style="height: 46px;border-radius: 4px;display: flex;flex-direction: row"
+                                 data-toggle="modal" data-target="#skillsModal">
+                                <div class="text-muted" style="flex: 1" id="selectedSkillsBox">Eg. Barber, Fashion
+                                    Designer
+                                </div>
+                                <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                             </div>
-                            <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                         </div>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label">Budget range</label>
-                        <div class="card card-bordered pt-2 pl-3 pr-2" id="bugBox"
-                             style="height: 46px;border-radius: 4px;display: flex;flex-direction: row" data-toggle="modal" data-target="#budgetModal">
-                            <div class="text-muted" style="flex: 1" id="budgetRange">Eg. Between GHS240 and GHS490</div>
-                            <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
-                        </div>
+{{--                        <div class="mb-2">--}}
+{{--                            <label class="form-label">Budget range</label>--}}
+{{--                            <div class="card card-bordered pt-2 pl-3 pr-2" id="bugBox"--}}
+{{--                                 style="height: 46px;border-radius: 4px;display: flex;flex-direction: row" data-toggle="modal" data-target="#budgetModal">--}}
+{{--                                <div class="text-muted" style="flex: 1" id="budgetRange">Eg. Between GHS240 and GHS490</div>--}}
+{{--                                <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </div>
 
                 </div>
@@ -102,7 +102,7 @@
                 <div style="flex:1" id="fixedTermOpportunitiesCount"></div>
                 <div style="display:flex; gap: 20px;border-bottom: 1px solid #dbdfea;">
                     <span class="text-primary" style="border-bottom: 3px solid #353299;"><b>All</b></span>
-                    <a href="#" class="text-dark">Saved</a>
+{{--                    <a href="#" class="text-dark">Saved</a>--}}
                 </div>
             </div>
 
@@ -334,19 +334,10 @@ border: 1px solid #dbdfea;">
                 <div class="card-header text-dark bg-lighter"
                 style="border-radius: 4px; margin:5px;">
                 <div class="row text-center">
-                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
-<div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
-                        <div class="spinner-border" role="status"></div>
-                </div></a>
-</div>
-                        <div class="col-md-3 col-xs-3 col-sm-3 text-center"><a type="button"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                        <div class="col-md-6 col-xs-6 col-sm-6"><a type="button" style="float: left;"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
                     class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a></div>
                         <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-primary btn-block" style="height: 40px;margin-top: 0px;">Details</a></div>
                     </div>
-
-
-
-
                 </div>
 
                 </div>
@@ -508,6 +499,7 @@ border: 1px solid #dbdfea;">
                 }
             })
         }
+
     </script>
     <script src="{{asset('public/js/work/fixed-term-jobs/index.js')}}"></script>
 @endsection

@@ -71,6 +71,11 @@ class User extends Authenticatable
         return $this->hasMany("App\Models\LanguageUser", "user_id");
     }
 
+    public function savedPosts()
+    {
+        return $this->hasMany("App\Models\UserSavedPosts", "user_id");
+    }
+
     public static function IsActive(User $user) {
         if ($user->status === self::ACTIVE_STATUS) {
             return true;
