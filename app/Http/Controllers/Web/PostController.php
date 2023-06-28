@@ -628,8 +628,49 @@ class PostController extends Controller
         $post["duration"] = $toDate->diffInMonths($fromDate);
 
         $posts = auth()->user()->posts;
+        $shortListedApplicants = self::GetShortlistCandidates($post->applications, $post->tags);
+        $shortListedApplicants = $shortListedApplicants->sortByDesc('points');
 
-        return view("postings.show", compact("post", "posts"));
+        return view("postings.show", compact("post", "posts", "shortListedApplicants"));
+    }
+
+    private static function GetShortlistCandidates($applications, $categories)
+    {
+        $categories = json_decode($categories);
+        $_applicants = collect();
+        foreach ($applications as $application) {
+            $applicant = $application->user;
+
+            /**
+             * let's get the number of hits for categories
+             */
+            $skills = "";
+            foreach ($applicant->skills as $skill) {
+                $skills .= " " . $skill->skill->name;
+            }
+            $string2 = "";
+            for ($i = 0; $i < count((array) $categories); $i++) {
+                $string2 .= " " . $categories[$i];
+            }
+
+            $skillWords = str_word_count($skills, 1);
+            $words2 = str_word_count($string2, 1);
+
+            $similarWords = [];
+            foreach ($skillWords as $skillWord) {
+                foreach ($words2 as $word2) {
+                    if (levenshtein($skillWord, $word2) <= 2) {
+                        $similarWords[] = $skillWord;
+                        break;
+                    }
+                }
+            }
+
+            $applicant["points"] = count($similarWords) + $applicant->rating;
+            $applicant->user;
+            $_applicants->push($applicant);
+        }
+        return $_applicants;
     }
 
     /**
