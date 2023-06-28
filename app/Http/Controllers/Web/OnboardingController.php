@@ -101,7 +101,7 @@ class OnboardingController extends Controller
 
     public function resend_otp(User $user)
     {
-        if (!OTP::Generate($user)) {
+        if (!OTP::Get($user)) {
             return back()->with("danger", "Oops. We couldn't send confirmation code. Try again");
         }
 
