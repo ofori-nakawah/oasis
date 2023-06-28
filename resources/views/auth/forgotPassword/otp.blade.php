@@ -33,8 +33,9 @@
                 <div class="form-group">
                     <div class="form-label-group{{ $errors->has('code') ? ' text-danger' : '' }}">
                         <label class="form-label" for="default-01"><b>Code</b></label>
-                        <a class="link link-primary link-sm" tabindex="-1" href="{{route('auth.password_reset.resendCode', ['user' => $user])}}"><span class="text-success">Resend Code</span></a>
 
+                        <a id="resendCodeLink" class="link link-primary link-sm" tabindex="-1" href="{{route('auth.password_reset.resendCode', ['user' => $user])}}" ><b class="text-success">Resend Code</b></a>
+                        <span class="link bold" id="resendCodeText" style="font-family: 'lato-bold'"> Resend code in <span id="seconds-left" style="margin-left: 5px;" class="text-color-primary bold"></span></span>
                     </div>
                     <div class="form-control-wrap">
                         <input type="hidden" name="phone_number" value="{{$user->phone_number}}">
@@ -63,4 +64,64 @@
             <p class="">&copy; {{date('Y')}} VORK Technologies. All Rights Reserved.</p>
         </div>
     </div>
+@endsection
+
+
+@section("scripts")
+    <script>
+        /**
+         *
+         * show text
+         */
+        $("#resendCodeLink").hide()
+        localStorage.setItem('linkEnabled', 'false');
+        const link = document.getElementById('resendCodeLink');
+        const enableAfterSeconds = 60; // Change this value to set the number of seconds after which the link should be enabled.
+        let secondsLeft = enableAfterSeconds;
+
+        function resetSecondsLeft() {
+            secondsLeft = enableAfterSeconds;
+            updateSecondsLeft();
+        }
+
+        function enableLink() {
+            link.removeAttribute('disabled');
+            $("#resendCodeLink").show()
+            $("#resendCodeText").hide()
+            localStorage.setItem('linkEnabled', 'true');
+        }
+
+        function updateSecondsLeft() {
+            const secondsLeftDiv = document.getElementById('seconds-left');
+            secondsLeftDiv.textContent = secondsLeft;
+        }
+
+        function countdown() {
+            updateSecondsLeft();
+
+            if (secondsLeft > 0) {
+                secondsLeft--;
+                setTimeout(countdown, 1000);
+            } else {
+                enableLink();
+            }
+        }
+
+        if (localStorage.getItem('linkEnabled') === 'true') {
+            enableLink();
+        } else {
+            countdown();
+        }
+
+        link.addEventListener('click', () => {
+            localStorage.setItem('linkEnabled', 'false');
+            resetSecondsLeft()
+        });
+
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('linkEnabled', link.disabled ? 'false' : 'true');
+        });
+
+
+    </script>
 @endsection
