@@ -111,7 +111,7 @@
         .pac-container {
             z-index: 1061;
         }
-       
+
 
         .undelineLinks a:hover{
             text-decoration: underline;
@@ -146,19 +146,19 @@
             <div class="nk-sidebar-element">
                 <div class="nk-sidebar-content">
                     <div class="nk-sidebar-menu" data-simplebar >
-                        <div style="padding-left: 20px;margin-top: 20px;">
-                        <div class="user-toggle" >
-                            <div class="user-avatar sm" style="width: 80px;height: 80px;">
-                                <em class="icon ni ni-user-alt"></em>
-                            </div>
-                            <div class="user-info d-none d-md-block">
-                                <div class="nk-menu-text1"><b>{{auth()->user()->name}}</b></div>
-                                <div ><a href="#" class="text-muted"><small>View profile</small></a></div>
-                            </div>
-                        </div>
-                        </div>
+{{--                        <div style="padding-left: 20px;margin-top: 20px;">--}}
+{{--                        <div class="user-toggle" >--}}
+{{--                            <div class="user-avatar sm" style="width: 80px;height: 80px;">--}}
+{{--                                <em class="icon ni ni-user-alt"></em>--}}
+{{--                            </div>--}}
+{{--                            <div class="user-info d-none d-md-block">--}}
+{{--                                <div class="nk-menu-text1"><b>{{auth()->user()->name}}</b></div>--}}
+{{--                                <div ><a href="#" class="text-muted"><small>View profile</small></a></div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        </div>--}}
 
-                        <ul class="nk-menu mt-5" >
+                        <ul class="nk-menu mt-3" >
                             <li class="nk-menu-item">
                                 <a href="{{route("home")}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-growth"></em></span>
