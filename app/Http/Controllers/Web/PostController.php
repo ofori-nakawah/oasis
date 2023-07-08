@@ -9,6 +9,8 @@ use App\Models\Post;
 use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\User;
+use App\Models\UserSavedPost;
+use App\Services\PushNotification;
 use App\Traits\Responses;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -172,7 +174,8 @@ class PostController extends Controller
 
     public function list_part_time_jobs()
     {
-        return view("work.part_time_jobs.index");
+        $skills = Skill::all();
+        return view("work.part_time_jobs.index", compact("skills"));
     }
 
     public function getFixedTermOpportunities()
@@ -475,6 +478,58 @@ class PostController extends Controller
         ], "Post details fetched successfully");
     }
 
+    public function getFixedTermOpportunitiesBySearchRadius($radius)
+    {
+        if (!$radius) {
+            return $this->not_found_response([], "Invalid request.");
+        }
+
+        $posts = [];
+
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return $this->not_found_response([], "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = explode(',', $user_location)[0];
+        $user_location_lng = explode(',', $user_location)[1];
+
+        /**
+         * filter using distance
+         */
+        $volunteer_near_me = collect();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+        $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $radius) {
+            //get post coordinates
+            $post_location_lat = explode(',', $post->coords)[0];
+            $post_location_lng = explode(',', $post->coords)[1];
+
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+            $post["organiser_name"] = $post->user->name;
+            $post["distance"] = number_format($distance, 2);
+            $toDate = Carbon::parse($post->end_date);
+            $fromDate = Carbon::parse($post->start_date);
+            $post["duration"] = $toDate->diffInMonths($fromDate);
+            Log::debug($distance ." >>>>>>>>>>>>>>> " . $radius);
+            if ($distance <= $radius) {
+                $volunteer_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }
+
+            return $post;
+        });
+        $posts = $volunteer_near_me->sortBy("distance");
+
+        return $this->success_response([
+            "opportunities" => $posts
+        ], "Post details fetched successfully");
+    }
+
 
     /**
      * @param $uuid
@@ -568,9 +623,54 @@ class PostController extends Controller
             $application->rating_and_reviews;
         }
 
-        $posts = auth()->user()->posts;
+        $toDate = Carbon::parse($post->final_end_date);
+        $fromDate = Carbon::parse($post->final_start_date);
+        $post["duration"] = $toDate->diffInMonths($fromDate);
 
-        return view("postings.show", compact("post", "posts"));
+        $posts = auth()->user()->posts;
+        $shortListedApplicants = self::GetShortlistCandidates($post->applications, $post->tags);
+        $shortListedApplicants = $shortListedApplicants->sortByDesc('points');
+
+        return view("postings.show", compact("post", "posts", "shortListedApplicants"));
+    }
+
+    private static function GetShortlistCandidates($applications, $categories)
+    {
+        $categories = json_decode($categories);
+        $_applicants = collect();
+        foreach ($applications as $application) {
+            $applicant = $application->user;
+
+            /**
+             * let's get the number of hits for categories
+             */
+            $skills = "";
+            foreach ($applicant->skills as $skill) {
+                $skills .= " " . $skill->skill->name;
+            }
+            $string2 = "";
+            for ($i = 0; $i < count((array) $categories); $i++) {
+                $string2 .= " " . $categories[$i];
+            }
+
+            $skillWords = str_word_count($skills, 1);
+            $words2 = str_word_count($string2, 1);
+
+            $similarWords = [];
+            foreach ($skillWords as $skillWord) {
+                foreach ($words2 as $word2) {
+                    if (levenshtein($skillWord, $word2) <= 2) {
+                        $similarWords[] = $skillWord;
+                        break;
+                    }
+                }
+            }
+
+            $applicant["points"] = count($similarWords) + $applicant->rating;
+            $applicant->user;
+            $_applicants->push($applicant);
+        }
+        return $_applicants;
     }
 
     /**
@@ -937,6 +1037,35 @@ class PostController extends Controller
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
                 }
                 break;
+            case "FIXED_TERM_JOB":
+                $participant = User::where("id", $request->user_id)->first();
+                if (!$participant) {
+                    Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id);
+                }
+
+                $application = JobApplication::where("user_id", $request->user_id)->where("post_id", $request->job_post_id)->first();
+                if (!$application) {
+                    Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id . " AND POST ID >>>>> " . $request->job_post_id);
+                }
+
+                $post->final_start_date = $request->start_date;
+                $post->final_end_date = $request->end_date;
+                $post->final_payment_amount = $request->monthly_payment;
+
+                try {
+                    /**
+                     * create notification
+                     */
+                    $post->user;
+                    $application->job_post;
+                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    PushNotification::Notify("JOB_CLOSED", $application, null);
+
+                    $participant->update();
+                } catch (QueryException $e) {
+                    Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
+                }
+                break;
         }
 
         /**
@@ -1106,6 +1235,61 @@ class PostController extends Controller
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return back()->with("danger", "Oops. We encountered an issue while removing your post. Kindly try again.");
+        }
+    }
+
+    public function getCategories()
+    {
+        $categories = Skill::all();
+        return $this->success_response($categories, "success");
+    }
+
+    /**
+     * get all user saved posts
+     */
+    public function savedOpportunities(Request $request)
+    {
+        switch ($request->action) {
+            case "get":
+                Log::debug(auth()->user()->savedPosts());
+                return $this->success_response(["code" => "0000"], "Removed successfully.");
+                break;
+            case "save":
+                if (!$request->uuid) {
+                    return $this->data_validation_error_response([]);
+                }
+
+                $isValidOpportunity = Post::where("id", $request->uuid)->get();
+                if (!$isValidOpportunity) {
+                    return $this->not_found_response([]);
+                }
+
+                $savedOpportunity = new UserSavedPost();
+                $savedOpportunity->user_id = auth()->id();
+                $savedOpportunity->post_id = $request->uuid;
+                $savedOpportunity->save();
+                Log::debug("Saving opportunity");
+                return $this->success_response(["code" => "0000"], "Saved successfully.");
+                break;
+            case "remove":
+                if (!$request->uuid) {
+                    return $this->data_validation_error_response([]);
+                }
+
+                $isValidOpportunity = Post::where("id", $request->uuid)->get();
+                if (!$isValidOpportunity) {
+                    return $this->not_found_response([]);
+                }
+
+                $isValidSavedOpportunity = UserSavedPost::where("post_id", $request->uuid)->get();
+                if (!$isValidSavedOpportunity) {
+                    return $this->not_found_response([], "Oops...something went wrong");
+                }
+
+                $isValidSavedOpportunity->delete();
+
+                return $this->success_response(["code" => "0000"], "Removed successfully.");
+                break;
         }
     }
 }

@@ -117,10 +117,17 @@
             text-decoration: underline;
         }
 
+        /*.btn, .card, .card-header, .badge {*/
+        /*    border-radius: 16px !important;*/
+        /*}*/
 
 
         .cardContainer:hover {
             border-color: #353299 !important;
+        }
+
+        .borderActive {
+            border: 2px solid #353299 !important;
         }
     </style>
 </head>
@@ -146,17 +153,6 @@
             <div class="nk-sidebar-element">
                 <div class="nk-sidebar-content">
                     <div class="nk-sidebar-menu" data-simplebar >
-{{--                        <div style="padding-left: 20px;margin-top: 20px;">--}}
-{{--                        <div class="user-toggle" >--}}
-{{--                            <div class="user-avatar sm" style="width: 80px;height: 80px;">--}}
-{{--                                <em class="icon ni ni-user-alt"></em>--}}
-{{--                            </div>--}}
-{{--                            <div class="user-info d-none d-md-block">--}}
-{{--                                <div class="nk-menu-text1"><b>{{auth()->user()->name}}</b></div>--}}
-{{--                                <div ><a href="#" class="text-muted"><small>View profile</small></a></div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        </div>--}}
 
                         <ul class="nk-menu mt-3" >
                             <li class="nk-menu-item">
@@ -358,6 +354,49 @@
     NioApp.Toast('{{ Session::get('warning') }}', 'warning', {position: 'top-right'});
     @endif
 
+    /**
+     * build shareable link
+     * thin about moving this to the backend as a db field
+     * when we have a url shortner
+     * @param type
+     * @param uuid
+     */
+    const setupShareableLink = (type, uuid) => {
+        $(".copyStatus").hide()
+        $(".copyStatus").html("")
+        $(`.copyLinkButton`).show();
+
+        let shareableLink = `{{env("BACKEND_URL")}}/`
+        switch (type) {
+            case "VOLUNTEER":
+                shareableLink += `volunteerism/`
+                break;
+            case "QUICK_JOB":
+                shareableLink += `gigs/`
+                break;
+            case "FIXED_TERM_JOB":
+                shareableLink += `part-time-jobs/`
+                break;
+        }
+        shareableLink += `${uuid}`
+        $("#shareableLink").html(`<input value="${shareableLink}" id="shareLink" type="text" readonly="" class="form-control">`)
+    }
+
+    const copyLinkToClipboard = () => {
+        var copyText = document.getElementById(`shareLink`);
+
+        // // Select the text field
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+
+        // Copy the text inside the text field
+        navigator.clipboard.writeText(copyText.value);
+
+        $(`.copyLinkButton`).hide();
+        const successMessage = `<div class="text-color-green text-align-center"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
+        $(".copyStatus").append(successMessage);
+        $(".copyStatus").show();
+    }
 
     // NioApp.Toast('This is a note for bottom right toast message.', 'info', {position: 'bottom-full'});
 </script>

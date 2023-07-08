@@ -44,9 +44,33 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="title"
-                                         style="font-size: 10px;color: #777;">{{($post->type !== 'VOLUNTEER') ? 'Category' : 'Activity Name'}}</div>
+                                         style="font-size: 10px;color: #777;">
+                                        @if($post->type === "VOLUNTEER")
+                                            Activity Name
+                                        @endif
+
+                                        @if($post->type === "QUICK_JOB")
+                                            Category
+                                        @endif
+
+                                        @if($post->type === "FIXED_TERM_JOB")
+                                            Title
+                                        @endif
+                                    </div>
                                     <div class="issuer">
-                                        <b>{{($post->type !== 'VOLUNTEER') ? $post->category : $post->name}}</b></div>
+                                        <b>
+                                            @if($post->type === "VOLUNTEER")
+                                                {{$post->name}}
+                                            @endif
+
+                                            @if($post->type === "QUICK_JOB")
+                                                {{$post->category}}
+                                            @endif
+
+                                            @if($post->type === "FIXED_TERM_JOB")
+                                                {{$post->title}}
+                                            @endif
+                                        </b></div>
                                 </div>
                             </div>
                         </div>
