@@ -337,6 +337,84 @@ class PostController extends Controller
 
                 $posts = $jobs_near_me->sortBy("distance");
                 break;
+            case "FIXED_TERM_JOB":
+                $searchCategories = $request->categories;
+                $_user_interests = auth()->user()->skills;
+                $user_interests = array();
+                foreach ($_user_interests as $interest) {
+                    array_push($user_interests, $interest->skill->id);
+                }
+
+                $jobs_near_me = collect();
+                foreach ($posts as $post) {
+                    $post_location_lat = explode(',', $post->coords)[0];
+                    $post_location_lng = explode(',', $post->coords)[1];
+                    $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+                    $post["distance"] = number_format($distance, 2);
+                    $post["organiser_name"] = $post->user->name;
+                    $post["postedOn"] = $post->created_at->diffForHumans();
+                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
+
+                    $post->user;
+                    /**
+                     * filter using distance
+                     */
+                    if ($request->searchRadius && $request->searchRadius != "") {
+                        if ($distance <= $request->searchRadius) {
+                            $jobs_near_me->push($post);
+                        }
+                    } else {
+                        if ($distance <= self::JOB_SEARCH_RADIUS) {
+                            $jobs_near_me->push($post);
+                        }
+                    }
+
+                    /**
+                     * filter using search categories
+                     */
+                    if ($searchCategories && count($searchCategories) > 0) {
+                        $_searchCategories = array();
+                        foreach ($searchCategories as $interest) {
+                            array_push($_searchCategories, $interest);
+                        }
+
+                        $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
+                        if (!empty($matchingItems)) {
+                            $jobs_near_me->push($post);
+                        }
+                    } else {
+                        /**
+                         * default search categories
+                         */
+                        $matchingItems = array_intersect($user_interests, json_decode($post->tags));
+                        if (!empty($matchingItems)) {
+                            $jobs_near_me->push($post);
+                        }
+                    }
+                }
+
+                /**
+                 * filter by minBudget
+                 */
+                $minBudget = $request->minBudget;
+                if ($minBudget && $minBudget != "") {
+                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($minBudget) {
+                        return $value['min_budget'] >= $minBudget;
+                    });
+                }
+
+                /**
+                 * filter by maxBudget
+                 */
+                $maxBudget = $request->maxBudget;
+                if ($maxBudget && $maxBudget != "") {
+                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($maxBudget) {
+                        return $value['max_budget'] <= $maxBudget;
+                    });
+                }
+
+                $posts = $jobs_near_me->sortBy("distance");
+                break;
         }
 
         return $this->success_response($posts, "Posts fetched successfully.");
