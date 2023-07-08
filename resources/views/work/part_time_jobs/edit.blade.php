@@ -13,7 +13,7 @@
                     <p class="hide-mb-sm hide-mb-xs md">
                     <nav>
                         <ul class="breadcrumb breadcrumb-arrow">
-                            <li class="breadcrumb-item"><a href="#">Update Quick Job</a></li>
+                            <li class="breadcrumb-item"><a href="#">Update Fixed Term Job</a></li>
                         </ul>
                     </nav>
                     </p>
@@ -37,22 +37,55 @@
                     </div>
                     <div class="card-body1">
                         <div class="input-group1 mb-3">
-                            <label for="name"><b>Select Category</b></label>
-                            <select type="text"
-                                    class="form-control form-control-l @error('category') is-invalid @enderror"
-                                    name="category">
-                                <option value="{{$post->category}}">{{$post->category}}</option>
-                                @foreach($categories as $category)
-                                    <option value="{{$category->name}}">{{$category->name}}</option>
-                                @endforeach
-                            </select>
+                            <label for="title"><b>Title</b></label>
+                            <input type="text" class="form-control form-control-l @error('title') is-invalid @enderror" placeholder="Enter role title" name="title" value="{{ $post->title }}">
 
-                            @error('category')
+                            @error('title')
                             <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
                             @enderror
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="custom-control custom-control-lg custom-checkbox"
+                                     style="margin-bottom: 15px;">
+                                    <input type="checkbox" class="custom-control-input" @if($post->is_internship === "yes") checked @endif name="is_internship"
+                                           id="is_internship">
+                                    <label class="custom-control-label" for="is_internship">Internship</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group1 mb-3">
+                            <label for="tags"><b>Select Applicable Categories (Tags)</b></label>
+                            <select type="text" data-search="" multiple data-placeholder="Select applicable skills that match job role"
+                                    class="form-control form-select form-control-l @error('tags') is-invalid @enderror"
+                                    name="tags[]" required>
+                                <option value="">Choose an option</option>
+                                @foreach($categories as $category)
+                                    <option value="{{$category->name}}" {{(in_array($category->name, json_decode($post->tags))) ? 'selected' : ''}}>{{$category->name}}</option>
+                                @endforeach
+                            </select>
+
+                            @error('tags')
+                            <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="input-group1 mb-3">
+                            <label for="employer"><b>Who is hiring?</b></label>
+                            <input type="text" class="form-control form-control-l @error('employer') is-invalid @enderror" placeholder="Name of company or employer" name="employer" value="{{ $post->employer }}">
+
+                            @error('employer')
+                            <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                            @enderror
+                        </div>
+
 
                         <div class="input-group1 mb-3">
                             <label for="description"><b>Brief Job Description</b></label>
@@ -67,50 +100,17 @@
                             @enderror
                         </div>
 
-                        <div class="card card-bordered"
-                             style="height: 180px;margin-bottom: 15px;border-style: dotted;cursor: pointer;">
-                            <div id="imageInputTrigger" class="text-center" style="padding: 15px;"
-                                 onclick="document.getElementById('image_attachment').click();">
-                                <img src="{{asset('assets/html-template/src/images/photo.svg')}}" style="height: 120px;"
-                                     alt="">
-                                <p class="text-muted">Add image attachment</p>
-                            </div>
-                            <img id="imageAttachment" style="height: 180px;"></img>
-                            <input type="file" accept="image/png, image/gif, image/jpeg, image/jpg" hidden
-                                   name="image_attachment" id="image_attachment"
-                                   onchange="displayImageAttachment(event)">
-                        </div>
+                        <div class="input-group1 mb-3">
+                            <label for="qualifications"><b>Qualifications</b></label>
+                            <textarea class="form-control form-control-l @error('qualifications') is-invalid @enderror"
+                                      placeholder="Enter required qualifications"
+                                      name="qualifications">{{ $post->qualifications }}</textarea>
 
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group1 mb-3">
-                                    <label for="date"><b>Date</b></label>
-                                    <input type="date"
-                                           class="form-control date form-control-l @error('date') is-invalid @enderror"
-                                           placeholder="Select date of activity" name="date" value="{{$post->date}}">
-
-                                    @error('date')
-                                    <span class="invalid-feedback" role="alert">
+                            @error('qualifications')
+                            <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group1 mb-3">
-                                    <label for="time"><b>Time</b></label>
-                                    <input type="time"
-                                           class="form-control form-control-l @error('time') is-invalid @enderror"
-                                           placeholder="Select time of activity" name="time" value="{{$post->time}}">
-
-                                    @error('time')
-                                    <span class="invalid-feedback" role="alert">
-                                                    <strong class="text-danger">{{ $message }}</strong>
-                                                </span>
-                                    @enderror
-                                </div>
-                            </div>
+                            @enderror
                         </div>
 
                         <div class="input-group1 mb-3">
@@ -184,6 +184,38 @@
                             </div>
                         </div>
 
+                        <p><b>Application Deadline</b></p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group1 mb-3">
+                                    <label for="date">Date</label>
+                                    <input type="date"
+                                           class="form-control date form-control-l @error('date') is-invalid @enderror"
+                                           placeholder="Select date of activity" name="date" value="{{ $post->date }}">
+
+                                    @error('date')
+                                    <span class="invalid-feedback" role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group1 mb-3">
+                                    <label for="time">Time</label>
+                                    <input type="time"
+                                           class="form-control form-control-l @error('time') is-invalid @enderror"
+                                           placeholder="Select time of activity" name="time" value="{{ $post->time }}">
+
+                                    @error('time')
+                                    <span class="invalid-feedback" role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <p><b>Employer Budget Range</b></p>
                         <div class="row">
                             <div class="col-md-6">
@@ -227,29 +259,48 @@
                             </div>
                         </div>
 
+                        <p><b>Expected Contract Dates</b></p>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="custom-control custom-control-lg custom-checkbox"
-                                     style="margin-bottom: 15px;">
-                                    <input type="checkbox" @if($post->is_includes_tax == "on") checked @endif class="custom-control-input" name="includes_tax"
-                                           id="includes_tax">
-                                    <label class="custom-control-label" for="includes_tax">Includes WHT @ 5%</label>
+                            <div class="col-md-6">
+                                <div class="input-group1 mb-3">
+                                    <label for="start_date">Start Date</label>
+                                    <input type="date"
+                                           class="form-control form-control-l @error('start_date') is-invalid @enderror"
+                                           placeholder="Start Date" name="start_date" value="{{ $post->start_date }}">
+
+                                    @error('start_date')
+                                    <span class="invalid-feedback" role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group1 mb-3">
+                                    <label for="end_date">End Date</label>
+                                    <input type="date"
+                                           class="form-control form-control-l @error('end_date') is-invalid @enderror"
+                                           placeholder="End Date" name="end_date" value="{{ $post->end_date }}">
+
+                                    @error('end_date')
+                                    <span class="invalid-feedback" role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
-                        <div class="input-group1 mb-3">
-                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>
-                            <textarea type="tel"
-                                      class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror"
-                                      placeholder="Specify any other relevant information"
-                                      name="other_relevant_information">{{$post->other_relevant_information}}</textarea>
 
-                            @error('other_relevant_information')
-                            <span class="invalid-feedback" role="alert">
-                                                    <strong class="text-danger">{{ $message }}</strong>
-                                                </span>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="custom-control custom-control-lg custom-checkbox"
+                                     style="margin-bottom: 15px;">
+                                    <input type="checkbox" @if($post->is_renewable == "yes") checked @endif class="custom-control-input" name="renewable"
+                                           id="renewable">
+                                    <label class="custom-control-label" for="renewable">Renewable</label>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
