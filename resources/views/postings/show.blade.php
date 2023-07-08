@@ -144,42 +144,81 @@
                                     <img src="{{asset('assets/html-template/src/images/n_a.svg')}}" alt=""
                                          style="height: 120px; width: 120px;">
                                     <p class="text-muted">You have {{count($post->applications)}} applicant(s) for this job</p>
-                                    <div><button class="btn btn-outline-primary">Generate Shortlisted Applicants</button></div>
+                                    <div><button class="btn btn-outline-primary" onclick="showShortlistedApplicants()">Generate Shortlisted Applicants</button></div>
                                     <br>
-                                    <div><a href="#">View all applicants</a></div>
+                                    <div><a href="javascript:void(0)" onclick="showAllApplicants()">View all applicants</a></div>
                                 </div>
 
-{{--                                @foreach($post->applications as $applicant)--}}
-{{--                                    <div class="row">--}}
-{{--                                        <div class="col-md-3 text-center">--}}
-{{--                                            @if($applicant->user->profile_picture)--}}
-{{--                                                <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">--}}
-{{--                                            @else--}}
-{{--                                                <em class="icon ni ni-user" style="font-size: 80px;"></em>--}}
-{{--                                            @endif--}}
-{{--                                        </div>--}}
-{{--                                        <div class="col-md-7">--}}
-{{--                                            <div><b>{{$applicant->user->name}}</b></div>--}}
-{{--                                            <div class="text-muted"><em--}}
-{{--                                                    class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}--}}
-{{--                                            </div>--}}
-{{--                                            <div><em--}}
-{{--                                                    class="icon ni ni-star-fill text-warning"></em> {{$applicant->user->rating}}--}}
-{{--                                            </div>--}}
-{{--                                            <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}"--}}
-{{--                                                    class="font-italic">See profile</a></div>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="col-md-2">--}}
-{{--                                            @if($post->is_job_applicant_confirmed != 1)--}}
-{{--                                                <a href="{{route('user.posts.confirm_decline_applicant', ['application_id' => $applicant->id, 'action' => 'confirm'])}}"--}}
-{{--                                                   onclick="return confirm('Are you sure?')"><em--}}
-{{--                                                        class="icon ni ni-plus-circle text-success"--}}
-{{--                                                        style="font-size: 30px;float: right;"></em></a>--}}
-{{--                                            @endif--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-{{--                                    <br>--}}
-{{--                                @endforeach--}}
+                                <div id="shortlistedApplicants" class="mt-4">
+                                    <p class="text-muted">Showing shortlisted applicants</p>
+
+                                @foreach($post->applications->take(4) as $applicant)
+                                        <div class="row">
+                                            <div class="col-md-3 text-center">
+                                                @if($applicant->user->profile_picture)
+                                                    <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
+                                                @else
+                                                    <em class="icon ni ni-user" style="font-size: 80px;"></em>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div><b>{{$applicant->user->name}}</b></div>
+                                                <div class="text-muted"><em
+                                                        class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
+                                                </div>
+                                                <div><em
+                                                        class="icon ni ni-star-fill text-warning"></em> {{$applicant->user->rating}}
+                                                </div>
+                                                <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}"
+                                                        class="font-italic">See profile</a></div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                @if($post->is_job_applicant_confirmed != 1)
+                                                    <a href="{{route('user.posts.confirm_decline_applicant', ['application_id' => $applicant->id, 'action' => 'confirm'])}}"
+                                                       onclick="return confirm('Are you sure?')"><em
+                                                            class="icon ni ni-plus-circle text-success"
+                                                            style="font-size: 30px;float: right;"></em></a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <br>
+                                    @endforeach
+                                </div>
+
+                                <div id="allApplicants" class="mt-4">
+                                    <p class="text-muted">Showing all applicants</p>
+                                    @foreach($post->applications as $applicant)
+                                        <div class="row">
+                                            <div class="col-md-3 text-center">
+                                                @if($applicant->user->profile_picture)
+                                                    <img src="{{$applicant->user->profile_picture}}" style="height: 100px;width: 100px;border: 1px solid #ccc; border-radius: 50%;" alt="">
+                                                @else
+                                                    <em class="icon ni ni-user" style="font-size: 80px;"></em>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div><b>{{$applicant->user->name}}</b></div>
+                                                <div class="text-muted"><em
+                                                        class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
+                                                </div>
+                                                <div><em
+                                                        class="icon ni ni-star-fill text-warning"></em> {{$applicant->user->rating}}
+                                                </div>
+                                                <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}"
+                                                        class="font-italic">See profile</a></div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                @if($post->is_job_applicant_confirmed != 1)
+                                                    <a href="{{route('user.posts.confirm_decline_applicant', ['application_id' => $applicant->id, 'action' => 'confirm'])}}"
+                                                       onclick="return confirm('Are you sure?')"><em
+                                                            class="icon ni ni-plus-circle text-success"
+                                                            style="font-size: 30px;float: right;"></em></a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <br>
+                                    @endforeach
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -873,6 +912,8 @@
 
 @section("scripts")
     <script>
+        $("#shortlistedApplicants").hide()
+        $("#allApplicants").hide()
         $("#changeStartDate").hide()
         $("#changeEndDate").hide()
         $("#changeMonthlyPayment").hide()
@@ -1041,7 +1082,15 @@
             $(".copyStatus").show();
         }
 
+        const showShortlistedApplicants = () => {
+            $("#shortlistedApplicants").show("slow")
+            $("#allApplicants").hide()
+        }
 
+        const showAllApplicants = () => {
+            $("#shortlistedApplicants").hide()
+            $("#allApplicants").show("slow")
+        }
 
     </script>
 @endsection
