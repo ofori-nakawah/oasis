@@ -36,7 +36,7 @@
         <div class="row">
             <div class="col-md-5">
                 @foreach($notifications as $notification)
-                        <div class="card card-bordered" >
+                        <div class="card card-bordered">
                             <div class="card-header bg-white border-bottom">
                                 <b>{{$notification->data["post"]["type"]}} <span
                                         style="float: right">{{$notification->created_at}}</span></b></div>

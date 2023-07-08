@@ -85,11 +85,12 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="title"
-                                             style="font-size: 10px;color: #777;">@if($notify->data["post"]["type"] != "VOLUNTEER")
-                                                Category @else Activity Name @endif</div>
-                                        <div>
-                                            <b>{{ ($notify->data["post"]["type"] == "VOLUNTEER") ? $notify->data["post"]["name"] : $notify->data["post"]["category"] }}</b>
-                                        </div>
+                                             style="font-size: 10px;color: #777;">@if($notify->data["post"]["type"] === "VOLUNTEER") Activity Name @endif @if($notify->data["post"]["type"] === "QUICK_JOB") Category @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB") Title @endif</div>
+                                        <div
+                                            class="date text-danger">@if($notify->data["post"]["type"] === "VOLUNTEER")
+                                                {{$notify->data["post"]["name"]}} @endif @if($notify->data["post"]["type"] === "QUICK_JOB")
+                                                {{$notify->data["post"]["category"]}} @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB")
+                                                {{$notify->data["post"]["title"]}} @endif</div>
                                     </div>
                                     <div class="col-md-6">
                                         @if($notify->data["post"]["status"] == "closed")
@@ -125,7 +126,7 @@
                                 @endif
 
                                 @if($notify->data["event"] == "JOB_CLOSED")
-                                    @if($notify->data["post"]["type"] != "VOLUNTEER")
+                                    @if($notify->data["post"]["type"] === "QUICK_JOB")
                                         <br>
                                         <p><b  style="color: #777;">Payment (GHS)</b></p>
                                         <table class="table table-striped">
@@ -149,7 +150,29 @@
                                             </body>
                                         </table>
                                     @endif
-                                @endif
+
+                                    @if($notify->data["post"]["type"] === "FIXED_TERM_JOB")
+                                        <br>
+                                            <div class="text-muted">Income: GHS {{$notify->data["post"]["final_payment_amount"]}}/Month
+                                            </div>
+                                            <div class="text-muted"> Term: {{\Carbon\Carbon::parse($notify->data["post"]["final_end_date"])->diffInMonths(\Carbon\Carbon::parse($notify->data["post"]["final_start_date"])) }} months
+                                            </div>
+
+                                            <br>
+
+                                            <div class="card bg-lighter">
+                                                <div class="card-body">
+                                                    <div class="title" style="font-size: 10px;color: #777;">Start Date </div>
+                                                    <div class="issuer"><b>{{($notify->data["post"]["final_start_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_start_date"])) : 'N/A'}}</b></div>
+
+                                                    <br>
+
+                                                    <div class="title" style="font-size: 10px;color: #777;">End Date </div>
+                                                    <div class="issuer"><b>{{($notify->data["post"]["final_end_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_end_date"])) : 'N/A'}}</b></div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endif
 
                             </div>
                         </div>
