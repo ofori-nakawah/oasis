@@ -43,7 +43,8 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <a href="{{route("user.work.jobs", ["type_of_user" => $type_of_user, "type_of_work" => "quick-job"])}}">
-                <div class="card card-bordered">
+
+                <div class="card card-bordered" style="border-radius: 16px;">
                     <div class="card-body text-center p-4">
                         <img src="{{asset("assets/html-template/src/images/quick.svg")}}"
                              style="height: 120px; width: 120px;" alt="">
@@ -53,9 +54,9 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6 mb-3" >
             <a href="{{route("user.work.jobs", ["type_of_user" => $type_of_user, "type_of_work" => "fixed-term"])}}" >
-                <div class="card card-bordered">
+                <div class="card card-bordered" style="border-radius: 16px;">
                     <div class="card-body text-center p-4">
                         <img src="{{asset("assets/html-template/src/images/partTime.svg")}}"
                              style="height: 120px; width: 120px;" alt="">
@@ -65,5 +66,6 @@
                 </div>
             </a>
         </div>
+
     </div>
 @endsection

@@ -44,7 +44,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <a href="{{route("user.work.type", ["type_of_user" => "seeker"])}}">
-                    <div class="card card-bordered">
+                    <div class="card card-bordered " style="border-radius: 16px;">
                         <div class="card-body text-center p-4">
                             <img src="{{asset("assets/html-template/src/images/sj.svg")}}"
                                  style="height: 120px; width: 120px;" alt="">
@@ -56,7 +56,7 @@
             </div>
             <div class="col-md-6">
                 <a href="{{route('user.work.type', ["type_of_user" => "employer"])}}">
-                    <div class="card card-bordered" >
+                    <div class="card card-bordered"  style="border-radius: 16px;">
                         <div class="card-body text-center p-4">
                             <img src="{{asset("assets/html-template/src/images/hj.svg")}}"
                                  style="height: 120px; width: 120px;" alt="">
