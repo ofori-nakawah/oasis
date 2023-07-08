@@ -180,7 +180,6 @@ class PostController extends Controller
 
     public function getFixedTermOpportunities()
     {
-        Log::debug("ok");
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
             return $this->data_validation_error_response();
