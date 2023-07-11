@@ -41,6 +41,11 @@ Route::prefix('/v1')->group(function () {
             Route::post('/update-post', 'Mobile\PostController@updatePost');
         });
 
+        Route::prefix('/fixed-term-jobs')->group(function () {
+            Route::post('/create-post', 'Mobile\PostController@create_fixed_term_job_post');
+            Route::post('/update-post', 'Mobile\PostController@updatePost');
+        });
+
         Route::prefix('/activities')->group(function () {
             Route::get('/get-user-posts', 'Mobile\PostController@get_user_posts');
             Route::get('/get-posts', 'Mobile\PostController@get_posts_closest_to_me');

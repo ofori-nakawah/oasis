@@ -130,7 +130,48 @@ class PostController extends Controller
 
                     $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
                 }
+                break;
+            case "FIXED_TERM_JOB":
+                $tags = array();
+                foreach (explode(",", $request->tags) as $tag) {
+                    $category = Skill::where("name", $tag)->first();
+                    if ($category) {
+                        array_push($tags, $tag);
+                    }
+                }
 
+                $post->title = $request->title;
+                $post->description = $request->description;
+                $post->qualifications = $request->qualifications;
+                $post->date = $request->date;
+                $post->time = $request->time;
+                $post->location = $request->location;
+                $post->employer = $request->employer;
+                $post->coords = $request->coords;
+                $post->start_date = $request->start_date;
+                $post->end_date = $request->end_date;
+                $post->max_budget = $request->max_budget;
+                $post->min_budget = $request->min_budget;
+
+                if ($request->negotiable === "on") {
+                    $post->is_negotiable = "yes";
+                } else {
+                    $post->is_negotiable = "no";
+                }
+
+                if ($request->renewable === "on") {
+                    $post->is_renewable = "yes";
+                } else {
+                    $post->is_renewable = "no";
+                }
+
+                if ($request->is_internship === "on") {
+                    $post->is_internship = "yes";
+                } else {
+                    $post->is_internship = "no";
+                }
+
+                $post->tags = json_encode($tags);
                 break;
         }
 
@@ -206,6 +247,82 @@ class PostController extends Controller
         } catch (QueryException $e) {
             Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
+        }
+    }
+    
+
+    public function create_fixed_term_job_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'title' => 'required',
+            'employer' => 'required',
+            'description' => 'required',
+            'qualifications' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'location' => 'required',
+            'coords' => 'required',
+            'min_budget' => 'required',
+            'max_budget' => 'required',
+            'tags' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $tags = array();
+        foreach (explode(",", $request->tags) as $tag) {
+            $category = Skill::where("name", $tag)->first();
+            if ($category) {
+                array_push($tags, $tag);
+            }
+        }
+
+        $post = new Post();
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->qualifications = $request->qualifications;
+        $post->date = $request->date;
+        $post->time = $request->time;
+        $post->location = $request->location;
+        $post->employer = $request->employer;
+        $post->coords = $request->coords;
+        $post->start_date = $request->start_date;
+        $post->end_date = $request->end_date;
+        $post->max_budget = $request->max_budget;
+        $post->min_budget = $request->min_budget;
+        if ($request->negotiable === "on") {
+            $post->is_negotiable = "yes";
+        } else {
+            $post->is_negotiable = "no";
+        }
+
+        if ($request->renewable === "on") {
+            $post->is_renewable = "yes";
+        } else {
+            $post->is_renewable = "no";
+        }
+
+        if ($request->is_internship === "on") {
+            $post->is_internship = "yes";
+        } else {
+            $post->is_internship = "no";
+        }
+
+        $post->tags = json_encode($tags);
+        $post->user_id = auth()->id();
+        $post->type = "FIXED_TERM_JOB";
+        $post->source = "MOBILE";
+
+        try {
+            $post->save();
+            return $this->success_response($post, "Post has been published successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING post >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->db_operation_error_response([], "Oops. We encountered an issue while publishing your post. Kindly try again.");
         }
     }
 
