@@ -345,6 +345,8 @@ class PostController extends Controller
                     array_push($user_interests, $interest->skill->id);
                 }
 
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
                     $post_location_lat = explode(',', $post->coords)[0];
@@ -353,7 +355,7 @@ class PostController extends Controller
                     $post["distance"] = number_format($distance, 2);
                     $post["organiser_name"] = $post->user->name;
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
+                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
 
                     $post->user;
                     /**
@@ -486,7 +488,10 @@ class PostController extends Controller
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);
         $post["postedOn"] = $post->created_at->diffForHumans();
-        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
+        $toDate = Carbon::parse($post->end_date);
+        $fromDate = Carbon::parse($post->start_date);
+        $post["duration"] = $toDate->diffInMonths($fromDate);
+        $post["deadline"] = date ("jS \of F, Y g:i A", strtotime(($post->type === "FIXED_TERM_JOB") ? $post->date : DateFormatter::Parse($post->date) . ' ' . $post->time));
 
 
         return $this->success_response($post, "Posts fetched successfully.");
