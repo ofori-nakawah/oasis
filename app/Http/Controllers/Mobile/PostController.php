@@ -290,8 +290,8 @@ class PostController extends Controller
         $post->location = $request->location;
         $post->employer = $request->employer;
         $post->coords = $request->coords;
-        $post->start_date = $request->start_date;
-        $post->end_date = $request->end_date;
+        $post->start_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->start_date)));
+        $post->end_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->end_date)));
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
         if ($request->negotiable === "on") {
