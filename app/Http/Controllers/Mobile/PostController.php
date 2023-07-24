@@ -688,8 +688,8 @@ class PostController extends Controller
         $post->createdAt = $post->created_at->diffForHumans();
         $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
-        $toDate = Carbon::parse($post->end_date);
-        $fromDate = Carbon::parse($post->start_date);
+        $toDate = Carbon::parse($post->final_end_date);
+        $fromDate = Carbon::parse($post->final_start_date);
         $post["duration"] = $toDate->diffInMonths($fromDate);
 
         return $this->success_response($post, "Posts fetched successfully.");
