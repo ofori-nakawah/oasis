@@ -12,10 +12,18 @@ class DateFormatter
     {
         if (strpos($date, '-') !== false) {
             $_date = explode("-", $date);
-            $date = $_date[2] ."/".$_date[1]."/".$_date[0];
+            if (strlen($_date[0]) > 2) {
+                $date = $_date[0] ."/".$_date[1]."/".$_date[2];
+            } else {
+                $date = $_date[2] ."/".$_date[1]."/".$_date[0];
+            }
         } else {
             $_date = explode("/", $date);
-            $date = $_date[2] ."/".$_date[1]."/".$_date[0];
+            if (strlen($_date[0]) > 2) {
+                $date = $_date[0] ."/".$_date[1]."/".$_date[2];
+            } else {
+                $date = $_date[2] ."/".$_date[1]."/".$_date[0];
+            }
         }
 
         return $date;
