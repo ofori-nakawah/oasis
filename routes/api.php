@@ -47,16 +47,16 @@ Route::prefix('/v1')->group(function () {
         });
 
         Route::prefix('/activities')->group(function () {
-            Route::get('/get-user-posts', 'Mobile\PostController@get_user_posts');
-            Route::get('/get-posts', 'Mobile\PostController@get_posts_closest_to_me');
+            Route::post('/get-user-posts', 'Mobile\PostController@get_user_posts');
+            Route::post('/get-posts', 'Mobile\PostController@get_posts_closest_to_me');
             Route::get('/get-post-details', 'Mobile\PostController@get_post_details');
             Route::post('/apply-for-job', 'Mobile\PostController@apply_for_job');
-            Route::get('/get-user-post-status', 'Mobile\PostController@get_user_post_status');
+            Route::post('/get-user-post-status', 'Mobile\PostController@get_user_post_status');
             Route::post('/confirm-decline-applicant', 'Mobile\PostController@confirm_decline_applicant');
             Route::post('/close-post', 'Mobile\PostController@close_post');
             Route::get('/get-user-post-details', 'Mobile\PostController@get_user_post_details');
-            Route::get('/get-user-notifications', 'Mobile\UserController@get_user_notifications');
-            Route::get('/get-user-notification-details', 'Mobile\UserController@get_user_notification_details');
+            Route::post('/get-user-notifications', 'Mobile\UserController@get_user_notifications');
+            Route::post('/get-user-notification-details', 'Mobile\UserController@get_user_notification_details');
             Route::get('/get-user-notifications-count', 'Mobile\UserController@get_user_unread_notifications_count');
         });
 

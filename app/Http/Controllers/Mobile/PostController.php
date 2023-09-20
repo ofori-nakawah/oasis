@@ -339,6 +339,22 @@ class PostController extends Controller
             $time = strtotime($post->date . ' ' . $post->time);
             $newformat = date('d-m-Y H:i', $time);
             $post->postedDateTime = Carbon::parse($newformat)->toDayDateTimeString();
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }else {
+                $post->has_already_applied = "no";
+            }
+
+            $jobApplications = $post->applications;
+            foreach ($jobApplications as $jobApplication) {
+                $jobApplication->user;
+                $jobApplication->rating_and_reviews;
+            }
+            $post->applications;
+            $post->user;
+
+                
         }
         return $this->success_response($posts, "Posts fetched successfully.");
     }
@@ -358,8 +374,8 @@ class PostController extends Controller
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude;
+        $user_location_lng = json_decode($user_location)->longitude;
 
         switch ($request->type) {
             case "VOLUNTEER":
@@ -381,6 +397,18 @@ class PostController extends Controller
                     return $post;
                 });
                 $posts = $volunteer_near_me->sortBy("distance");
+                foreach($posts as $post) {
+                    $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+                    if ($has_already_applied) {
+                        $post->has_already_applied = "yes";
+                    }else {
+                        $post->has_already_applied = "no";
+                    }
+
+                    
+
+                }
+
 
                 break;
             case "QUICK_JOB":
@@ -786,7 +814,16 @@ class PostController extends Controller
             return $this->db_operation_error_response([]);
         }
 
-        return $this->success_response([], $message);
+        $listing = $application->job_post;
+        $jobApplications = $listing->applications;
+        foreach ($jobApplications as $jobApplication) {
+                $jobApplication->user;
+                $jobApplication->rating_and_reviews;
+            }
+            $listing->applications;
+            $listing->user;
+
+        return $this->success_response($listing, $message);
     }
 
     /**

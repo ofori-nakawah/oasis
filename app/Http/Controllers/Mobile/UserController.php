@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Mobile;
 
 use App\Models\LanguageUser;
 use App\Models\SkillUser;
-use App\Models\User;
+use App\Models\Post;
+use App\Models\JobApplication;
 use App\Services\PushNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -30,9 +31,20 @@ class UserController extends Controller
         auth()->user()->location_name = $request->location_name;
         auth()->user()->location_coords = $request->location_coords;
         auth()->user()->update();
+        auth()->user()->skills;
+        auth()->user()->languages;
+       
+        $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
+        $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
+        foreach ($recentlyApplied as $item) {
+            $item->job_post;
+        }
+        auth()->user()->listings = $posts;
+        auth()->user()->recentlyApplied = $recentlyApplied;
         $payload = [
             "location_coords" => auth()->user()->location_coords,
             "location_name" => auth()->user()->location_name,
+            "user"=> auth()->user()
         ];
         return $this->success_response($payload, "Location updated successfully.");
     }
@@ -410,7 +422,18 @@ class UserController extends Controller
                 break;
         }
 
-        return $this->success_response([], "Profile updated successfully.");
+        auth()->user()->skills;
+        auth()->user()->languages;
+       
+        $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
+        $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
+        foreach ($recentlyApplied as $item) {
+            $item->job_post;
+        }
+        auth()->user()->listings = $posts;
+        auth()->user()->recentlyApplied = $recentlyApplied;
+
+        return $this->success_response(auth()->user(), "Profile updated successfully.");
     }
 
 
