@@ -55,17 +55,17 @@ class OnboardingController extends Controller
             }
         }
 
-        $isEmailTaken = User::where("email", $request->input("email"))->first();
+        // $isEmailTaken = User::where("email", $request->input("email"))->first();
 
-        if ($isEmailTaken) {
-            if ($isEmailTaken->status != User::DELETED_STATUS) {
-                $errors->add("email", "This email is already taken");
-                return $this->data_validation_error_response($errors->getMessages());
-            } else {
-                $isEmailTaken->email .= "-000";
-                $isEmailTaken->update();
-            }
-        }
+        // if ($isEmailTaken && $isEmailTaken !== null && $isEmailTaken !== "") {
+        //     if ($isEmailTaken->status != User::DELETED_STATUS) {
+        //         $errors->add("email", "This email is already taken");
+        //         return $this->data_validation_error_response($errors->getMessages());
+        //     } else {
+        //         $isEmailTaken->email .= "-000";
+        //         $isEmailTaken->update();
+        //     }
+        // }
 
         if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
             $errors = new MessageBag();
