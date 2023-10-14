@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Mobile;
 use App\Models\OneTimePassword as OTP;
 use App\Traits\Responses;
 use App\Models\User;
+use App\Models\Post;
+use App\Models\JobApplication;
 use App\Models\Country as Country;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,11 +44,20 @@ class AuthController extends Controller
 
         auth()->user()->skills;
         auth()->user()->languages;
+       
+        $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
+        $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
+        foreach ($recentlyApplied as $item) {
+            $item->job_post;
+        }
+        auth()->user()->listings = $posts;
+        auth()->user()->recentlyApplied = $recentlyApplied;
+
 
         return $this->success_response([
             "user" => auth()->user(),
             "country" => Country::GetCountry($user->country_id),
-            "token" => auth()->user()->createToken('auth_token')->plainTextToken
+            "token" => auth()->user()->createToken('auth_token')->plainTextToken,
         ]);
     }
 
