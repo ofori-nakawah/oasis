@@ -218,7 +218,7 @@ class PostController extends Controller
         $post->date = $request->date;
         $post->time = $request->time;
         $post->location = $request->location;
-        $post->coords = $request->coords;
+        $post->coords = json_encode($request->coords);
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
         $post->is_negotiable = $request->is_negotiable;
@@ -228,18 +228,19 @@ class PostController extends Controller
         $post->type = "QUICK_JOB";
         $post->source = "MOBILE";
 
-        if ($request->post_image && $request->post_image != "") {
-            $image = $request->post_image;
-            $name = $post->id . '_' . time() . '.png';
-            $destinationPath = public_path('/uploads/quick_jobs/');
-
-            $image_parts = explode(";base64,", $image);
-            $image_base64 = base64_decode($image_parts[1]);
-            $file = $destinationPath . $name;
-            file_put_contents($file, $image_base64);
-
-            $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
-        }
+//        if ($request->post_image && $request->post_image != "") {
+//            $image = $request->post_image;
+//            $name = $post->id . '_' . time() . '.png';
+//            $destinationPath = public_path('/uploads/quick_jobs/');
+//
+//            $image_parts = explode(";base64,", $image);
+//            Log::debug($image_parts);
+//            $image_base64 = base64_decode($image_parts[1]);
+//            $file = $destinationPath . $name;
+//            file_put_contents($file, $image_base64);
+//
+//            $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
+//        }
 
         try {
             $post->save();
@@ -249,7 +250,7 @@ class PostController extends Controller
             return $this->db_operation_error_response([]);
         }
     }
-    
+
 
     public function create_fixed_term_job_post(Request $request)
     {
@@ -274,7 +275,7 @@ class PostController extends Controller
         }
 
         $tags = array();
-        foreach (explode(",", $request->tags) as $tag) {
+        foreach ($request->tags as $tag) {
             $category = Skill::where("name", $tag)->first();
             if ($category) {
                 array_push($tags, $tag);
@@ -289,32 +290,76 @@ class PostController extends Controller
         $post->time = $request->time;
         $post->location = $request->location;
         $post->employer = $request->employer;
-        $post->coords = $request->coords;
+        $post->coords = json_encode($request->coords);;
         $post->start_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->start_date)));
         $post->end_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->end_date)));
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
-        if ($request->negotiable === "on") {
-            $post->is_negotiable = "yes";
-        } else {
-            $post->is_negotiable = "no";
-        }
+        $post->is_negotiable = $request->is_negotiable;
+        $post->is_renewable = $request->is_renewable;
+        $post->is_internship = $request->is_internship;
 
-        if ($request->renewable === "on") {
-            $post->is_renewable = "yes";
-        } else {
-            $post->is_renewable = "no";
-        }
-
-        if ($request->is_internship === "on") {
-            $post->is_internship = "yes";
-        } else {
-            $post->is_internship = "no";
-        }
 
         $post->tags = json_encode($tags);
         $post->user_id = auth()->id();
         $post->type = "FIXED_TERM_JOB";
+        $post->source = "MOBILE";
+
+        try {
+            $post->save();
+            return $this->success_response($post, "Post has been published successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING post >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->db_operation_error_response([], "Oops. We encountered an issue while publishing your post. Kindly try again.");
+        }
+    }
+
+    public function create_permanent_job_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'title' => 'required',
+            'employer' => 'required',
+            'description' => 'required',
+            'qualifications' => 'required',
+            'date' => 'required',
+            'location' => 'required',
+            'coords' => 'required',
+            'min_budget' => 'required',
+            'max_budget' => 'required',
+            'tags' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $tags = array();
+        foreach ($request->tags as $tag) {
+            $category = Skill::where("name", $tag)->first();
+            if ($category) {
+                array_push($tags, $tag);
+            }
+        }
+
+        $post = new Post();
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->qualifications = $request->qualifications;
+        $post->date = $request->date;
+        $post->time = $request->time;
+        $post->location = $request->location;
+        $post->employer = $request->employer;
+        $post->coords = json_encode($request->coords);;
+        $post->max_budget = $request->max_budget;
+        $post->min_budget = $request->min_budget;
+        $post->is_negotiable = $request->is_negotiable;
+        $post->is_renewable = $request->is_renewable;
+        $post->is_internship = $request->is_internship;
+
+
+        $post->tags = json_encode($tags);
+        $post->user_id = auth()->id();
+        $post->type = "PERMANENT_JOB";
         $post->source = "MOBILE";
 
         try {
@@ -342,7 +387,7 @@ class PostController extends Controller
             $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
             if ($has_already_applied) {
                 $post->has_already_applied = "yes";
-            }else {
+            } else {
                 $post->has_already_applied = "no";
             }
 
@@ -354,7 +399,7 @@ class PostController extends Controller
             $post->applications;
             $post->user;
 
-                
+
         }
         return $this->success_response($posts, "Posts fetched successfully.");
     }
@@ -382,30 +427,30 @@ class PostController extends Controller
                 $volunteer_near_me = collect();
                 $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->get();
                 $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
+                    Log::debug($post->coords);
                     //get post coordinates
-                    $post_location_lat = explode(',', $post->coords)[0];
-                    $post_location_lng = explode(',', $post->coords)[1];
+                    $post_location_lat = json_decode($post->coords)->latitude;
+                    $post_location_lng = json_decode($post->coords)->longitude;
 
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
+                    $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
                     if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                         $volunteer_near_me->push($post);
                     }
                     return $post;
                 });
                 $posts = $volunteer_near_me->sortBy("distance");
-                foreach($posts as $post) {
+                foreach ($posts as $post) {
                     $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
                     if ($has_already_applied) {
                         $post->has_already_applied = "yes";
-                    }else {
+                    } else {
                         $post->has_already_applied = "no";
                     }
 
-                    
 
                 }
 
@@ -438,12 +483,12 @@ class PostController extends Controller
 
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
-                    $post_location_lat = explode(',', $post->coords)[0];
-                    $post_location_lng = explode(',', $post->coords)[1];
+                    $post_location_lat = json_decode($post->coords)->latitude;
+                    $post_location_lng = json_decode($post->coords)->longitude;
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
+                    $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
                     $post->user;
                     /**
@@ -494,13 +539,13 @@ class PostController extends Controller
 
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
-                    $post_location_lat = explode(',', $post->coords)[0];
-                    $post_location_lng = explode(',', $post->coords)[1];
+                    $post_location_lat = json_decode($post->coords)->latitude;
+        $post_location_lng = json_decode($post->coords)->longitude;
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["organiser_name"] = $post->user->name;
                     $post["postedOn"] = $post->created_at->diffForHumans();
-                    $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+                    $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
 
                     $post->user;
                     /**
@@ -623,12 +668,12 @@ class PostController extends Controller
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude;
+        $user_location_lng = json_decode($user_location)->longitude;
 
         //get post coordinates
-        $post_location_lat = explode(',', $post->coords)[0];
-        $post_location_lng = explode(',', $post->coords)[1];
+        $post_location_lat = json_decode($post->coords)->latitude;
+        $post_location_lng = json_decode($post->coords)->longitude;
 
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);
@@ -636,7 +681,7 @@ class PostController extends Controller
         $toDate = Carbon::parse($post->end_date);
         $fromDate = Carbon::parse($post->start_date);
         $post["duration"] = $toDate->diffInMonths($fromDate);
-        $post["deadline"] = date ("jS \of F, Y g:i A", strtotime(($post->type === "FIXED_TERM_JOB") ? $post->date : DateFormatter::Parse($post->date) . ' ' . $post->time));
+        $post["deadline"] = date("jS \of F, Y g:i A", strtotime(($post->type === "FIXED_TERM_JOB") ? $post->date : DateFormatter::Parse($post->date) . ' ' . $post->time));
 
 
         return $this->success_response($post, "Posts fetched successfully.");
@@ -714,7 +759,7 @@ class PostController extends Controller
         }
 
         $post->createdAt = $post->created_at->diffForHumans();
-        $post["postedDateTime"] = date ("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
+        $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
         $toDate = Carbon::parse($post->final_end_date);
         $fromDate = Carbon::parse($post->final_start_date);
@@ -817,11 +862,11 @@ class PostController extends Controller
         $listing = $application->job_post;
         $jobApplications = $listing->applications;
         foreach ($jobApplications as $jobApplication) {
-                $jobApplication->user;
-                $jobApplication->rating_and_reviews;
-            }
-            $listing->applications;
-            $listing->user;
+            $jobApplication->user;
+            $jobApplication->rating_and_reviews;
+        }
+        $listing->applications;
+        $listing->user;
 
         return $this->success_response($listing, $message);
     }

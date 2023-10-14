@@ -46,6 +46,11 @@ Route::prefix('/v1')->group(function () {
             Route::post('/update-post', 'Mobile\PostController@updatePost');
         });
 
+        Route::prefix('/permanent-jobs')->group(function () {
+            Route::post('/create-post', 'Mobile\PostController@create_permanent_job_post');
+            Route::post('/update-post', 'Mobile\PostController@updatePost');
+        });
+
         Route::prefix('/activities')->group(function () {
             Route::post('/get-user-posts', 'Mobile\PostController@get_user_posts');
             Route::post('/get-posts', 'Mobile\PostController@get_posts_closest_to_me');
@@ -81,8 +86,8 @@ Route::prefix('/v1')->group(function () {
         });
 
         Route::prefix('/config')->group(function () {
-            Route::get('/get-skills', 'Mobile\ConfigController@get_skills');
-            Route::get('/get-languages', 'Mobile\ConfigController@get_languages');
+            Route::post('/get-skills', 'Mobile\ConfigController@get_skills');
+            Route::post('/get-languages', 'Mobile\ConfigController@get_languages');
         });
 
         Route::prefix('/user-accounts')->group(function () {
