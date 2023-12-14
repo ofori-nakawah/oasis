@@ -314,10 +314,8 @@ border: 1px solid #dbdfea;">
                             </div>
                             <div class="col-md-6">
                                 <div class="title" style="font-size: 10px;color: #777;">Duration</div>
-                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
-                                    <div style="font-size: 22px;margin-top:20px;">
-                                        <b>${post.duration}</b></div>
-                                    <div>month(s)</div>
+                                <div class="issuer " >
+                                        <b>${post.duration}</b> month(s)</div>
                                 </div>
                             </div>
                         </div>
