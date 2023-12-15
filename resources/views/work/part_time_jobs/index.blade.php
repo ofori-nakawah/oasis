@@ -362,8 +362,8 @@ ${post.duration} months
                     <div class="col-md-6 col-xs-6 col-sm-6 " style="margin-top: 5px;">
                         <a type="button" style="float: left;justify-content: center;align-items: center"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
                             <div style="display: flex; flex-direction: row; gap: 5px;justify-content: center;">
-                                <em class="icon ni ni-share-alt" style="font-size: 24px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
-                                <div style="margin-bottom: 10px;">Share opportunity</div>
+                                <em class="icon ni ni-link" style="font-size: 28px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
+                                <div style="margin-bottom: 10px;"></div>
                             </div>
                         </a>
                     </div>

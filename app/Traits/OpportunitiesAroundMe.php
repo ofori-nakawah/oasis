@@ -33,15 +33,15 @@ trait OpportunitiesAroundMe
             return null;
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         $volunteer_near_me = collect();
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $search_radius) {
             //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = self::CalculateDistanceBtnUserAndPost($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
@@ -67,8 +67,8 @@ trait OpportunitiesAroundMe
             return null;
         }
 
-        $user_location_lat = json_decode($user_location)->latitude;
-        $user_location_lng = json_decode($user_location)->longitude;
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         $_user_interests = auth()->user()->skills;
         $user_interests = array();
