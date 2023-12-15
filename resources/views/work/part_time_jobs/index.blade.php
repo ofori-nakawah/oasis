@@ -310,8 +310,8 @@ border: 1px solid #dbdfea;">
                         <div style="display: flex; flex-direction: row; gap: 10px;flex: 1;">
 <!--                           <div style="border: 1px solid #364a63; padding: 5px; height: 80px; width: 80px !important;border-radius: 4px;">Image</div>-->
                            <div style="display: flex; justify-content: center;flex-direction: column;">
-                              <div style="font-size: 18px;"><b>${post.title}</b></div>
-                              <div><b>${post.employer}</b></div>
+                              <div style="font-size: 18px;color: #1c2b46 !important">${post.title}</div>
+                              <div>${post.employer}</div>
                               <div class="text-muted"><small>Posted ${post.createdOn} by ${post.user?.name}</small></div>
                            </div>
                         </div>

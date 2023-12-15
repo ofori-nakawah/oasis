@@ -8,48 +8,65 @@
     <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
-                <h3 class="nk-block-title " style="font-weight: 900"> Fixed term opportunities <br> <span
-                        class="text-muted" style="font-size: 20px;">Discover fixed term opportunities near you and all over the country</span>
-                </h3>
+                <h3 class="nk-block-title page-title"><em class="icon ni ni-briefcase"></em> Work </h3>
                 <div class="nk-block-des text-soft">
                     <p class="hide-mb-sm hide-mb-xs md">
+                    <nav>
+                        <ul class="breadcrumb breadcrumb-arrow">
+                            <li class="breadcrumb-item"><a href="#">Fixed Term Jobs</a></li>
+                            <li class="breadcrumb-item"><a href="#">Discover fixed term opportunities near you and all
+                                    over the country</a></li>
+                        </ul>
+                    </nav>
                     </p>
                 </div>
-            </div>
+            </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
                 <a href="{{URL::previous()}}"
-                   class="btn btn-outline-light"><span>Back</span></a>
+                   class="btn btn-outline-primary"><span>Back</span></a></li>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
-
     <div class="row">
-        <div class="col-md-4 d-none d-md-block">
-            <div id="fixedTermOpportunityShimmerLoader"></div>
-            <div id="fixedTermOpportunitySnapshot"></div>
-
-            <div class="row mb-2 mt-2" >
-                <div class="col-md-12">
-                    <p class="text-dark" style="display: flex;"><span style="flex: 1;">Other opportunities</span> <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "fixed-term"])}}" style="text-decoration: underline">See more</a></p>
-                </div>
-            </div>
-
-            <div id="otherFixedTermOpportunitiesShimmerLoader"></div>
-            <div id="otherFixedTermOpportunitiesListing"></div>
-
-        </div>
         <div class="col-md-8">
             <div id="fixedTermOpportunityDetailsShimmerLoader"></div>
             <div id="fixedTermOpportunityDetails"></div>
         </div>
-
+        <div class="col-md-4 ">
+            <div class="card card-outline card-bordered">
+                <div class="card-body">
+                    <div style="color: #1c2b46 !important;">Notifications</div>
+                    {{--                icon--}}
+                    <div style="margin-top: 20px;margin-bottom: 20px;" class="text-center">
+                        <img src="{{asset('assets/html-template/src/images/notify.svg')}}"
+                             height="160px; width: 160px;"/>
+                    </div>
+                    {{--                description--}}
+                    <div>Want to receive notifications for similar opportunities?</div>
+                    <p class="text-muted" style="margin-top: 10px;">You'll receive email/sms notifications when ever a
+                        new opportunity with similar tags, title, description or qualification is posted. Try now!</p>
+                    {{--                Button--}}
+                    <button class="btn btn-primary btn-block btn-lg">Notify me!</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="modal fade zoom" tabindex="-1" id="shareOpportunity" style="border-radius: 16px;">
-        <div class="modal-dialog" role="document" style="border-radius: 16px;">
-            <div class="modal-content" style="border-radius: 16px;">
+    <div class="row mb-2 mt-2">
+        <div class="col-md-12">
+            <p class="text-dark" style="display: flex;"><span style="flex: 1;">Other opportunities</span></p>
+
+            <div id="otherFixedTermOpportunitiesShimmerLoader"></div>
+            <div id="otherFixedTermOpportunitiesListing"></div>
+        </div>
+    </div>
+
+
+    <div class="modal fade zoom" tabindex="-1" id="shareOpportunity" style="border-radius: 4px;">
+        <div class="modal-dialog" role="document" style="border-radius: 4px;">
+            <div class="modal-content" style="border-radius: 4px;">
                 <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                    <em class="icon ni ni-cross"></em>
+                    <em class="icon ni ni-cross text-danger"></em>
                 </a>
                 <div class="modal-header" style="border-bottom: none !important;">
                     <h4 class="modal-title"><b>Share Post</b></h4>
@@ -58,12 +75,16 @@
                     <hr style=" margin-top: -25px;">
                     <div class="row">
                         <div class="col-md-12">
-                            <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and friends on all platforms.</p>
-                            <p class="alert alert-lighter bg-lighter text-primary no-border" style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span id="shareableLink"></span></b>
+                            <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and
+                                friends on all platforms.</p>
+                            <p class="alert alert-lighter bg-lighter text-primary no-border"
+                               style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span
+                                        id="shareableLink"></span></b>
                             </p>
-                            <div class="btn btn-outline-lighter copyLinkButton bold" style="float: right !important;" onclick="copyLinkToClipboard()"> <em class="icon ni ni-copy"></em> Copy link
+                            <div class="btn btn-outline-primary copyLinkButton bold" style="float: right !important;"
+                                 onclick="copyLinkToClipboard()"><em class="icon ni ni-copy"></em> Copy link
                             </div>
-                            <span class="copyStatus"></span>
+                            <span class="copyStatus text-success"></span>
                         </div>
                     </div>
                 </div>
@@ -86,7 +107,7 @@
          * shiller loader
          */
 
-         const fixedTermOpportunityDetailsShimmerLoader = `<div>Loading...</div>`
+        const fixedTermOpportunityDetailsShimmerLoader = `<div>Loading...</div>`
 
         /**
          * other fixed term opportunities shimmer loader
@@ -132,78 +153,124 @@
         const ComponentFixedTermOpportunity = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="badge badge-primary" style="height: 20px;">
-                            Internship
-                        </div>`
+                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">Internship</span>`
             }
 
+            let categories = ``
+            const tags = JSON.parse(post.tags)
+            tags.forEach((tag) => {
+                categories += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">${tag}</span>`
+            })
+
+
+            const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
+
             return `
-            <div
-               style="text-decoration: none !important;" class="">
-                <div class="card card-bordered " style="/* From https://css.glass */
+        <div class="col-md-6">
+<!--             <a href="${route}"-->
+<!--               style="text-decoration: none !important;" class="cardContainer">-->
+                <div class="card card-bordered cardContainer" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
+padding: 10px;
+/*border-radius: 4px;*/
 /*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
 backdrop-filter: blur(5px);
 margin-bottom: 15px;
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid #dbdfea;">
-                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                <div class="issuer text-danger"><em
-                                            class="icon ni ni-building"></em> ${post.employer}
+
+                    <div style="display: flex; flex-direction: row; padding: 10px;">
+                        <div style="display: flex; flex-direction: row; gap: 10px;flex: 1;">
+<!--                           <div style="border: 1px solid #364a63; padding: 5px; height: 80px; width: 80px !important;border-radius: 4px;">Image</div>-->
+                           <div style="display: flex; justify-content: center;flex-direction: column;">
+                              <div style="font-size: 18px;color: #1c2b46 !important">${post.title}</div>
+                              <div>${post.employer}</div>
+                              <div class="text-muted"><small>Posted ${post.createdOn} by ${post.user?.name}</small></div>
+                           </div>
+                        </div>
+<!--                        <div>Save</div>-->
+                    </div>
+
+                    <div style="padding: 10px;display: flex; flex-direction: row; gap: 10px;overflow-x: scroll;">${isInternship} ${categories}</div>
+
+                    <div style="display: flex; flex-direction: row;gap: 10px; padding: 5px;">
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-coins"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"> <small class="text-muted">Budget</small>  <br>
+ ${post.min_budget}GHS - ${post.max_budget}GHS budget</div>
+                            </div>
+                        </div>
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-calendar-alt"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text">
+                                           <small class="text-muted">Duration</small>  <br>
+${post.duration} months
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Budget
-                                    (GHS/month)
-                                </div>
-                                <div class="issuer text-success"><em
-                                            class="icon ni ni-coins"></em> ${post.min_budget}
-                                        - ${post.max_budget}</div>
+                    </div>
+
+
+                    <div style="padding: 5px;"><div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-map-pin"></em>
                             </div>
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
-                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
-                                    <div style="font-size: 22px;margin-top:20px;">
-                                        <b>${post.duration}</b></div>
-                                    <div>month(s)</div>
-                                </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"><small class="text-muted">Location</small>  <br> ${post.location}</div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                <div class="issuer text"><em
-                                            class="icon ni ni-map-pin"></em> ${post.location} (
-            ${post.distance}
-            km)</div>
+                    </div>
+
+
+
+                <hr style="border-color: #dbdfea;">
+
+                <div class="row text-center" style="padding: 10px;">
+                    <div class="col-md-6 col-xs-6 col-sm-6 " style="margin-top: 5px;">
+                        <a type="button" style="float: left;justify-content: center;align-items: center"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
+                            <div style="display: flex; flex-direction: row; gap: 5px;justify-content: center;">
+                                <em class="icon ni ni-share-alt" style="font-size: 24px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
+                                <div style="margin-bottom: 10px;">Share opportunity</div>
+                            </div>
+                        </a>
+                    </div>
+                        <div class="col-md-6 col-xs-6 col-sm-6 text-center" style="flex: 1"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary btn-block" style="height: 40px;margin-top: 0px;">View Details</a></div>
+                    </div>
                 </div>
+
+<!--                </div>-->
+<!--                </a>-->
                 </div>
-                </div>
-</div></div>
-            `
+                `
         }
 
         const ComponentFixedTermOpportunityDetails = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="badge badge-primary" style="height: 20px;">
-                            Internship
-                        </div>`
+                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">Internship</span>`
             }
+
+            let categories = ``
+            const tags = JSON.parse(post.tags)
+            tags.forEach((tag) => {
+                categories += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">${tag}</span>`
+            })
 
             const applicationURL = `{{env("BACKEND_URL")}}/posts/${post.id}/apply`
 
-            let applicationConfirmation = `<a data-bs-toggle="tooltip" data-bs-placement="right" title="Apply" href="${applicationURL}" onclick="return confirm('Are your sure?')" class="btn btn-primary"> <b>Apply</b></a>`;
+            let applicationConfirmation = `<a data-bs-toggle="tooltip" data-bs-placement="right" title="Apply" href="${applicationURL}" onclick="return confirm('Are your sure?')" class="btn btn-outline-primary"> Apply</a>`;
             if (post.has_already_applied === "yes") {
-                applicationConfirmation = `<div class="btn btn-outline-lighter"> <b>Application sent!</b></div>`
+                applicationConfirmation = `<div class="text-success">Application has already been sent!</div>`
             }
 
             return `
@@ -215,80 +282,102 @@ backdrop-filter: blur(5px);
 margin-bottom: 15px;
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid #dbdfea;">
-                <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                    <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.postedOn}</span></div> ${isInternship}</div>
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                            <div class="issuer text-danger"><em
-                                    class="icon ni ni-building"></em> ${post.employer}
-                            </div>
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="display: flex; flex-direction: row; gap: 10px;flex: 1;">
+<!--                           <div style="border: 1px solid #364a63; padding: 5px; height: 80px; width: 80px !important;border-radius: 4px;">Image</div>-->
+                           <div style="display: flex; justify-content: center;flex-direction: column;">
+                              <div style="font-size: 18px;color: #1c2b46 !important">${post.title}</div>
+                              <div>${post.employer}</div>
+                              <div class="text-muted"><small>Posted ${post.createdOn} by ${post.user?.name}</small></div>
+                           </div>
                         </div>
+<!--                        <div>Save</div>-->
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-md-6">
-                            <div class="title" style="font-size: 10px;color: #777;">Budget
-                                (GHS/month)
+
+                    <div style="display: flex; flex-direction: row; gap: 10px;flex-wrap: wrap;margin-top: 15px;">${isInternship} ${categories}</div>
+
+                    <div style="display: flex; flex-direction: row;gap: 10px;">
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-coins"></em>
                             </div>
-                            <div class="issuer text-success"><em
-                                    class="icon ni ni-coins"></em> ${post.min_budget}
-                                - ${post.max_budget}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="title" style="font-size: 10px;color: #777;">Duration</div>
-                            <div class="issuer card bg-lighter text-center" style="height: 100px;">
-                                <div style="font-size: 22px;margin-top:20px;">
-                                    <b>${post.duration}</b></div>
-                                <div>month(s)</div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"> <small class="text-muted">Budget</small>  <br>
+ ${post.min_budget}GHS - ${post.max_budget}GHS budget</div>
                             </div>
                         </div>
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-calendar-alt"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text">
+                                           <small class="text-muted">Duration</small>  <br>
+${post.duration} months
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-calendar-alt"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text">
+                                           <small class="text-muted">Application Deadline</small>  <br>
+                                    ${post.date} ${post.time}
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+
+                        <div class="user-toggle mb-2">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-map-pin"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"><small class="text-muted">Location</small>  <br> ${post.location}</div>
+                            </div>
+                        </div>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Job Description</div>
+                            <div class="text-muted"><small>Description</small></div>
                             <div class="issuer text">${post.description}</div>
                         </div>
                     </div>
 
-                    <div class="row mt-2">
+                    <div class="row mt-2 mb-2">
                         <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Qualifications</div>
+                            <div class="text-muted"><small>Qualifications</small></div>
                             <div class="issuer text">
                                 ${post.qualifications}
                             </div>
                         </div>
                     </div>
 
-                    <div class="row mt-2">
-                        <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                            <div class="issuer text"><em
-                                    class="icon ni ni-map-pin"></em> ${post.location}
-                                (${post.distance})</div>
-                        </div>
-                    </div>
 
-                    <div class="row mt-2">
-                        <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Deadline</div>
-                            <div class="issuer text text-danger"><em
-                                    class="icon ni ni-calendar "></em> ${post.date} ${post.time}</div>
-                        </div>
+
+
+                <hr style="border-color: #dbdfea;">
+
+                <div class="row text-center" style="padding: 10px;">
+                    <div class="col-md-6 col-xs-6 col-sm-6 " style="margin-top: 5px;">
+                        <a type="button" style="float: left;justify-content: center;align-items: center"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
+                            <div style="display: flex; flex-direction: row; gap: 5px;justify-content: center;">
+                                <em class="icon ni ni-share-alt" style="font-size: 24px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
+                                <div style="margin-bottom: 10px;">Share opportunity</div>
+                            </div>
+                        </a>
+                    </div>
+                        <div class="col-md-6 col-xs-6 col-sm-6 text-right" style="flex: 1"> ${applicationConfirmation}</div>
                     </div>
                 </div>
-                <div class="card-header text-dark bg-lighter"
-                     style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
-
-
-                    <a type="button" data-toggle="modal" data-target="#shareOpportunity" style="float: left;" onclick="setupShareableLink('${post.type}', '${post.id}')" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
-                            class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
-
-
-                    ${applicationConfirmation}
 
                 </div>
+
 
             </div>
             `
@@ -297,84 +386,100 @@ border: 1px solid #dbdfea;">
         const ComponentOtherFixedTermOpportunities = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="badge badge-primary" style="height: 20px;">
-                            Internship
-                        </div>`
+                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">Internship</span>`
             }
+
+            let categories = ``
+            const tags = JSON.parse(post.tags)
+            tags.forEach((tag) => {
+                categories += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">${tag}</span>`
+            })
 
             const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
 
             return `
-        <div class="col-md-12">
-            <a href="${route}"
-               style="text-decoration: none !important;" class="cardContainer">
+        <div class="col-md-4">
+<!--             <a href="${route}"-->
+<!--               style="text-decoration: none !important;" class="cardContainer">-->
                 <div class="card card-bordered cardContainer" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
+padding: 10px;
+/*border-radius: 4px;*/
 /*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
 backdrop-filter: blur(5px);
 margin-bottom: 15px;
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid #dbdfea;">
-                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                <div class="issuer text-danger"><em
-                                            class="icon ni ni-building"></em> ${post.employer}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Budget
-                                    (GHS/month)
-                                </div>
-                                <div class="issuer text-success"><em
-                                            class="icon ni ni-coins"></em> ${post.min_budget}
-                                        - ${post.max_budget}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
-                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
-                                    <div style="font-size: 22px;margin-top:20px;">
-                                        <b>${post.duration}</b></div>
-                                    <div>month(s)</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                <div class="issuer text"><em
-                                            class="icon ni ni-map-pin"></em> ${post.location} (
-            ${post.distance}
-            km)</div>
-                </div>
-                </div>
-                </div>
-                <div class="card-header text-center text-dark bg-lighter"
-                style="border-radius: 4px; margin:5px;align-items: center;">
-                    <div class="row">
 
-                        <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a type="button" style="float: left;" data-toggle="modal" onclick="setupShareableLink('${post.type}', '${post.id}')" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a></div>
-                        <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-primary btn-block" style="height: 40px;margin-top: 0px;">Details</a></div>
+                    <div style="display: flex; flex-direction: row; padding: 10px;">
+                        <div style="display: flex; flex-direction: row; gap: 10px;flex: 1;">
+<!--                           <div style="border: 1px solid #364a63; padding: 5px; height: 80px; width: 80px !important;border-radius: 4px;">Image</div>-->
+                           <div style="display: flex; justify-content: center;flex-direction: column;">
+                              <div style="font-size: 18px;color: #1c2b46 !important">${post.title}</div>
+                              <div>${post.employer}</div>
+                              <div class="text-muted"><small>Posted ${post.createdOn} by ${post.user?.name}</small></div>
+                           </div>
+                        </div>
+<!--                        <div>Save</div>-->
+                    </div>
+
+                    <div style="padding: 10px;display: flex; flex-direction: row; gap: 10px;overflow-x: scroll;">${isInternship} ${categories}</div>
+
+                    <div style="display: flex; flex-direction: row;gap: 10px; padding: 5px;">
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-coins"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"> <small class="text-muted">Budget</small>  <br>
+ ${post.min_budget}GHS - ${post.max_budget}GHS budget</div>
+                            </div>
+                        </div>
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-calendar-alt"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text">
+                                           <small class="text-muted">Duration</small>  <br>
+${post.duration} months
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div style="padding: 5px;"><div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-map-pin"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"><small class="text-muted">Location</small>  <br> ${post.location}</div>
+                            </div>
+                        </div>
                     </div>
 
 
 
+                <hr style="border-color: #dbdfea;">
 
-
-
-
-
+                <div class="row text-center" style="padding: 10px;">
+                    <div class="col-md-6 col-xs-6 col-sm-6 " style="margin-top: 5px;">
+                        <a type="button" style="float: left;justify-content: center;align-items: center"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
+                            <div style="display: flex; flex-direction: row; gap: 5px;justify-content: center;">
+                                <em class="icon ni ni-share-alt" style="font-size: 24px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
+                                <div style="margin-bottom: 10px;">Share opportunity</div>
+                            </div>
+                        </a>
+                    </div>
+                        <div class="col-md-6 col-xs-6 col-sm-6 text-center" style="flex: 1"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary btn-block" style="height: 40px;margin-top: 0px;">View Details</a></div>
+                    </div>
                 </div>
 
-                </div>
-                </a>
+<!--                </div>-->
+<!--                </a>-->
                 </div>
                 `
         }

@@ -287,8 +287,8 @@ class PostController extends Controller
             return back()->with("danger", "Could not retrieve user's current location");
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         /**
          * filter using distance
@@ -297,8 +297,8 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
@@ -437,11 +437,11 @@ class PostController extends Controller
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
-        $user_location_lat = json_decode($user_location)->latitude;
-        $user_location_lng = json_decode($user_location)->longitude;
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
-        $_post_location_lat = json_decode($original_post->coords)->latitude;
-        $_post_location_lng = json_decode($original_post->coords)->longitude;
+        $_post_location_lat =json_decode($original_post->coords)->latitude ?? explode(',', $original_post->coords)[0];
+        $_post_location_lng = json_decode($original_post->coords)->longitude ?? explode(',', $original_post->coords)[1];
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $_post_location_lat, $_post_location_lng, "K");
         $original_post["distance"] = number_format($distance, 2);
 
@@ -452,8 +452,8 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->where("id", "!=", $original_post->id)->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat = json_decode($post->coords)->latitude;
-            $post_location_lng = json_decode($post->coords)->longitude;
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             Log::debug($post_location_lng . " >>>> " . $post_location_lat);
 
@@ -497,8 +497,8 @@ class PostController extends Controller
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         /**
          * filter using distance
@@ -507,8 +507,8 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $radius) {
             //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
