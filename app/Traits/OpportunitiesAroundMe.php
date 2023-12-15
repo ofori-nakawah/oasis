@@ -67,8 +67,8 @@ trait OpportunitiesAroundMe
             return null;
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude;
+        $user_location_lng = json_decode($user_location)->longitude;
 
         $_user_interests = auth()->user()->skills;
         $user_interests = array();
@@ -88,8 +88,9 @@ trait OpportunitiesAroundMe
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
+
             $distance = self::CalculateDistanceBtnUserAndPost($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
             if ($distance <= $search_radius) {
@@ -101,7 +102,7 @@ trait OpportunitiesAroundMe
                 }
             }
         }
-        return $jobs_near_me->sortBy("distance");;
+        return $jobs_near_me->sortBy("distance");
     }
 
     public static function GetOpportunitiesAroundMe($search_radius) {

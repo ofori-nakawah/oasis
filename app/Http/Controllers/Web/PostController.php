@@ -127,12 +127,13 @@ class PostController extends Controller
     {
         //get user coordinates
         $user_location = auth()->user()->location_coords;
+
         if (!$user_location) {
             return back()->with("danger", "Could not retrieve user's current location");
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         $_user_interests = auth()->user()->skills;
         $user_interests = array();
@@ -152,8 +153,8 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
             if ($distance <= self::JOB_SEARCH_RADIUS) {
@@ -175,7 +176,8 @@ class PostController extends Controller
     public function list_part_time_jobs()
     {
         $skills = Skill::all();
-        return view("work.part_time_jobs.index", compact("skills"));
+        $posts = $this->getFixedTermOpportunities();
+        return view("work.part_time_jobs.index", compact("skills", "posts"));
     }
 
     public function getFixedTermOpportunities()
@@ -185,8 +187,8 @@ class PostController extends Controller
             return $this->data_validation_error_response();
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         $_user_interests = auth()->user()->skills;
         $user_interests = array();
@@ -206,8 +208,9 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
+
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
             $toDate = Carbon::parse($post->end_date);
@@ -227,7 +230,7 @@ class PostController extends Controller
             }
         }
         $posts = $jobs_near_me->sortBy("distance");
-        return $this->success_response($posts, "Post has been updated successfully.");
+        return $posts;
     }
 
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
@@ -348,8 +351,8 @@ class PostController extends Controller
             return back()->with("danger", "Could not retrieve user's current location");
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         $_user_interests = auth()->user()->skills;
         $user_interests = array();
@@ -369,8 +372,8 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
             if ($distance <= self::JOB_SEARCH_RADIUS) {
@@ -434,11 +437,11 @@ class PostController extends Controller
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
-        $user_location_lat = explode(',', $user_location)[0];
-        $user_location_lng = explode(',', $user_location)[1];
+        $user_location_lat = json_decode($user_location)->latitude;
+        $user_location_lng = json_decode($user_location)->longitude;
 
-        $_post_location_lat = explode(',', $original_post->coords)[0];
-        $_post_location_lng = explode(',', $original_post->coords)[1];
+        $_post_location_lat = json_decode($original_post->coords)->latitude;
+        $_post_location_lng = json_decode($original_post->coords)->longitude;
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $_post_location_lat, $_post_location_lng, "K");
         $original_post["distance"] = number_format($distance, 2);
 
@@ -449,8 +452,11 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->where("id", "!=", $original_post->id)->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat = explode(',', $post->coords)[0];
-            $post_location_lng = explode(',', $post->coords)[1];
+            $post_location_lat = json_decode($post->coords)->latitude;
+            $post_location_lng = json_decode($post->coords)->longitude;
+
+            Log::debug($post_location_lng . " >>>> " . $post_location_lat);
+
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;

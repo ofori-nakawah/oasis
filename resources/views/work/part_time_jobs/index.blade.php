@@ -8,17 +8,21 @@
     <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
-                <h3 class="nk-block-title " style="font-weight: 900"> Fixed term opportunities <br> <span
-                        class="text-muted" style="font-size: 20px;">Discover fixed term opportunities near you and all over the country</span>
-                </h3>
+                <h3 class="nk-block-title page-title"><em class="icon ni ni-briefcase"></em> Work </h3>
                 <div class="nk-block-des text-soft">
                     <p class="hide-mb-sm hide-mb-xs md">
+                    <nav>
+                        <ul class="breadcrumb breadcrumb-arrow">
+                            <li class="breadcrumb-item"><a href="#">Fixed Term Jobs</a></li>
+                            <li class="breadcrumb-item"><a href="#">Discover fixed term opportunities near you and all over the country</a></li>
+                        </ul>
+                    </nav>
                     </p>
                 </div>
-            </div>
+            </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
                 <a href="{{URL::previous()}}"
-                   class="btn btn-outline-light"><span>Back</span></a>
+                   class="btn btn-outline-primary"><span>Back</span></a></li>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
@@ -122,7 +126,7 @@
                     <em class="icon ni ni-cross"></em>
                 </a>
                 <div class="modal-header" style="border-bottom: none !important;">
-                    <h4 class="modal-title"><b>Share Post</b></h4>
+                    <div class="modal-title" style="font-size: 18px;"><b>Share Opportunity</b></div>
                 </div>
                 <div class="modal-body">
                     <hr style=" margin-top: -25px;">
@@ -273,75 +277,102 @@
         const ComponentFixedTermOpportunity = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="badge badge-primary" style="height: 20px;">
-                            Internship
-                        </div> `
+                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">Internship</span>`
             }
+
+            let categories = ``
+            const tags = JSON.parse(post.tags)
+            tags.forEach((tag) => {
+                categories += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">${tag}</span>`
+            })
+            console.log(categories)
+
 
             const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
 
             return `
         <div class="col-md-6">
-            <a href="${route}"
-               style="text-decoration: none !important;" class="cardContainer">
+<!--             <a href="${route}"-->
+<!--               style="text-decoration: none !important;" class="cardContainer">-->
                 <div class="card card-bordered cardContainer" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
+padding: 10px;
+/*border-radius: 4px;*/
 /*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
 backdrop-filter: blur(5px);
 margin-bottom: 15px;
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid #dbdfea;">
-                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                        <div style="flex: 1;" class="text-break"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                <div class="issuer text-danger"><em
-                                            class="icon ni ni-building"></em> ${post.employer}
+
+                    <div style="display: flex; flex-direction: row; padding: 10px;">
+                        <div style="display: flex; flex-direction: row; gap: 10px;flex: 1;">
+<!--                           <div style="border: 1px solid #364a63; padding: 5px; height: 80px; width: 80px !important;border-radius: 4px;">Image</div>-->
+                           <div style="display: flex; justify-content: center;flex-direction: column;">
+                              <div style="font-size: 18px;"><b>${post.title}</b></div>
+                              <div><b>${post.employer}</b></div>
+                              <div class="text-muted"><small>Posted ${post.createdOn} by ${post.user?.name}</small></div>
+                           </div>
+                        </div>
+<!--                        <div>Save</div>-->
+                    </div>
+
+                    <div style="padding: 10px;display: flex; flex-direction: row; gap: 10px;overflow-x: scroll;">${isInternship} ${categories}</div>
+
+                    <div style="display: flex; flex-direction: row;gap: 10px; padding: 5px;">
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-coins"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"> <small class="text-muted">Budget</small>  <br>
+ ${post.min_budget}GHS - ${post.max_budget}GHS budget</div>
+                            </div>
+                        </div>
+                        <div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-calendar-alt"></em>
+                            </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text">
+                                           <small class="text-muted">Duration</small>  <br>
+${post.duration} months
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Budget
-                                    (GHS/month)
-                                </div>
-                                <div class="issuer text-success"><em
-                                            class="icon ni ni-coins"></em> ${post.min_budget}
-                                        - ${post.max_budget}</div>
+                    </div>
+
+
+                    <div style="padding: 5px;"><div class="user-toggle">
+                            <div class="user-avatar bg-secondary-dim sm">
+                                <em class="icon ni ni-map-pin"></em>
                             </div>
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
-                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
-                                    <div style="font-size: 22px;margin-top:20px;">
-                                        <b>${post.duration}</b></div>
-                                    <div>month(s)</div>
-                                </div>
+                            <div class="user-info" style="">
+                                <div class="nk-menu-text text"><small class="text-muted">Location</small>  <br> ${post.location}</div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                <div class="issuer text"><em
-                                            class="icon ni ni-map-pin"></em> ${post.location} (
-            ${post.distance}
-            km)</div>
-                </div>
-                </div>
-                </div>
-                <div class="card-header text-dark bg-lighter"
-                style="border-radius: 4px; margin:5px;">
-                <div class="row text-center">
-                        <div class="col-md-6 col-xs-6 col-sm-6"><a type="button" style="float: left;"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a></div>
-                        <div class="col-md-6 col-xs-6 col-sm-6 text-center"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-primary btn-block" style="height: 40px;margin-top: 0px;">Details</a></div>
+                    </div>
+
+
+
+                <hr style="border-color: #dbdfea;">
+
+                <div class="row text-center" style="padding: 10px;">
+                    <div class="col-md-6 col-xs-6 col-sm-6 " style="margin-top: 5px;">
+                        <a type="button" style="float: left;justify-content: center;align-items: center"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
+                            <div style="display: flex; flex-direction: row; gap: 5px;justify-content: center;">
+                                <em class="icon ni ni-share-alt" style="font-size: 24px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
+                                <div style="margin-bottom: 10px;">Share opportunity</div>
+                            </div>
+                        </a>
+                    </div>
+                        <div class="col-md-6 col-xs-6 col-sm-6 text-center" style="flex: 1"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary btn-block" style="height: 40px;margin-top: 0px;">View Details</a></div>
                     </div>
                 </div>
 
-                </div>
-                </a>
+<!--                </div>-->
+<!--                </a>-->
                 </div>
                 `
         }
@@ -370,7 +401,8 @@ border: 1px solid #dbdfea;">
                 data: {},
                 crossDomain: true,
                 success: function (_data) {
-                    const data = _data.data
+                    const data = _data
+                    console.log(data)
                     localStorage.setItem("fixedTermPosts", JSON.stringify(data))
                     $("#fixedTermOpportunitiesListing").html("")
                     let fixedTermOpportunitiesList = `<div class="row">`
