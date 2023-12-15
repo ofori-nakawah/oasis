@@ -27,12 +27,12 @@
 {{--    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">--}}
 {{--    <link rel="preconnect" href="https://fonts.googleapis.com">--}}
 {{--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>--}}
-{{--    <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap" rel="stylesheet">--}}
+    <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
 {{--    <link rel="preconnect" href="https://fonts.googleapis.com">--}}
 {{--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>--}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+{{--    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">--}}
 
 
     {{--    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap" rel="stylesheet">--}}
@@ -41,7 +41,7 @@
             /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
             /*font-family: 'Lilita One', cursive;*/
             /*font-family: 'Poppins', sans-serif;*/
-            font-family: 'Bricolage Grotesque', 'Poppins', sans-serif;
+            font-family: 'Sen', 'Poppins', sans-serif;
             /*font-family: "Signika",Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;*/
             /*font-family: 'Mukta', Helvetica, 'lato', sans-serif;*/
             /*font-weight: 600 !important;*/
@@ -102,6 +102,10 @@
         /*    margin-top: 10px;*/
         /*    margin-bottom: 10px;*/
         /*}*/
+
+        .user-avatar + .user-info, [class^="user-avatar"] + .user-info {
+            margin-left: 5px;
+        }
 
         div.dataTables_info {position:absolute}
         div.dataTables_wrapper div.dataTables_paginate {float:none; text-align:center}

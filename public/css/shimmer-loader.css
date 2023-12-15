@@ -79,3 +79,8 @@
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
 }
+
+.tag{
+    border: 1px solid #ccc; padding: 10px;word-wrap: break-word;
+    white-space: nowrap;border-radius: 4px;
+}

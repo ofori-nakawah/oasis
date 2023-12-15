@@ -8,17 +8,21 @@
     <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
-                <h3 class="nk-block-title " style="font-weight: 400"> Fixed term opportunities</h3>
-                <span
-                    class="text-muted" style="font-size: 20px;margin-top: -15px;">Discover fixed term opportunities near you and all over the country</span>
+                <h3 class="nk-block-title page-title"><em class="icon ni ni-briefcase"></em> Work </h3>
                 <div class="nk-block-des text-soft">
                     <p class="hide-mb-sm hide-mb-xs md">
+                    <nav>
+                        <ul class="breadcrumb breadcrumb-arrow">
+                            <li class="breadcrumb-item"><a href="#">Work</a></li>
+                            <li class="breadcrumb-item"><a href="#">Fixed Term Jobs</a></li>
+                        </ul>
+                    </nav>
                     </p>
                 </div>
-            </div>
+            </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
                 <a href="{{URL::previous()}}"
-                   class="btn btn-outline-light"><span>Back</span></a>
+                   class="btn btn-outline-primary"><span>Back</span></a></li>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
@@ -57,7 +61,7 @@ border: 1px solid #dbdfea;">
                             <div class="title" style="font-size: 10px;color: #777;">Budget (GHS)</div>
                             <b>
                                 <div class="date text-success">{{$post->min_budget}}
-                                    - {{$post->max_budget}}</div>
+            - {{$post->max_budget}}</div>
                             </b>
                         </div>
                     </div>
@@ -65,21 +69,21 @@ border: 1px solid #dbdfea;">
             </div> -->
 
             <div class="col-md-4">
-            <div class="card card-bordered" style="border-radius: 16px;">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-2">
-                            image
-                        </div>
-                        <div class="col-md-10">
-                            <div style="font-weight: 800">{{$post->title}}</div>
-                            <div>Employer</div>
-                            <div>Location</div>
-                            <div>2 days ago</div>
+                <div class="card card-bordered" style="border-radius: 16px;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                image
+                            </div>
+                            <div class="col-md-10">
+                                <div style="font-weight: 800">{{$post->title}}</div>
+                                <div>Employer</div>
+                                <div>Location</div>
+                                <div>2 days ago</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         @endforeach
     </div>
