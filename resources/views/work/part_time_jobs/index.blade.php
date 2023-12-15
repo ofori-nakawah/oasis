@@ -119,11 +119,11 @@
         </div>
     </div>
 
-    <div class="modal fade zoom" tabindex="-1" id="shareOpportunity" style="border-radius: 16px;">
-        <div class="modal-dialog" role="document" style="border-radius: 16px;">
-            <div class="modal-content" style="border-radius: 16px;">
+    <div class="modal fade zoom" tabindex="-1" id="shareOpportunity" style="border-radius: 4px;">
+        <div class="modal-dialog" role="document" style="border-radius: 4px;">
+            <div class="modal-content" style="border-radius: 4px;">
                 <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                    <em class="icon ni ni-cross"></em>
+                    <em class="icon ni ni-cross text-danger"></em>
                 </a>
                 <div class="modal-header" style="border-bottom: none !important;">
                     <div class="modal-title" style="font-size: 18px;"><b>Share Opportunity</b></div>
@@ -138,10 +138,10 @@
                                style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span
                                         id="shareableLink"></span></b>
                             </p>
-                            <div class="btn btn-outline-lighter copyLinkButton bold" style="float: right !important;"
+                            <div class="btn btn-outline-primary copyLinkButton bold" style="float: right !important;"
                                  onclick="copyLinkToClipboard()"><em class="icon ni ni-copy"></em> Copy link
                             </div>
-                            <span class="copyStatus"></span>
+                            <span class="copyStatus text-success"></span>
                         </div>
                     </div>
                 </div>
