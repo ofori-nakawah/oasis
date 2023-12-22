@@ -8,125 +8,390 @@
     <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
-                <h3 class="nk-block-title page-title"><em class="icon ni ni-briefcase"></em> Work </h3>
+                <h3 class="nk-block-title " style="font-weight: 900"> Fixed term opportunities <br> <span
+                        class="text-muted" style="font-size: 20px;">Discover fixed term opportunities near you and all over the country</span>
+                </h3>
                 <div class="nk-block-des text-soft">
                     <p class="hide-mb-sm hide-mb-xs md">
-                    <nav>
-                        <ul class="breadcrumb breadcrumb-arrow">
-                            <li class="breadcrumb-item"><a href="#">Apply</a></li>
-                            <li class="breadcrumb-item"><a href="#">Available FIXED TERM JOB Opportunities</a></li>
-                            <li class="breadcrumb-item"><a href="#">{{$original_post->category}}</a></li>
-                        </ul>
-                    </nav>
                     </p>
                 </div>
-            </div><!-- .nk-block-head-content -->
+            </div>
             <div class="nk-block-head-content">
                 <a href="{{URL::previous()}}"
-                   class="btn btn-outline-primary"><span>Back</span></a></li>
+                   class="btn btn-outline-light"><span>Back</span></a>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
 
     <div class="row">
-        <div class="col-md-5 d-none d-md-block">
-            @foreach($posts as $post)
-                <div class="card card-bordered">
-                    <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->title}}</b></div>
+        <div class="col-md-4">
+            <div id="fixedTermOpportunityShimmerLoader"></div>
+            <div id="fixedTermOpportunitySnapshot"></div>
+
+            <div class="row mb-2 mt-2" >
+                <div class="col-md-12">
+                    <p class="text-dark" style="display: flex;"><span style="flex: 1;">Other opportunities</span> <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "fixed-term"])}}" style="text-decoration: underline">See more</a></p>
+                </div>
+            </div>
+
+            <div id="otherFixedTermOpportunitiesShimmerLoader"></div>
+            <div id="otherFixedTermOpportunitiesListing"></div>
+
+        </div>
+        <div class="col-md-8">
+            <div id="fixedTermOpportunityDetailsShimmerLoader"></div>
+            <div id="fixedTermOpportunityDetails"></div>
+        </div>
+
+    </div>
+
+@endsection
+
+@section("scripts")
+    <script>
+        /**
+         * setup selected fixed term opportunities
+         * shimmer loader
+         */
+        const fixedTermOpportunityShimmerLoader = `Loading...`
+
+        /**
+         * fixed term opportunity details
+         * shiller loader
+         */
+
+        const fixedTermOpportunityDetailsShimmerLoader = `Loading...`
+
+        /**
+         * other fixed term opportunities shimmer loader
+         * @param isLoading
+         */
+        const otherFixedTermOpportunitiesShimmerLoader = `Loading`
+
+        const isLoadingFixedTermOpportunity = (isLoading) => {
+            if (isLoading) {
+                /**
+                 * loaders
+                 */
+                $("#fixedTermOpportunityShimmerLoader").html(fixedTermOpportunityShimmerLoader)
+                $("#fixedTermOpportunityDetailsShimmerLoader").html(fixedTermOpportunityDetailsShimmerLoader)
+                $("#otherFixedTermOpportunitiesShimmerLoader").html(otherFixedTermOpportunitiesShimmerLoader)
+                $("#fixedTermOpportunityShimmerLoader").show()
+                $("#otherFixedTermOpportunitiesShimmerLoader").show()
+                $("#fixedTermOpportunityDetailsShimmerLoader").show()
+
+                /**
+                 * contnet
+                 */
+            } else {
+                /**
+                 * loaders
+                 */
+                $("#fixedTermOpportunityShimmerLoader").hide()
+                $("#otherFixedTermOpportunitiesShimmerLoader").hide()
+                $("#fixedTermOpportunityDetailsShimmerLoader").hide()
+
+                /**
+                 * content
+                 */
+            }
+        }
+
+        const ComponentFixedTermOpportunitiesFetchError = () => {
+            return `
+                <p class="text-center">Oops...something went wrong</p>
+            `
+        }
+
+        const ComponentFixedTermOpportunity = (post) => {
+            let isInternship = ``;
+            if (post.is_internship === "yes") {
+                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
+                            <em class="icon ni ni-book-read"></em>
+                        </div> `
+            }
+
+            return `
+            <div
+               style="text-decoration: none !important;" class="">
+                <div class="card card-bordered" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 4px;
+/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
+backdrop-filter: blur(5px);
+margin-bottom: 15px;
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid #dbdfea;">
+                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
+                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
                     <div class="card-body">
                         <div class="row mb-2">
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Issuer</div>
-                                <div class="issuer"><b>{{$post->user->name}}</b></div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
-                                <b>
-                                    <div class="date text-danger">{{$post->date}} {{$post->time}}</div>
-                                </b>
+                            <div class="col-md-12">
+                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
+                                <div class="issuer text-danger"><em
+                                            class="icon ni ni-building"></em> ${post.employer}
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mb-2">
                             <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                <div class="issuer"><b>{{$post->location}} ({{$post->distance}}km)</b></div>
+                                <div class="title" style="font-size: 10px;color: #777;">Budget
+                                    (GHS/month)
+                                </div>
+                                <div class="issuer text-success"><em
+                                            class="icon ni ni-coins"></em> ${post.min_budget}
+                                        - ${post.max_budget}</div>
                             </div>
                             <div class="col-md-6">
                                 <div class="title" style="font-size: 10px;color: #777;">Duration</div>
-                                <b>
-                                    <div class="date text-success">{{$post->min_budget}} - {{$post->max_budget}} </div>
-                                </b>
+                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
+                                    <div style="font-size: 22px;margin-top:20px;">
+                                        <b>${post.duration}</b></div>
+                                    <div>month(s)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
+                                <div class="issuer text"><em
+                                            class="icon ni ni-map-pin"></em> ${post.location} (
+            ${post.distance}
+            km)</div>
+                </div>
+                </div>
+                </div>
+</div></div>
+            `
+        }
+
+        const ComponentFixedTermOpportunityDetails = (post) => {
+            let isInternship = ``;
+            if (post.is_internship === "yes") {
+                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
+                            <em class="icon ni ni-book-read"></em>
+                        </div> `
+            }
+
+            return `
+               <div class="card card-bordered" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 4px;
+/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
+backdrop-filter: blur(5px);
+margin-bottom: 15px;
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid #dbdfea;">
+                <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
+                    <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.postedOn}</span></div> ${isInternship}</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="title" style="font-size: 10px;color: #777;">Company</div>
+                            <div class="issuer text-danger"><em
+                                    class="icon ni ni-building"></em> ${post.employer}
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                        <span class="pull-left" style="float: left !important;">
-                            @if($post->has_already_applied === "yes") <span>Already applied</span> @endif
-                        </span>
-                        <a href="{{route('user.quick_job.show', ['uuid' => $post->id])}}" class="btn btn-outline-secondary">View Details</a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-        <div class="col-md-7">
-            @include("utilities.alerts.alerts")
-            <div class="card card-bordered">
-                <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-md-8">
-                            <div class="title" style="font-size: 10px;color: #777;">Job Title</div>
-                            <div class="issuer"><b>{{$original_post->title}}</b></div>
+                        <div class="col-md-6">
+                            <div class="title" style="font-size: 10px;color: #777;">Budget
+                                (GHS/month)
+                            </div>
+                            <div class="issuer text-success"><em
+                                    class="icon ni ni-coins"></em> ${post.min_budget}
+                                - ${post.max_budget}</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="title" style="font-size: 10px;color: #777;">Issuer</div>
-                            <b>
-                                <div class="date">{{$original_post->user->name}}</div>
-                            </b>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Description</div>
-                            <div class="issuer"><b>{{$original_post->description}}</b></div>
-                            @if($original_post->post_image_link)
-                                <img src="{{$original_post->post_image_link}}" style="height: 300px;width: 100%;border-radius: 4px;" alt="">
-                            @endif
+                        <div class="col-md-6">
+                            <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                            <div class="issuer card bg-lighter text-center" style="height: 100px;">
+                                <div style="font-size: 22px;margin-top:20px;">
+                                    <b>${post.duration}</b></div>
+                                <div>month(s)</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                            <b><div class="location">{{$original_post->location}}</div></b>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-8">
-                            <div class="title" style="font-size: 10px;color: #777;">Budget (GHS)</div>
-                            <b>
-                                <div class="date text-success">{{$original_post->min_budget}} - {{$original_post->max_budget}} <br> <small>@if($original_post->is_negotiable == "on") <span style="font-style: italic; color: #777;">Negotiable</span> @endif @if($original_post->is_includes_tax == "on") <span style="font-style: italic; color: #777;"> & Includes WHT @ 5%.</span> @endif</small></div>
-                            </b>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
-                            <b>
-                                <div class="date text-danger">{{$original_post->date}} {{$original_post->time}}</div>
-                            </b>
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="title" style="font-size: 10px;color: #777;">Other Relevant Information</div>
-                            <div class="issuer"><b>{{$original_post->other_relevant_information}}</b></div>
+                            <div class="title" style="font-size: 10px;color: #777;">Job Description</div>
+                            <div class="issuer text">${post.description}</div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="title" style="font-size: 10px;color: #777;">Qualifications</div>
+                            <div class="issuer text">
+                                ${post.qualifications}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="title" style="font-size: 10px;color: #777;">Location</div>
+                            <div class="issuer text"><em
+                                    class="icon ni ni-map-pin"></em> ${post.location}
+                                (${post.distance})</div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="title" style="font-size: 10px;color: #777;">Deadline</div>
+                            <div class="issuer text text-danger"><em
+                                    class="icon ni ni-calendar "></em> ${post.date} ${post.time}</div>
                         </div>
                     </div>
                 </div>
-                @if($original_post->user->id !== auth()->id())
-                    <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                        @if($original_post->has_already_applied === "yes") <span>You have already applied</span> @elseif($original_post->status === "closed") <span>Post closed</span> @else <a href="{{route("user.apply_for_job", ['uuid' => $original_post->id])}}" class="btn btn-outline-success">Apply</a> @endif
-                    </div>
-                @endif
+                <div class="card-header text-dark bg-lighter"
+                     style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
+                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
+                        <div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
+                            <div class="spinner-border" role="status"></div>
+                        </div></a>
+
+
+                    <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                            class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
+
+
+                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-primary"> <b>Apply</b></a>
+
+                </div>
+
             </div>
-        </div>
-    </div>
+            `
+        }
+
+        const ComponentOtherFixedTermOpportunities = (post) => {
+            let isInternship = ``;
+            if (post.is_internship === "yes") {
+                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
+                            <em class="icon ni ni-book-read"></em>
+                        </div> `
+            }
+
+            const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
+
+            return `
+        <div class="col-md-12">
+            <a href="${route}"
+               style="text-decoration: none !important;" class="cardContainer">
+                <div class="card card-bordered cardContainer" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 4px;
+/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
+backdrop-filter: blur(5px);
+margin-bottom: 15px;
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid #dbdfea;">
+                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
+                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
+                                <div class="issuer text-danger"><em
+                                            class="icon ni ni-building"></em> ${post.employer}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <div class="title" style="font-size: 10px;color: #777;">Budget
+                                    (GHS/month)
+                                </div>
+                                <div class="issuer text-success"><em
+                                            class="icon ni ni-coins"></em> ${post.min_budget}
+                                        - ${post.max_budget}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
+                                    <div style="font-size: 22px;margin-top:20px;">
+                                        <b>${post.duration}</b></div>
+                                    <div>month(s)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
+                                <div class="issuer text"><em
+                                            class="icon ni ni-map-pin"></em> ${post.location} (
+            ${post.distance}
+            km)</div>
+                </div>
+                </div>
+                </div>
+                <div class="card-header text-dark bg-lighter"
+                style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
+                <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
+<div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
+                        <div class="spinner-border" role="status"></div>
+                </div></a>
+
+
+                <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
+
+
+                <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-light bg-white"><em
+                    class="icon ni ni-list-round"></em></a>
+
+                </div>
+
+                </div>
+                </a>
+                </div>
+                `
+        }
+
+
+        const getFixedTermOpportunity = () => {
+
+            isLoadingFixedTermOpportunity(true)
+
+            /**
+             * make api call
+             */
+            $.ajax({
+                url: "{{env("BACKEND_URL")}}/getFixedTermOpportunityDetails/{{$uuid}}",
+                method: "GET",
+                dataType: "json",
+                contentType: "application/json",
+                data: {},
+                crossDomain: true,
+                success: function (_data) {
+                    const data = _data.data
+                    $("#otherFixedTermOpportunitiesListing").html("")
+                    $("#fixedTermOpportunitySnapshot").html("")
+                    $("#fixedTermOpportunityDetails").html("")
+
+                    $("#fixedTermOpportunitySnapshot").html(ComponentFixedTermOpportunity(data.opportunity))
+                    $("#fixedTermOpportunityDetails").html(ComponentFixedTermOpportunityDetails(data.opportunity))
+
+                    let otherFixedTermOpportunitiesList = `<div class="row">`
+                    $.each(data.otherOpportunities, function (key, opportunity) {
+                        otherFixedTermOpportunitiesList += ComponentOtherFixedTermOpportunities(opportunity)
+                    })
+                    $("#otherFixedTermOpportunitiesListing").html(otherFixedTermOpportunitiesList)
+                    otherFixedTermOpportunitiesList += `</div>`
+                    $(".savedFixedTermOpportunityIcon").hide()
+                    $(".saveFixedTermOpportunityLoader").hide()
+                    isLoadingFixedTermOpportunity(false)
+                },
+                error: function (e) {
+                    $("#fixedTermOpportunitiesListing").html(ComponentFixedTermOpportunitiesFetchError())
+                    isLoadingFixedTermOpportunity(false)
+                }
+            })
+        }
+
+        getFixedTermOpportunity()
+
+    </script>
 @endsection
 

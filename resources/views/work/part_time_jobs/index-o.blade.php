@@ -294,85 +294,64 @@
 
             return `
         <div class="col-md-6">
-<!--             <a href="${route}"-->
-<!--               style="text-decoration: none !important;" class="cardContainer">-->
                 <div class="card card-bordered cardContainer" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
-padding: 10px;
-/*border-radius: 4px;*/
+border-radius: 4px;
 /*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
 backdrop-filter: blur(5px);
 margin-bottom: 15px;
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid #dbdfea;">
-
-                    <div style="display: flex; flex-direction: row; padding: 10px;border: 1px solid #dbdfea;border-radius: 4px;" class="bg-secondary-dim mb-2">
-                        <div style="display: flex; flex-direction: row; gap: 10px;flex: 1;">
-<!--                           <div style="border: 1px solid #364a63; padding: 5px; height: 80px; width: 80px !important;border-radius: 4px;">Image</div>-->
-                           <div style="display: flex; justify-content: center;flex-direction: column;">
-                              <div style="font-size: 18px;color: #1c2b46 !important"><b>${post.title}</b></div>
-                              <div class="text-muted"><small><em class="icon ni ni-clock"></em> ${post.createdOn}</small></div>
-                           </div>
-                        </div>
-<!--                        <div>Save</div>-->
-                    </div>
-
-                        <div class="user-toggle">
-                                                    <div class="user-avatar bg-secondary-dim sm">
-                                                        <em class="icon ni ni-building"></em>
-                                                    </div>
-                                                    <div class="user-info" style="">
-                                                        <div class="nk-menu-text " style="color: red"> <small class="text-muted">Company</small>  <br>
-                         ${post.employer}</div>
+                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
+                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
+                                <div class="issuer text-danger"><em
+                                            class="icon ni ni-building"></em> ${post.employer}
+                                </div>
                             </div>
                         </div>
-
-
-
-
-                    <div style="display: flex; flex-direction: row;gap: 10px; justify-content: space-between ">
-                        <div class="user-toggle">
-                            <div class="user-avatar bg-secondary-dim sm">
-                                <em class="icon ni ni-coins"></em>
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <div class="title" style="font-size: 10px;color: #777;">Budget
+                                    (GHS/month)
+                                </div>
+                                <div class="issuer text-success"><em
+                                            class="icon ni ni-coins"></em> ${post.min_budget}
+                                        - ${post.max_budget}</div>
                             </div>
-                            <div class="user-info" style="">
-                                <div class="nk-menu-text text-green-600" style="color: green"> <small class="text-muted">Budget (GHS/month)</small>  <br>
- ${post.min_budget}GHS - ${post.max_budget}GHS</div>
-                            </div>
-                        </div>
-                        <div class="flex flex-column border round-sm text-center bg-secondary-dim justify-center items-center" style="width: 100px;height: 100px;">
-                            <div><small>Duration</small></div>
-                            <div style="font-size: 28px;"><b>${post.duration}</b></div>
-                            <div><small><b>months</b></small></div>
-                        </div>
-                    </div>
-
-
-                    <div><div class="user-toggle">
-                            <div class="user-avatar bg-secondary-dim sm">
-                                <em class="icon ni ni-map-pin"></em>
-                            </div>
-                            <div class="user-info" style="">
-                                <div class="nk-menu-text text"><small class="text-muted">Location</small>  <br> ${post.location} (${post.distance}km)</div>
+                            <div class="col-md-6">
+                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
+                                    <div style="font-size: 22px;margin-top:20px;">
+                                        <b>${post.duration}</b></div>
+                                    <div>month(s)</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-
-
-
-                <div class="flex flex-row justify-between bg-secondary-dim mt-2" style="margin: 0px;border: 1px solid #dbdfea;border-radius: 4px;padding: 10px;">
-                    <div class=" " style="margin-top: 5px;">
-                        <a type="button" style="float: left;justify-content: center;align-items: center"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
-                                <em class="icon ni ni-link" style="font-size: 28px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
-                        </a>
-                    </div>
-                    <div class="" ><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary " style="height: 40px;margin-top: 0px;float: right !important;">View Details</a></div>
-                    </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
+                                <div class="issuer text"><em
+                                            class="icon ni ni-map-pin"></em> ${post.location} (
+            ${post.distance}
+            km)</div>
+                </div>
+                </div>
                 </div>
 
-<!--                </div>-->
-<!--                </a>-->
+                 <div class="flex flex-row justify-between items-center bg-lighter" style="margin: 5px;border-radius: 4px;padding: 10px;">
+                        <a type="button" style="float: left !important;"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
+                                <em class="icon ni ni-link" style="font-size: 28px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
+                        </a>
+                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary " style="height: 40px;margin-top: 0px;float: right !important;">View Details</a></div>
+                </div>
+
+                </div>
+                </div>
+
                 </div>
                 `
         }

@@ -461,8 +461,9 @@ class PostController extends Controller
             }
         }
         $posts = $jobs_near_me->sortBy("distance");;
+        $uuid = $post->id;
 
-        return view("work.part_time_jobs.show", compact("original_post", "posts"));
+        return view("work.part_time_jobs.show", compact("original_post", "posts", "uuid"));
     }
 
     public function getFixedTermOpportunityDetails($uuid)
