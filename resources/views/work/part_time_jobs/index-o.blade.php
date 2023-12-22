@@ -348,7 +348,7 @@ border: 1px solid #dbdfea;">
                     <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary " style="height: 40px;margin-top: 0px;float: right !important;">View Details</a></div>
                 </div>
 
-                </div>
+<!--                </div>-->
 <!--                </div>-->
 
                 </div>
