@@ -343,7 +343,7 @@ border: 1px solid #dbdfea;">
                         <div class="flex flex-column border round-sm text-center bg-secondary-dim justify-center items-center" style="width: 100px;height: 100px;">
                             <div><small>Duration</small></div>
                             <div style="font-size: 28px;"><b>${post.duration}</b></div>
-                            <div><small>months</small></div>
+                            <div><small><b>months</b></small></div>
                         </div>
                     </div>
 
