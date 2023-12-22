@@ -287,7 +287,6 @@
                 categories += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
   white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">${tag}</span>`
             })
-            console.log(categories)
 
 
             const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
@@ -350,7 +349,7 @@ border: 1px solid #dbdfea;">
                 </div>
 
                 </div>
-                </div>
+<!--                </div>-->
 
                 </div>
                 `
