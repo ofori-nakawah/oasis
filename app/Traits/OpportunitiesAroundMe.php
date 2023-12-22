@@ -104,11 +104,10 @@ trait OpportunitiesAroundMe
         }
         return $jobs_near_me->sortBy("distance");
     }
-
     public static function GetOpportunitiesAroundMe($search_radius) {
         return [
             "volunteer_activities" => self::VolunteerProjects($search_radius),
-            "quick_jobs" => self::QuickJobs($search_radius)
+            "quick_jobs" => self::QuickJobs($search_radius),
         ];
     }
 }

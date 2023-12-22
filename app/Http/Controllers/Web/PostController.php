@@ -177,7 +177,7 @@ class PostController extends Controller
     {
         $skills = Skill::all();
         $posts = $this->getFixedTermOpportunities();
-        return view("work.part_time_jobs.index", compact("skills", "posts"));
+        return view("work.part_time_jobs.index-o", compact("skills", "posts"));
     }
 
     public function getFixedTermOpportunities()
@@ -395,9 +395,74 @@ class PostController extends Controller
     public function show_fixed_term_job_details($uuid)
     {
         if (!$uuid) {
-            return back()->with("danger", "Invalid request");
+            return back()->with("danger", "Invalid request. Kindly try again.");
         }
-        return view("work.part_time_jobs.show", compact("uuid"));
+
+        $original_post = Post::where("id", $uuid)->first();
+        if (!$original_post) {
+            return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+        }
+
+        /**
+         * 404@alias
+         */
+        if ($original_post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
+        }
+
+        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
+        if ($has_already_applied) {
+            $original_post->has_already_applied = "yes";
+        }
+        $original_post->user;
+
+        $posts = [];
+
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return back()->with("danger", "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
+
+        $_user_interests = auth()->user()->skills;
+        $user_interests = array();
+        foreach ($_user_interests as $interest) {
+            array_push($user_interests, $interest->skill->id);
+        }
+
+        /**
+         * filter using:
+         * post type
+         * interests | skills
+         */
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+
+        /**
+         * filter using distance
+         */
+        $jobs_near_me = collect();
+        foreach ($posts as $post) {
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+
+            if ($distance <= self::JOB_SEARCH_RADIUS) {
+                $post["organiser_name"] = $post->user->name;
+                $post["distance"] = number_format($distance, 2);
+                $jobs_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }
+        }
+        $posts = $jobs_near_me->sortBy("distance");;
+
+        return view("work.part_time_jobs.show", compact("original_post", "posts"));
     }
 
     public function getFixedTermOpportunityDetails($uuid)

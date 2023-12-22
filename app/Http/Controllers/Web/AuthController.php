@@ -55,6 +55,10 @@ class AuthController extends Controller
             Auth::user()->is_online = true;
             Auth::user()->update();
 
+            if (auth()->user()->location_name === "" || auth()->user()->location_name === null) {
+                return view("onboarding.location");
+            }
+
             return redirect()->intended(route('home'));
         }
 

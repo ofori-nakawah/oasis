@@ -108,6 +108,7 @@
                                 <a class="nav-link" data-toggle="tab" href="#quick_job"><span>Quick Job</span></a>
                             </li>
 
+
                     </ul><!-- .nav-tabs -->
                     <div class="tab-content" style="padding: 0px;min-height: 280px;">
                         <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;height: 250px;overflow-y: scroll">
@@ -150,6 +151,7 @@
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             </div>
