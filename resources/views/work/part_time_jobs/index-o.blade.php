@@ -353,7 +353,7 @@ border: 1px solid #dbdfea;">
                                 <em class="icon ni ni-map-pin"></em>
                             </div>
                             <div class="user-info" style="">
-                                <div class="nk-menu-text text"><small class="text-muted">Location</small>  <br> ${post.location}</div>
+                                <div class="nk-menu-text text"><small class="text-muted">Location</small>  <br> ${post.location} (${post.distance}km)</div>
                             </div>
                         </div>
                     </div>
