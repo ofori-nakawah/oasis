@@ -361,16 +361,13 @@ border: 1px solid #dbdfea;">
 
 
 
-                <div class="row text-center bg-secondary-dim mt-2" style="margin: 0px;border: 1px solid #dbdfea;border-radius: 4px;padding-top: 10px;padding-bottom: 10px">
-                    <div class="col-md-6 col-xs-6 col-sm-6 " style="margin-top: 5px;">
+                <div class="flex flex-row justify-between bg-secondary-dim mt-2" style="margin: 0px;border: 1px solid #dbdfea;border-radius: 4px;padding: 10px;">
+                    <div class=" " style="margin-top: 5px;">
                         <a type="button" style="float: left;justify-content: center;align-items: center"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
-                            <div style="display: flex; flex-direction: row; gap: 5px;justify-content: center;">
                                 <em class="icon ni ni-link" style="font-size: 28px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
-                                <div style="margin-bottom: 10px;"></div>
-                            </div>
                         </a>
                     </div>
-                        <div class="col-md-6 col-xs-6 col-sm-6 text-center" style="flex: 1"><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary btn-block" style="height: 40px;margin-top: 0px;">View Details</a></div>
+                    <div class="" ><a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary " style="height: 40px;margin-top: 0px;float: right !important;">View Details</a></div>
                     </div>
                 </div>
 
