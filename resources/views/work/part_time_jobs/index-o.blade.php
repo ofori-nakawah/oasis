@@ -278,7 +278,7 @@
             let isInternship = ``;
             if (post.is_internship === "yes") {
                 isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
-  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">Internship</span>`
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
             }
 
             let categories = ``
@@ -342,10 +342,11 @@ border: 1px solid #dbdfea;">
                 </div>
 
                  <div class="flex flex-row justify-between items-center bg-lighter" style="margin: 5px;border-radius: 4px;padding: 10px;">
-                        <a type="button" style="float: left !important;"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
-                                <em class="icon ni ni-link" style="font-size: 28px;" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
+                        <a type="button" style="float: left !important;" class="btn btn-outline-gray"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
+                                <em class="icon ni ni-share"  data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
                         </a>
-                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary " style="height: 40px;margin-top: 0px;float: right !important;">View Details</a></div>
+                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-gray " style="float: right !important;"><em
+                    class="icon ni ni-list-round"></em></a></div>
                 </div>
 
 <!--                </div>-->
