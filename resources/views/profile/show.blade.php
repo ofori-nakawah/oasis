@@ -19,6 +19,10 @@
                     </p>
                 </div>
             </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <a href="{{URL::previous()}}"
+                   class="btn btn-outline-light"><span>Back</span></a>
+            </div><!-- .nk-block-head-content -->
         </div>
     </div>
 
