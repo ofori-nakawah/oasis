@@ -105,9 +105,14 @@
                             <a class="nav-link active" data-toggle="tab" href="#volunteer"><span>Volunteer</span></a>
                         </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#quick_job"><span>Quick Job</span></a>
+                                <a class="nav-link" data-toggle="tab" href="#quick_job"><span>Casual</span></a>
                             </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#quick_job"><span>Part Time</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#quick_job"><span>Permanent</span></a>
+                        </li>
 
                     </ul><!-- .nav-tabs -->
                     <div class="tab-content" style="padding: 0px;min-height: 280px;">

@@ -171,6 +171,17 @@ border: 1px solid #dbdfea;">
   white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
             }
 
+            const route = `{{env("BACKEND_URL")}}/posts/${post.id}/apply`
+
+            console.log(post)
+
+            let applyButton;
+            if (post.has_already_applied !== "yes") {
+                applyButton = `<a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary"> <b>Apply</b></a>`
+            } else {
+                applyButton =  `<p>Job application sent!</p>`
+            }
+
             return `
                <div class="card card-bordered" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
@@ -244,14 +255,14 @@ border: 1px solid #dbdfea;">
                     </div>
                 </div>
                 <div class="card-header text-dark bg-lighter"
-                     style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
+                     style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;align-items: center">
 
 
                     <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
                             class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
 
 
-                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-primary"> <b>Apply</b></a>
+                    ${applyButton}
 
                 </div>
 

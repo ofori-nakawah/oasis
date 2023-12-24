@@ -310,10 +310,9 @@
                     <div class="nk-content-inner">
                         <div class="nk-content-body">
                             <div class="row">
-                                <div class="col-md-11">
+                                <div class="col-md-12">
                                     @section("content") @show
                                 </div>
-                                <div class="col-md-1"></div>
                             </div>
                         </div>
                     </div>
