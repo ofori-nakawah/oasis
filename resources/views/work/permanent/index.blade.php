@@ -307,7 +307,7 @@ border: 1px solid #dbdfea;">
                         <div class="row mb-2">
                             <div class="col-md-12">
                                 <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                <div class="issuer text-danger"><em
+                                <div class="issuer"><em
                                             class="icon ni ni-building"></em> ${post.employer}
                                 </div>
                             </div>

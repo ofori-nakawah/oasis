@@ -196,7 +196,7 @@ border: 1px solid #dbdfea;">
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                            <div class="issuer text-danger"><em
+                            <div class="issuer "><em
                                     class="icon ni ni-building"></em> ${post.employer}
                             </div>
                         </div>
@@ -247,7 +247,7 @@ border: 1px solid #dbdfea;">
                     <div class="row mt-2">
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Deadline</div>
-                            <div class="issuer text text-danger"><em
+                            <div class="issuer text text-danger" style="color: red"><em
                                     class="icon ni ni-calendar "></em> ${post.date} ${post.time}</div>
                         </div>
                     </div>
@@ -295,7 +295,7 @@ border: 1px solid #dbdfea;">
                         <div class="row mb-2">
                             <div class="col-md-12">
                                 <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                <div class="issuer text-danger"><em
+                                <div class="issuer "><em
                                             class="icon ni ni-building"></em> ${post.employer}
                                 </div>
                             </div>
