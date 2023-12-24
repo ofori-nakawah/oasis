@@ -53,7 +53,7 @@
                                             Category
                                         @endif
 
-                                        @if($post->type === "FIXED_TERM_JOB")
+                                        @if($post->type === "FIXED_TERM_JOB" || $post->type === "PERMANENT_JOB")
                                             Title
                                         @endif
                                     </div>
@@ -67,7 +67,7 @@
                                                 {{$post->category}}
                                             @endif
 
-                                            @if($post->type === "FIXED_TERM_JOB")
+                                            @if($post->type === "FIXED_TERM_JOB"  || $post->type === "PERMANENT_JOB")
                                                 {{$post->title}}
                                             @endif
                                         </b></div>

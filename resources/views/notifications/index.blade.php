@@ -56,7 +56,7 @@
                                                 Category
                                             @endif
 
-                                            @if(($notification->data["post"]["type"] === "FIXED_TERM_JOB"))
+                                            @if(($notification->data["post"]["type"] === "FIXED_TERM_JOB") || ($notification->data["post"]["type"] === "PERMANENT_JOB"))
                                                 Title
                                             @endif
                                         </div>
@@ -73,6 +73,10 @@
                                                 @if(($notification->data["post"]["type"] === "FIXED_TERM_JOB"))
                                                     {{$notification->data["post"]["title"]}}
                                                 @endif
+
+                                                    @if(($notification->data["post"]["type"] === "FIXED_TERM_JOB") || ($notification->data["post"]["type"] === "PERMANENT_JOB"))
+                                                        {{$notification->data["post"]["title"]}}
+                                                    @endif
                                             </div>
                                         </b>
                                     </div>

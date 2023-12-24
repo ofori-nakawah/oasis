@@ -44,7 +44,7 @@
                                         Category
                                     @endif
 
-                                    @if($_post->type === "FIXED_TERM_JOB")
+                                    @if($_post->type === "FIXED_TERM_JOB" || $_post->type === "PERMANENT_JOB")
                                         Title
                                     @endif</div>
                                 <div class="issuer">
@@ -56,7 +56,7 @@
                                             {{$_post->category}}
                                         @endif
 
-                                        @if($_post->type === "FIXED_TERM_JOB")
+                                        @if($_post->type === "FIXED_TERM_JOB" || $_post->type === "PERMANENT_JOB")
                                             {{$_post->title}}
                                         @endif</b></div>
                             </div>
@@ -105,7 +105,7 @@
         <div class="col-md-7">
             @include("utilities.alerts.alerts")
 
-            @if($post->type === "FIXED_TERM_JOB")
+            @if($post->type === "FIXED_TERM_JOB" || $_post->type === "PERMANENT_JOB")
                 <div class="card card-bordered">
                     <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->type}} <span
                                 style="float: right">{{$post->date}} {{$post->time}}</span></b></div>
@@ -338,11 +338,13 @@
                                                                         <div class="title" style="font-size: 10px;color: #777;">Start Date <a href="javascript:void(0)" onclick="changeStartDateClicked()"><em class="icon ni ni-pen-fill" style="font-size: 16px;"></em></a></div>
                                                                         <div class="issuer"><b><span id="startDateValue">{{date ("l jS F Y", strtotime($post->start_date))}}</span></b></div>
                                                                     </div>
-                                                                    <div class="col-md-6 mt-3">
-                                                                        <div class="title" style="font-size: 10px;color: #777;">End Date <a href="javascript:void(0)"><em class="icon ni ni-pen-fill" style="font-size: 16px;" onclick="changeEndDateClicked()"></em></a></div>
-                                                                        <div class="issuer"><b><span id="endDateValue">{{date ("l jS F Y", strtotime($post->end_date))}}</span></b>
+                                                                    @if($post->type !== "PERMANENT_JOB")
+                                                                        <div class="col-md-6 mt-3">
+                                                                            <div class="title" style="font-size: 10px;color: #777;">End Date <a href="javascript:void(0)"><em class="icon ni ni-pen-fill" style="font-size: 16px;" onclick="changeEndDateClicked()"></em></a></div>
+                                                                            <div class="issuer"><b><span id="endDateValue">{{date ("l jS F Y", strtotime($post->end_date))}}</span></b>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
+                                                                    @endif
                                                                 </div>
                                                             </div>
 
@@ -361,14 +363,16 @@
                                                             </div>
                                                         </div>
 
-                                                        <div id="changeEndDate">
-                                                            <label for="endDate">Change End Date</label>
-                                                            <input type="date" id="endDateInput" class="form-control">
-                                                            <div class="text-right">
-                                                                <button type="button" class="btn btn-primary mt-3 ml-2" style="float: right;" onclick="submitEndDateChangeClicked()">Save Changes</button>
-                                                                <button type="button" class="btn btn-lighter mt-3" onclick="cancelEndDateChangeClicked()" style="float: right;">Cancel</button>
+                                                        @if($post->type !== "PERMANENT_JOB")
+                                                            <div id="changeEndDate">
+                                                                <label for="endDate">Change End Date</label>
+                                                                <input type="date" id="endDateInput" class="form-control">
+                                                                <div class="text-right">
+                                                                    <button type="button" class="btn btn-primary mt-3 ml-2" style="float: right;" onclick="submitEndDateChangeClicked()">Save Changes</button>
+                                                                    <button type="button" class="btn btn-lighter mt-3" onclick="cancelEndDateChangeClicked()" style="float: right;">Cancel</button>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        @endif
 
                                                         <div id="changeMonthlyPayment">
                                                             <label for="monthlyPayment">Change Estimated Monthly Payment</label>

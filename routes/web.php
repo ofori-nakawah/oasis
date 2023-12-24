@@ -34,9 +34,11 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/work', 'Web\PostController@work')->name('user.work');
     Route::post('/work/quick-jobs/publish', 'Web\PostController@create_quick_job_post')->name('user.quick_jobs.publish');
     Route::post('/work/fixed-term-jobs/publish', 'Web\PostController@create_fixed_term_job_post')->name('user.fixed_term_jobs.publish');
+    Route::post('/work/permanent-jobs/publish', 'Web\PostController@create_permanent_job_post')->name('user.permanent_jobs.publish');
     Route::get('/work/{type_of_user}', 'Web\PostController@type_of_work')->name('user.work.type');
     Route::get('/gigs/{uuid}', 'Web\PostController@show_quick_job')->name('user.quick_job.show');
     Route::get('/part-time-jobs/{uuid}', 'Web\PostController@show_fixed_term_job_details')->name('user.show_fixed_term_job_details.show');
+    Route::get('/permanent-jobs/{uuid}', 'Web\PostController@show_permanent_job_details')->name('user.show_permanent_job_details.show');
     Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');
 
 
@@ -48,6 +50,10 @@ Route::group(['middleware'=>'auth'], function () {
 //   });
 
 
+    Route::get('/getPermanentOpportunities', 'Web\PostController@getPermanentOpportunities')->name('work.getPermanentOpportunities');
+    Route::get('/getCategories', 'Web\PostController@getCategories')->name('work.getCategories');
+    Route::get('/getPermanentOpportunityDetails/{uuid}', 'Web\PostController@getPermanentOpportunityDetails')->name('work.getPermanentOpportunityDetails');
+    Route::get('/getPermanentOpportunitiesBySearchRadius/{radius}', 'Web\PostController@getPermanentOpportunitiesBySearchRadius')->name('work.getPermanentOpportunitiesBySearchRadius');
 
     /**
      * apply for job
