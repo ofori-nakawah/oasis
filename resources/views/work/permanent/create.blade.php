@@ -46,16 +46,7 @@
                                                 </span>
                             @enderror
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="custom-control custom-control-lg custom-checkbox"
-                                     style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="is_internship"
-                                           id="is_internship">
-                                    <label class="custom-control-label" for="is_internship">Internship</label>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <div class="input-group1 mb-3">
                             <label for="tags"><b>Select Applicable Categories (Tags)</b></label>

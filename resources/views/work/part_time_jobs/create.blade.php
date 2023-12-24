@@ -87,7 +87,7 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="description"><b>Brief Job Description</b></label>
+                            <label for="description"><b>Job Description</b></label>
                             <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
                                       placeholder="Enter brief description of the project"
                                       name="description">{{ old('description') }}</textarea>

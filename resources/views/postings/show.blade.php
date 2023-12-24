@@ -144,7 +144,7 @@
                                     <img src="{{asset('assets/html-template/src/images/n_a.svg')}}" alt=""
                                          style="height: 120px; width: 120px;">
                                     <p class="text-muted">You have {{count($post->applications)}} applicant(s) for this job</p>
-                                    <div><button class="btn btn-outline-primary" onclick="showShortlistedApplicants()">Generate Shortlisted Applicants</button></div>
+                                    <div><button class="btn btn-outline-primary" onclick="showShortlistedApplicants()">Generate Shortlist</button></div>
                                     <br>
                                     <div><a href="javascript:void(0)" onclick="showAllApplicants()">View all applicants</a></div>
                                 </div>

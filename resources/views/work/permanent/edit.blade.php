@@ -46,16 +46,6 @@
                                                 </span>
                             @enderror
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="custom-control custom-control-lg custom-checkbox"
-                                     style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" @if($post->is_internship === "yes") checked @endif name="is_internship"
-                                           id="is_internship">
-                                    <label class="custom-control-label" for="is_internship">Internship</label>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="input-group1 mb-3">
                             <label for="tags"><b>Select Applicable Categories (Tags)</b></label>
@@ -88,9 +78,9 @@
 
 
                         <div class="input-group1 mb-3">
-                            <label for="description"><b>Brief Job Description</b></label>
+                            <label for="description"><b>Job Description/Responsibilities</b></label>
                             <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
-                                      placeholder="Enter brief description of the project"
+                                      placeholder="Enter Job Description/Responsibilities"
                                       name="description">{{$post->description}}</textarea>
 
                             @error('description')
