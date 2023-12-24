@@ -1270,7 +1270,6 @@ class PostController extends Controller
             'qualifications' => 'required',
             'date' => 'required',
             'time' => 'required',
-            'start_date' => 'required',
             'location' => 'required',
             'coords' => 'required',
             'min_budget' => 'required',
@@ -1302,6 +1301,7 @@ class PostController extends Controller
         $post->start_date = $request->start_date;
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
+        $post->other_relevant_information = $request->other_relevant_information;
 
         if ($request->negotiable === "on") {
             $post->is_negotiable = "yes";

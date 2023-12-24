@@ -78,9 +78,9 @@
                         </div>
 
                         <div class="input-group1 mb-3">
-                            <label for="description"><b>Brief Job Description</b></label>
+                            <label for="description"><b>Job Description/Responsibilities</b></label>
                             <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
-                                      placeholder="Enter brief description of the project"
+                                      placeholder="EnterJob Description/Responsibilities"
                                       name="description">{{ old('description') }}</textarea>
 
                             @error('description')
@@ -250,24 +250,19 @@
                         </div>
 
 
-                        <p><b>Expected Contract Dates</b></p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group1 mb-3">
-                                    <label for="start_date">Start Date</label>
-                                    <input type="date"
-                                           class="form-control form-control-l @error('start_date') is-invalid @enderror"
-                                           placeholder="Start Date" name="start_date" value="{{ old('start_date') }}">
+                        <div class="input-group1 mb-3">
+                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>
+                            <textarea
+                                      class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror"
+                                      placeholder="Specify any other relevant information"
+                                      name="other_relevant_information">{{ old('other_relevant_information') }}</textarea>
 
-                                    @error('start_date')
-                                    <span class="invalid-feedback" role="alert">
+                            @error('other_relevant_information')
+                            <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
-                                    @enderror
-                                </div>
-                            </div>
+                            @enderror
                         </div>
-
 
                     </div>
                     <div class="text-right mb-3" id="publishBtn">
