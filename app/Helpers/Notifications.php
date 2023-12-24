@@ -141,7 +141,7 @@ class Notifications {
                     $ref_id = "FT" . explode("-", $application->id)[0];
                     $status = "Job Closed";
                     $category = $post->category;
-                    $message = "You have successfully completed the Fixed Term Job with the REF ID (". $ref_id ."). \n \n Please see below for the closure details. ";
+                    $message = "“Applications for the Fixed Term Job with the REF ID (". $ref_id .") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter! . ";
                 }
                 /**
                  * Job removed
@@ -188,7 +188,7 @@ class Notifications {
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Job Closed";
                     $category = $post->category;
-                    $message = "You have successfully completed the Permanent Job with the REF ID (". $ref_id ."). \n \n Please see below for the closure details. ";
+                    $message = "Applications for the Permanent Job with the REF ID (". $ref_id .") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter! ";
                 }
                 /**
                  * Job removed
