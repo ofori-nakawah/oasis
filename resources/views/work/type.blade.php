@@ -66,6 +66,18 @@
                 </div>
             </a>
         </div>
+        <div class="col-md-6 mb-3" >
+            <a href="{{route("user.work.jobs", ["type_of_user" => $type_of_user, "type_of_work" => "permanent"])}}" >
+                <div class="card card-bordered" style="border-radius: 16px;">
+                    <div class="card-body text-center p-4">
+                        <img src="{{asset("assets/html-template/src/images/perm.svg")}}"
+                             style="height: 120px; width: 120px;" alt="">
+                        <h4>Permanent</h4>
+                        <p>{{($type_of_user !== "employer") ? 'Apply for permanent or full time job' : 'Post a permanent or full time job'}}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
 
     </div>
 @endsection
