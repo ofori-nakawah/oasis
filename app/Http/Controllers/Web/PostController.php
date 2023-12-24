@@ -1537,6 +1537,9 @@ class PostController extends Controller
             case "FIXED_TERM_JOB":
                 $categories = Skill::orderBy('name')->get();
                 return view("work.part_time_jobs.edit", compact("post", "categories"));
+            case "PERMANENT_JOB":
+                $categories = Skill::orderBy('name')->get();
+                return view("work.permanent.edit", compact("post", "categories"));
         }
 
         return back()->with("danger", "Invalid request");
