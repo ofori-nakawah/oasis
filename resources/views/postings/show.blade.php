@@ -105,7 +105,7 @@
         <div class="col-md-7">
             @include("utilities.alerts.alerts")
 
-            @if($post->type === "FIXED_TERM_JOB" || $_post->type === "PERMANENT_JOB")
+            @if($post->type === "FIXED_TERM_JOB" || $post->type === "PERMANENT_JOB")
                 <div class="card card-bordered">
                     <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->type}} <span
                                 style="float: right">{{$post->date}} {{$post->time}}</span></b></div>
