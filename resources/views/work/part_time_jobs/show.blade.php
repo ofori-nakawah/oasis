@@ -176,10 +176,12 @@ border: 1px solid #dbdfea;">
             console.log(post)
 
             let applyButton;
-            if (post.has_already_applied !== "yes") {
-                applyButton = `<a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary"> <b>Apply</b></a>`
-            } else {
-                applyButton =  `<p>Job application sent!</p>`
+            if (post.id !== post.user?.id) {
+                if (post.has_already_applied !== "yes") {
+                    applyButton = `<a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary"> <b>Apply</b></a>`
+                } else {
+                    applyButton =  `<p>Job application sent!</p>`
+                }
             }
 
             return `
