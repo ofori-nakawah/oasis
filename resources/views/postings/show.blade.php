@@ -338,11 +338,13 @@
                                                                         <div class="title" style="font-size: 10px;color: #777;">Start Date <a href="javascript:void(0)" onclick="changeStartDateClicked()"><em class="icon ni ni-pen-fill" style="font-size: 16px;"></em></a></div>
                                                                         <div class="issuer"><b><span id="startDateValue">{{date ("l jS F Y", strtotime($post->start_date))}}</span></b></div>
                                                                     </div>
-                                                                    <div class="col-md-6 mt-3">
-                                                                        <div class="title" style="font-size: 10px;color: #777;">End Date <a href="javascript:void(0)"><em class="icon ni ni-pen-fill" style="font-size: 16px;" onclick="changeEndDateClicked()"></em></a></div>
-                                                                        <div class="issuer"><b><span id="endDateValue">{{date ("l jS F Y", strtotime($post->end_date))}}</span></b>
+                                                                    @if($post->type !== "PERMANENT_JOB")
+                                                                        <div class="col-md-6 mt-3">
+                                                                            <div class="title" style="font-size: 10px;color: #777;">End Date <a href="javascript:void(0)"><em class="icon ni ni-pen-fill" style="font-size: 16px;" onclick="changeEndDateClicked()"></em></a></div>
+                                                                            <div class="issuer"><b><span id="endDateValue">{{date ("l jS F Y", strtotime($post->end_date))}}</span></b>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
+                                                                    @endif
                                                                 </div>
                                                             </div>
 
@@ -361,7 +363,7 @@
                                                             </div>
                                                         </div>
 
-                                                        @if($post->type === "PERMANENT_JOB")
+                                                        @if($post->type !== "PERMANENT_JOB")
                                                             <div id="changeEndDate">
                                                                 <label for="endDate">Change End Date</label>
                                                                 <input type="date" id="endDateInput" class="form-control">

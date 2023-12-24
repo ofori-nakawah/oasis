@@ -1458,7 +1458,7 @@ class PostController extends Controller
                     Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
                 }
                 break;
-            case "FIXED_TERM_JOB":
+            case "FIXED_TERM_JOB" || "PERMANENT_JOB":
                 $participant = User::where("id", $request->user_id)->first();
                 if (!$participant) {
                     Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id);
@@ -1470,7 +1470,9 @@ class PostController extends Controller
                 }
 
                 $post->final_start_date = $request->start_date;
-                $post->final_end_date = $request->end_date;
+                if ($post->final_end_date === "FIXED_TERM_JOB") {
+                    $post->final_end_date = $request->end_date;
+                }
                 $post->final_payment_amount = $request->monthly_payment;
 
                 try {

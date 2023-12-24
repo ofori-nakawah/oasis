@@ -85,11 +85,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="title"
-                                             style="font-size: 10px;color: #777;">@if($notify->data["post"]["type"] === "VOLUNTEER") Activity Name @endif @if($notify->data["post"]["type"] === "QUICK_JOB") Category @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB") Title @endif</div>
+                                             style="font-size: 10px;color: #777;">@if($notify->data["post"]["type"] === "VOLUNTEER") Activity Name @endif @if($notify->data["post"]["type"] === "QUICK_JOB") Category @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB") Title @endif</div>
                                         <div
                                             class="date text-danger">@if($notify->data["post"]["type"] === "VOLUNTEER")
                                                 {{$notify->data["post"]["name"]}} @endif @if($notify->data["post"]["type"] === "QUICK_JOB")
-                                                {{$notify->data["post"]["category"]}} @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB")
+                                                {{$notify->data["post"]["category"]}} @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
                                                 {{$notify->data["post"]["title"]}} @endif</div>
                                     </div>
                                     <div class="col-md-6">
@@ -151,7 +151,7 @@
                                         </table>
                                     @endif
 
-                                    @if($notify->data["post"]["type"] === "FIXED_TERM_JOB")
+                                    @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
                                         <br>
                                             <div class="text-muted">Income: GHS {{$notify->data["post"]["final_payment_amount"]}}/Month
                                             </div>
@@ -165,10 +165,12 @@
                                                     <div class="title" style="font-size: 10px;color: #777;">Start Date </div>
                                                     <div class="issuer"><b>{{($notify->data["post"]["final_start_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_start_date"])) : 'N/A'}}</b></div>
 
-                                                    <br>
+                                                    @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" )
+                                                        <br>
 
-                                                    <div class="title" style="font-size: 10px;color: #777;">End Date </div>
-                                                    <div class="issuer"><b>{{($notify->data["post"]["final_end_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_end_date"])) : 'N/A'}}</b></div>
+                                                        <div class="title" style="font-size: 10px;color: #777;">End Date </div>
+                                                        <div class="issuer"><b>{{($notify->data["post"]["final_end_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_end_date"])) : 'N/A'}}</b></div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endif
