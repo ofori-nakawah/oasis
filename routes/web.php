@@ -52,7 +52,7 @@ Route::group(['middleware'=>'auth'], function () {
 
     Route::get('/getPermanentOpportunities', 'Web\PostController@getPermanentOpportunities')->name('work.getPermanentOpportunities');
     Route::get('/getCategories', 'Web\PostController@getCategories')->name('work.getCategories');
-    Route::get('/getPermanentOpportunityDetails/{uuid}', 'Web\PostController@gePermanentOpportunityDetails')->name('work.getPermanentOpportunityDetails');
+    Route::get('/getPermanentOpportunityDetails/{uuid}', 'Web\PostController@getPermanentOpportunityDetails')->name('work.getPermanentOpportunityDetails');
     Route::get('/getPermanentOpportunitiesBySearchRadius/{radius}', 'Web\PostController@getPermanentOpportunitiesBySearchRadius')->name('work.getPermanentOpportunitiesBySearchRadius');
 
     /**

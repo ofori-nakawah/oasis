@@ -277,7 +277,7 @@ border: 1px solid #dbdfea;">
   white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
             }
 
-            const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
+            const route = `{{env("BACKEND_URL")}}/permanent-jobs/${post.id}`
 
             return `
         <div class="col-md-12">
