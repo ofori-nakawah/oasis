@@ -534,6 +534,80 @@ class PostController extends Controller
         return view("work.part_time_jobs.show", compact("original_post", "posts", "uuid"));
     }
 
+    public function show_permanent_job_details($uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request. Kindly try again.");
+        }
+
+        $original_post = Post::where("id", $uuid)->first();
+        if (!$original_post) {
+            return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
+        }
+
+        /**
+         * 404@alias
+         */
+        if ($original_post->deleted_at) {
+            return back()->with("info", "This post has been removed by the issuer.");
+        }
+
+        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
+        if ($has_already_applied) {
+            $original_post->has_already_applied = "yes";
+        }
+        $original_post->user;
+
+        $posts = [];
+
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return back()->with("danger", "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
+
+        $_user_interests = auth()->user()->skills;
+        $user_interests = array();
+        foreach ($_user_interests as $interest) {
+            array_push($user_interests, $interest->skill->id);
+        }
+
+        /**
+         * filter using:
+         * post type
+         * interests | skills
+         */
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+
+        /**
+         * filter using distance
+         */
+        $jobs_near_me = collect();
+        foreach ($posts as $post) {
+            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+
+            if ($distance <= self::JOB_SEARCH_RADIUS) {
+                $post["organiser_name"] = $post->user->name;
+                $post["distance"] = number_format($distance, 2);
+                $jobs_near_me->push($post);
+            }
+
+            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+            if ($has_already_applied) {
+                $post->has_already_applied = "yes";
+            }
+        }
+        $posts = $jobs_near_me->sortBy("distance");;
+        $uuid = $post->id;
+
+        return view("work.permanent.show", compact("original_post", "posts", "uuid"));
+    }
+
     public function getFixedTermOpportunityDetails($uuid)
     {
         if (!$uuid) {
@@ -1042,6 +1116,80 @@ class PostController extends Controller
         $post->tags = json_encode($tags);
         $post->user_id = auth()->id();
         $post->type = "FIXED_TERM_JOB";
+        $post->source = "WEB";
+
+        try {
+            $post->save();
+            return redirect()->route("home")->with("success", "Post has been published successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while publishing your post. Kindly try again.");
+        }
+    }
+
+    public function create_permanent_job_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'title' => 'required',
+            'employer' => 'required',
+            'description' => 'required',
+            'qualifications' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'start_date' => 'required',
+            'location' => 'required',
+            'coords' => 'required',
+            'min_budget' => 'required',
+            'max_budget' => 'required',
+            'tags' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
+        }
+
+        $tags = array();
+        foreach ($request->tags as $tag) {
+            $category = Skill::where("name", $tag)->first();
+            if ($category) {
+                array_push($tags, $tag);
+            }
+        }
+
+        $post = new Post();
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->qualifications = $request->qualifications;
+        $post->date = $request->date;
+        $post->time = $request->time;
+        $post->location = $request->location;
+        $post->employer = $request->employer;
+        $post->coords = $request->coords;
+        $post->start_date = $request->start_date;
+        $post->max_budget = $request->max_budget;
+        $post->min_budget = $request->min_budget;
+
+        if ($request->negotiable === "on") {
+            $post->is_negotiable = "yes";
+        } else {
+            $post->is_negotiable = "no";
+        }
+
+        if ($request->renewable === "on") {
+            $post->is_renewable = "yes";
+        } else {
+            $post->is_renewable = "no";
+        }
+
+        if ($request->is_internship === "on") {
+            $post->is_internship = "yes";
+        } else {
+            $post->is_internship = "no";
+        }
+
+        $post->tags = json_encode($tags);
+        $post->user_id = auth()->id();
+        $post->type = "PERMANENT_JOB";
         $post->source = "WEB";
 
         try {

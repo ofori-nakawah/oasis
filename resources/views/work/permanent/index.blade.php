@@ -373,7 +373,7 @@ border: 1px solid #dbdfea;">
              * make api call
              */
             $.ajax({
-                url: "{{env("BACKEND_URL")}}/getFixedTermOpportunities",
+                url: "{{env("BACKEND_URL")}}/getPermanentOpportunities",
                 method: "GET",
                 dataType: "json",
                 contentType: "application/json",
@@ -476,7 +476,7 @@ border: 1px solid #dbdfea;">
              * make api call
              */
             $.ajax({
-                url: `{{env("BACKEND_URL")}}/getFixedTermOpportunitiesBySearchRadius/${radius}`,
+                url: `{{env("BACKEND_URL")}}/getPermanentOpportunitiesBySearchRadius/${radius}`,
                 method: "GET",
                 dataType: "json",
                 contentType: "application/json",
