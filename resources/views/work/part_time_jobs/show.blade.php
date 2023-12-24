@@ -106,9 +106,8 @@
         const ComponentFixedTermOpportunity = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                            <em class="icon ni ni-book-read"></em>
-                        </div> `
+                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
             }
 
             return `
@@ -168,9 +167,8 @@ border: 1px solid #dbdfea;">
         const ComponentFixedTermOpportunityDetails = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                            <em class="icon ni ni-book-read"></em>
-                        </div> `
+                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
             }
 
             return `
@@ -247,10 +245,6 @@ border: 1px solid #dbdfea;">
                 </div>
                 <div class="card-header text-dark bg-lighter"
                      style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
-                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
-                        <div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
-                            <div class="spinner-border" role="status"></div>
-                        </div></a>
 
 
                     <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
@@ -268,9 +262,8 @@ border: 1px solid #dbdfea;">
         const ComponentOtherFixedTermOpportunities = (post) => {
             let isInternship = ``;
             if (post.is_internship === "yes") {
-                isInternship += `<div class="user-avatar bg-secondary-dim sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Offers internship">
-                            <em class="icon ni ni-book-read"></em>
-                        </div> `
+                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
+  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
             }
 
             const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
@@ -328,10 +321,7 @@ border: 1px solid #dbdfea;">
                 </div>
                 <div class="card-header text-dark bg-lighter"
                 style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
-                <a data-bs-toggle="tooltip" data-bs-placement="right" title="Save post for later" onclick="saveFixedTermOpportunity('${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em class="icon ni ni-bookmark saveFixedTermOpportunityIcon" id="saveFixedTermOpportunityIcon${post.id}"></em> <em class="icon ni ni-bookmark-fill text-primary savedFixedTermOpportunityIcon" id="savedFixedTermOpportunityIcon${post.id}"></em>
-<div class="saveFixedTermOpportunityLoader" id="saveFixedTermOpportunityLoader${post.id}">
-                        <div class="spinner-border" role="status"></div>
-                </div></a>
+
 
 
                 <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
