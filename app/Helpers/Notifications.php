@@ -123,7 +123,7 @@ class Notifications {
                     $ref_id = "FT" . explode("-", $application->id)[0];
                     $status = "Application Accepted";
                     $category = $post->category;
-                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Fixed Term Job issued by ". $post->user->name . ". \n \n The issuer will contact you for further arrangements. ";
+                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Fixed Term job issued by ". $post->user->name . " on behalf of ". $post->employer .". \n \n  A representative of the employer will contact you for further arrangements";
                 }
                 /**
                  * User selected for quick job
@@ -170,7 +170,7 @@ class Notifications {
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Application Accepted";
                     $category = $post->category;
-                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Permanent issued by ". $post->user->name . ". \n \n The issuer will contact you for further arrangements. ";
+                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Permanent job issued by ". $post->user->name . " on behalf of ". $post->employer .". \n \n  A representative of the employer will contact you for further arrangements";
                 }
                 /**
                  * User selected for quick job
