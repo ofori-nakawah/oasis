@@ -135,9 +135,10 @@ class HomeController extends Controller
         $job_history = auth()->user()->job_applications->where("status", "confirmed");
         foreach ($job_history as $vork) {
             /**
-             * make sure job is closed and is actually a job not volunteer activity
+             * make sure job is closed and is actually a quick job not volunteer activity or other
+             * job types
              */
-            if ($vork->job_post && $vork->job_post->status == "closed" && $vork->job_post->type != "VOLUNTEER") {
+            if ($vork->job_post && $vork->job_post->status == "closed" && $vork->job_post->type === "QUICK_JOB") {
                 /**
                  * let's get monthly income for the current year
                  */
