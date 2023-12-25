@@ -21,8 +21,8 @@
                 </div>
             </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
-                <a href="{{URL::previous()}}"
-                   class="btn btn-outline-primary"><span>Back</span></a></li>
+                <a href="{{route("user.volunteerism.create")}}"
+                   class="btn btn-primary"><span>Post a project</span></a></li>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->

@@ -259,7 +259,7 @@
                         <div class="nk-header-tools">
                             <ul class="nk-quick-nav">
                                 <li>
-                                    <a href="{{route("user.volunteerism")}}" class="btn btn-outline-success"><b>Volunteer</b></a>
+                                    <a href="{{route("user.volunteerism.list")}}" class="btn btn-outline-success"><b>Volunteer</b></a>
                                 </li>
                                 <li>
                                     <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "quick-job"])}}" class="btn btn-outline-primary"><b>Work</b></a>
