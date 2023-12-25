@@ -67,7 +67,9 @@ class HomeController extends Controller
                 if ($vork->job_post->type === "VOLUNTEER") {
                     $vork->ref_id = "VO" . explode("-", $vork->id)[0];
                     $volunteer_count++;
-                } else {
+                }
+
+                if ($vork->job_post->type === "QUICK_JOB") {
                     $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
                     $jobs_count++;
 
