@@ -173,10 +173,8 @@ border: 1px solid #dbdfea;">
 
             const route = `{{env("BACKEND_URL")}}/posts/${post.id}/apply`
 
-
-
-            let applyButton;
-            if (post.id !== post.user?.id) {
+            let applyButton = "";
+            if ('{{auth()->id()}}' != post.user.id) {
                 if (post.has_already_applied !== "yes") {
                     applyButton = `<a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-primary"> <b>Apply</b></a>`
                 } else {
