@@ -173,7 +173,7 @@ border: 1px solid #dbdfea;">
 
             const route = `{{env("BACKEND_URL")}}/posts/${post.id}/apply`
 
-            console.log(post)
+
 
             let applyButton;
             if (post.id !== post.user?.id) {
@@ -226,14 +226,14 @@ border: 1px solid #dbdfea;">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Job Description</div>
-                            <div class="issuer text">${post.description}</div>
+                            <div class="issuer text summernote-description">${post.description}</div>
                         </div>
                     </div>
 
                     <div class="row mt-2">
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Qualifications</div>
-                            <div class="issuer text">
+                            <div class="issuer text summernote-qualifications">
                                 ${post.qualifications}
                             </div>
                         </div>

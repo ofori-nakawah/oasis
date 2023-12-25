@@ -79,7 +79,7 @@
 
                         <div class="input-group1 mb-3">
                             <label for="description"><b>Job Description/Responsibilities</b></label>
-                            <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
+                            <textarea class="form-control summernote form-control-l @error('description') is-invalid @enderror"
                                       placeholder="EnterJob Description/Responsibilities"
                                       name="description">{{ old('description') }}</textarea>
 
@@ -92,7 +92,7 @@
 
                         <div class="input-group1 mb-3">
                             <label for="qualifications"><b>Qualifications</b></label>
-                            <textarea class="form-control form-control-l @error('qualifications') is-invalid @enderror"
+                            <textarea class="form-control summernote form-control-l @error('qualifications') is-invalid @enderror"
                                       placeholder="Enter required qualifications"
                                       name="qualifications">{{ old('qualifications') }}</textarea>
 
@@ -289,6 +289,8 @@ border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
 @endsection
 
 @section("scripts")
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key={{env("GOOGLE_MAPS_KEY")}}&libraries=places&callback=mountMap"
         async defer></script>
@@ -298,6 +300,17 @@ border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
         $('#imageAttachment').hide();
         $("#publishConfirmationBox").hide()
 
+        $(document).ready(function() {
+            $('.summernote').summernote({
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontsize', ['fontsize']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                ],
+                height: 160,
+            });
+        });
 
         function mountMap() {
             var mapOptions = {

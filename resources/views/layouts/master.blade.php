@@ -138,6 +138,18 @@
         .borderActive {
             border: 2px solid #353299 !important;
         }
+
+        .note-editable ul,  .summernote-description ul, .summernote-qualifications ul{
+            list-style: disc !important;
+            list-style-position: inside !important;
+        }
+
+        .note-editable ol, .summernote-description ol, .summernote-qualifications ol {
+            list-style: decimal !important;
+            list-style-position: inside !important;
+        }
+
+
     </style>
 </head>
 
