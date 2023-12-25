@@ -397,6 +397,9 @@
             case "FIXED_TERM_JOB":
                 shareableLink += `part-time-jobs/`
                 break;
+            case "PERMANENT_JOB":
+                shareableLink += `full-time-jobs/`
+                break;
         }
         shareableLink += `${uuid}`
         $("#shareableLink").html(`<input value="${shareableLink}" id="shareLink" type="text" readonly="" class="form-control">`)
