@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="nk-block-head-content">
-                <a href="{{URL::previous()}}"
+                <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "permanent"])}}"
                    class="btn btn-outline-light"><span>Back</span></a>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
