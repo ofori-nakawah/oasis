@@ -76,10 +76,10 @@
                         </div>
                         <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
                             @if($post->status !== "closed")
-                                <a href="#" onclick="shareLink()"  style="float: left !important;margin-top: 5px;" data-toggle="modal"
-                                   data-target="#sharePostbModal-{{$post->id}}"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
+                                <a href="#" onclick="setupShareableLink('{{$post->type}}', '{{$post->id}}')" style="float: left !important;margin-top: 5px;" data-toggle="modal"
+                                   data-target="#sharePostbModal"><em class="icon ni ni-link" style="font-size: 24px;"></em> </a>
                             @endif
-                            <div class="modal modal-lg fade" tabindex="-1" id="sharePostbModal-{{$post->id}}">
+                            <div class="modal modal-lg fade" tabindex="-1" id="sharePostbModal">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <a href="#" class="close" data-dismiss="modal" aria-label="Close">
@@ -91,11 +91,16 @@
                                         <div class="modal-body">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p style="float: left !important;">Copy post and share it with your family and friends on all platforms.</p>
-                                                    <input value="{{($post->type === "VOLUNTEER") ? route("user.volunteerism.show", ["uuid" => $post->id]) : route("user.quick_job.show", ["uuid" => $post->id])}}" id="shareLink-{{$post->id}}" type="text" readonly class="form-control">
-                                                    <br>
-                                                    <button class="btn btn-outline-primary copyLinkButton" onclick="copyLinkToClipboard(`{{$post->id}}`)"><b>Copy</b></button>
-                                                    <span class="copyStatus"></span>
+                                                    <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and
+                                                        friends on all platforms.</p>
+                                                    <p class="alert alert-lighter bg-lighter text-primary no-border"
+                                                       style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span
+                                                                id="shareableLink"></span></b>
+                                                    </p>
+                                                    <div class="btn btn-outline-primary copyLinkButton bold" style="float: right !important;"
+                                                         onclick="copyLinkToClipboard()"><em class="icon ni ni-copy"></em> Copy link
+                                                    </div>
+                                                    <span class="copyStatus text-success"></span>
                                                 </div>
                                             </div>
                                         </div>
