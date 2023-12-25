@@ -26,6 +26,20 @@
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
+    <div class="row mb-5">
+        <div class="col-md-4 col-sm-8">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a style="font-size: 15px;" class="nav-link active" data-bs-toggle="tab" href="javascript:void(0)">Casual</a></li>
+                <li class="nav-item"><a style="font-size: 15px;" class="nav-link" data-bs-toggle="tab" href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "fixed-term"])}}">Fixed Term</a></li>
+                <li class="nav-item"><a style="font-size: 15px;" class="nav-link" data-bs-toggle="tab" href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "permanent"])}}">Permanent</a></li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "quick-job"])}}"
+               style="float: right;"
+               class="btn btn-primary"><span>Post a job</span></a>
+        </div>
+    </div>
     @if(count($posts) <= 0)
         <div class="row">
             <div class="col-md-12 text-center">
