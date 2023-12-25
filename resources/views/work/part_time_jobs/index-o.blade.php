@@ -22,13 +22,29 @@
             </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
                 <a href="{{URL::previous()}}"
-                   class="btn btn-outline-primary"><span>Back</span></a></li>
+                   class="btn btn-outline-lighter"><span>Back</span></a></li>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
 
     <div class="row">
+        <div class="col-md-4 col-sm-8">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a style="font-size: 15px;" class="nav-link" data-bs-toggle="tab" href="#tabItem1">Casual</a></li>
+                <li class="nav-item"><a style="font-size: 15px;" class="nav-link active" data-bs-toggle="tab" href="#tabItem2">Fixed Term</a></li>
+                <li class="nav-item"><a style="font-size: 15px;" class="nav-link" data-bs-toggle="tab" href="#tabItem3">Permanent</a></li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "fixed-term"])}}"
+               style="float: right;"
+               class="btn btn-primary"><span>Post a job</span></a>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-4">
+
             <div class="row " style="position: -webkit-sticky;
   position: sticky;top: 0">
                 <div class="col-md-12" style="margin-top: 45px;">

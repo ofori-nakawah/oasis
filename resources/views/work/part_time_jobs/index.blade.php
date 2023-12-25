@@ -26,6 +26,7 @@
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
+
     @if(count($posts) <= 0)
         <div class="row">
             <div class="col-md-12 text-center">
@@ -49,7 +50,8 @@
                             <div class="row mb-2">
                                 <div class="col-md-6">
                                     <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                    <div class="issuer"><em class="icon ni ni-building"></em> <b>{{$post->employer}}</b></div>
+                                    <div class="issuer"><em class="icon ni ni-building"></em> <b>{{$post->employer}}</b>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
