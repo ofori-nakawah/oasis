@@ -262,7 +262,7 @@
                                     <a href="{{route("user.volunteerism")}}" class="btn btn-outline-success"><b>Volunteer</b></a>
                                 </li>
                                 <li>
-                                    <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "quick-job"])}}" class="btn btn-outline-primary"><b>Work</b></a>
+                                    <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "fixed-term"])}}" class="btn btn-outline-primary"><b>Work</b></a>
                                 </li>
                                 <li class="dropdown user-dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
