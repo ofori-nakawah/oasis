@@ -301,6 +301,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="input-group1 mb-3">
+                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>
+                            <textarea
+                                      class="form-control form-control-l @error('other_relevant_information') is-invalid @enderror"
+                                      placeholder="Specify any other relevant information"
+                                      name="other_relevant_information">{{ old('other_relevant_information') }}</textarea>
+
+                            @error('other_relevant_information')
+                            <span class="invalid-feedback" role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                            @enderror
+                        </div>
                     </div>
                     <div class="text-right mb-3" id="publishBtn">
                         <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Create & Publish</b></button>
