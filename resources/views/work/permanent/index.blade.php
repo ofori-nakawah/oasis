@@ -350,7 +350,7 @@ border: 1px solid #dbdfea;">
                                 <div class="issuer text"><em
                                             class="icon ni ni-map-pin"></em> ${post.location} (
             ${post.distance}
-            km)</div>
+            km away)</div>
                 </div>
                 </div>
                 </div>
