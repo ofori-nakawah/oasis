@@ -77,7 +77,7 @@ border: 1px solid #dbdfea;">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                    <div class="issuer"><b>{{$post->location}} ({{$post->distance}}km)</b></div>
+                                    <div class="issuer"><b>{{$post->location}} ({{$post->distance}}km away)</b></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="title" style="font-size: 10px;color: #777;">Budget (GHS)</div>

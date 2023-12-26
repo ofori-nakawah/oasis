@@ -155,7 +155,7 @@ border: 1px solid #dbdfea;">
                                 <div class="issuer text"><em
                                             class="icon ni ni-map-pin"></em> ${post.location} (
             ${post.distance}
-            km)</div>
+            km away)</div>
                 </div>
                 </div>
                 </div>
@@ -242,7 +242,7 @@ border: 1px solid #dbdfea;">
                             <div class="title" style="font-size: 10px;color: #777;">Location</div>
                             <div class="issuer text"><em
                                     class="icon ni ni-map-pin"></em> ${post.location}
-                                (${post.distance})</div>
+                                (${post.distance}km away)</div>
                         </div>
                     </div>
 
@@ -325,7 +325,7 @@ border: 1px solid #dbdfea;">
                                 <div class="issuer text"><em
                                             class="icon ni ni-map-pin"></em> ${post.location} (
             ${post.distance}
-            km)</div>
+            km away)</div>
                 </div>
                 </div>
                 </div>
