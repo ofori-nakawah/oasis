@@ -253,6 +253,17 @@ border: 1px solid #dbdfea;">
                                     class="icon ni ni-calendar "></em> ${post.date} ${post.time}</div>
                         </div>
                     </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
+                            <div class="issuer text" >${post.other_relevant_information}</div>
+                            <ul class="mt-3">
+                                <li>Budget Negotiable: ${post.is_negotiable === "yes" ? "Yes" : 'No'}</li>
+                                <li>Term Renewable: ${post.is_renewable === "yes" ? "Yes" : 'No'}</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-header text-dark bg-lighter"
                      style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;align-items: center">
