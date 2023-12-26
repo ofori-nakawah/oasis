@@ -258,7 +258,7 @@ border: 1px solid #dbdfea;">
                         <div class="col-md-12">
                             <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
                             <div class="issuer text" >${post.other_relevant_information && post.other_relevant_information}</div>
-                            <ul class="mt-2">
+                            <ul class="mt-3">
                                 <li>Budget Negotiable: ${post.is_negotiable === "yes" ? "Yes" : 'No'}</li>
                                 <li>Term Renewable: ${post.is_renewable === "yes" ? "Yes" : 'No'}</li>
                             </ul>
