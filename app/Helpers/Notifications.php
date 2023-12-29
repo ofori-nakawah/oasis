@@ -162,7 +162,7 @@ class Notifications {
                  * successful job application notification details
                  */
                 if ($event === "SUCCESSFUL_JOB_APPLICATION") {
-                    $ref_id = "FT" . explode("-", $application->id)[0];
+                    $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Pending Acceptance By Issuer";
                     $category = $post->category;
                     $message = "Hello ". $user->name .", \n \n Your application for the Permanent Job with reference ID (" . $ref_id .") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
