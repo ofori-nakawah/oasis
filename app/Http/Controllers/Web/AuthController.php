@@ -47,7 +47,7 @@ class AuthController extends Controller
             }
         }
 
-        if (Auth::attempt(['email' => $request->email_or_phone_number, 'password' => $request->password], $request->remember) || Auth::attempt(['phone_number' => $request->email_or_phone_number, 'password' => $request->password], $request->remember)) {
+        if (Auth::attempt(['email' => $request->email_or_phone_number, 'password' => $request->password], $request->remember) || Auth::attempt(['phone_number' => $request->email_or_phone_number, 'password' => $request->password], true)) {
             /**
              * update users last seen and online status
              */
