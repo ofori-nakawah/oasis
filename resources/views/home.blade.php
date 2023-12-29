@@ -4,6 +4,8 @@
     Dashboard
 @endsection
 
+
+
 @section("content")
    <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
@@ -282,5 +284,15 @@
                 }
             },
         });
+
+        @if(Session::has('danger'))
+    NioApp.Toast('{{ Session::get('danger') }}', 'error', {position: 'top-right'});
+    // NioApp.Toast('This is a note for bottom right toast message.', 'info', {position: 'top-right'});
+    @endif
+
+    @if(Session::has('success'))
+    NioApp.Toast('{{ Session::get('success') }}', 'success', {position: 'top-right'});
+    @endif
     </script>
 @endsection
+
