@@ -663,8 +663,6 @@ class PostController extends Controller
             $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
-            Log::debug($post_location_lng . " >>>> " . $post_location_lat);
-
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
             $post["organiser_name"] = $post->user->name;
@@ -1723,7 +1721,6 @@ class PostController extends Controller
     {
         switch ($request->action) {
             case "get":
-                Log::debug(auth()->user()->savedPosts());
                 return $this->success_response(["code" => "0000"], "Removed successfully.");
                 break;
             case "save":
