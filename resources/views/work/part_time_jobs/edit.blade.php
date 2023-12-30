@@ -89,7 +89,7 @@
 
                         <div class="input-group1 mb-3">
                             <label for="description"><b>Job Description</b></label>
-                            <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
+                            <textarea class="form-control summernote form-control-l @error('description') is-invalid @enderror"
                                       placeholder="Enter description of the job"
                                       name="description">{{$post->description}}</textarea>
 
@@ -102,7 +102,7 @@
 
                         <div class="input-group1 mb-3">
                             <label for="qualifications"><b>Qualifications</b></label>
-                            <textarea class="form-control form-control-l @error('qualifications') is-invalid @enderror"
+                            <textarea class="form-control summernote form-control-l @error('qualifications') is-invalid @enderror"
                                       placeholder="Enter required qualifications"
                                       name="qualifications">{{ $post->qualifications }}</textarea>
 
@@ -303,6 +303,20 @@
                             </div>
                         </div>
 
+                        <div class="input-group1 mb-3">
+                            <label for="other_relevant_information"><b>Other Relevant Information</b></label>
+                            <textarea
+                                      class="form-control summernote form-control-l @error('other_relevant_information') is-invalid @enderror"
+                                      placeholder="Specify any other relevant information"
+                                      name="other_relevant_information">{{$post->other_relevant_information}}</textarea>
+
+                            @error('other_relevant_information')
+                            <span class="invalid-feedback" role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                            @enderror
+                        </div>
+
                     </div>
                     <div class="text-right">
                         <a href="{{route('user.posts.remove', ['uuid' => $post->id])}}" onclick="return confirm('Are you sure you want to remove post?')" class="btn btn-outline-danger" style="float: left !important;"><b>Remove Post</b></a>
@@ -315,6 +329,8 @@
 @endsection
 
 @section("scripts")
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key={{env("GOOGLE_MAPS_KEY")}}&libraries=places&callback=mountMap"
         async defer></script>
@@ -322,6 +338,19 @@
         var markers = [];
         $('#mapLoading').hide();
         $('#imageAttachment').hide();
+
+        $(document).ready(function() {
+            $('.summernote').summernote({
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontsize', ['fontsize']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                ],
+                height: 160,
+            });
+        });
+
 
         function mountMap() {
             var mapOptions = {
