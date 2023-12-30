@@ -39,6 +39,7 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/gigs/{uuid}', 'Web\PostController@show_quick_job')->name('user.quick_job.show');
     Route::get('/part-time-jobs/{uuid}', 'Web\PostController@show_fixed_term_job_details')->name('user.show_fixed_term_job_details.show');
     Route::get('/full-time-jobs/{uuid}', 'Web\PostController@show_permanent_job_details')->name('user.show_permanent_job_details.show');
+    Route::get('/permanent-jobs/{uuid}', 'Web\PostController@show_permanent_job_details')->name('user.show_permanent_job_details.show');
     Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');
 
 

@@ -336,7 +336,7 @@
                                                                 <div class="row">
                                                                     <div class="col-md-6 mt-3">
                                                                         <div class="title" style="font-size: 10px;color: #777;">Start Date <a href="javascript:void(0)" onclick="changeStartDateClicked()"><em class="icon ni ni-pen-fill" style="font-size: 16px;"></em></a></div>
-                                                                        <div class="issuer"><b><span id="startDateValue">{{date ("l jS F Y", strtotime($post->start_date))}}</span></b></div>
+                                                                        <div class="issuer"><b><span id="startDateValue">{{date ("l jS F Y", strtotime($post->date))}}</span></b></div>
                                                                     </div>
                                                                     @if($post->type !== "PERMANENT_JOB")
                                                                         <div class="col-md-6 mt-3">
