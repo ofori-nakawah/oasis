@@ -22,11 +22,65 @@
                 </div>
             </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
-                <a href=""
-                   class="btn btn-outline-primary"><span>Reload</span></a></li>
+                <a href="javascript:void(0)" data-toggle="modal" data-target="#postAJobModal"
+                   class="btn btn-primary"><span>Post a Job</span></a></li>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
+
+    <div class="modal fade" tabindex="-1" id="postAJobModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+                <div class="modal-header">
+                    <h5 class="modal-title">Post a Job</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Choose the type of job you want to post</p>
+
+                    <div class="row">
+        <div class="col-md-6 mb-3">
+            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "quick-job"])}}">
+
+                <div class="card card-bordered" style="border-radius: 16px;">
+                    <div class="card-body text-center p-4">
+                        <img src="{{asset("assets/html-template/src/images/quick.svg")}}"
+                             style="height: 120px; width: 120px;" alt="">
+                        <h4>Quick Job</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 mb-3" >
+            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "fixed-term"])}}" >
+                <div class="card card-bordered" style="border-radius: 16px;">
+                    <div class="card-body text-center p-4">
+                        <img src="{{asset("assets/html-template/src/images/partTime.svg")}}"
+                             style="height: 120px; width: 120px;" alt="">
+                        <h4>Fixed Term</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 mb-3" >
+            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "permanent"])}}" >
+                <div class="card card-bordered" style="border-radius: 16px;">
+                    <div class="card-body text-center p-4">
+                        <img src="{{asset("assets/html-template/src/images/perm.svg")}}"
+                             style="height: 120px; width: 120px;" alt="">
+                        <h4>Permanent</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-8">
