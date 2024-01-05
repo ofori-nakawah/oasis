@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 use App\Notifications\PostActivityNotification;
+use Illuminate\Support\Facades\Log;
+
 
 class Notifications {
     /**
@@ -142,7 +144,7 @@ class Notifications {
                     $status = "Job Closed";
                     $category = $post->category;
                     if ($application->status === "confirmed") {
-                        $message = "“Applications for the Fixed Term Job with the REF ID (". $ref_id .") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter! . ";
+                        $message = "Applications for the Fixed Term Job with the REF ID (". $ref_id .") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter!. ";
                     } else {
                         $message = "Applications and Review for the Fixed Term Job with the REF ID (". $ref_id .") has been closed.  Kindly explore other opportunities available";
                     }
@@ -192,6 +194,7 @@ class Notifications {
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Job Closed";
                     $category = $post->category;
+                    Log::debug($application->status);
                     if ($application->status === "confirmed") {
                         $message = "Applications for the Permanent Job with the REF ID (". $ref_id .") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter! ";
                     } else {
@@ -209,6 +212,8 @@ class Notifications {
                 }
                 break;
         }
+
+        Log::debug($message);
 
         $user->notify(new PostActivityNotification($post, $event, $message, $ref_id, $category, $status));
     }
