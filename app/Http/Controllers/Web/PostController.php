@@ -1480,7 +1480,14 @@ class PostController extends Controller
                      */
                     $post->user;
                     $application->job_post;
-                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    foreach ($post->applications as $submittedApplication) {
+                        Notifications::PushUserNotification($post, $submittedApplication, $submittedApplication->user, "JOB_CLOSED");
+                    }
+
+
+                    /**
+                     * push notification
+                     */
                     PushNotification::Notify("JOB_CLOSED", $application, null);
 
                     $participant->update();
