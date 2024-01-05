@@ -7,7 +7,7 @@
 
 
 @section("content")
-   <div class="nk-block-head nk-block-head-sm">
+    <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
                 <h3 class="nk-block-title page-title"><em class="icon ni ni-growth"></em> Dashboard </h3>
@@ -41,42 +41,67 @@
                     <p>Choose the type of job you want to post</p>
 
                     <div class="row">
-        <div class="col-md-6 mb-3">
-            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "quick-job"])}}">
+                        <div class="col-md-12 mb-3">
+                            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "quick-job"])}}">
 
-                <div class="card card-bordered" style="border-radius: 16px;">
-                    <div class="card-body text-center p-4">
-                        <img src="{{asset("assets/html-template/src/images/quick.svg")}}"
-                             style="height: 120px; width: 120px;" alt="">
-                        <h4>Quick Job</h4>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 mb-3" >
-            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "fixed-term"])}}" >
-                <div class="card card-bordered" style="border-radius: 16px;">
-                    <div class="card-body text-center p-4">
-                        <img src="{{asset("assets/html-template/src/images/partTime.svg")}}"
-                             style="height: 120px; width: 120px;" alt="">
-                        <h4>Fixed Term</h4>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 mb-3" >
-            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "permanent"])}}" >
-                <div class="card card-bordered" style="border-radius: 16px;">
-                    <div class="card-body text-center p-4">
-                        <img src="{{asset("assets/html-template/src/images/perm.svg")}}"
-                             style="height: 120px; width: 120px;" alt="">
-                        <h4>Permanent</h4>
-                    </div>
-                </div>
-            </a>
-        </div>
+                                <div class="card card-bordered" style="border-radius: 16px;">
+                                    <div class="card-body  p-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <img src="{{asset("assets/html-template/src/images/quick.svg")}}"
+                                                     style="height: 120px; width: 120px;" alt="">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h4>Quick Job</h4>
+                                                <p>List a temporary job. These are usually short-term, lasting no longer than a
+                                                    month.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "fixed-term"])}}">
+                                <div class="card card-bordered" style="border-radius: 16px;">
+                                    <div class="card-body  p-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <img src="{{asset("assets/html-template/src/images/partTime.svg")}}"
+                                                     style="height: 120px; width: 120px;" alt="">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h4>Fixed Term</h4>
+                                                <p>List a contract job. These typically last more than a month but are shorter
+                                                    than a year.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "permanent"])}}">
+                                <div class="card card-bordered" style="border-radius: 16px;">
+                                    <div class="card-body p-4">
+                                        <div class="row">
+                                           <div class="col-md-4">
+                                               <img src="{{asset("assets/html-template/src/images/perm.svg")}}"
+                                                    style="height: 120px; width: 120px;" alt="">
 
-    </div>
+                                           </div>
+                                            <div class="col-md-8">
+                                                <h4>Permanent</h4>
+                                                <p>List a full time job. These roles have no set end date, and employees
+                                                    become permanet staff.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -128,7 +153,7 @@
                             <div class="mt-4">
                                 <div><b>Total Earned Income</b></div>
                                 <h4><b class="text-success">GHS</b> <br>
-                                <b class="text-success">{{$dashboard_analytics["total_earnings"]}}</b></h4>
+                                    <b class="text-success">{{$dashboard_analytics["total_earnings"]}}</b></h4>
 
                                 <br>
 
@@ -140,7 +165,7 @@
                 </div>
                 <div class="col-md-9">
                     <div class="card card-bordered" style="height: 270px;">
-                        <div class="card-body" >
+                        <div class="card-body">
                             <div style="margin-top: -15px">
                                 <div class="text-center"><b>Income Trend</b></div>
                                 <canvas id="chart" style="height: 250px;"></canvas>
@@ -152,7 +177,7 @@
         </div>
         <div class="col-md-4">
             <div class="card card-bordered">
-                <div class="card-header bg-white border-bottom" >
+                <div class="card-header bg-white border-bottom">
                     <b>Opportunities Around You</b>
                 </div>
                 <div class="card-body" style="padding: 0px;">
@@ -160,14 +185,15 @@
                         <li class="nav-item">
                             <a class="nav-link active" data-toggle="tab" href="#volunteer"><span>Volunteer</span></a>
                         </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#quick_job"><span>Quick Job</span></a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#quick_job"><span>Quick Job</span></a>
+                        </li>
 
 
                     </ul><!-- .nav-tabs -->
                     <div class="tab-content" style="padding: 0px;min-height: 280px;">
-                        <div class="card-inner tab-pane active" id="volunteer" style="padding: 0px;height: 250px;overflow-y: scroll">
+                        <div class="card-inner tab-pane active" id="volunteer"
+                             style="padding: 0px;height: 250px;overflow-y: scroll">
                             <table class="table table-striped table-responsive">
                                 <thead>
                                 <tr>
@@ -180,14 +206,17 @@
                                 @foreach($opportunities["volunteer_activities"] as $activity)
                                     <tr>
                                         <td>{{$activity->distance}}</td>
-                                        <td><a href="{{route("user.volunteerism.show", ["uuid" => $activity->id])}}">{{$activity->name}}</a></td>
+                                        <td>
+                                            <a href="{{route("user.volunteerism.show", ["uuid" => $activity->id])}}">{{$activity->name}}</a>
+                                        </td>
                                         <td>{{$activity->volunteer_hours}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane card-inner" id="quick_job" style="padding: 0px;height: 280px;overflow-y: scroll">
+                        <div class="tab-pane card-inner" id="quick_job"
+                             style="padding: 0px;height: 280px;overflow-y: scroll">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -200,7 +229,9 @@
                                 @foreach($opportunities["quick_jobs"] as $job)
                                     <tr>
                                         <td>{{$job->distance}}</td>
-                                        <td><a href="{{route('user.quick_job.show', ['uuid' => $job->id])}}">{{$job->description}}</a></td>
+                                        <td>
+                                            <a href="{{route('user.quick_job.show', ['uuid' => $job->id])}}">{{$job->description}}</a>
+                                        </td>
                                         <td>{{$job->min_budget}} - {{$job->max_budget}}</td>
                                     </tr>
                                 @endforeach
@@ -258,49 +289,50 @@
         </div>
     </div>
 
-   <br>
+    <br>
 
-   <div class="row">
-       <div class="col-md-12">
-           <div class="card card-bordered">
-               <div class="card-header bg-white border-bottom">
-                   <b>Volunteer History</b>
-               </div>
-               <div class="card-body" style="padding: 0px;">
-                   <table class="appDataTable table table-striped table-responsive-sm dataTable no-footer">
-                       <thead>
-                       <tr>
-                           <th>Period</th>
-                           <th>Activity ID</th>
-                           <th>Organiser</th>
-                           <th>Description</th>
-                           <th>Volunteer Hours</th>
-                       </tr>
-                       </thead>
-                       <tbody>
-                       @if($dashboard_analytics["number_of_activities"] <= 0)
-                           <tr>
-                               <td colspan="5"><p class="text-center">You have no completed volunteer activities at the moment</p></td>
-                           </tr>
-                       @else
-                           @foreach($job_history as $work)
-                               @if($work->job_post && $work->job_post->type == "VOLUNTEER")
-                                   <tr>
-                                       <td>{{$work->period}}</td>
-                                       <td>{{$work->ref_id}}</td>
-                                       <td>{{$work->job_post->user->name}}</td>
-                                       <td>{{$work->job_post->description}}</td>
-                                       <td>{{$work->volunteer_hours}}</td>
-                                   </tr>
-                               @endif
-                           @endforeach
-                       @endif
-                       </tbody>
-                   </table>
-               </div>
-           </div>
-       </div>
-   </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-bordered">
+                <div class="card-header bg-white border-bottom">
+                    <b>Volunteer History</b>
+                </div>
+                <div class="card-body" style="padding: 0px;">
+                    <table class="appDataTable table table-striped table-responsive-sm dataTable no-footer">
+                        <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Activity ID</th>
+                            <th>Organiser</th>
+                            <th>Description</th>
+                            <th>Volunteer Hours</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @if($dashboard_analytics["number_of_activities"] <= 0)
+                            <tr>
+                                <td colspan="5"><p class="text-center">You have no completed volunteer activities at the
+                                        moment</p></td>
+                            </tr>
+                        @else
+                            @foreach($job_history as $work)
+                                @if($work->job_post && $work->job_post->type == "VOLUNTEER")
+                                    <tr>
+                                        <td>{{$work->period}}</td>
+                                        <td>{{$work->ref_id}}</td>
+                                        <td>{{$work->job_post->user->name}}</td>
+                                        <td>{{$work->job_post->description}}</td>
+                                        <td>{{$work->volunteer_hours}}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -321,13 +353,13 @@
                     fill: false,
                     borderColor: 'green'
                 },
-                {
-                    label: 'Out-flow',
-                    data: [{{$taxData["janTax"]}}, {{$taxData["febTax"]}}, {{$taxData["marTax"]}}, {{$taxData["aprTax"]}}, {{$taxData["mayTax"]}}, {{$taxData["junTax"]}}, {{$taxData["julTax"]}}, {{$taxData["augTax"]}}, {{$taxData["sepTax"]}}, {{$taxData["octTax"]}}, {{$taxData["novTax"]}}, {{$taxData["decTax"]}}],
-                    borderWidth: 1,
-                    fill: false,
-                    borderColor: 'red'
-                }]
+                    {
+                        label: 'Out-flow',
+                        data: [{{$taxData["janTax"]}}, {{$taxData["febTax"]}}, {{$taxData["marTax"]}}, {{$taxData["aprTax"]}}, {{$taxData["mayTax"]}}, {{$taxData["junTax"]}}, {{$taxData["julTax"]}}, {{$taxData["augTax"]}}, {{$taxData["sepTax"]}}, {{$taxData["octTax"]}}, {{$taxData["novTax"]}}, {{$taxData["decTax"]}}],
+                        borderWidth: 1,
+                        fill: false,
+                        borderColor: 'red'
+                    }]
             },
             options: {
                 plugins: {
@@ -340,13 +372,13 @@
         });
 
         @if(Session::has('danger'))
-    NioApp.Toast('{{ Session::get('danger') }}', 'error', {position: 'top-right'});
-    // NioApp.Toast('This is a note for bottom right toast message.', 'info', {position: 'top-right'});
-    @endif
+        NioApp.Toast('{{ Session::get('danger') }}', 'error', {position: 'top-right'});
+        // NioApp.Toast('This is a note for bottom right toast message.', 'info', {position: 'top-right'});
+        @endif
 
-    @if(Session::has('success'))
-    NioApp.Toast('{{ Session::get('success') }}', 'success', {position: 'top-right'});
-    @endif
+        @if(Session::has('success'))
+        NioApp.Toast('{{ Session::get('success') }}', 'success', {position: 'top-right'});
+        @endif
     </script>
 @endsection
 
