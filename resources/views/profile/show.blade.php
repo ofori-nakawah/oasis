@@ -20,8 +20,14 @@
                 </div>
             </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
-                <a href="{{URL::previous()}}"
-                   class="btn btn-outline-light"><span>Back</span></a>
+                <div class="flex flex-row justify-center items-center">
+                    <a href="{{URL::previous()}}"
+                       class=" ml-2 mt-1"><em class="ni ni-download text-secondary" style="font-size: 28px;"></em></a>
+                    <a href="{{URL::previous()}}"
+                       class="btn btn-outline-primary ml-2"><span>Gallery</span></a>
+                    <a href="{{URL::previous()}}"
+                       class="btn btn-outline-light ml-2"><span>Back</span></a>
+                </div>
             </div><!-- .nk-block-head-content -->
         </div>
     </div>
@@ -33,9 +39,13 @@
                     class="@if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"><em
                         class="icon ni ni-circle-fill @if($user->status == 1) text-success @elseif($user->status == 2) text-warning @else text-secondary @endif"></em> {{($user->status == 1) ? 'active' : 'inactive'}}</span>
                 <span class="text-primary"><em class="icon ni ni-live text-primary"></em> Member since {{$user->created_at}}</span>
-                <span><em class="icon ni ni-eye"></em> @if($user->is_online) <span
-                        class="text-success">online</span> @else Last seen
-                    was {{($user->last_seen) ? $user->last_seen->diffForHumans() : ' a while back'}} @endif</span>
+                <span><em class="icon ni ni-eye"></em> @if($user->is_online)
+                        <span
+                            class="text-success">online</span>
+                    @else
+                        Last seen
+                        was {{($user->last_seen) ? $user->last_seen->diffForHumans() : ' a while back'}}
+                    @endif</span>
             </div>
         </div>
     </div>
@@ -48,29 +58,36 @@
                         <div class="text-center">
                             <img src="{{$user->profile_picture}}" alt=""
                                  style="height: 220px;width: 220px;border: 1px solid #ccc;border-radius: 50%;margin-top: 25px;">
-                            <div>@if($user->id == auth()->user()->id) <a href="#" data-toggle="modal"
-                                                                         data-target="#editProfilePicModal"><em
-                                        class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</div>
+                            <div>@if($user->id == auth()->user()->id)
+                                    <a href="#" data-toggle="modal"
+                                       data-target="#editProfilePicModal"><em
+                                            class="icon ni ni-pen"></em> <b>Edit</b></a>
+                                @endif</div>
 
                         </div>
                     @else
                         <div style="margin-top: 80px;">
                             <em class="icon ni ni-user" style="font-size: 105px"></em>
-                            <div>@if($user->id == auth()->user()->id) <a href="#" data-toggle="modal"
-                                                                         data-target="#editProfilePicModal"><em
-                                        class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</div>
+                            <div>@if($user->id == auth()->user()->id)
+                                    <a href="#" data-toggle="modal"
+                                       data-target="#editProfilePicModal"><em
+                                            class="icon ni ni-pen"></em> <b>Edit</b></a>
+                                @endif</div>
                         </div>
                     @endif
                 </div>
                 <div class="card-footer bg-white border-top" style="padding-left: 0px;padding-right: 0px;;">
-                    <div><b>{{$user->name}} @if($user->id == auth()->user()->id) <a href="#" data-toggle="modal"
-                                                                                    data-target="#editNameModal"><em
-                                    class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b></div>
+                    <div><b>{{$user->name}} @if($user->id == auth()->user()->id)
+                                <a href="#" data-toggle="modal"
+                                   data-target="#editNameModal"><em
+                                        class="icon ni ni-pen"></em> <b>Edit</b></a>
+                            @endif</b></div>
                     <hr>
                     <div><em
                             class="icon ni ni-map-pin"></em>{{$user->location_name}} @if($user->id == auth()->user()->id)
                             <a href="{{route("user.profile.updateLocation")}}"><em class="icon ni ni-pen"></em>
-                                <b>Edit</b></a> @endif</div>
+                                <b>Edit</b></a>
+                        @endif</div>
                 </div>
             </div>
 
@@ -159,9 +176,11 @@
                     <div id="languagesInterestsBox">
                         <div class="card card-bordered bg-white">
                             <div class="card-header bg-white border-bottom">
-                                <b>Skills & Interests @if($user->id == auth()->user()->id) <a
-                                        href="{{route("user.profile.skills_and_interest")}}"><em
-                                            class="icon ni ni-pen"></em> <b>Edit</b></a> @endif</b>
+                                <b>Skills & Interests @if($user->id == auth()->user()->id)
+                                        <a
+                                            href="{{route("user.profile.skills_and_interest")}}"><em
+                                                class="icon ni ni-pen"></em> <b>Edit</b></a>
+                                    @endif</b>
                             </div>
                             <div class="card-body" style="height: 125px;padding-top: 10px;padding-bottom: 10px;">
                                 @foreach($skills as $skill)
@@ -174,8 +193,11 @@
                         <br>
                         <div class="card card-bordered bg-white" style="margin-top: 5px;">
                             <div class="card-header bg-white border-bottom">
-                                <b>Languages @if($user->id == auth()->user()->id) <a
-                                        href="{{route("user.profile.languages")}}"><em class="icon ni ni-pen"></em> <b>Edit</b></a> @endif
+                                <b>Languages @if($user->id == auth()->user()->id)
+                                        <a
+                                            href="{{route("user.profile.languages")}}"><em class="icon ni ni-pen"></em>
+                                            <b>Edit</b></a>
+                                    @endif
                                 </b>
                             </div>
                             <div class="card-body" style="height: 125px;padding-top: 10px;padding-bottom: 10px;">
@@ -274,10 +296,45 @@
                     </div>
                 </div>
                 <div id="jobExperienceBox">
-                    <div class="text-center" style="margin-top: 0px;">
-                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"
-                             style="height: 200px; width: 200px" alt="">
-                        <p style="color: #777;">This feature is in maintenance mode. Come back later</p>
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
+                            <div class="font-weight-bolder mt-1">Job Experience Outside VORK</div>
+                            <div><a href=""  style="float: right"><em style="font-size: 28px;" class="ni ni-plus-circle"></em></a></div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="timeline" style="margin-left: -20px;">
+                                <li>
+                                    <div style="margin-left: 30px;padding-bottom: 30px;">
+                                        <div>May 2022 - Ongoing</div>
+                                        <div class="text-dark">Test Lead</div>
+                                        <div>XYZ Company</div>
+
+                                        <div class="text-dark mt-1"  style="text-decoration: underline">Responsibilities</div>
+                                        <div>
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, assumenda dolore dolores facilis illum impedit ipsa mollitia obcaecati quas quo quod quos, veniam veritatis! Aut doloribus illo sunt. Iusto, officiis.
+                                        </div>
+                                        <div class="text-dark mt-1"  style="text-decoration: underline">Achievements</div>
+                                        <div>
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, assumenda dolore dolores facilis illum impedit ipsa mollitia obcaecati quas quo quod quos, veniam veritatis! Aut doloribus illo sunt. Iusto, officiis.
+                                        </div>
+                                        <div class="mt-1"><span class="text-dark ">Reference</span>: Bernard Ofori </div>
+                                        <hr>
+                                        <div style="float: right;">
+                                            <a href="" class="btn btn-outline-primary">Verify Reference</a>
+                                            <a href="" class="btn btn-outline-primary">Make Changes</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div>
+                        {{--                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"--}}
+                        {{--                             style="height: 200px; width: 200px" alt="">--}}
+                        {{--                        <p style="color: #777;">This feature is in maintenance mode. Come back later</p>--}}
+
+
                     </div>
                 </div>
                 <div id="certificationsBox">
@@ -429,5 +486,7 @@
                 URL.revokeObjectURL(output.src) // free memory
             }
         }
+
+
     </script>
 @endsection

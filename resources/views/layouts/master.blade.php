@@ -129,7 +129,36 @@
         /*.btn, .card, .card-header, .badge {*/
         /*    border-radius: 16px !important;*/
         /*}*/
-
+        ul.timeline {
+            list-style-type: none;
+            position: relative;
+        }
+        ul.timeline:before {
+            content: ' ';
+            background: #d4d9df;
+            display: inline-block;
+            position: absolute;
+            left: 29px;
+            width: 1px;
+            height: 100%;
+            z-index: 400;
+        }
+        ul.timeline > li {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        ul.timeline > li:before {
+            content: ' ';
+            display: inline-block;
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid #353299;
+            background: #353299;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            z-index: 400;
+        }
 
         .cardContainer:hover {
             border-color: #353299 !important;
