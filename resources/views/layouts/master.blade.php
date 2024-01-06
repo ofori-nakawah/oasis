@@ -194,12 +194,13 @@
                                     <span class="nk-menu-text"> Notifications @if(auth()->user()->unreadNotifications->count() > 0) <span class="badge badge-danger circle">{{auth()->user()->unreadNotifications->count() ?? ''}}</span> @endif</span>
                                 </a>
                             </li><!-- .nk-menu-item -->
-                            <li class="nk-menu-item">
+                            <!-- <li class="nk-menu-item">
                                 <a href="{{route('user.wallet')}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-wallet-alt"></em></span>
                                     <span class="nk-menu-text"> Wallet</span>
                                 </a>
-                            </li><!-- .nk-menu-item -->
+                            </li> -->
+                            <!-- .nk-menu-item -->
                             <li class="nk-menu-item">
                                 <a href="{{route('training.index')}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-book-read"></em></span>
