@@ -93,12 +93,12 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="description"><b>Responsibilities</b></label>
-                    <textarea class="form-control form-control-l summernote @error('description') is-invalid @enderror"
-                              placeholder="Enter description of the job"
-                              name="description">{{ old('description') }}</textarea>
+                    <label for="responsibilities"><b>Responsibilities</b></label>
+                    <textarea class="form-control form-control-l summernote @error('responsibilities') is-invalid @enderror"
+                              placeholder="Enter your responsibilities"
+                              name="responsibilities">{{ old('responsibilities') }}</textarea>
 
-                    @error('description')
+                    @error('responsibilities')
                     <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -107,11 +107,11 @@
 
                 <div class="input-group1 mb-3">
                     <label for="qualifications"><b>Achievements</b></label>
-                    <textarea class="form-control summernote form-control-l @error('qualifications') is-invalid @enderror"
-                              placeholder="Enter required qualifications"
-                              name="qualifications">{{ old('qualifications') }}</textarea>
+                    <textarea class="form-control summernote form-control-l @error('achievements') is-invalid @enderror"
+                              placeholder="Enter achievements"
+                              name="achievements">{{ old('achievements') }}</textarea>
 
-                    @error('qualifications')
+                    @error('achievements')
                     <span class="invalid-feedback" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -119,10 +119,10 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="title"><b>Reference</b></label>
-                    <input type="text" class="form-control form-control-l @error('title') is-invalid @enderror" placeholder="Enter role title" name="title" value="{{ old('title') }}">
+                    <label for="reference"><b>Reference</b></label>
+                    <input type="text" class="form-control form-control-l @error('reference') is-invalid @enderror" placeholder="Enter role title" name="reference" value="{{ old('reference') }}">
 
-                    @error('title')
+                    @error('reference')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
