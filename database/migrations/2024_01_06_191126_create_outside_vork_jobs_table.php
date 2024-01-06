@@ -24,6 +24,7 @@ class CreateOutsideVorkJobsTable extends Migration
             $table->text("achievements");
             $table->text("reference");
             $table->timestamp("reference_verified_at")->nullable();
+            $table->timestamp("reference_verification_sent_at")->nullable();
             $table->timestamps();
         });
     }
