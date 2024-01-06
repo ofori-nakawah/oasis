@@ -22,7 +22,7 @@
             <div class="nk-block-head-content">
                 <div class="flex flex-row justify-center items-center">
                     <a href="{{URL::previous()}}"
-                       class=" ml-2 mt-1"><em class="ni ni-download text-secondary" style="font-size: 28px;"></em></a>
+                       class=" ml-2 mt-1"><em class="ni ni-download" style="font-size: 28px;"></em></a>
                     <a href="{{URL::previous()}}"
                        class="btn btn-outline-primary ml-2"><span>Gallery</span></a>
                     <a href="{{URL::previous()}}"
@@ -299,7 +299,9 @@
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
                             <div class="font-weight-bolder mt-1">Job Experience Outside VORK</div>
-                            <div><a href=""  style="float: right"><em style="font-size: 28px;" class="ni ni-plus-circle"></em></a></div>
+                            @if($user->id == auth()->user()->id)
+                                <div><a href="{{route("user.outsideVorkJobHistory.create", ["user" => auth()->id()])}}"  style="float: right"><em style="font-size: 28px;" class="ni ni-plus-circle"></em></a></div>
+                            @endif
                         </div>
                         <div class="card-body">
                             <ul class="timeline" style="margin-left: -20px;">
@@ -317,12 +319,14 @@
                                         <div>
                                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, assumenda dolore dolores facilis illum impedit ipsa mollitia obcaecati quas quo quod quos, veniam veritatis! Aut doloribus illo sunt. Iusto, officiis.
                                         </div>
-                                        <div class="mt-1"><span class="text-dark ">Reference</span>: Bernard Ofori </div>
-                                        <hr>
-                                        <div style="float: right;">
-                                            <a href="" class="btn btn-outline-primary">Verify Reference</a>
-                                            <a href="" class="btn btn-outline-primary">Make Changes</a>
-                                        </div>
+                                        <div class="mt-1"><span class="text-dark ">Reference</span>: Bernard Ofori <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span></div>
+                                        @if($user->id == auth()->user()->id)
+                                            <hr>
+                                            <div style="float: right;">
+                                                <a href="" class="btn btn-outline-primary">Verify Reference</a>
+                                                <a href="" class="btn btn-outline-primary">Make Changes</a>
+                                            </div>
+                                        @endif
                                     </div>
                                 </li>
                             </ul>
