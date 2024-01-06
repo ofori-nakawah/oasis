@@ -27,10 +27,13 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="">
+            <form action="{{route('user.outsideVorkJobHistory.store')}}" method="POST">
+                {{csrf_field()}}
                 <div class="mb-3">
                     <h2><b>Add a new outside VORK job experience</b></h2>
                 </div>
+
+                <input type="hidden" name="user_id" value="{{auth()->id()}}">
 
                 <div class="input-group1 mb-3">
                     <label for="role"><b>Role</b></label>
