@@ -33,10 +33,10 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="title"><b>Role</b></label>
-                    <input type="text" class="form-control form-control-l @error('title') is-invalid @enderror" placeholder="Enter role title" name="title" value="{{ old('title') }}">
+                    <label for="role"><b>Role</b></label>
+                    <input type="text" class="form-control form-control-l @error('role') is-invalid @enderror" placeholder="Enter role title" name="role" value="{{ old('role') }}">
 
-                    @error('title')
+                    @error('role')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -44,10 +44,10 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="title"><b>Employer</b></label>
-                    <input type="text" class="form-control form-control-l @error('title') is-invalid @enderror" placeholder="Enter role title" name="title" value="{{ old('title') }}">
+                    <label for="employer"><b>Employer</b></label>
+                    <input type="text" class="form-control form-control-l @error('employer') is-invalid @enderror" placeholder="Enter name of employer" name="employer" value="{{ old('employer') }}">
 
-                    @error('title')
+                    @error('employer')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -57,10 +57,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-group1 mb-3">
-                            <label for="title"><b>Start Date</b></label>
-                            <input type="text" class="form-control form-control-l @error('title') is-invalid @enderror" placeholder="Enter role title" name="title" value="{{ old('title') }}">
+                            <label for="start_date"><b>Start Date</b></label>
+                            <input type="text" class="form-control form-control-l @error('start_date') is-invalid @enderror" placeholder="Enter start date" name="start_date" value="{{ old('start_date') }}">
 
-                            @error('title')
+                            @error('start_date')
                             <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -69,10 +69,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="input-group1 mb-3">
-                            <label for="title"><b>End Date</b></label>
-                            <input type="text" class="form-control form-control-l @error('title') is-invalid @enderror" placeholder="Enter role title" name="title" value="{{ old('title') }}">
+                            <label for="end_date"><b>End Date</b></label>
+                            <input type="date" class="form-control form-control-l @error('end_date') is-invalid @enderror" placeholder="Enter end date" name="end_date" value="{{ old('end_date') }}">
 
-                            @error('title')
+                            @error('end_date')
                             <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -85,7 +85,7 @@
                                      style="margin-bottom: 15px;">
                                     <input type="checkbox" class="custom-control-input" name="is_ongoing"
                                            id="is_ongoing">
-                                    <label class="custom-control-label" for="is_internship">Ongoing?</label>
+                                    <label class="custom-control-label" for="is_ongoing">Ongoing?</label>
                                 </div>
                             </div>
                         </div>
