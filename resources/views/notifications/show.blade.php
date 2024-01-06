@@ -151,12 +151,16 @@
                                         </table>
                                     @endif
 
-                                    @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
+                                    @if(($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB") && auth()->id() == $notify->data["post"]["confirmed_applicant_id"])
                                         <br>
                                             <div class="text-muted">Income: GHS {{$notify->data["post"]["final_payment_amount"]}}/Month
                                             </div>
+                                            @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" )
                                             <div class="text-muted"> Term: {{\Carbon\Carbon::parse($notify->data["post"]["final_end_date"])->diffInMonths(\Carbon\Carbon::parse($notify->data["post"]["final_start_date"])) }} months
                                             </div>
+                                            @else
+                                            <div class="text-muted"> Term: Permanent </div>
+                                            @endif
 
                                             <br>
 
