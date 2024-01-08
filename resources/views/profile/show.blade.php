@@ -305,30 +305,32 @@
                         </div>
                         <div class="card-body">
                             <ul class="timeline" style="margin-left: -20px;">
-                                <li>
-                                    <div style="margin-left: 30px;padding-bottom: 30px;">
-                                        <div>May 2022 - Ongoing</div>
-                                        <div class="text-dark">Test Lead</div>
-                                        <div>XYZ Company</div>
+                                @foreach($user->outsideVorkJobs as $outsideVorkJob)
+                                    <li>
+                                        <div style="margin-left: 30px;padding-bottom: 30px;">
+                                            <div>{{date("F Y", strtotime($outsideVorkJob->start_date))}} - {{$outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing"}}</div>
+                                            <div class="text-dark">{{$outsideVorkJob->role}}</div>
+                                            <div>{{$outsideVorkJob->employer}}</div>
 
-                                        <div class="text-dark mt-1"  style="text-decoration: underline">Responsibilities</div>
-                                        <div>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, assumenda dolore dolores facilis illum impedit ipsa mollitia obcaecati quas quo quod quos, veniam veritatis! Aut doloribus illo sunt. Iusto, officiis.
-                                        </div>
-                                        <div class="text-dark mt-1"  style="text-decoration: underline">Achievements</div>
-                                        <div>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, assumenda dolore dolores facilis illum impedit ipsa mollitia obcaecati quas quo quod quos, veniam veritatis! Aut doloribus illo sunt. Iusto, officiis.
-                                        </div>
-                                        <div class="mt-1"><span class="text-dark ">Reference</span>: Bernard Ofori <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span></div>
-                                        @if($user->id == auth()->user()->id)
-                                            <hr>
-                                            <div style="float: right;">
-                                                <a href="" class="btn btn-outline-primary">Verify Reference</a>
-                                                <a href="" class="btn btn-outline-primary">Make Changes</a>
+                                            <div class="text-dark mt-1"  style="text-decoration: underline">Responsibilities</div>
+                                            <div>
+                                                {!! $outsideVorkJob->responsibilities !!}
                                             </div>
-                                        @endif
-                                    </div>
-                                </li>
+                                            <div class="text-dark mt-1"  style="text-decoration: underline">Achievements</div>
+                                            <div>
+                                                {!! $outsideVorkJob->achievements !!}
+                                            </div>
+                                            <div class="mt-1"><span class="text-dark ">Reference</span>: {{$outsideVorkJob->reference}} <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span></div>
+                                            @if($user->id == auth()->user()->id)
+                                                <hr>
+                                                <div style="float: right;">
+                                                    <a href="" class="btn btn-outline-primary">Verify Reference</a>
+                                                    <a href="" class="btn btn-outline-primary">Make Changes</a>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </li>
+                                @endforeach
                             </ul>
 
                         </div>

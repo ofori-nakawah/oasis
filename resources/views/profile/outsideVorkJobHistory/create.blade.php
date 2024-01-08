@@ -1,5 +1,6 @@
 @extends("layouts.master")
 
+@section("title") Add outside VORK job experience @endsection
 
 @section("content")
     <div class="nk-block-head nk-block-head-sm">
@@ -61,7 +62,7 @@
                     <div class="col-md-6">
                         <div class="input-group1 mb-3">
                             <label for="start_date"><b>Start Date</b></label>
-                            <input type="text" class="form-control form-control-l @error('start_date') is-invalid @enderror" placeholder="Enter start date" name="start_date" value="{{ old('start_date') }}">
+                            <input type="date" class="form-control form-control-l @error('start_date') is-invalid @enderror" placeholder="Enter start date" name="start_date" value="{{ old('start_date') }}">
 
                             @error('start_date')
                             <span class="invalid-feedback " role="alert">
