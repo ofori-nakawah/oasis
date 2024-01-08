@@ -104,7 +104,7 @@ Route::group(['middleware'=>'auth'], function () {
     /**
      *  outside vork history
      */
-    Route::get('/profile/outside-vork-job-history/create', 'Web\OutsideVorkJobController@create')->name('user.outsideVorkJobHistory.create');
+    Route::get('/profile/outside-vork-job-history/{user}/create', 'Web\OutsideVorkJobController@create')->name('user.outsideVorkJobHistory.create');
     Route::post('/profile/outside-vork-job-history/store', 'Web\OutsideVorkJobController@store')->name('user.outsideVorkJobHistory.store');
     Route::get('/profile/outside-vork-job-history/{id}/edit', 'Web\OutsideVorkJobController@edit')->name('user.outsideVorkJobHistory.edit');
     Route::post('/profile/outside-vork-job-history/{id}/update', 'Web\OutsideVorkJobController@update')->name('user.outsideVorkJobHistory.update');

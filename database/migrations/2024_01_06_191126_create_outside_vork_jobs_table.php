@@ -16,8 +16,8 @@ class CreateOutsideVorkJobsTable extends Migration
         Schema::create('outside_vork_jobs', function (Blueprint $table) {
             $table->id();
             $table->string("user_id");
-            $table->string("start_date");
-            $table->string("end_date")->nullable();
+            $table->timestamp("start_date");
+            $table->timestamp("end_date")->nullable();
             $table->string("employer");
             $table->string("role");
             $table->text("responsibilities");
