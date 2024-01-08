@@ -28,13 +28,11 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.outsideVorkJobHistory.store')}}" method="POST">
+            <form action="{{route('user.outsideVorkJobHistory.update', ["id" => $outsideVorkJob->id])}}" method="POST">
                 {{csrf_field()}}
                 <div class="mb-3">
                     <h2><b>Edit outside VORK job experience</b></h2>
                 </div>
-
-                <input type="hidden" name="user_id" value="{{auth()->id()}}">
 
                 <div class="input-group1 mb-3">
                     <label for="role"><b>Role</b></label>
@@ -61,8 +59,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-group1 mb-3">
+
                             <label for="start_date"><b>Start Date</b></label>
-                            <input type="date" class="form-control form-control-l @error('start_date') is-invalid @enderror" placeholder="Enter start date" name="start_date" value="{{ old('start_date') }}">
+                            <input type="date" class="form-control form-control-l @error('start_date') is-invalid @enderror" placeholder="Enter start date" name="start_date" value="{{ explode(" ", $outsideVorkJob->start_date)[0] }}">
 
                             @error('start_date')
                             <span class="invalid-feedback " role="alert">
@@ -74,7 +73,7 @@
                     <div class="col-md-6">
                         <div class="input-group1 mb-3">
                             <label for="end_date"><b>End Date</b></label>
-                            <input type="date" class="form-control form-control-l @error('end_date') is-invalid @enderror" placeholder="Enter end date" name="end_date" value="{{ old('end_date') }}">
+                            <input type="date" class="form-control form-control-l @error('end_date') is-invalid @enderror" placeholder="Enter end date" name="end_date" value="{{ explode(" ", $outsideVorkJob->end_date)[0] }}">
 
                             @error('end_date')
                             <span class="invalid-feedback " role="alert">
@@ -87,7 +86,7 @@
                             <div class="col-md-12">
                                 <div class="custom-control custom-control-lg custom-checkbox"
                                      style="margin-bottom: 15px;">
-                                    <input type="checkbox" class="custom-control-input" name="is_ongoing"
+                                    <input type="checkbox" @if($outsideVorkJob->end_date !== null) checked @endif class="custom-control-input" name="is_ongoing"
                                            id="is_ongoing">
                                     <label class="custom-control-label" for="is_ongoing">Ongoing?</label>
                                 </div>
@@ -100,7 +99,7 @@
                     <label for="responsibilities"><b>Responsibilities</b></label>
                     <textarea class="form-control form-control-l summernote @error('responsibilities') is-invalid @enderror"
                               placeholder="Enter your responsibilities"
-                              name="responsibilities">{{ old('responsibilities') }}</textarea>
+                              name="responsibilities">{{ $outsideVorkJob->responsibilities }}</textarea>
 
                     @error('responsibilities')
                     <span class="invalid-feedback" role="alert">
@@ -113,7 +112,7 @@
                     <label for="qualifications"><b>Achievements</b></label>
                     <textarea class="form-control summernote form-control-l @error('achievements') is-invalid @enderror"
                               placeholder="Enter achievements"
-                              name="achievements">{{ old('achievements') }}</textarea>
+                              name="achievements">{{ $outsideVorkJob->achievements }}</textarea>
 
                     @error('achievements')
                     <span class="invalid-feedback" role="alert">
