@@ -14,7 +14,7 @@ class CreateOutsideVorkJobsTable extends Migration
     public function up()
     {
         Schema::create('outside_vork_jobs', function (Blueprint $table) {
-            $table->id();
+            $table->uuid("id")->primary();
             $table->string("user_id");
             $table->timestamp("start_date");
             $table->timestamp("end_date")->nullable();

@@ -325,7 +325,7 @@
                                                 <hr>
                                                 <div style="float: right;">
                                                     <a href="" class="btn btn-outline-primary">Verify Reference</a>
-                                                    <a href="" class="btn btn-outline-primary">Make Changes</a>
+                                                    <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}" class="btn btn-outline-primary">Make Changes</a>
                                                 </div>
                                             @endif
                                         </div>
