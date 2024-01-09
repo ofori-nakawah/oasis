@@ -306,6 +306,13 @@
                             @endif
                         </div>
                         <div class="card-body">
+                            @if(count($user->outsideVorkJobs) < 1)
+                                <div class="text-center m-5">
+                                    <img src="{{asset('assets/html-template/src/images/nd.svg')}}"
+                                         style="height: 200px; width: 200px" alt="">
+                                    <p style="color: #777;">You haven't added any outside VORK job history. Tap on the plus icon to add external job experiences.</p>
+                                </div>
+                            @endif
                             <ul class="timeline" style="margin-left: -20px;">
                                 @foreach($user->outsideVorkJobs as $outsideVorkJob)
                                     <li>

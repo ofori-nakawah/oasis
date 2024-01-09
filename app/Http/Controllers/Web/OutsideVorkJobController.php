@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ExternalJobReferenceApprovalRequestEmail;
 use App\Models\OutsideVorkJob;
 use App\Models\User;
 use Carbon\Carbon;
@@ -10,6 +11,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class OutsideVorkJobController extends Controller
@@ -188,6 +190,7 @@ class OutsideVorkJobController extends Controller
         /**
          * send email with approval and decline link
          */
+        Mail::to($reference->email)->send(new ExternalJobReferenceApprovalRequestEmail($outsideVorkJob));
 
         try {
             $outsideVorkJob->update();
