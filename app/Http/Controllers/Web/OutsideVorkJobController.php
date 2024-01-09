@@ -60,19 +60,81 @@ class OutsideVorkJobController extends Controller
             $outsideVorkJob->save();
             return redirect()->route("user.profile", ["user_id" => $userId])->with("success", "Outside VORK job history has been added to your profile successfully.");
         } catch (QueryException $e) {
-            Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            Log::error("ERROR SAVING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return back()->with("danger", "Error saving outside VORK job history information. Please try again.");
         }
     }
 
     public function edit($id)
     {
+        if (!$id) {
+            return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
+        }
+
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+
+        if (!$outsideVorkJob) {
+            return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
+        }
+
+        $user = Auth::user();
+
+        return view("profile.outsideVorkJobHistory.edit", compact("outsideVorkJob", "user"));
+    }
+
+    public function remove($id)
+    {
+        if (!$id) {
+            return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
+        }
+
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+
+        if (!$outsideVorkJob) {
+            return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
+        }
+
+        try {
+            $outsideVorkJob->delete();
+            return redirect()->back()->with("success", "Outside VORK job history has been removed successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DELETING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Error removing outside VORK job history information. Please try again.");
+        }
 
     }
 
     public function update(Request $request, $id)
     {
+        if (!$id) {
+            return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
+        }
 
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+
+        if (!$outsideVorkJob) {
+            return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
+        }
+
+        $outsideVorkJob->role = $request->role;
+        $outsideVorkJob->employer = $request->employer;
+        $outsideVorkJob->start_date = $request->start_date;
+        $outsideVorkJob->end_date = $request->end_date;
+        $outsideVorkJob->responsibilities = $request->responsibilities;
+        $outsideVorkJob->achievements = $request->achievements;
+        $outsideVorkJob->reference = $request->reference;
+
+        if ($request->is_ongoing === "on") {
+            $outsideVorkJob->end_date = null;
+        }
+
+        try {
+            $outsideVorkJob->update();
+            return redirect()->route("user.profile", ["user_id" => Auth::id()])->with("success", "Outside VORK job history has been updated successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR UPDATING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Error updating outside VORK job history information. Please try again.");
+        }
     }
 
     public function verifyReference($id)
