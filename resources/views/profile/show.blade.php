@@ -300,7 +300,9 @@
                         <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
                             <div class="font-weight-bolder mt-1">Job Experience Outside VORK</div>
                             @if($user->id == auth()->user()->id)
-                                <div><a href="{{route("user.outsideVorkJobHistory.create", ["user" => auth()->id()])}}"  style="float: right"><em style="font-size: 28px;" class="ni ni-plus-circle"></em></a></div>
+                                <div><a href="{{route("user.outsideVorkJobHistory.create", ["user" => auth()->id()])}}"
+                                        style="float: right"><em style="font-size: 28px;"
+                                                                 class="ni ni-plus-circle"></em></a></div>
                             @endif
                         </div>
                         <div class="card-body">
@@ -308,40 +310,45 @@
                                 @foreach($user->outsideVorkJobs as $outsideVorkJob)
                                     <li>
                                         <div style="margin-left: 30px;padding-bottom: 30px;">
-                                            <div>{{date("F Y", strtotime($outsideVorkJob->start_date))}} - {{$outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing"}}</div>
+                                            <div>{{date("F Y", strtotime($outsideVorkJob->start_date))}}
+                                                - {{$outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing"}}</div>
                                             <div class="text-dark">{{$outsideVorkJob->role}}</div>
                                             <div>{{$outsideVorkJob->employer}}</div>
 
-                                            <div class="text-dark mt-1"  style="text-decoration: underline">Responsibilities</div>
+                                            <div class="text-dark mt-1" style="text-decoration: underline">
+                                                Responsibilities
+                                            </div>
                                             <div>
                                                 {!! $outsideVorkJob->responsibilities !!}
                                             </div>
-                                            <div class="text-dark mt-1"  style="text-decoration: underline">Achievements</div>
+                                            <div class="text-dark mt-1" style="text-decoration: underline">
+                                                Achievements
+                                            </div>
                                             <div>
                                                 {!! $outsideVorkJob->achievements !!}
                                             </div>
-                                            <div class="mt-1"><span class="text-dark ">Reference</span>: {{$outsideVorkJob->reference}} <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span></div>
+                                            <div class="mt-1"><span
+                                                    class="text-dark ">Reference</span>: {{$outsideVorkJob->reference}}
+                                                <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span>
+                                            </div>
                                             @if($user->id == auth()->user()->id)
                                                 <hr>
                                                 <div style="float: right;">
-                                                    <a href="{{route("user.outsideVorkJobHistory.remove", ["id" => $outsideVorkJob->id])}}" onclick="return confirm('Are you sure?')" class="btn btn-outline-danger"><em class="ni ni-trash"></em> Remove</a>
-                                                    <a href="" class="btn btn-outline-primary">Verify Reference</a>
-                                                    <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}" class="btn btn-outline-primary">Make Changes</a>
+                                                    <a href="{{route("user.outsideVorkJobHistory.remove", ["id" => $outsideVorkJob->id])}}"
+                                                       onclick="return confirm('Are you sure?')"
+                                                       class="btn btn-outline-danger"><em class="ni ni-trash"></em>
+                                                        Remove</a>
+                                                    <a href="{{route("user.outsideVorkJobHistory.verifyReference", ["id" => $outsideVorkJob->id])}}"
+                                                       class="btn btn-outline-primary">Verify Reference</a>
+                                                    <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}"
+                                                       class="btn btn-outline-primary">Make Changes</a>
                                                 </div>
                                             @endif
                                         </div>
                                     </li>
                                 @endforeach
                             </ul>
-
                         </div>
-                    </div>
-                    <div>
-                        {{--                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"--}}
-                        {{--                             style="height: 200px; width: 200px" alt="">--}}
-                        {{--                        <p style="color: #777;">This feature is in maintenance mode. Come back later</p>--}}
-
-
                     </div>
                 </div>
                 <div id="certificationsBox">
@@ -415,7 +422,7 @@
         //     setTimeout(function () {
         //         $("#loadingState").hide()
         //         $("#languagesInterestsBox").show()
-        //     }, 2000)
+        //     }, 300)
         // })
 
         $("#educationLink").on("click", function () {
@@ -429,7 +436,7 @@
             setTimeout(function () {
                 $("#loadingState").hide()
                 $("#educationBox").show()
-            }, 2000)
+            }, 300)
         })
 
         $("#jobExperienceLink").on("click", function () {
@@ -443,7 +450,7 @@
             setTimeout(function () {
                 $("#loadingState").hide()
                 $("#jobExperienceBox").show()
-            }, 2000)
+            }, 300)
         })
 
         $("#vorkHistoryLink").on("click", function () {
@@ -457,7 +464,7 @@
             setTimeout(function () {
                 $("#loadingState").hide()
                 $("#vorkHistoryBox").show()
-            }, 2000)
+            }, 300)
         })
 
         $("#certificationsLink").on("click", function () {
@@ -471,7 +478,7 @@
             setTimeout(function () {
                 $("#loadingState").hide()
                 $("#certificationsBox").show()
-            }, 2000)
+            }, 300)
         })
 
         function clearContentBox() {

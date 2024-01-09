@@ -139,7 +139,19 @@ class OutsideVorkJobController extends Controller
 
     public function verifyReference($id)
     {
+        if (!$id) {
+            return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
+        }
 
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+
+        if (!$outsideVorkJob) {
+            return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
+        }
+
+        $user = Auth::user();
+
+        return view("profile.outsideVorkJobHistory.verifyReference", compact("outsideVorkJob", "user", "outsideVorkJob"));
     }
 
     public function getReferenceVerification($id)
