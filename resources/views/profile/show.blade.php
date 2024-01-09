@@ -328,7 +328,7 @@
                                                 {!! $outsideVorkJob->achievements !!}
                                             </div>
                                             <div class="mt-1"><span
-                                                    class="text-dark ">Reference</span>: {{$outsideVorkJob->reference}}
+                                                    class="text-dark ">Reference</span>: {{json_decode($outsideVorkJob->reference)->name}}
                                                 <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span>
                                             </div>
                                             @if($user->id == auth()->user()->id)

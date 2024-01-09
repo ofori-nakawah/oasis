@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\OutsideVorkJob;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,9 @@ class OutsideVorkJobController extends Controller
         $outsideVorkJob->end_date = $request->end_date;
         $outsideVorkJob->responsibilities = $request->responsibilities;
         $outsideVorkJob->achievements = $request->achievements;
-        $outsideVorkJob->reference = $request->reference;
+        $outsideVorkJob->reference = json_encode([
+            "name" => $request->reference
+        ]);
         $outsideVorkJob->user_id = $userId;
 
         if ($request->is_ongoing === "on") {
@@ -122,7 +125,9 @@ class OutsideVorkJobController extends Controller
         $outsideVorkJob->end_date = $request->end_date;
         $outsideVorkJob->responsibilities = $request->responsibilities;
         $outsideVorkJob->achievements = $request->achievements;
-        $outsideVorkJob->reference = $request->reference;
+        $outsideVorkJob->reference = json_encode([
+            "name" => $request->reference
+        ]);
 
         if ($request->is_ongoing === "on") {
             $outsideVorkJob->end_date = null;
@@ -154,8 +159,42 @@ class OutsideVorkJobController extends Controller
         return view("profile.outsideVorkJobHistory.verifyReference", compact("outsideVorkJob", "user", "outsideVorkJob"));
     }
 
-    public function getReferenceVerification($id)
+    public function getReferenceVerification(Request $request, $id)
     {
+        if (!$id) {
+            return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
+        }
 
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+
+        if (!$outsideVorkJob) {
+            return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
+        }
+
+        $validation = Validator::make($request->all(), [
+            'email' => 'required',
+            'phone_number' => 'required',
+        ]);
+
+        if ($validation->fails()) {return back()->withErrors($validation->errors())->withInput();}
+
+        $reference = json_decode($outsideVorkJob->reference);
+        $reference->email = $request->email;
+        $reference->phone_number = $request->phone_number;
+
+        $outsideVorkJob->reference = json_encode($reference);
+        $outsideVorkJob->reference_verification_sent_at = Carbon::now();
+
+        /**
+         * send email with approval and decline link
+         */
+
+        try {
+            $outsideVorkJob->update();
+            return redirect()->route("user.profile", ["user_id" => Auth::id()])->with("success", "Reference approval request has been sent successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR REQUEST OUTSIDE VORK JOB REFERENCE APPROVAL >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Error requesting reference approval. Please try again.");
+        }
     }
 }

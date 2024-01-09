@@ -28,15 +28,22 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.outsideVorkJobHistory.update', ["id" => $outsideVorkJob->id])}}" method="POST">
+            <form action="{{route('user.outsideVorkJobHistory.getReferenceVerification', ["id" => $outsideVorkJob->id])}}" method="POST">
                 {{csrf_field()}}
                 <div class="mb-3">
-                    <h2><b>Request reference approval outside VORK job experience ({{$outsideVorkJob->role}})</b></h2>
+                    <h2><b>Request reference approval ({{$outsideVorkJob->role}} at {{$outsideVorkJob->employer}})</b></h2>
                 </div>
 
                 <div class="input-group1 mb-3">
                     <label for="role"><b>Reference</b></label>
-                    <input type="text" class="form-control form-control-l @error('role') is-invalid @enderror" placeholder="Enter role title" name="role" value="{{ $outsideVorkJob->reference }}">
+                    <div class="row">
+                        <div class="col-md-9 col-sm-8">
+                            <input type="text" disabled class="form-control form-control-l @error('role') is-invalid @enderror" placeholder="Enter role title" name="role" value="{{ json_decode($outsideVorkJob->reference)->name}}">
+                        </div>
+                        <div class="col-md-3 col-sm-4">
+                            <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}" class="btn btn-outline-primary btn-block"><b>Change reference</b></a>
+                        </div>
+                    </div>
 
                     @error('role')
                     <span class="invalid-feedback " role="alert">
@@ -46,10 +53,10 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="role"><b>Email</b></label>
-                    <input type="text" class="form-control form-control-l @error('role') is-invalid @enderror" placeholder="Enter role title" name="role" value="{{ $outsideVorkJob->reference }}">
+                    <label for="email"><b>Email</b></label>
+                    <input type="email" class="form-control form-control-l @error('email') is-invalid @enderror" placeholder="Enter reference email" name="email" value="{{ old("email") }}">
 
-                    @error('role')
+                    @error('email')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -57,10 +64,10 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="role"><b>Phone Number</b></label>
-                    <input type="text" class="form-control form-control-l @error('role') is-invalid @enderror" placeholder="Enter role title" name="role" value="{{ $outsideVorkJob->reference }}">
+                    <label for="phone_number"><b>Phone Number</b></label>
+                    <input type="tel" class="form-control form-control-l @error('phone_number') is-invalid @enderror" placeholder="Enter reference phone number" name="phone_number" value="{{ old("phone_number") }}">
 
-                    @error('role')
+                    @error('phone_number')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -81,6 +88,8 @@ backdrop-filter: blur(5px);
 border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
                     <h4>Are you sure?</h4>
                     <p>Confirm all the entered information above are accurate before proceeding to request job experience approval.</p>
+
+                    <p><em class="ni ni-bulb"></em> <b>An email will be sent to your reference for approval.</b></p>
                     <div class="text-right" >
                         <button class="btn btn-outline-secondary btn-l" type="button" onclick="cancelPublish()"><b>Cancel</b></button>
                         <button class="btn btn-success btn-l" type="submit"><b>Yes, request job experience approval!</b></button>
