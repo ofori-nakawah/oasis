@@ -82,6 +82,28 @@ class OutsideVorkJobController extends Controller
         return view("profile.outsideVorkJobHistory.edit", compact("outsideVorkJob", "user"));
     }
 
+    public function remove($id)
+    {
+        if (!$id) {
+            return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
+        }
+
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+
+        if (!$outsideVorkJob) {
+            return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
+        }
+
+        try {
+            $outsideVorkJob->delete();
+            return redirect()->back()->with("success", "Outside VORK job history has been removed successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DELETING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Error removing outside VORK job history information. Please try again.");
+        }
+
+    }
+
     public function update(Request $request, $id)
     {
         if (!$id) {

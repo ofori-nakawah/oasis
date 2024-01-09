@@ -324,7 +324,7 @@
                                             @if($user->id == auth()->user()->id)
                                                 <hr>
                                                 <div style="float: right;">
-                                                    <a href="" class="btn btn-outline-danger"><em class="ni ni-trash"></em> Remove</a>
+                                                    <a href="{{route("user.outsideVorkJobHistory.remove", ["id" => $outsideVorkJob->id])}}" onclick="return confirm('Are you sure?')" class="btn btn-outline-danger"><em class="ni ni-trash"></em> Remove</a>
                                                     <a href="" class="btn btn-outline-primary">Verify Reference</a>
                                                     <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}" class="btn btn-outline-primary">Make Changes</a>
                                                 </div>

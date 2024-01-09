@@ -107,6 +107,7 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/profile/outside-vork-job-history/{user}/create', 'Web\OutsideVorkJobController@create')->name('user.outsideVorkJobHistory.create');
     Route::post('/profile/outside-vork-job-history/store', 'Web\OutsideVorkJobController@store')->name('user.outsideVorkJobHistory.store');
     Route::get('/profile/outside-vork-job-history/{id}/edit', 'Web\OutsideVorkJobController@edit')->name('user.outsideVorkJobHistory.edit');
+    Route::get('/profile/outside-vork-job-history/{id}/remove', 'Web\OutsideVorkJobController@remove')->name('user.outsideVorkJobHistory.remove');
     Route::post('/profile/outside-vork-job-history/{id}/update', 'Web\OutsideVorkJobController@update')->name('user.outsideVorkJobHistory.update');
     Route::get('/profile/outside-vork-job-history/{id}/verify-reference', 'Web\OutsideVorkJobController@verifyReference')->name('user.outsideVorkJobHistory.verifyReference');
     Route::post('/profile/outside-vork-job-history/{id}/verify-reference', 'Web\OutsideVorkJobController@getReferenceVerification')->name('user.outsideVorkJobHistory.getReferenceVerification');
