@@ -54,7 +54,7 @@
 
                 <div class="input-group1 mb-3">
                     <label for="email"><b>Email</b></label>
-                    <input type="email" class="form-control form-control-l @error('email') is-invalid @enderror" placeholder="Enter reference email" name="email" value="{{ old("email") }}">
+                    <input type="email" class="form-control form-control-l @error('email') is-invalid @enderror" placeholder="Enter reference email" name="email" value="{{ json_decode($outsideVorkJob->reference)->email ?? old("email") }}">
 
                     @error('email')
                     <span class="invalid-feedback " role="alert">
@@ -65,7 +65,7 @@
 
                 <div class="input-group1 mb-3">
                     <label for="phone_number"><b>Phone Number</b></label>
-                    <input type="tel" class="form-control form-control-l @error('phone_number') is-invalid @enderror" placeholder="Enter reference phone number" name="phone_number" value="{{ old("phone_number") }}">
+                    <input type="tel" class="form-control form-control-l @error('phone_number') is-invalid @enderror" placeholder="Enter reference phone number" name="phone_number" value="{{json_decode($outsideVorkJob->reference)->phone_number ?? old("phone_number") }}">
 
                     @error('phone_number')
                     <span class="invalid-feedback " role="alert">

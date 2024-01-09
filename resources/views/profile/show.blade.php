@@ -329,7 +329,13 @@
                                             </div>
                                             <div class="mt-1"><span
                                                     class="text-dark ">Reference</span>: {{json_decode($outsideVorkJob->reference)->name}}
-                                                <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span>
+                                                @if($outsideVorkJob->reference_verification_sent_at !== null )
+                                                    <span class="badge badge-info"><em class="ni ni-loader"></em>Pending</span>
+                                                @elseif($outsideVorkJob->reference_verified_at !== null)
+                                                    <span class="badge badge-success"><em class="ni ni-check"></em>Verified</span>
+                                                @else
+                                                    <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span>
+                                                @endif
                                             </div>
                                             @if($user->id == auth()->user()->id)
                                                 <hr>
@@ -338,8 +344,12 @@
                                                        onclick="return confirm('Are you sure?')"
                                                        class="btn btn-outline-danger"><em class="ni ni-trash"></em>
                                                         Remove</a>
-                                                    <a href="{{route("user.outsideVorkJobHistory.verifyReference", ["id" => $outsideVorkJob->id])}}"
-                                                       class="btn btn-outline-primary">Verify Reference</a>
+
+                                                    @if($outsideVorkJob->reference_verified_at === null)
+                                                        <a href="{{route("user.outsideVorkJobHistory.verifyReference", ["id" => $outsideVorkJob->id])}}"
+                                                           class="btn btn-outline-primary">Verify Reference</a>
+                                                    @endif
+
                                                     <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}"
                                                        class="btn btn-outline-primary">Make Changes</a>
                                                 </div>
