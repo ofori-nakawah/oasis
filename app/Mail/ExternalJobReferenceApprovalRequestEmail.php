@@ -31,6 +31,7 @@ class ExternalJobReferenceApprovalRequestEmail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.externalJobReferenceApprovalRequestEmail');
+        return $this->from('no-reply@myvorkx.com')
+            ->markdown('emails.externalJobReferenceApprovalRequestEmail');
     }
 }
