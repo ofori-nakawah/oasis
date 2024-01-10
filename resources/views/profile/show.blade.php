@@ -314,7 +314,7 @@
                                 </div>
                             @endif
                             <ul class="timeline" style="margin-left: -20px;">
-                                @foreach($user->outsideVorkJobs as $outsideVorkJob)
+                                @foreach($user->outsideVorkJobs->sortByDesc("start_date") as $outsideVorkJob)
                                     <li>
                                         <div style="margin-left: 30px;padding-bottom: 30px;">
                                             <div>{{date("F Y", strtotime($outsideVorkJob->start_date))}}
