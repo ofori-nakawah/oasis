@@ -123,7 +123,7 @@
 
                 <div class="input-group1 mb-3">
                     <label for="reference"><b>Reference</b></label>
-                    <input type="text" class="form-control form-control-l @error('reference') is-invalid @enderror" placeholder="Enter role title" name="reference" value="{{ $outsideVorkJob->reference }}">
+                    <input type="text" class="form-control form-control-l @error('reference') is-invalid @enderror" placeholder="Enter role title" name="reference" value="{{ json_decode($outsideVorkJob->reference)->name }}">
 
                     @error('reference')
                     <span class="invalid-feedback " role="alert">

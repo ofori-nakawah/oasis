@@ -148,5 +148,6 @@ Route::get('/auth/{user}/password-reset', 'Web\AuthController@readyPasswordReset
 
 Route::get('/auth/reload-captcha', 'Web\OnboardingController@reloadCaptcha')->name('captcha.reload');
 
+Route::get('/external-job-experience/{id}/endorsements/{action}', 'Web\OutsideVorkJobController@approveOrDeclineReferenceRequest')->name('endorsements');
 
 require __DIR__.'/auth.php';
