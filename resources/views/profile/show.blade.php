@@ -336,7 +336,7 @@
                                             </div>
                                             <div class="mt-1"><span
                                                     class="text-dark ">Reference</span>: {{json_decode($outsideVorkJob->reference)->name}}
-                                                @if($outsideVorkJob->reference_verification_sent_at !== null )
+                                                @if($outsideVorkJob->reference_verification_sent_at !== null && $outsideVorkJob->reference_verified_at === null)
                                                     <span class="badge badge-info"><em class="ni ni-loader"></em>Pending</span>
                                                 @elseif($outsideVorkJob->reference_verified_at !== null)
                                                     <span class="badge badge-success"><em class="ni ni-check"></em>Verified</span>

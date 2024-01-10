@@ -188,20 +188,15 @@ class OutsideVorkJobController extends Controller
         $outsideVorkJob->reference_verification_sent_at = Carbon::now();
 
 
-        $to = "bernardoforinakawah@gmail.com";
+        $to = $reference->email;
         $subject = "Job Experience Reference Approval Request";
+        $startDate = date("F Y", strtotime($outsideVorkJob->start_date));
+        $endDate = $outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing";
+        $approvalURL = env("BACKEND_URL") ."/external-job-experience/". $outsideVorkJob->id ."/endorsements/approve";
 
         $message = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-<!--[if gte mso 9]>
-<xml>
-  <o:OfficeDocumentSettings>
-    <o:AllowPNG/>
-    <o:PixelsPerInch>96</o:PixelsPerInch>
-  </o:OfficeDocumentSettings>
-</xml>
-<![endif]-->
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="x-apple-disable-message-reformatting">
@@ -304,10 +299,10 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 <div class="u-col u-col-100" style="max-width: 320px;min-width: 500px;display: table-cell;vertical-align: top;">
   <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
   
-<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+<table style="font-family:Sen,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Sen,helvetica,sans-serif;" align="left">
         
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
@@ -341,10 +336,10 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 <div class="u-col u-col-100" style="max-width: 320px;min-width: 500px;display: table-cell;vertical-align: top;">
   <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
   
-<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+<table style="font-family:Sen,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Sen,helvetica,sans-serif;" align="left">
         
     <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 22px; font-weight: 700;"><span>Job Experience Reference Approval Request</span></h1>
 
@@ -370,21 +365,21 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 <div class="u-col u-col-100" style="max-width: 320px;min-width: 500px;display: table-cell;vertical-align: top;">
   <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
   
-<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+<table style="font-family:Sen,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Sen,helvetica,sans-serif;" align="left">
         
   <div style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
-    <p style="line-height: 140%;">Hey Bernard,</p>
+    <p style="line-height: 140%;">Hey '. $reference->name .',</p>
 <p style="line-height: 140%;"> </p>
-<p style="line-height: 140%;">Samuel Owusu has sent you a request to approve his job experience on VORK. Kindly find details below:</p>
+<p style="line-height: 140%;">'. Auth::user()->name .' has sent you a request to approve his job experience on VORK. Kindly find details below:</p>
 <p style="line-height: 140%;"> </p>
 <p style="line-height: 140%;"><strong>Job Role:</strong></p>
-<p style="line-height: 140%;">Software Engineer</p>
+<p style="line-height: 140%;">'. $outsideVorkJob->role .'</p>
 <p style="line-height: 140%;"> </p>
 <p style="line-height: 140%;"><strong>Period:</strong></p>
-<p style="line-height: 140%;">December 2020 - March 2023</p>
+<p style="line-height: 140%;">'. $startDate .' - '. $endDate .'</p>
 <p style="line-height: 140%;"> </p>
 <p style="line-height: 140%;">You are kindly required to approve or decline this request.</p>
   </div>
@@ -412,13 +407,13 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
 
   
-<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+<table style="font-family:Sen,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Sen,helvetica,sans-serif;" align="left">
         
 <div align="center">
-    <a href="google.com" target="_blank" class="v-button" style="box-sizing: border-box;display: inline-block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #353299; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:100%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;font-size: 14px;">
+    <a href="'. $approvalURL .'" target="_blank" class="v-button" style="box-sizing: border-box;display: inline-block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #353299; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:100%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;font-size: 14px;">
       <span style="display:block;padding:10px 20px;line-height:120%;"><span style="line-height: 16.8px;">Approve</span></span>
     </a>
 </div>
@@ -433,10 +428,10 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 
 <div class="u-col u-col-50" style="max-width: 320px;min-width: 250px;display: table-cell;vertical-align: top;">
   <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">  
-<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+<table style="font-family:Sen,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Sen,helvetica,sans-serif;" align="left">
         
 <div align="center">
     <a href="" target="_blank" class="v-button" style="box-sizing: border-box;display: inline-block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #e81e50; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:100%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;font-size: 14px;">
@@ -462,14 +457,14 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 <div class="u-col u-col-100" style="max-width: 320px;min-width: 500px;display: table-cell;vertical-align: top;">
   <div style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
   
-<table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+<table style="font-family:Sen,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
   <tbody>
     <tr>
-      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+      <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Sen,helvetica,sans-serif;" align="left">
         
   <div style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
     <p style="line-height: 140%;">Regards,</p>
-<p style="line-height: 140%;">VORK Management</p>
+<p style="line-height: 140%;margin-bottom: 20px;">VORK Management</p>
   </div>
 
       </td>
@@ -497,7 +492,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
 // More headers. From is required, rest other headers are optional
-        $headers .= 'From: <ofori.nakawah@gmail.com>' . "\r\n";
+        $headers .= 'From: VORK <no-reply@myvork.com>' . "\r\n";
 
         mail($to,$subject,$message,$headers);
 
@@ -509,4 +504,36 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
             return back()->with("danger", "Error requesting reference approval. Please try again.");
         }
     }
+
+    public function approveOrDeclineReferenceRequest($id, $action)
+    {
+        if (!$id || !$action) {
+            return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
+        }
+
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+
+        if (!$outsideVorkJob) {
+            return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
+        }
+
+        if ($action === "approve") {
+            $outsideVorkJob->reference_verified_at = Carbon::now();
+        } else {
+            $outsideVorkJob->reference_verified_at = null;
+        }
+
+        try {
+            $outsideVorkJob->update();
+            $requester = $outsideVorkJob->user->name;
+            $reference = json_decode($outsideVorkJob->reference)->name;
+            $status = "success";
+            return view("profile.outsideVorkJobHistory.referenceApprovalLandingScreen", compact("requester", "reference", "outsideVorkJob", "action", "status"));
+        } catch (QueryException $e) {
+            Log::error("ERROR REQUEST OUTSIDE VORK JOB REFERENCE APPROVAL >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            $status = "error";
+            return view("profile.outsideVorkJobHistory.verifyReference", compact("outsideVorkJob", "status"));
+        }
+    }
 }
+
