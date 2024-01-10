@@ -373,7 +373,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <div style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
     <p style="line-height: 140%;">Hey '. $reference->name .',</p>
 <p style="line-height: 140%;"> </p>
-<p style="line-height: 140%;">'. Auth::user()->name .' has sent you a request to approve his job experience on VORK. Kindly find details below:</p>
+<p style="line-height: 140%;">'. Auth::user()->name .' has sent you a request to approve thier job experience on VORK. Kindly find details below:</p>
 <p style="line-height: 140%;"> </p>
 <p style="line-height: 140%;"><strong>Job Role:</strong></p>
 <p style="line-height: 140%;">'. $outsideVorkJob->role .'</p>
