@@ -355,10 +355,11 @@
                                                     @if($outsideVorkJob->reference_verified_at === null)
                                                         <a href="{{route("user.outsideVorkJobHistory.verifyReference", ["id" => $outsideVorkJob->id])}}"
                                                            class="btn btn-outline-primary">Verify Reference</a>
+                                                    
+                                                        <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}"
+                                                       class="btn btn-outline-primary">Make Changes</a>
                                                     @endif
 
-                                                    <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}"
-                                                       class="btn btn-outline-primary">Make Changes</a>
                                                 </div>
                                             @endif
                                         </div>

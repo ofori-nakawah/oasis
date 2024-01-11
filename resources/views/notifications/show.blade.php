@@ -152,28 +152,28 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="title" style="font-size: 10px;color: #777;">
-                                                @if(array_key_exists("job", $notification->data))
+                                                @if(array_key_exists("job", $notify->data))
                                                     Job Title
                                                 @endif
                                             </div>
 
                                             <div class="issuer"><b>
-                                                    @if(array_key_exists("job", $notification->data))
-                                                        {{$notification->data["job"]["role"]}}
+                                                    @if(array_key_exists("job", $notify->data))
+                                                        {{$notify->data["job"]["role"]}}
                                                     @endif
                                                 </b></div>
                                         </div>
                                         <div class="col-md-8">
                                             <div class="title"
                                                  style="font-size: 10px;color: #777;">
-                                                @if(array_key_exists("job", $notification->data))
+                                                @if(array_key_exists("job", $notify->data))
                                                     Reference
                                                 @endif
                                             </div>
                                             <b>
                                                 <div class="date ">
-                                                    @if(array_key_exists("job", $notification->data))
-                                                        {{json_decode($notification->data["job"]["reference"])->name}}
+                                                    @if(array_key_exists("job", $notify->data))
+                                                        {{json_decode($notify->data["job"]["reference"])->name}}
                                                     @endif
                                                 </div>
                                             </b>
@@ -182,14 +182,14 @@
                                     <div class="row mt-2">
                                         <div class="col-md-4">
                                             <div class="title" style="font-size: 10px;color: #777;">
-                                                @if(array_key_exists("job", $notification->data))
+                                                @if(array_key_exists("job", $notify->data))
                                                     Company
                                                 @endif
                                             </div>
 
                                             <div class="issuer"><b>
-                                                    @if(array_key_exists("job", $notification->data))
-                                                        {{$notification->data["job"]["employer"]}}
+                                                    @if(array_key_exists("job", $notify->data))
+                                                        {{$notify->data["job"]["employer"]}}
                                                     @endif
                                                 </b></div>
                                         </div>
