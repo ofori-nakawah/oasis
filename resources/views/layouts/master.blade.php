@@ -364,6 +364,7 @@
         <!-- wrap @e -->
     </div>
     <!-- main @e -->
+
 </div>
 <!-- app-root @e -->
 <script src="{{asset("assets/html-template/src/assets/js/bundle.js?ver=1.4.0")}}"></script>

@@ -107,7 +107,7 @@
                 <div class="container-fluid">
                     <div class="nk-content-inner">
                         <div class="nk-content-body">
-                            @section("content") @show
+                        @section("content") @show
                         </div>
                     </div>
                 </div>
@@ -116,6 +116,7 @@
         <!-- wrap @e -->
     </div>
     <!-- main @e -->
+
 </div>
 <!-- app-root @e -->
 <script src="{{asset("assets/html-template/src/assets/js/bundle.js?ver=1.4.0")}}"></script>
