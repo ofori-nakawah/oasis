@@ -32,21 +32,33 @@
                 <div class="card card-bordered">
                     <div class="card-header bg-white border-bottom">
                         <b>
-                            @if(array_key_exists("post", $notification->data)) {{$notification->data["post"]["type"]}} @endif
-                            @if(array_key_exists("job", $notification->data)) Reference Verification @endif
+                            @if(array_key_exists("post", $notification->data))
+                                {{$notification->data["post"]["type"]}}
+                            @endif
+                            @if(array_key_exists("job", $notification->data))
+                                Reference Verification
+                            @endif
                             <span style="float: right">{{$notification->created_at}}</span>
                         </b></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="title" style="font-size: 10px;color: #777;">
-                                    @if(array_key_exists("job", $notification->data)) Job Title @endif
-                                    @if(array_key_exists("post", $notification->data)) Ref ID @endif
+                                    @if(array_key_exists("job", $notification->data))
+                                        Job Title
+                                    @endif
+                                    @if(array_key_exists("post", $notification->data))
+                                        Ref ID
+                                    @endif
                                 </div>
 
                                 <div class="issuer"><b>
-                                        @if(array_key_exists("post", $notification->data)) {{$notification->data["ref_id"]}}@endif
-                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["job"]["role"]}} @endif
+                                        @if(array_key_exists("post", $notification->data))
+                                            {{$notification->data["ref_id"]}}
+                                        @endif
+                                        @if(array_key_exists("job", $notification->data))
+                                            {{$notification->data["job"]["role"]}}
+                                        @endif
                                     </b></div>
                             </div>
                             <div class="col-md-8">
@@ -65,7 +77,9 @@
                                             Title
                                         @endif
                                     @endif
-                                    @if(array_key_exists("job", $notification->data)) Reference @endif
+                                    @if(array_key_exists("job", $notification->data))
+                                        Reference
+                                    @endif
                                 </div>
                                 <b>
                                     <div class="date ">
@@ -86,7 +100,9 @@
                                                 {{$notification->data["post"]["title"]}}
                                             @endif
                                         @endif
-                                        @if(array_key_exists("job", $notification->data)) {{json_decode($notification->data["job"]["reference"])->name}} @endif
+                                        @if(array_key_exists("job", $notification->data))
+                                            {{json_decode($notification->data["job"]["reference"])->name}}
+                                        @endif
                                     </div>
                                 </b>
                             </div>
@@ -95,8 +111,12 @@
                             <div class="col-md-12">
                                 <div class="title" style="font-size: 10px;color: #777;">Status</div>
                                 <div class="issuer"><b>
-                                        @if(array_key_exists("post", $notification->data)) {{$notification->data["status"]}}@endif
-                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["event"] === "REFERENCE_REQUEST_APPROVED" ? "Approved" : "Declined"}}@endif
+                                        @if(array_key_exists("post", $notification->data))
+                                            {{$notification->data["status"]}}
+                                        @endif
+                                        @if(array_key_exists("job", $notification->data))
+                                            {{$notification->data["event"] === "REFERENCE_REQUEST_APPROVED" ? "Approved" : "Declined"}}
+                                        @endif
                                     </b></div>
                             </div>
                         </div>
@@ -114,49 +134,67 @@
                 <div class="card card-bordered">
                     <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
                         <b>
-                            @if(array_key_exists("post", $notify->data)){{$notify->data["post"]["type"]}} | <b>{{$notify->data["ref_id"]}}</b>@endif
-                            @if(array_key_exists("job", $notify->data)) Reference Verification @endif
-                                <span
+                            @if(array_key_exists("post", $notify->data))
+                                {{$notify->data["post"]["type"]}} | <b>{{$notify->data["ref_id"]}}</b>
+                            @endif
+                            @if(array_key_exists("job", $notify->data))
+                                Reference Verification
+                            @endif
+                            <span
                                 style="float: right">{{$notify->created_at}}</span></b></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                @if(array_key_exists("post", $notify->data))<div class="issuer">{{$notify->data["message"]}}</div>@endif
-                                @if(array_key_exists("job", $notify->data))<div class="issuer">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="title" style="font-size: 10px;color: #777;">
-                                                    @if(array_key_exists("job", $notification->data)) Job Title @endif
-                                                </div>
+                                @if(array_key_exists("post", $notify->data))
+                                    <div class="issuer">{{$notify->data["message"]}}</div>
+                                @endif
+                                @if(array_key_exists("job", $notify->data))
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="title" style="font-size: 10px;color: #777;">
+                                                @if(array_key_exists("job", $notification->data))
+                                                    Job Title
+                                                @endif
+                                            </div>
 
-                                                <div class="issuer"><b>
-                                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["job"]["role"]}} @endif
-                                                    </b></div>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <div class="title"
-                                                     style="font-size: 10px;color: #777;">
-                                                    @if(array_key_exists("job", $notification->data)) Reference @endif
-                                                </div>
-                                                <b>
-                                                    <div class="date ">
-                                                        @if(array_key_exists("job", $notification->data)) {{json_decode($notification->data["job"]["reference"])->name}} @endif
-                                                    </div>
-                                                </b>
-                                            </div>
+                                            <div class="issuer"><b>
+                                                    @if(array_key_exists("job", $notification->data))
+                                                        {{$notification->data["job"]["role"]}}
+                                                    @endif
+                                                </b></div>
                                         </div>
-                                        <div class="row mt-2">
-                                            <div class="col-md-4">
-                                                <div class="title" style="font-size: 10px;color: #777;">
-                                                    @if(array_key_exists("job", $notification->data)) Company @endif
+                                        <div class="col-md-8">
+                                            <div class="title"
+                                                 style="font-size: 10px;color: #777;">
+                                                @if(array_key_exists("job", $notification->data))
+                                                    Reference
+                                                @endif
+                                            </div>
+                                            <b>
+                                                <div class="date ">
+                                                    @if(array_key_exists("job", $notification->data))
+                                                        {{json_decode($notification->data["job"]["reference"])->name}}
+                                                    @endif
                                                 </div>
+                                            </b>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-4">
+                                            <div class="title" style="font-size: 10px;color: #777;">
+                                                @if(array_key_exists("job", $notification->data))
+                                                    Company
+                                                @endif
+                                            </div>
 
-                                                <div class="issuer"><b>
-                                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["job"]["employer"]}} @endif
-                                                    </b></div>
-                                            </div>
+                                            <div class="issuer"><b>
+                                                    @if(array_key_exists("job", $notification->data))
+                                                        {{$notification->data["job"]["employer"]}}
+                                                    @endif
+                                                </b></div>
                                         </div>
-                                    </div>@endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -290,35 +328,34 @@
                                     @endif
 
 
-
                                 </div>
                             </div>
                         @endif
-                            @if(array_key_exists("job", $notify->data))
-                                <div class="title"
-                                     style="font-size: 10px;color: #777;">Verification Status
-                                </div>
-                                <ul class="timeline" style="margin-left: -20px;">
-                                    <li>
-                                        <div style="margin-left: 30px;padding-bottom: 30px;">
-                                            <div>{{date("Y-m-d H:i:s", strtotime($notify->data["job"]["reference_verified_at"]))}}</div>
-                                            @if($notify->data["event"] === "REFERENCE_REQUEST_APPROVED")
-                                                <div class="text-success"><b>Approved</b></div>
-                                            @endif
+                        @if(array_key_exists("job", $notify->data))
+                            <div class="title"
+                                 style="font-size: 10px;color: #777;">Verification Status
+                            </div>
+                            <ul class="timeline" style="margin-left: -20px;">
+                                <li>
+                                    <div style="margin-left: 30px;padding-bottom: 30px;">
+                                        <div>{{date("Y-m-d H:i:s", strtotime($notify->data["job"]["reference_verified_at"]))}}</div>
+                                        @if($notify->data["event"] === "REFERENCE_REQUEST_APPROVED")
+                                            <div class="text-success"><b>Approved</b></div>
+                                        @endif
 
-                                            @if($notify->data["event"] === "REFERENCE_REQUEST_DECLINED")
+                                        @if($notify->data["event"] === "REFERENCE_REQUEST_DECLINED")
                                             <div class="text-danger"><b>Declined</b></div>
-                                            @endif
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div style="margin-left: 30px;padding-bottom: 30px;">
-                                            <div>{{$notify->data["job"]["reference_verification_sent_at"]}}</div>
-                                            <div class="text">Verification Request Issued</div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            @endif
+                                        @endif
+                                    </div>
+                                </li>
+                                <li>
+                                    <div style="margin-left: 30px;padding-bottom: 30px;">
+                                        <div>{{$notify->data["job"]["reference_verification_sent_at"]}}</div>
+                                        <div class="text">Verification Request Issued</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        @endif
                     </div>
                 </div>
             @endforeach
