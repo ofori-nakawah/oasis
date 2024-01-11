@@ -194,6 +194,7 @@ class OutsideVorkJobController extends Controller
         $startDate = date("F Y", strtotime($outsideVorkJob->start_date));
         $endDate = $outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing";
         $approvalURL = env("BACKEND_URL") ."/external-job-experience/". $outsideVorkJob->id ."/endorsements/approve";
+        $imgSrc = asset("assets/html-template/src/images/logo_white_bg.png");
 
         $message = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -309,7 +310,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
 
-      <img align="center" border="0" src="images/image-1.jpeg" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 480px;" width="480"/>
+      <img align="center" border="0" src="'. $imgSrc .'" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 480px;" width="480"/>
 
     </td>
   </tr>
