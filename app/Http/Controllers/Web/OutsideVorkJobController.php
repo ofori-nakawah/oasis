@@ -379,6 +379,9 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
 <p style="line-height: 140%;"><strong>Job Role:</strong></p>
 <p style="line-height: 140%;">'. $outsideVorkJob->role .'</p>
 <p style="line-height: 140%;"> </p>
+<p style="line-height: 140%;"><strong>Company:</strong></p>
+<p style="line-height: 140%;">'. $outsideVorkJob->employer .'</p>
+<p style="line-height: 140%;"> </p>
 <p style="line-height: 140%;"><strong>Period:</strong></p>
 <p style="line-height: 140%;">'. $startDate .' - '. $endDate .'</p>
 <p style="line-height: 140%;"> </p>
