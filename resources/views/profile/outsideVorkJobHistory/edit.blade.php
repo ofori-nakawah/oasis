@@ -86,7 +86,7 @@
                             <div class="col-md-12">
                                 <div class="custom-control custom-control-lg custom-checkbox"
                                      style="margin-bottom: 15px;">
-                                    <input type="checkbox" @if($outsideVorkJob->end_date !== null) checked @endif class="custom-control-input" name="is_ongoing"
+                                    <input type="checkbox" @if($outsideVorkJob->end_date === null) checked @endif class="custom-control-input" name="is_ongoing"
                                            id="is_ongoing">
                                     <label class="custom-control-label" for="is_ongoing">Ongoing?</label>
                                 </div>
