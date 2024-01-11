@@ -310,7 +310,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
 
-      <img align="center" border="0" src="'. $imgSrc .'" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: 100px;float: none;width: 100%;max-width: 480px;" width="480"/>
+      <img align="center" border="0" src="'. $imgSrc .'" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: 200px;float: none;width: 100%;max-width: 480px;" width="480"/>
 
     </td>
   </tr>
@@ -373,7 +373,7 @@ table, td { color: #000000; } #u_body a { color: #0000ee; text-decoration: under
       <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:Sen,helvetica,sans-serif;" align="left">
 
   <div style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
-    <p style="line-height: 140%;">Hey '. $reference->name .',</p>
+    <p style="line-height: 140%;">Dear '. $reference->name .',</p>
 <p style="line-height: 140%;"> </p>
 <p style="line-height: 140%;">'. Auth::user()->name .' has sent you a request to approve thier job experience on VORK. Kindly find details below:</p>
 <p style="line-height: 140%;"> </p>

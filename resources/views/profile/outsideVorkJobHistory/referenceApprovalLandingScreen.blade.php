@@ -15,7 +15,7 @@
             <h1><b>Reference Approval</b></h1>
 
             @if($status === "success")
-                <p>Thank you {{$reference}} for taking time to action {{$requester}}'s job experience endorsement request. Your response has been recorded successfully, feedback will be sent out to the requester. Thank you!</p>
+                <p>Thank you {{$reference}} for taking time to endorse {{$requester}}'s job experience. Your response has been recorded successfully, and feedback will be sent out to the requester. Thank you!</p>
 
                 @if($action === "approve")
                     <h3 class="text-success"><b>You approved the job reference</b></h3>
