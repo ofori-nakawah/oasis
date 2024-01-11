@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use App\Notifications\PostActivityNotification;
+use App\Notifications\ReferenceActivityNotification;
 use Illuminate\Support\Facades\Log;
 
 
@@ -213,8 +214,21 @@ class Notifications {
                 break;
         }
 
-        Log::debug($message);
-
         $user->notify(new PostActivityNotification($post, $event, $message, $ref_id, $category, $status));
+    }
+
+    public static function FireReferenceRequestNotification($event, $outsideVorkJob, $user)
+    {
+        if ($event === "REFERENCE_REQUEST_APPROVED") {
+            $status = "Approved";
+            $job = $outsideVorkJob;
+        }
+
+        if ($event === "REFERENCE_REQUEST_DECLINED") {
+            $status = "Declined";
+            $job = $outsideVorkJob;
+        }
+
+        $user->notify(new ReferenceActivityNotification($event, $job));
     }
 }

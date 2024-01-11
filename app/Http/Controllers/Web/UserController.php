@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -36,7 +37,11 @@ class UserController extends Controller
     public function get_user_notifications()
     {
         $notifications = auth()->user()->notifications->sortByDesc("created_at")->map(function ($notification) {
-            $notification["group_id"] = $notification->data["post"]["id"];
+            if (array_key_exists("post", $notification->data)) {
+                $notification["group_id"] = $notification->data["post"]["id"];
+            } else {
+                $notification["group_id"] = $notification->data["job"]["id"];
+            }
             $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
             $notification->update();
             return $notification;
@@ -61,7 +66,11 @@ class UserController extends Controller
          * group_id
          */
         auth()->user()->notifications->sortByDesc("created_at")->map(function ($notification) {
-            $notification["group_id"] = $notification->data["post"]["id"];
+            if (array_key_exists("post", $notification->data)) {
+                $notification["group_id"] = $notification->data["post"]["id"];
+            } else {
+                $notification["group_id"] = $notification->data["job"]["id"];
+            }
             $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
             $notification->update();
             return $notification;
@@ -81,7 +90,7 @@ class UserController extends Controller
             foreach ($group_notifications as $notification) {
                 $notification->markAsRead();
                 $notification->created_at = date('d-m-Y H:i:s', strtotime($notification->created_at));
-                if (!$location_coordinates) {
+                if (!$location_coordinates && array_key_exists("post", $notification->data)) {
                     $location_coordinates = $notification->data["post"]["coords"];
                 }
             }

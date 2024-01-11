@@ -29,40 +29,83 @@
     <div class="row">
         <div class="col-md-5 d-none d-md-block">
             @foreach($notifications as $notification)
-                    <div class="card card-bordered">
-                        <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
-                            <b>{{$notification->data["post"]["type"]}} <span
-                                    style="float: right">{{$notification->created_at}}</span></b></div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="title" style="font-size: 10px;color: #777;">Ref ID</div>
-                                    <div class="issuer"><b>{{$notification->data["ref_id"]}}</b></div>
+                <div class="card card-bordered">
+                    <div class="card-header bg-white border-bottom">
+                        <b>
+                            @if(array_key_exists("post", $notification->data)) {{$notification->data["post"]["type"]}} @endif
+                            @if(array_key_exists("job", $notification->data)) Reference Verification @endif
+                            <span style="float: right">{{$notification->created_at}}</span>
+                        </b></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="title" style="font-size: 10px;color: #777;">
+                                    @if(array_key_exists("job", $notification->data)) Job Title @endif
+                                    @if(array_key_exists("post", $notification->data)) Ref ID @endif
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="title"
-                                         style="font-size: 10px;color: #777;">@if($notification->data["post"]["type"] === "VOLUNTEER") Activity Name @endif @if($notification->data["post"]["type"] === "QUICK_JOB") Category @endif @if($notification->data["post"]["type"] === "FIXED_TERM_JOB") Title @endif</div>
-                                    <b>
-                                        <div
-                                            class="date text-danger">@if($notification->data["post"]["type"] === "VOLUNTEER")
-                                            {{$notification->data["post"]["name"]}} @endif @if($notification->data["post"]["type"] === "QUICK_JOB")
-                                            {{$notification->data["post"]["category"]}} @endif @if($notification->data["post"]["type"] === "FIXED_TERM_JOB")
-                                            {{$notification->data["post"]["title"]}} @endif</div>
-                                    </b>
-                                </div>
+
+                                <div class="issuer"><b>
+                                        @if(array_key_exists("post", $notification->data)) {{$notification->data["ref_id"]}}@endif
+                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["job"]["role"]}} @endif
+                                    </b></div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="title" style="font-size: 10px;color: #777;">Status</div>
-                                    <div class="issuer"><b>{{$notification->data["status"]}}</b></div>
+                            <div class="col-md-8">
+                                <div class="title"
+                                     style="font-size: 10px;color: #777;">
+                                    @if(array_key_exists("post", $notification->data))
+                                        @if(($notification->data["post"]["type"] === "VOLUNTEER"))
+                                            Activity Name
+                                        @endif
+
+                                        @if(($notification->data["post"]["type"] === "QUICK_JOB"))
+                                            Category
+                                        @endif
+
+                                        @if(($notification->data["post"]["type"] === "FIXED_TERM_JOB") || ($notification->data["post"]["type"] === "PERMANENT_JOB"))
+                                            Title
+                                        @endif
+                                    @endif
+                                    @if(array_key_exists("job", $notification->data)) Reference @endif
                                 </div>
+                                <b>
+                                    <div class="date ">
+                                        @if(array_key_exists("post", $notification->data))
+                                            @if(($notification->data["post"]["type"] === "VOLUNTEER"))
+                                                {{$notification->data["post"]["name"]}}
+                                            @endif
+
+                                            @if(($notification->data["post"]["type"] === "QUICK_JOB"))
+                                                {{$notification->data["post"]["category"]}}
+                                            @endif
+
+                                            @if(($notification->data["post"]["type"] === "FIXED_TERM_JOB"))
+                                                {{$notification->data["post"]["title"]}}
+                                            @endif
+
+                                            @if(($notification->data["post"]["type"] === "FIXED_TERM_JOB") || ($notification->data["post"]["type"] === "PERMANENT_JOB"))
+                                                {{$notification->data["post"]["title"]}}
+                                            @endif
+                                        @endif
+                                        @if(array_key_exists("job", $notification->data)) {{json_decode($notification->data["job"]["reference"])->name}} @endif
+                                    </div>
+                                </b>
                             </div>
                         </div>
-                        <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                            <a href="{{route('user.notifications.show', ["notification_group_id" => $notification->group_id])}}"
-                               class="btn btn-outline-secondary">View Details</a>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <div class="title" style="font-size: 10px;color: #777;">Status</div>
+                                <div class="issuer"><b>
+                                        @if(array_key_exists("post", $notification->data)) {{$notification->data["status"]}}@endif
+                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["event"] === "REFERENCE_REQUEST_APPROVED" ? "Approved" : "Declined"}}@endif
+                                    </b></div>
+                            </div>
                         </div>
                     </div>
+                    <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
+                        <a href="{{route('user.notifications.show', ["notification_group_id" => $notification->group_id])}}"
+                           class="btn btn-outline-secondary">View Details</a>
+                    </div>
+                </div>
             @endforeach
         </div>
         <div class="col-md-7">
@@ -70,118 +113,212 @@
             @foreach($group_notifications as $notify)
                 <div class="card card-bordered">
                     <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
-                        <b>{{$notify->data["post"]["type"]}} | <b>{{$notify->data["ref_id"]}}</b> <span
+                        <b>
+                            @if(array_key_exists("post", $notify->data)){{$notify->data["post"]["type"]}} | <b>{{$notify->data["ref_id"]}}</b>@endif
+                            @if(array_key_exists("job", $notify->data)) Reference Verification @endif
+                                <span
                                 style="float: right">{{$notify->created_at}}</span></b></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="issuer">{{$notify->data["message"]}}</div>
+                                @if(array_key_exists("post", $notify->data))<div class="issuer">{{$notify->data["message"]}}</div>@endif
+                                @if(array_key_exists("job", $notify->data))<div class="issuer">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="title" style="font-size: 10px;color: #777;">
+                                                    @if(array_key_exists("job", $notification->data)) Job Title @endif
+                                                </div>
+
+                                                <div class="issuer"><b>
+                                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["job"]["role"]}} @endif
+                                                    </b></div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="title"
+                                                     style="font-size: 10px;color: #777;">
+                                                    @if(array_key_exists("job", $notification->data)) Reference @endif
+                                                </div>
+                                                <b>
+                                                    <div class="date ">
+                                                        @if(array_key_exists("job", $notification->data)) {{json_decode($notification->data["job"]["reference"])->name}} @endif
+                                                    </div>
+                                                </b>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-4">
+                                                <div class="title" style="font-size: 10px;color: #777;">
+                                                    @if(array_key_exists("job", $notification->data)) Company @endif
+                                                </div>
+
+                                                <div class="issuer"><b>
+                                                        @if(array_key_exists("job", $notification->data)) {{$notification->data["job"]["employer"]}} @endif
+                                                    </b></div>
+                                            </div>
+                                        </div>
+                                    </div>@endif
                             </div>
                         </div>
                     </div>
                     <div class="card-footer border-top bg-white">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="title"
-                                             style="font-size: 10px;color: #777;">@if($notify->data["post"]["type"] === "VOLUNTEER") Activity Name @endif @if($notify->data["post"]["type"] === "QUICK_JOB") Category @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB") Title @endif</div>
-                                        <div
-                                            class="date text-danger">@if($notify->data["post"]["type"] === "VOLUNTEER")
-                                                {{$notify->data["post"]["name"]}} @endif @if($notify->data["post"]["type"] === "QUICK_JOB")
-                                                {{$notify->data["post"]["category"]}} @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
-                                                {{$notify->data["post"]["title"]}} @endif</div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        @if($notify->data["post"]["status"] == "closed")
-                                            <div class="title" style="font-size: 10px;color: #777;">Closure Date</div>
-                                            <div>
-                                                <b>{{$notify->data["post"]["closed_at"]}}</b>
-                                            </div>
-                                        @elseif($notify->data["post"]["deleted_at"])
-                                            <div class="title" style="font-size: 10px;color: #777;">Removal Date</div>
-                                            <div>
-                                                <b>{{$notify->data["post"]["deleted_at"]}}</b>
-                                            </div>
-                                        @else
-                                            <div class="title" style="font-size: 10px;color: #777;">Date & Time</div>
-                                            <div>
-                                                <b>{{$notify->data["post"]["date"]}} {{$notify->data["post"]["time"]}}</b>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
+                        @if(array_key_exists("post", $notify->data))
 
-                                @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED" && $notify->data["event"] != "JOB_CLOSED")
+                            <div class="row">
+                                <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                            <div><b>{{$notify->data["post"]["location"]}}</b> | <a href="#" data-toggle="modal" data-target="#locationModal" class="text-primary">View on map</a></div>
+                                            <div class="title"
+                                                 style="font-size: 10px;color: #777;">@if($notify->data["post"]["type"] === "VOLUNTEER")
+                                                    Activity Name
+                                                @endif @if($notify->data["post"]["type"] === "QUICK_JOB")
+                                                    Category
+                                                @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
+                                                    Title
+                                                @endif</div>
+                                            <div
+                                                class="date text-danger">@if($notify->data["post"]["type"] === "VOLUNTEER")
+                                                    {{$notify->data["post"]["name"]}}
+                                                @endif @if($notify->data["post"]["type"] === "QUICK_JOB")
+                                                    {{$notify->data["post"]["category"]}}
+                                                @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
+                                                    {{$notify->data["post"]["title"]}}
+                                                @endif</div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="title" style="font-size: 10px;color: #777;">Issuer Tel</div>
-                                            <div><b>{{$notify->data["post"]["user"]["phone_number"]}}</b></div>
+                                            @if($notify->data["post"]["status"] == "closed")
+                                                <div class="title" style="font-size: 10px;color: #777;">Closure Date
+                                                </div>
+                                                <div>
+                                                    <b>{{$notify->data["post"]["closed_at"]}}</b>
+                                                </div>
+                                            @elseif($notify->data["post"]["deleted_at"])
+                                                <div class="title" style="font-size: 10px;color: #777;">Removal Date
+                                                </div>
+                                                <div>
+                                                    <b>{{$notify->data["post"]["deleted_at"]}}</b>
+                                                </div>
+                                            @else
+                                                <div class="title" style="font-size: 10px;color: #777;">Date & Time
+                                                </div>
+                                                <div>
+                                                    <b>{{$notify->data["post"]["date"]}} {{$notify->data["post"]["time"]}}</b>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
-                                @endif
 
-                                @if($notify->data["event"] == "JOB_CLOSED")
-                                    @if($notify->data["post"]["type"] === "QUICK_JOB")
-                                        <br>
-                                        <p><b  style="color: #777;">Payment (GHS)</b></p>
-                                        <table class="table table-striped">
-                                            <body>
-                                            <tr>
-                                                <td class="text-muted">Gross Amount</td>
-                                                <td>{{$notify->data["post"]["final_payment_amount"]}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-muted">WHT Allocation (5%)</td>
-                                                <td>{{number_format((5/ 100) * $notify->data["post"]["final_payment_amount"], 2)}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-muted">Vork Charge (1%)</td>
-                                                <td>{{number_format((1/ 100) * $notify->data["post"]["final_payment_amount"], 2)}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Net Amount</b></td>
-                                                <td>{{$notify->data["post"]["final_payment_amount"] - number_format((5/ 100) * $notify->data["post"]["final_payment_amount"], 2) - number_format((1/ 100) * $notify->data["post"]["final_payment_amount"], 2) }}</td>
-                                            </tr>
-                                            </body>
-                                        </table>
+                                    @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED" && $notify->data["event"] != "JOB_CLOSED")
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
+                                                <div><b>{{$notify->data["post"]["location"]}}</b> | <a href="#"
+                                                                                                       data-toggle="modal"
+                                                                                                       data-target="#locationModal"
+                                                                                                       class="text-primary">View
+                                                        on map</a></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="title" style="font-size: 10px;color: #777;">Issuer Tel</div>
+                                                <div><b>{{$notify->data["post"]["user"]["phone_number"]}}</b></div>
+                                            </div>
+                                        </div>
                                     @endif
 
-                                    @if(($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB") && auth()->id() == $notify->data["post"]["confirmed_applicant_id"])
-                                        <br>
-                                            <div class="text-muted">Income: GHS {{$notify->data["post"]["final_payment_amount"]}}/Month
+                                    @if($notify->data["event"] == "JOB_CLOSED")
+                                        @if($notify->data["post"]["type"] === "QUICK_JOB")
+                                            <br>
+                                            <p><b style="color: #777;">Payment (GHS)</b></p>
+                                            <table class="table table-striped">
+                                                <body>
+                                                <tr>
+                                                    <td class="text-muted">Gross Amount</td>
+                                                    <td>{{$notify->data["post"]["final_payment_amount"]}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-muted">WHT Allocation (5%)</td>
+                                                    <td>{{number_format((5/ 100) * $notify->data["post"]["final_payment_amount"], 2)}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-muted">Vork Charge (1%)</td>
+                                                    <td>{{number_format((1/ 100) * $notify->data["post"]["final_payment_amount"], 2)}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Net Amount</b></td>
+                                                    <td>{{$notify->data["post"]["final_payment_amount"] - number_format((5/ 100) * $notify->data["post"]["final_payment_amount"], 2) - number_format((1/ 100) * $notify->data["post"]["final_payment_amount"], 2) }}</td>
+                                                </tr>
+                                                </body>
+                                            </table>
+                                        @endif
+
+                                        @if(($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB") && auth()->id() == $notify->data["post"]["confirmed_applicant_id"])
+                                            <br>
+                                            <div class="text-muted">Income:
+                                                GHS {{$notify->data["post"]["final_payment_amount"]}}/Month
                                             </div>
                                             @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" )
-                                            <div class="text-muted"> Term: {{\Carbon\Carbon::parse($notify->data["post"]["final_end_date"])->diffInMonths(\Carbon\Carbon::parse($notify->data["post"]["final_start_date"])) }} months
-                                            </div>
+                                                <div class="text-muted">
+                                                    Term: {{\Carbon\Carbon::parse($notify->data["post"]["final_end_date"])->diffInMonths(\Carbon\Carbon::parse($notify->data["post"]["final_start_date"])) }}
+                                                    months
+                                                </div>
                                             @else
-                                            <div class="text-muted"> Term: Permanent </div>
+                                                <div class="text-muted"> Term: Permanent</div>
                                             @endif
 
                                             <br>
 
                                             <div class="card bg-lighter">
                                                 <div class="card-body">
-                                                    <div class="title" style="font-size: 10px;color: #777;">Start Date </div>
-                                                    <div class="issuer"><b>{{($notify->data["post"]["final_start_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_start_date"])) : 'N/A'}}</b></div>
+                                                    <div class="title" style="font-size: 10px;color: #777;">Start Date
+                                                    </div>
+                                                    <div class="issuer">
+                                                        <b>{{($notify->data["post"]["final_start_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_start_date"])) : 'N/A'}}</b>
+                                                    </div>
 
                                                     @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" )
                                                         <br>
 
-                                                        <div class="title" style="font-size: 10px;color: #777;">End Date </div>
-                                                        <div class="issuer"><b>{{($notify->data["post"]["final_end_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_end_date"])) : 'N/A'}}</b></div>
+                                                        <div class="title" style="font-size: 10px;color: #777;">End
+                                                            Date
+                                                        </div>
+                                                        <div class="issuer">
+                                                            <b>{{($notify->data["post"]["final_end_date"]) ? date ("l jS F Y", strtotime($notify->data["post"]["final_end_date"])) : 'N/A'}}</b>
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>
                                         @endif
                                     @endif
 
+
+
+                                </div>
                             </div>
-                        </div>
+                        @endif
+                            @if(array_key_exists("job", $notify->data))
+                                <div class="title"
+                                     style="font-size: 10px;color: #777;">Verification Status
+                                </div>
+                                <ul class="timeline" style="margin-left: -20px;">
+                                    <li>
+                                        <div style="margin-left: 30px;padding-bottom: 30px;">
+                                            <div>{{date("Y-m-d H:i:s", strtotime($notify->data["job"]["reference_verified_at"]))}}</div>
+                                            @if($notify->data["event"] === "REFERENCE_REQUEST_APPROVED")
+                                                <div class="text-success"><b>Approved</b></div>
+                                            @endif
+
+                                            @if($notify->data["event"] === "REFERENCE_REQUEST_DECLINED")
+                                            <div class="text-danger"><b>Declined</b></div>
+                                            @endif
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div style="margin-left: 30px;padding-bottom: 30px;">
+                                            <div>{{$notify->data["job"]["reference_verification_sent_at"]}}</div>
+                                            <div class="text">Verification Request Issued</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            @endif
                     </div>
                 </div>
             @endforeach
