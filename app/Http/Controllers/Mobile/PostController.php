@@ -419,8 +419,8 @@ class PostController extends Controller
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
-        $user_location_lat = json_decode($user_location)->latitude;
-        $user_location_lng = json_decode($user_location)->longitude;
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         switch ($request->type) {
             case "VOLUNTEER":
@@ -429,8 +429,8 @@ class PostController extends Controller
                 $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
                     Log::debug($post->coords);
                     //get post coordinates
-                    $post_location_lat = json_decode($post->coords)->latitude;
-                    $post_location_lng = json_decode($post->coords)->longitude;
+                    $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+                    $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
 
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["organiser_name"] = $post->user->name;
@@ -483,8 +483,8 @@ class PostController extends Controller
 
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
-                    $post_location_lat = json_decode($post->coords)->latitude;
-                    $post_location_lng = json_decode($post->coords)->longitude;
+                    $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+                    $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
@@ -539,8 +539,8 @@ class PostController extends Controller
 
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
-                    $post_location_lat = json_decode($post->coords)->latitude;
-        $post_location_lng = json_decode($post->coords)->longitude;
+                    $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+                    $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["organiser_name"] = $post->user->name;
@@ -668,12 +668,13 @@ class PostController extends Controller
             return $this->not_found_response([], "Could not retrieve user's current location");
         }
 
-        $user_location_lat = json_decode($user_location)->latitude;
-        $user_location_lng = json_decode($user_location)->longitude;
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
+
 
         //get post coordinates
-        $post_location_lat = json_decode($post->coords)->latitude;
-        $post_location_lng = json_decode($post->coords)->longitude;
+        $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+        $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
 
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);

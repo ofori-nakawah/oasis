@@ -6,6 +6,7 @@ use App\Models\LanguageUser;
 use App\Models\SkillUser;
 use App\Models\Post;
 use App\Models\JobApplication;
+use App\Models\User;
 use App\Services\PushNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
