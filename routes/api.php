@@ -66,6 +66,7 @@ Route::prefix('/v1')->group(function () {
             Route::post('/get-user-notifications', 'Mobile\UserController@get_user_notifications');
             Route::get('/get-user-notifications', 'Mobile\UserController@get_user_notifications');
             Route::post('/get-user-notification-details', 'Mobile\UserController@get_user_notification_details');
+            Route::get('/get-user-notification-details', 'Mobile\UserController@get_user_notification_details');
             Route::get('/get-user-notifications-count', 'Mobile\UserController@get_user_unread_notifications_count');
         });
 
