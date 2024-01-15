@@ -430,9 +430,10 @@ class PostController extends Controller
                     Log::debug($post->coords);
                     //get post coordinates
                     $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
-                    $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+                    $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+                    Log::debug($post->location . '>>>>>>' . auth()->user()->location_name);
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
@@ -484,7 +485,7 @@ class PostController extends Controller
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
                     $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
-                    $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+                    $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
@@ -540,7 +541,7 @@ class PostController extends Controller
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
                     $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
-                    $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+                    $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
                     $post["distance"] = number_format($distance, 2);
                     $post["organiser_name"] = $post->user->name;
@@ -674,7 +675,7 @@ class PostController extends Controller
 
         //get post coordinates
         $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
-        $post_location_lng = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+        $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
         $post["distance"] = number_format($distance, 2);
