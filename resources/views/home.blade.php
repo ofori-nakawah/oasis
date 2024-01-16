@@ -93,7 +93,7 @@
                                             <div class="col-md-8">
                                                 <h4>Permanent</h4>
                                                 <p>List a full time job. These roles have no set end date, and employees
-                                                    become permanet staff.</p>
+                                                    become permanent staff.</p>
                                             </div>
                                         </div>
                                     </div>
