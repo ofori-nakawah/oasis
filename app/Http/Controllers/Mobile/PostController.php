@@ -684,7 +684,7 @@ class PostController extends Controller
         $fromDate = Carbon::parse($post->start_date);
         $post["duration"] = $toDate->diffInMonths($fromDate);
         $post["deadline"] =  date("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
-        $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
+        $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
