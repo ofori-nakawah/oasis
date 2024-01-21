@@ -683,8 +683,7 @@ class PostController extends Controller
         $toDate = Carbon::parse($post->end_date);
         $fromDate = Carbon::parse($post->start_date);
         $post["duration"] = $toDate->diffInMonths($fromDate);
-        $post["deadline"] = date("jS \of F, Y g:i A", strtotime(($post->type === "FIXED_TERM_JOB") ? $post->date : DateFormatter::Parse($post->date) . ' ' . $post->time));
-
+        $post["deadline"] =  date("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
