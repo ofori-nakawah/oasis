@@ -16,8 +16,8 @@ class CreateEducationHistoriesTable extends Migration
         Schema::create('education_history', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("user_id");
-            $table->timestamp("start_date");
-            $table->timestamp("end_date");
+            $table->timestamp("start_date")->nullable();
+            $table->timestamp("end_date")->nullable();
             $table->string("institution");
             $table->string("programme");
             $table->timestamps();
