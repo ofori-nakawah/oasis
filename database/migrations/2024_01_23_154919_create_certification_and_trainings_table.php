@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEducationHistoriesTable extends Migration
+class CreateCertificationAndTrainingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateEducationHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('education_history', function (Blueprint $table) {
+        Schema::create('certification_and_trainings', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("user_id");
             $table->timestamp("start_date")->nullable();
@@ -32,6 +32,6 @@ class CreateEducationHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('education_history');
+        Schema::dropIfExists('certification_and_trainings');
     }
 }

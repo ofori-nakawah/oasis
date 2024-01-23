@@ -144,6 +144,11 @@ class User extends Authenticatable
         return $this->hasMany("App\Models\EducationHistory", "user_id");
     }
 
+    public function certificationsAndTrainings()
+    {
+        return $this->hasMany("App\Models\CertificationAndTraining", "user_id");
+    }
+
     public function rating_and_reviews()
     {
         return $this->hasMany("App\Models\RatingReview", "user_id");
