@@ -1,6 +1,6 @@
 @extends("layouts.master")
 
-@section("title") Edit education history @endsection
+@section("title") Certification and training history @endsection
 
 @section("content")
     <div class="nk-block-head nk-block-head-sm">
@@ -12,15 +12,15 @@
                     <nav>
                         <ul class="breadcrumb breadcrumb-arrow">
                             <li class="breadcrumb-item"><a href="#">{{$user->name}}</a></li>
-                            <li class="breadcrumb-item">Edit education history</li>
+                            <li class="breadcrumb-item">Add certification and training history</li>
                         </ul>
                     </nav>
                     </p>
                 </div>
             </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
-                <a href="{{URL::previous()}}"
-                   class="btn btn-outline-light"><span>Back</span></a>
+                    <a href="{{URL::previous()}}"
+                       class="btn btn-outline-light"><span>Back</span></a>
             </div><!-- .nk-block-head-content -->
         </div>
     </div>
@@ -28,15 +28,17 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.educationHistory.update', ["id" => $educationHistory->id])}}" method="POST">
+            <form action="{{route('user.certificationAndTrainingHistory.store')}}" method="POST">
                 {{csrf_field()}}
                 <div class="mb-3">
-                    <h2><b>Edit education history</b></h2>
+                    <h2><b>Add a new certification and training history</b></h2>
                 </div>
+
+                <input type="hidden" name="user_id" value="{{auth()->id()}}">
 
                 <div class="input-group1 mb-3">
                     <label for="programme"><b>Programme</b></label>
-                    <input type="text" class="form-control form-control-l @error('programme') is-invalid @enderror" placeholder="Enter programme" name="programme" value="{{ $educationHistory->programme }}">
+                    <input type="text" class="form-control form-control-l @error('programme') is-invalid @enderror" placeholder="Enter programme" name="programme" value="{{ old('programme') }}">
 
                     @error('programme')
                     <span class="invalid-feedback " role="alert">
@@ -47,7 +49,7 @@
 
                 <div class="input-group1 mb-3">
                     <label for="institution"><b>Institution</b></label>
-                    <input type="text" class="form-control form-control-l @error('institution') is-invalid @enderror" placeholder="Enter institution" name="institution" value="{{ $educationHistory->institution }}">
+                    <input type="text" class="form-control form-control-l @error('institution') is-invalid @enderror" placeholder="Enter name of institution" name="institution" value="{{ old('institution') }}">
 
                     @error('institution')
                     <span class="invalid-feedback " role="alert">
@@ -59,9 +61,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="input-group1 mb-3">
-
                             <label for="start_date"><b>Start Date</b></label>
-                            <input type="date" class="form-control form-control-l @error('start_date') is-invalid @enderror" placeholder="Enter start date" name="start_date" value="{{ explode(" ", $educationHistory->start_date)[0] }}">
+                            <input type="date" class="form-control form-control-l @error('start_date') is-invalid @enderror" placeholder="Enter start date" name="start_date" value="{{ old('start_date') }}">
 
                             @error('start_date')
                             <span class="invalid-feedback " role="alert">
@@ -73,7 +74,7 @@
                     <div class="col-md-6">
                         <div class="input-group1 mb-3">
                             <label for="end_date"><b>End Date</b></label>
-                            <input type="date" class="form-control form-control-l @error('end_date') is-invalid @enderror" placeholder="Enter end date" name="end_date" value="{{ explode(" ", $educationHistory->end_date)[0] }}">
+                            <input type="date" class="form-control form-control-l @error('end_date') is-invalid @enderror" placeholder="Enter end date" name="end_date" value="{{ old('end_date') }}">
 
                             @error('end_date')
                             <span class="invalid-feedback " role="alert">
@@ -86,7 +87,7 @@
                             <div class="col-md-12">
                                 <div class="custom-control custom-control-lg custom-checkbox"
                                      style="margin-bottom: 15px;">
-                                    <input type="checkbox" @if($educationHistory->end_date === null) checked @endif class="custom-control-input" name="is_ongoing"
+                                    <input type="checkbox" class="custom-control-input" name="is_ongoing"
                                            id="is_ongoing">
                                     <label class="custom-control-label" for="is_ongoing">Ongoing?</label>
                                 </div>
@@ -95,8 +96,19 @@
                     </div>
                 </div>
 
+                <div class="input-group1 mb-3">
+                    <label for="certificate_link"><b>Certificate Link</b></label>
+                    <input type="file" class="form-control form-control-l @error('certificate_link') is-invalid @enderror" name="certificate_link" value="{{ old('certificate_link') }}">
+
+                    @error('certificate_link')
+                    <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                    @enderror
+                </div>
+
                 <div class="text-right mb-3" id="publishBtn">
-                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Update education history</b></button>
+                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Add certification and training history</b></button>
                 </div>
                 <div class="alert alert-primary mt-3" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
@@ -106,10 +118,10 @@ backdrop-filter: blur(5px);
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
                     <h4>Are you sure?</h4>
-                    <p>Confirm all the entered information above are accurate before proceeding to updating education history.</p>
+                    <p>Confirm all the entered information above are accurate before proceeding to add certification and training history.</p>
                     <div class="text-right" >
                         <button class="btn btn-outline-secondary btn-l" type="button" onclick="cancelPublish()"><b>Cancel</b></button>
-                        <button class="btn btn-success btn-l" type="submit"><b>Yes, update education history!</b></button>
+                        <button class="btn btn-success btn-l" type="submit"><b>Yes, add certification and training history!</b></button>
                     </div>
                 </div>
             </form>

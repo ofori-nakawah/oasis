@@ -121,6 +121,14 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/profile/education-history/{id}/remove', 'Web\EducationHistoryController@remove')->name('user.educationHistory.remove');
     Route::post('/profile/education-history/{id}/update', 'Web\EducationHistoryController@update')->name('user.educationHistory.update');
 
+    /**
+     * certifcation and training history
+     */
+    Route::get('/profile/certifications-and-trainings-history/{user}/create', 'Web\CertificationAndTrainingController@create')->name('user.certificationAndTrainingHistory.create');
+    Route::post('/profile/certifications-and-trainings-history/store', 'Web\CertificationAndTrainingController@store')->name('user.certificationAndTrainingHistory.store');
+    Route::get('/profile/certifications-and-trainings-history/{id}/edit', 'Web\CertificationAndTrainingController@edit')->name('user.certificationAndTrainingHistory.edit');
+    Route::get('/profile/certifications-and-trainings-history/{id}/remove', 'Web\CertificationAndTrainingController@remove')->name('user.certificationAndTrainingHistory.remove');
+    Route::post('/profile/certifications-and-trainings-history/{id}/update', 'Web\CertificationAndTrainingController@update')->name('user.certificationAndTrainingHistory.update');
 
     /**
      * trainings

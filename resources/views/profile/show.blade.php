@@ -264,12 +264,12 @@
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="certificationsLink" href="javascript:void(0)" class="text-muted">Certifications <span
+                    <a id="certificationsLink" href="javascript:void(0)" class="text-muted">Certifications And Trainings <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="educationLink" href="javascript:void(0)" class="text-muted">Education <span
+                    <a id="educationLink" href="javascript:void(0)" class="text-muted">Education History <span
                             style="float: right;"><em
                                 class="icon ni ni-chevron-right" style="font-size: 22px;"></em></span></a>
                 </div>
@@ -409,10 +409,49 @@
                     </div>
                 </div>
                 <div id="certificationsBox">
-                    <div class="text-center" style="margin-top: 0px;">
-                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"
-                             style="height: 200px; width: 200px" alt="">
-                        <p style="color: #777;">This feature is in maintenance mode. Come back later</p>
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
+                            <div class="font-weight-bolder mt-1">Certifications and trainings History</div>
+                            @if($user->id == auth()->user()->id)
+                                <div><a href="{{route("user.certificationAndTrainingHistory.create", ["user" => auth()->id()])}}"
+                                        style="float: right"><em style="font-size: 28px;"
+                                                                 class="ni ni-plus-circle"></em></a></div>
+                            @endif
+                        </div>
+                        <div class="card-body">
+                            @if(count($user->certificationsAndTrainings) < 1)
+                                <div class="text-center m-5">
+                                    <img src="{{asset('assets/html-template/src/images/nd.svg')}}"
+                                         style="height: 200px; width: 200px" alt="">
+                                    <p style="color: #777;">You haven't added any certifications and trainings history. Tap on the plus icon to add certifications and trainings history.</p>
+                                </div>
+                            @endif
+                                <ul class="timeline" style="margin-left: -20px;">
+                                    @foreach($user->certificationsAndTrainings->sortByDesc("start_date") as $certificationAndTraining)
+                                        <li>
+                                            <div style="margin-left: 30px;padding-bottom: 30px;">
+                                                <div>{{date("F Y", strtotime($certificationAndTraining->start_date))}}
+                                                    - {{$certificationAndTraining->end_date ? date("F Y", strtotime($certificationAndTraining->end_date)) : "Ongoing"}}</div>
+                                                <div class="text-dark">{{$certificationAndTraining->programme}}</div>
+                                                <div>{{$certificationAndTraining->institution}}</div>
+
+                                                @if($user->id == auth()->user()->id)
+                                                    <hr>
+                                                    <div style="float: right;">
+                                                        <a href="{{route("user.certificationAndTrainingHistory.remove", ["id" => $certificationAndTraining->id])}}"
+                                                           onclick="return confirm('Are you sure?')"
+                                                           class="btn btn-outline-danger"><em class="ni ni-trash"></em>
+                                                            Remove</a>
+
+                                                        <a href="{{route("user.certificationAndTrainingHistory.edit", ["id" => $certificationAndTraining->id])}}"
+                                                           class="btn btn-outline-primary">Make Changes</a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                        </div>
                     </div>
                 </div>
                 <div id="vorkHistoryBox">
