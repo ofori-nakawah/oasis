@@ -303,7 +303,7 @@
                                 <div class="text-center m-5">
                                     <img src="{{asset('assets/html-template/src/images/nd.svg')}}"
                                          style="height: 200px; width: 200px" alt="">
-                                    <p style="color: #777;">You haven't added any education history. Tap on the plus icon to add education history.</p>
+                                    <p style="color: #777;">No data found.</p>
                                 </div>
                             @endif
                                 <ul class="timeline" style="margin-left: -20px;">
@@ -351,7 +351,7 @@
                                 <div class="text-center m-5">
                                     <img src="{{asset('assets/html-template/src/images/nd.svg')}}"
                                          style="height: 200px; width: 200px" alt="">
-                                    <p style="color: #777;">You haven't added any outside VORK job history. Tap on the plus icon to add external job experiences.</p>
+                                    <p style="color: #777;">No data found.</p>
                                 </div>
                             @endif
                             <ul class="timeline" style="margin-left: -20px;">
@@ -425,7 +425,7 @@
                                 <div class="text-center m-5">
                                     <img src="{{asset('assets/html-template/src/images/nd.svg')}}"
                                          style="height: 200px; width: 200px" alt="">
-                                    <p style="color: #777;">You haven't added any certifications and trainings history. Tap on the plus icon to add certifications and trainings history.</p>
+                                    <p style="color: #777;">No data found.</p>
                                 </div>
                             @endif
                                 <ul class="timeline" style="margin-left: -20px;">
