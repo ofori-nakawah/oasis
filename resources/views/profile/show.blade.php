@@ -376,13 +376,42 @@
                                                 {!! $outsideVorkJob->achievements !!}
                                             </div>
                                             <div class="mt-1"><span
-                                                    class="text-dark ">Reference</span>: {{json_decode($outsideVorkJob->reference)->name}}
+                                                    class="text-dark ">Reference</span>: <a href="javascript:void(0)" onclick="showReferenceDetails('{{json_decode($outsideVorkJob->reference)->name}}')"> {{json_decode($outsideVorkJob->reference)->name}}</a>
                                                 @if($outsideVorkJob->reference_verification_sent_at !== null && $outsideVorkJob->reference_verified_at === null)
                                                     <span class="badge badge-info"><em class="ni ni-loader"></em>Pending</span>
                                                 @elseif($outsideVorkJob->reference_verified_at !== null)
                                                     <span class="badge badge-success"><em class="ni ni-check"></em>Verified</span>
                                                 @else
                                                     <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span>
+                                                @endif
+
+                                                @if($outsideVorkJob->reference_verification_sent_at !== null)
+                                                    @php
+                                                        $reference = json_decode($outsideVorkJob->reference)
+                                                     @endphp
+                                                    <div class="alert alert-primary mt-3 hidden" style="/* From https://css.glass */
+background: rgba(255, 255, 255, 0.2);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid rgba(255, 255, 255, 0.3);" id="referenceBox-{{preg_replace('/\s+/', '', $reference->name)}}">
+                                                        <h4>{{$reference->name}}</h4>
+
+                                                        @if(property_exists($reference, "email"))
+                                                            <p><em class="ni ni-emails"></em> {{$reference->email}}</p>
+                                                        @endif
+                                                        @if(property_exists($reference, "phone_number"))
+                                                            <p><em class="ni ni-mobile"></em> {{$reference->phone_number}}</p>
+                                                        @endif
+                                                        <div class="text-right" >
+                                                            <a href="javascript:void()" class="btn btn-outline-secondary btn-l" type="button" onclick="hideReferenceDetails('{{json_decode($outsideVorkJob->reference)->name}}')"><b>Cancel</b></a>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+
+
+                                                    </div>
                                                 @endif
                                             </div>
                                             @if($user->id == auth()->user()->id)
@@ -511,6 +540,7 @@
         $("#jobExperienceBox").hide()
         $("#educationBox").hide()
         $("#certificationsBox").hide()
+        $(".referenceBox").hide()
 
         // $("#skillsInterestLanguageLink").on("click", function () {
         //     clearContentBox()
@@ -602,6 +632,14 @@
             }
         }
 
+        const showReferenceDetails = (referenceName) => {
+            const referenceBox = $(`#referenceBox-${referenceName.replace(/\s/g, '')}`)
+            referenceBox.removeClass("hidden")
+        }
 
+        const hideReferenceDetails = (referenceName) => {
+            const referenceBox = $(`#referenceBox-${referenceName.replace(/\s/g, '')}`)
+            referenceBox.addClass("hidden")
+        }
     </script>
 @endsection

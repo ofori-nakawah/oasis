@@ -178,6 +178,12 @@
             list-style-position: inside !important;
         }
 
+        .hidden {
+            display:  none;
+        }
+
+
+
 
     </style>
 </head>
