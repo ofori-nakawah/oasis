@@ -66,15 +66,15 @@ class CertificationAndTrainingController extends Controller
             return redirect()->back()->with("danger", "Invalid request. Kindly try again.");
         }
 
-        $certificateAndTraining = CertificationAndTraining::where("id", $id)->first();
+        $certificationAndTraining = CertificationAndTraining::where("id", $id)->first();
 
-        if (!$certificateAndTraining) {
+        if (!$certificationAndTraining) {
             return redirect()->back()->with("danger", "Oop..something went wrong. Error retrieving information. Pleas try again.");
         }
 
         $user = Auth::user();
 
-        return view("profile.certificationAndTraining.edit", compact("certificateAndTraining", "user"));
+        return view("profile.certificationAndTraining.edit", compact("certificationAndTraining", "user"));
     }
 
     public function remove($id)

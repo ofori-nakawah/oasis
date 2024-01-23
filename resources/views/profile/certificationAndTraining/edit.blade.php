@@ -31,7 +31,7 @@
             <form action="{{route('user.certificationAndTrainingHistory.update', ["id" => $certificationAndTraining->id])}}" method="POST">
                 {{csrf_field()}}
                 <div class="mb-3">
-                    <h2><b>Edit education history</b></h2>
+                    <h2><b>Edit certification and training history</b></h2>
                 </div>
 
                 <div class="input-group1 mb-3">
