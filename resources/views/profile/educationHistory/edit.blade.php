@@ -96,7 +96,7 @@
                 </div>
 
                 <div class="text-right mb-3" id="publishBtn">
-                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Update job experience</b></button>
+                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Update education history</b></button>
                 </div>
                 <div class="alert alert-primary mt-3" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
@@ -106,10 +106,10 @@ backdrop-filter: blur(5px);
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
                     <h4>Are you sure?</h4>
-                    <p>Confirm all the entered information above are accurate before proceeding to updating job experience.</p>
+                    <p>Confirm all the entered information above are accurate before proceeding to updating education history.</p>
                     <div class="text-right" >
                         <button class="btn btn-outline-secondary btn-l" type="button" onclick="cancelPublish()"><b>Cancel</b></button>
-                        <button class="btn btn-success btn-l" type="submit"><b>Yes, update job experience!</b></button>
+                        <button class="btn btn-success btn-l" type="submit"><b>Yes, update education history!</b></button>
                     </div>
                 </div>
             </form>
