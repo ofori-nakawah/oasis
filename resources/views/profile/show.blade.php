@@ -23,8 +23,8 @@
                 <div class="flex flex-row justify-center items-center">
                     <a href="{{URL::previous()}}"
                        class=" ml-2 mt-1"><em class="ni ni-download" style="font-size: 28px;"></em></a>
-                    <a href="{{URL::previous()}}"
-                       class="btn btn-outline-primary ml-2"><span>Gallery</span></a>
+{{--                    <a href="{{URL::previous()}}"--}}
+{{--                       class="btn btn-outline-primary ml-2"><span>Gallery</span></a>--}}
                     <a href="{{URL::previous()}}"
                        class="btn btn-outline-light ml-2"><span>Back</span></a>
                 </div>
