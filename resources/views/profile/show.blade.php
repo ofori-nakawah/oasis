@@ -21,8 +21,8 @@
             </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
                 <div class="flex flex-row justify-center items-center">
-                    <a href="{{URL::previous()}}"
-                       class=" ml-2 mt-1"><em class="ni ni-download" style="font-size: 28px;"></em></a>
+{{--                    <a href="{{URL::previous()}}"--}}
+{{--                       class=" ml-2 mt-1"><em class="ni ni-download" style="font-size: 28px;"></em></a>--}}
 {{--                    <a href="{{URL::previous()}}"--}}
 {{--                       class="btn btn-outline-primary ml-2"><span>Gallery</span></a>--}}
                     <a href="{{URL::previous()}}"
@@ -253,12 +253,12 @@
             <div class="card card-bordered undelineLinks" style="text-align: left !important;">
                 <div class="card-header bg-white"><b>User Profile Information</b></div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="vorkHistoryLink" href="javascript:void(0)" class="text-muted">Recent VORK History <span
+                    <a id="vorkHistoryLink" href="javascript:void(0)" class="text-muted">VORK History <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="jobExperienceLink" href="javascript:void(0)" class="text-muted">Job Experience Outside VORK
+                    <a id="jobExperienceLink" href="javascript:void(0)" class="text-muted">Job Experience
                         <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
@@ -369,13 +369,13 @@
                                             <div class="text-dark mt-1" style="text-decoration: underline">
                                                 Responsibilities
                                             </div>
-                                            <div>
+                                            <div class="summernote-description">
                                                 {!! $outsideVorkJob->responsibilities !!}
                                             </div>
                                             <div class="text-dark mt-1" style="text-decoration: underline">
                                                 Achievements
                                             </div>
-                                            <div>
+                                            <div class="summernote-description">
                                                 {!! $outsideVorkJob->achievements !!}
                                             </div>
                                             <div class="mt-1"><span
@@ -510,8 +510,8 @@
     <script>
         $("#emptyState").show()
         $("#loadingState").hide()
-        // $("#languagesInterestsBox").hide()
-        $("#vorkHistoryBox").hide()
+        $("#emptyState").hide()
+        $("#vorkHistoryBox").show()
         $("#jobExperienceBox").hide()
         $("#educationBox").hide()
         $("#certificationsBox").hide()
