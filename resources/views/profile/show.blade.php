@@ -289,10 +289,49 @@
                     <p class="text-center" style="color: #777;margin-top: 25px;">Loading...</p>
                 </div>
                 <div id="educationBox">
-                    <div class="text-center" style="margin-top: 0px;">
-                        <img src="{{asset('assets/html-template/src/images/wip.svg')}}"
-                             style="height: 200px; width: 200px" alt="">
-                        <p style="color: #777;">This feature is in maintenance mode. Come back later</p>
+                    <div class="card card-bordered">
+                        <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
+                            <div class="font-weight-bolder mt-1">Education History</div>
+                            @if($user->id == auth()->user()->id)
+                                <div><a href="{{route("user.educationHistory.create", ["user" => auth()->id()])}}"
+                                        style="float: right"><em style="font-size: 28px;"
+                                                                 class="ni ni-plus-circle"></em></a></div>
+                            @endif
+                        </div>
+                        <div class="card-body">
+                            @if(count($user->educationHistory) < 1)
+                                <div class="text-center m-5">
+                                    <img src="{{asset('assets/html-template/src/images/nd.svg')}}"
+                                         style="height: 200px; width: 200px" alt="">
+                                    <p style="color: #777;">You haven't added any education history. Tap on the plus icon to add education history.</p>
+                                </div>
+                            @endif
+                                <ul class="timeline" style="margin-left: -20px;">
+                                    @foreach($user->educationHistory->sortByDesc("start_date") as $educationHistory)
+                                        <li>
+                                            <div style="margin-left: 30px;padding-bottom: 30px;">
+                                                <div>{{date("F Y", strtotime($educationHistory->start_date))}}
+                                                    - {{$educationHistory->end_date ? date("F Y", strtotime($educationHistory->end_date)) : "Ongoing"}}</div>
+                                                <div class="text-dark">{{$educationHistory->programme}}</div>
+                                                <div>{{$educationHistory->institution}}</div>
+
+                                                @if($user->id == auth()->user()->id)
+                                                    <hr>
+                                                    <div style="float: right;">
+                                                        <a href="{{route("user.educationHistory.remove", ["id" => $educationHistory->id])}}"
+                                                           onclick="return confirm('Are you sure?')"
+                                                           class="btn btn-outline-danger"><em class="ni ni-trash"></em>
+                                                            Remove</a>
+
+                                                            <a href="{{route("user.educationHistory.edit", ["id" => $educationHistory->id])}}"
+                                                               class="btn btn-outline-primary">Make Changes</a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                        </div>
                     </div>
                 </div>
                 <div id="jobExperienceBox">
@@ -355,7 +394,7 @@
                                                     @if($outsideVorkJob->reference_verified_at === null)
                                                         <a href="{{route("user.outsideVorkJobHistory.verifyReference", ["id" => $outsideVorkJob->id])}}"
                                                            class="btn btn-outline-primary">Verify Reference</a>
-                                                    
+
                                                         <a href="{{route("user.outsideVorkJobHistory.edit", ["id" => $outsideVorkJob->id])}}"
                                                        class="btn btn-outline-primary">Make Changes</a>
                                                     @endif

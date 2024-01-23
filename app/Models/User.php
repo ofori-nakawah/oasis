@@ -139,6 +139,11 @@ class User extends Authenticatable
         return $this->hasMany("App\Models\OutsideVorkJob", "user_id");
     }
 
+    public function educationHistory()
+    {
+        return $this->hasMany("App\Models\EducationHistory", "user_id");
+    }
+
     public function rating_and_reviews()
     {
         return $this->hasMany("App\Models\RatingReview", "user_id");

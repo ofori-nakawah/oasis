@@ -112,6 +112,15 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/profile/outside-vork-job-history/{id}/verify-reference', 'Web\OutsideVorkJobController@verifyReference')->name('user.outsideVorkJobHistory.verifyReference');
     Route::post('/profile/outside-vork-job-history/{id}/verify-reference', 'Web\OutsideVorkJobController@getReferenceVerification')->name('user.outsideVorkJobHistory.getReferenceVerification');
 
+    /**
+     * education history
+     */
+    Route::get('/profile/education-history/{user}/create', 'Web\EducationHistoryController@create')->name('user.educationHistory.create');
+    Route::post('/profile/education-history/store', 'Web\EducationHistoryController@store')->name('user.educationHistory.store');
+    Route::get('/profile/education-history/{id}/edit', 'Web\EducationHistoryController@edit')->name('user.educationHistory.edit');
+    Route::get('/profile/education-history/{id}/remove', 'Web\EducationHistoryController@remove')->name('user.educationHistory.remove');
+    Route::post('/profile/education-history/{id}/update', 'Web\EducationHistoryController@update')->name('user.educationHistory.update');
+
 
     /**
      * trainings
