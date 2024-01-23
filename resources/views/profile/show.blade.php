@@ -264,12 +264,12 @@
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="certificationsLink" href="javascript:void(0)" class="text-muted">Certifications <span
+                    <a id="certificationsLink" href="javascript:void(0)" class="text-muted">Certifications And Trainings <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="educationLink" href="javascript:void(0)" class="text-muted">Education <span
+                    <a id="educationLink" href="javascript:void(0)" class="text-muted">Education History <span
                             style="float: right;"><em
                                 class="icon ni ni-chevron-right" style="font-size: 22px;"></em></span></a>
                 </div>
