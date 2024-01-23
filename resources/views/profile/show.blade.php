@@ -314,24 +314,21 @@
                                                     - {{$educationHistory->end_date ? date("F Y", strtotime($educationHistory->end_date)) : "Ongoing"}}</div>
                                                 <div class="text-dark">{{$educationHistory->programme}}</div>
                                                 <div>{{$educationHistory->institution}}</div>
-
-                                                @if($user->id == auth()->user()->id)
-                                                    <hr>
-                                                    <div style="float: right;">
-                                                        @if($educationHistory->certificate_link)
-                                                            <a target="_blank" href="{{$educationHistory->certificate_link}}" onclick="return confirm('Are you sure?')"
-                                                               class="btn btn-outline-primary">View and download certificate</a>
-                                                        @endif
-
+                                                <hr>
+                                                <div style="float: right;">
+                                                    @if($educationHistory->certificate_link)
+                                                        <a target="_blank" href="{{$educationHistory->certificate_link}}" onclick="return confirm('Are you sure?')"
+                                                           class="btn btn-outline-primary">View and download certificate</a>
+                                                    @endif
+                                                    @if($user->id == auth()->user()->id)
                                                         <a href="{{route("user.educationHistory.remove", ["id" => $educationHistory->id])}}"
                                                            onclick="return confirm('Are you sure?')"
                                                            class="btn btn-outline-danger"><em class="ni ni-trash"></em>
                                                             Remove</a>
-
                                                             <a href="{{route("user.educationHistory.edit", ["id" => $educationHistory->id])}}"
                                                                class="btn btn-outline-primary">Make Changes</a>
-                                                    </div>
-                                                @endif
+                                                   @endif
+                                                </div>
                                             </div>
                                         </li>
                                     @endforeach
@@ -439,14 +436,13 @@
                                                     - {{$certificationAndTraining->end_date ? date("F Y", strtotime($certificationAndTraining->end_date)) : "Ongoing"}}</div>
                                                 <div class="text-dark">{{$certificationAndTraining->programme}}</div>
                                                 <div>{{$certificationAndTraining->institution}}</div>
-
-                                                @if($user->id == auth()->user()->id)
-                                                    <hr>
-                                                    <div style="float: right;">
-                                                        @if($certificationAndTraining->certificate_link)
-                                                            <a target="_blank" href="{{$certificationAndTraining->certificate_link}}" onclick="return confirm('Are you sure?')"
-                                                               class="btn btn-outline-primary">View and download certificate</a>
-                                                        @endif
+                                                <hr>
+                                                <div style="float: right;">
+                                                    @if($certificationAndTraining->certificate_link)
+                                                        <a target="_blank" href="{{$certificationAndTraining->certificate_link}}" onclick="return confirm('Are you sure?')"
+                                                           class="btn btn-outline-primary">View and download certificate</a>
+                                                    @endif
+                                                    @if($user->id == auth()->user()->id)
                                                         <a href="{{route("user.certificationAndTrainingHistory.remove", ["id" => $certificationAndTraining->id])}}"
                                                            onclick="return confirm('Are you sure?')"
                                                            class="btn btn-outline-danger"><em class="ni ni-trash"></em>
@@ -454,8 +450,8 @@
 
                                                         <a href="{{route("user.certificationAndTrainingHistory.edit", ["id" => $certificationAndTraining->id])}}"
                                                            class="btn btn-outline-primary">Make Changes</a>
-                                                    </div>
-                                                @endif
+                                                   @endif
+                                                </div>
                                             </div>
                                         </li>
                                     @endforeach
