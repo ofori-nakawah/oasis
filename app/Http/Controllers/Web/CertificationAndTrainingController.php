@@ -9,6 +9,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
 class CertificationAndTrainingController extends Controller
@@ -49,6 +50,15 @@ class CertificationAndTrainingController extends Controller
 
         if ($request->is_ongoing === "on") {
             $certificateAndTraining->end_date = null;
+        }
+
+        if ($request->hasFile('certificate_link')) {
+            $image = $request->file('certificate_link');
+            $name = Auth::user()->name . '-training-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $certificateAndTraining->certificate_link = URL::to('/public/uploads') . '/' . $name;
         }
 
         try {
@@ -119,6 +129,16 @@ class CertificationAndTrainingController extends Controller
         if ($request->is_ongoing === "on") {
             $certificateAndTraining->end_date = null;
         }
+
+        if ($request->hasFile('certificate_link')) {
+            $image = $request->file('certificate_link');
+            $name = Auth::user()->name . '-training-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $certificateAndTraining->certificate_link = URL::to('/public/uploads') . '/' . $name;
+        }
+
 
         try {
             $certificateAndTraining->update();

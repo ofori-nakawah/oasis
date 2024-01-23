@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -49,6 +50,15 @@ class EducationHistoryController extends Controller
 
         if ($request->is_ongoing === "on") {
             $educationHistory->end_date = null;
+        }
+
+        if ($request->hasFile('certificate_link')) {
+            $image = $request->file('certificate_link');
+            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $educationHistory->certificate_link = URL::to('/public/uploads') . '/' . $name;
         }
 
         try {
@@ -118,6 +128,15 @@ class EducationHistoryController extends Controller
 
         if ($request->is_ongoing === "on") {
             $educationHistory->end_date = null;
+        }
+
+        if ($request->hasFile('certificate_link')) {
+            $image = $request->file('certificate_link');
+            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $educationHistory->certificate_link = URL::to('/public/uploads') . '/' . $name;
         }
 
         try {

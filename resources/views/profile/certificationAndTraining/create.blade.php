@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.certificationAndTrainingHistory.store')}}" method="POST">
+            <form action="{{route('user.certificationAndTrainingHistory.store')}}" method="POST" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <div class="mb-3">
                     <h2><b>Add a new certification and training history</b></h2>

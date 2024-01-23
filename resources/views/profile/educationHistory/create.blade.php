@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.educationHistory.store')}}" method="POST">
+            <form action="{{route('user.educationHistory.store')}}" method="POST" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <div class="mb-3">
                     <h2><b>Add a new education history</b></h2>
@@ -94,6 +94,17 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="input-group1 mb-3">
+                    <label for="certificate_link"><b>Certificate Link</b></label>
+                    <input type="file" class="form-control form-control-l @error('certificate_link') is-invalid @enderror" name="certificate_link" value="{{ old('certificate_link') }}">
+
+                    @error('certificate_link')
+                    <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                    @enderror
                 </div>
 
                 <div class="text-right mb-3" id="publishBtn">

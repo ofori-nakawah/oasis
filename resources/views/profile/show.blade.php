@@ -318,6 +318,11 @@
                                                 @if($user->id == auth()->user()->id)
                                                     <hr>
                                                     <div style="float: right;">
+                                                        @if($educationHistory->certificate_link)
+                                                            <a target="_blank" href="{{$educationHistory->certificate_link}}" onclick="return confirm('Are you sure?')"
+                                                               class="btn btn-outline-primary">View and download certificate</a>
+                                                        @endif
+
                                                         <a href="{{route("user.educationHistory.remove", ["id" => $educationHistory->id])}}"
                                                            onclick="return confirm('Are you sure?')"
                                                            class="btn btn-outline-danger"><em class="ni ni-trash"></em>
@@ -438,6 +443,10 @@
                                                 @if($user->id == auth()->user()->id)
                                                     <hr>
                                                     <div style="float: right;">
+                                                        @if($certificationAndTraining->certificate_link)
+                                                            <a target="_blank" href="{{$certificationAndTraining->certificate_link}}" onclick="return confirm('Are you sure?')"
+                                                               class="btn btn-outline-primary">View and download certificate</a>
+                                                        @endif
                                                         <a href="{{route("user.certificationAndTrainingHistory.remove", ["id" => $certificationAndTraining->id])}}"
                                                            onclick="return confirm('Are you sure?')"
                                                            class="btn btn-outline-danger"><em class="ni ni-trash"></em>
