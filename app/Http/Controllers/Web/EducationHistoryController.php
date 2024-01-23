@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\EducationHistory;
-use App\Models\OutsideVorkJob;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class EducationHistoryController extends Controller
 {
@@ -47,6 +46,10 @@ class EducationHistoryController extends Controller
         $educationHistory->end_date = $request->end_date;
         $educationHistory->institution = $request->institution;
         $educationHistory->user_id = $userId;
+
+        if ($request->is_ongoing === "on") {
+            $educationHistory->end_date = null;
+        }
 
         try {
             $educationHistory->save();
@@ -112,6 +115,10 @@ class EducationHistoryController extends Controller
         $educationHistory->start_date = $request->start_date;
         $educationHistory->end_date = $request->end_date;
         $educationHistory->institution = $request->institution;
+
+        if ($request->is_ongoing === "on") {
+            $educationHistory->end_date = null;
+        }
 
         try {
             $educationHistory->update();

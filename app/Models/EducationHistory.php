@@ -10,6 +10,8 @@ class EducationHistory extends Model
 {
     use HasFactory, Uuids;
 
+    protected $table = "education_history";
+
     public function user()
     {
         return $this->belongsTo("App\Models\User", "user_id");

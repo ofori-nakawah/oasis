@@ -28,19 +28,19 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.outsideVorkJobHistory.store')}}" method="POST">
+            <form action="{{route('user.educationHistory.store')}}" method="POST">
                 {{csrf_field()}}
                 <div class="mb-3">
-                    <h2><b>Add a new outside VORK job experience</b></h2>
+                    <h2><b>Add a new education history</b></h2>
                 </div>
 
                 <input type="hidden" name="user_id" value="{{auth()->id()}}">
 
                 <div class="input-group1 mb-3">
-                    <label for="role"><b>Role</b></label>
-                    <input type="text" class="form-control form-control-l @error('role') is-invalid @enderror" placeholder="Enter role title" name="role" value="{{ old('role') }}">
+                    <label for="programme"><b>Programme</b></label>
+                    <input type="text" class="form-control form-control-l @error('programme') is-invalid @enderror" placeholder="Enter programme" name="programme" value="{{ old('programme') }}">
 
-                    @error('role')
+                    @error('programme')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -48,10 +48,10 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="employer"><b>Employer</b></label>
-                    <input type="text" class="form-control form-control-l @error('employer') is-invalid @enderror" placeholder="Enter name of employer" name="employer" value="{{ old('employer') }}">
+                    <label for="institution"><b>Institution</b></label>
+                    <input type="text" class="form-control form-control-l @error('institution') is-invalid @enderror" placeholder="Enter name of institution" name="institution" value="{{ old('institution') }}">
 
-                    @error('employer')
+                    @error('institution')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -96,45 +96,8 @@
                     </div>
                 </div>
 
-                <div class="input-group1 mb-3">
-                    <label for="responsibilities"><b>Responsibilities</b></label>
-                    <textarea class="form-control form-control-l summernote @error('responsibilities') is-invalid @enderror"
-                              placeholder="Enter your responsibilities"
-                              name="responsibilities">{{ old('responsibilities') }}</textarea>
-
-                    @error('responsibilities')
-                    <span class="invalid-feedback" role="alert">
-                                                    <strong class="text-danger">{{ $message }}</strong>
-                                                </span>
-                    @enderror
-                </div>
-
-                <div class="input-group1 mb-3">
-                    <label for="qualifications"><b>Achievements</b></label>
-                    <textarea class="form-control summernote form-control-l @error('achievements') is-invalid @enderror"
-                              placeholder="Enter achievements"
-                              name="achievements">{{ old('achievements') }}</textarea>
-
-                    @error('achievements')
-                    <span class="invalid-feedback" role="alert">
-                                                    <strong class="text-danger">{{ $message }}</strong>
-                                                </span>
-                    @enderror
-                </div>
-
-                <div class="input-group1 mb-3">
-                    <label for="reference"><b>Reference</b></label>
-                    <input type="text" class="form-control form-control-l @error('reference') is-invalid @enderror" placeholder="Enter role title" name="reference" value="{{ old('reference') }}">
-
-                    @error('reference')
-                    <span class="invalid-feedback " role="alert">
-                                                    <strong class="text-danger">{{ $message }}</strong>
-                                                </span>
-                    @enderror
-                </div>
-
                 <div class="text-right mb-3" id="publishBtn">
-                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Add job experience</b></button>
+                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Add education history</b></button>
                 </div>
                 <div class="alert alert-primary mt-3" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
@@ -144,10 +107,10 @@ backdrop-filter: blur(5px);
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
                     <h4>Are you sure?</h4>
-                    <p>Confirm all the entered information above are accurate before proceeding to add job experience.</p>
+                    <p>Confirm all the entered information above are accurate before proceeding to add education history.</p>
                     <div class="text-right" >
                         <button class="btn btn-outline-secondary btn-l" type="button" onclick="cancelPublish()"><b>Cancel</b></button>
-                        <button class="btn btn-success btn-l" type="submit"><b>Yes, add job experience!</b></button>
+                        <button class="btn btn-success btn-l" type="submit"><b>Yes, add education history!</b></button>
                     </div>
                 </div>
             </form>

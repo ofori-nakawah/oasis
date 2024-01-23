@@ -28,17 +28,17 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <form action="{{route('user.educationHistory.update', ["id" => ->id])}}" method="POST">
+            <form action="{{route('user.educationHistory.update', ["id" => $educationHistory->id])}}" method="POST">
                 {{csrf_field()}}
                 <div class="mb-3">
                     <h2><b>Edit education history</b></h2>
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="role"><b>Role</b></label>
-                    <input type="text" class="form-control form-control-l @error('role') is-invalid @enderror" placeholder="Enter role title" name="role" value="{{ $educationHistory->role }}">
+                    <label for="programme"><b>Programme</b></label>
+                    <input type="text" class="form-control form-control-l @error('programme') is-invalid @enderror" placeholder="Enter programme" name="programme" value="{{ $educationHistory->programme }}">
 
-                    @error('role')
+                    @error('programme')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
@@ -46,10 +46,10 @@
                 </div>
 
                 <div class="input-group1 mb-3">
-                    <label for="employer"><b>Employer</b></label>
-                    <input type="text" class="form-control form-control-l @error('employer') is-invalid @enderror" placeholder="Enter name of employer" name="employer" value="{{ $educationHistory->employer }}">
+                    <label for="institution"><b>Institution</b></label>
+                    <input type="text" class="form-control form-control-l @error('institution') is-invalid @enderror" placeholder="Enter institution" name="institution" value="{{ $educationHistory->institution }}">
 
-                    @error('employer')
+                    @error('institution')
                     <span class="invalid-feedback " role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
                                                 </span>
