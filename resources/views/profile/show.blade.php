@@ -385,7 +385,6 @@
                                                     <span class="badge badge-warning"><em class="ni ni-alert"></em>Unverified</span>
                                                 @endif
 
-                                                @if($outsideVorkJob->reference_verification_sent_at !== null)
                                                     @php
                                                         $reference = json_decode($outsideVorkJob->reference)
                                                      @endphp
@@ -405,14 +404,13 @@ border: 1px solid rgba(255, 255, 255, 0.3);" id="referenceBox-{{preg_replace('/\
                                                             <p><em class="ni ni-mobile"></em> {{$reference->phone_number}}</p>
                                                         @endif
                                                         <div class="text-right" >
-                                                            <a href="javascript:void()" class="btn btn-outline-secondary btn-l" type="button" onclick="hideReferenceDetails('{{json_decode($outsideVorkJob->reference)->name}}')"><b>Cancel</b></a>
+                                                            <a href="javascript:void()" class="btn btn-outline-secondary btn-l" type="button" onclick="hideReferenceDetails('{{json_decode($outsideVorkJob->reference)->name}}')"><b>Close</b></a>
                                                         </div>
                                                     </div>
                                                     <div>
 
 
                                                     </div>
-                                                @endif
                                             </div>
                                             @if($user->id == auth()->user()->id)
                                                 <hr>
