@@ -46,6 +46,18 @@
                 </div>
 
                 <div class="input-group1 mb-3">
+                    <label for="training_hours"><b>Training Hours</b></label>
+                    <input type="number" class="form-control form-control-l @error('training_hours') is-invalid @enderror" placeholder="Enter training_hours" name="training_hours" value="{{ $certificationAndTraining->training_hours }}">
+
+                    @error('training_hours')
+                    <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                    @enderror
+                </div>
+
+
+                <div class="input-group1 mb-3">
                     <label for="institution"><b>Institution</b></label>
                     <input type="text" class="form-control form-control-l @error('institution') is-invalid @enderror" placeholder="Enter institution" name="institution" value="{{ $certificationAndTraining->institution }}">
 

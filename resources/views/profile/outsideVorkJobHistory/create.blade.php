@@ -124,7 +124,7 @@
 
                 <div class="input-group1 mb-3">
                     <label for="reference"><b>Reference</b></label>
-                    <input type="text" class="form-control form-control-l @error('reference') is-invalid @enderror" placeholder="Enter role title" name="reference" value="{{ old('reference') }}">
+                    <input type="text" class="form-control form-control-l @error('reference') is-invalid @enderror" placeholder="Enter reference" name="reference" value="{{ old('reference') }}">
 
                     @error('reference')
                     <span class="invalid-feedback " role="alert">

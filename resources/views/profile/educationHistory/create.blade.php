@@ -48,6 +48,17 @@
                 </div>
 
                 <div class="input-group1 mb-3">
+                    <label for="specialty"><b>Major/Specialty</b></label>
+                    <input type="text" class="form-control form-control-l @error('specialty') is-invalid @enderror" placeholder="Enter specialty" name="specialty" value="{{ old('specialty') }}">
+
+                    @error('specialty')
+                    <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                    @enderror
+                </div>
+
+                <div class="input-group1 mb-3">
                     <label for="institution"><b>Institution</b></label>
                     <input type="text" class="form-control form-control-l @error('institution') is-invalid @enderror" placeholder="Enter name of institution" name="institution" value="{{ old('institution') }}">
 

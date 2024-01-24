@@ -291,7 +291,7 @@
                 <div id="educationBox">
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
-                            <div class="font-weight-bolder mt-1">Education History</div>
+                            <div class="font-weight-bolder mt-1">Education</div>
                             @if($user->id == auth()->user()->id)
                                 <div><a href="{{route("user.educationHistory.create", ["user" => auth()->id()])}}"
                                         style="float: right"><em style="font-size: 28px;"
@@ -313,12 +313,15 @@
                                                 <div>{{date("F Y", strtotime($educationHistory->start_date))}}
                                                     - {{$educationHistory->end_date ? date("F Y", strtotime($educationHistory->end_date)) : "Ongoing"}}</div>
                                                 <div class="text-dark">{{$educationHistory->programme}}</div>
+                                                @if($educationHistory->specialty)
+                                                    <div class="text-primary">Specialty: {{$educationHistory->specialty}}</div>
+                                                @endif
                                                 <div>{{$educationHistory->institution}}</div>
                                                 <hr>
                                                 <div style="float: right;">
                                                     @if($educationHistory->certificate_link)
                                                         <a target="_blank" href="{{$educationHistory->certificate_link}}" onclick="return confirm('Are you sure?')"
-                                                           class="btn btn-outline-primary">View and download certificate</a>
+                                                           class="btn btn-outline-primary">View Certificate</a>
                                                     @endif
                                                     @if($user->id == auth()->user()->id)
                                                         <a href="{{route("user.educationHistory.remove", ["id" => $educationHistory->id])}}"
@@ -339,7 +342,7 @@
                 <div id="jobExperienceBox">
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
-                            <div class="font-weight-bolder mt-1">Job Experience Outside VORK</div>
+                            <div class="font-weight-bolder mt-1">Job Experience</div>
                             @if($user->id == auth()->user()->id)
                                 <div><a href="{{route("user.outsideVorkJobHistory.create", ["user" => auth()->id()])}}"
                                         style="float: right"><em style="font-size: 28px;"
@@ -440,7 +443,7 @@ border: 1px solid rgba(255, 255, 255, 0.3);" id="referenceBox-{{preg_replace('/\
                 <div id="certificationsBox">
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
-                            <div class="font-weight-bolder mt-1">Certifications and trainings History</div>
+                            <div class="font-weight-bolder mt-1">Certification and Training</div>
                             @if($user->id == auth()->user()->id)
                                 <div><a href="{{route("user.certificationAndTrainingHistory.create", ["user" => auth()->id()])}}"
                                         style="float: right"><em style="font-size: 28px;"
@@ -463,11 +466,14 @@ border: 1px solid rgba(255, 255, 255, 0.3);" id="referenceBox-{{preg_replace('/\
                                                     - {{$certificationAndTraining->end_date ? date("F Y", strtotime($certificationAndTraining->end_date)) : "Ongoing"}}</div>
                                                 <div class="text-dark">{{$certificationAndTraining->programme}}</div>
                                                 <div>{{$certificationAndTraining->institution}}</div>
+                                                @if($certificationAndTraining->training_hours)
+                                                    <div>Training hours: {{$certificationAndTraining->training_hours}}</div>
+                                                @endif
                                                 <hr>
                                                 <div style="float: right;">
                                                     @if($certificationAndTraining->certificate_link)
                                                         <a target="_blank" href="{{$certificationAndTraining->certificate_link}}" onclick="return confirm('Are you sure?')"
-                                                           class="btn btn-outline-primary">View and download certificate</a>
+                                                           class="btn btn-outline-primary">View Certificate</a>
                                                     @endif
                                                     @if($user->id == auth()->user()->id)
                                                         <a href="{{route("user.certificationAndTrainingHistory.remove", ["id" => $certificationAndTraining->id])}}"
