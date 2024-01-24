@@ -46,6 +46,7 @@ class EducationHistoryController extends Controller
         $educationHistory->start_date = $request->start_date;
         $educationHistory->end_date = $request->end_date;
         $educationHistory->institution = $request->institution;
+        $educationHistory->specialty = $request->specialty;
         $educationHistory->user_id = $userId;
 
         if ($request->is_ongoing === "on") {
@@ -125,6 +126,7 @@ class EducationHistoryController extends Controller
         $educationHistory->start_date = $request->start_date;
         $educationHistory->end_date = $request->end_date;
         $educationHistory->institution = $request->institution;
+        $educationHistory->specialty = $request->specialty;
 
         if ($request->is_ongoing === "on") {
             $educationHistory->end_date = null;

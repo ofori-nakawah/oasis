@@ -20,6 +20,7 @@ class CreateCertificationAndTrainingsTable extends Migration
             $table->timestamp("end_date")->nullable();
             $table->string("institution");
             $table->string("programme");
+            $table->string("training_hours")->nullable();
             $table->string("certificate_link")->nullable();
             $table->timestamps();
         });

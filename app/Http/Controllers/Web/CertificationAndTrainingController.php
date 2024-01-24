@@ -46,6 +46,7 @@ class CertificationAndTrainingController extends Controller
         $certificateAndTraining->start_date = $request->start_date;
         $certificateAndTraining->end_date = $request->end_date;
         $certificateAndTraining->institution = $request->institution;
+        $certificateAndTraining->training_hours = $request->training_hours;
         $certificateAndTraining->user_id = $userId;
 
         if ($request->is_ongoing === "on") {
@@ -125,6 +126,8 @@ class CertificationAndTrainingController extends Controller
         $certificateAndTraining->start_date = $request->start_date;
         $certificateAndTraining->end_date = $request->end_date;
         $certificateAndTraining->institution = $request->institution;
+        $certificateAndTraining->training_hours = $request->training_hours;
+
 
         if ($request->is_ongoing === "on") {
             $certificateAndTraining->end_date = null;
