@@ -264,12 +264,12 @@
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="certificationsLink" href="javascript:void(0)" class="text-muted">Certifications And Trainings <span
+                    <a id="certificationsLink" href="javascript:void(0)" class="text-muted">Certification & Training <span
                             style="float: right;"><em class="icon ni ni-chevron-right"
                                                       style="font-size: 22px;"></em></span></a>
                 </div>
                 <div class="card-body border-top" style="padding-top: 15px;padding-bottom: 10px;">
-                    <a id="educationLink" href="javascript:void(0)" class="text-muted">Education History <span
+                    <a id="educationLink" href="javascript:void(0)" class="text-muted">Education <span
                             style="float: right;"><em
                                 class="icon ni ni-chevron-right" style="font-size: 22px;"></em></span></a>
                 </div>
@@ -443,7 +443,7 @@ border: 1px solid rgba(255, 255, 255, 0.3);" id="referenceBox-{{preg_replace('/\
                 <div id="certificationsBox">
                     <div class="card card-bordered">
                         <div class="card-header bg-white border-bottom flex flex-row justify-between items-center">
-                            <div class="font-weight-bolder mt-1">Certification and Training</div>
+                            <div class="font-weight-bolder mt-1">Certification & Training</div>
                             @if($user->id == auth()->user()->id)
                                 <div><a href="{{route("user.certificationAndTrainingHistory.create", ["user" => auth()->id()])}}"
                                         style="float: right"><em style="font-size: 28px;"
