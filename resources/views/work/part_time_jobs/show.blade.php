@@ -34,9 +34,6 @@
                 </div>
             </div>
 
-            <div id="otherFixedTermOpportunitiesShimmerLoader"></div>
-            <div id="otherFixedTermOpportunitiesListing"></div>
-
         </div>
         <div class="col-md-8">
             <div id="fixedTermOpportunityDetailsShimmerLoader"></div>
@@ -66,7 +63,6 @@
          * other fixed term opportunities shimmer loader
          * @param isLoading
          */
-        const otherFixedTermOpportunitiesShimmerLoader = `Loading`
 
         const isLoadingFixedTermOpportunity = (isLoading) => {
             if (isLoading) {
@@ -75,9 +71,7 @@
                  */
                 $("#fixedTermOpportunityShimmerLoader").html(fixedTermOpportunityShimmerLoader)
                 $("#fixedTermOpportunityDetailsShimmerLoader").html(fixedTermOpportunityDetailsShimmerLoader)
-                $("#otherFixedTermOpportunitiesShimmerLoader").html(otherFixedTermOpportunitiesShimmerLoader)
                 $("#fixedTermOpportunityShimmerLoader").show()
-                $("#otherFixedTermOpportunitiesShimmerLoader").show()
                 $("#fixedTermOpportunityDetailsShimmerLoader").show()
 
                 /**
@@ -88,7 +82,6 @@
                  * loaders
                  */
                 $("#fixedTermOpportunityShimmerLoader").hide()
-                $("#otherFixedTermOpportunitiesShimmerLoader").hide()
                 $("#fixedTermOpportunityDetailsShimmerLoader").hide()
 
                 /**
@@ -281,85 +274,6 @@ border: 1px solid #dbdfea;">
             `
         }
 
-        const ComponentOtherFixedTermOpportunities = (post) => {
-            let isInternship = ``;
-            if (post.is_internship === "yes") {
-                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
-  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
-            }
-
-            const route = `{{env("BACKEND_URL")}}/part-time-jobs/${post.id}`
-
-            return `
-        <div class="col-md-12">
-            <a href="${route}"
-               style="text-decoration: none !important;" class="cardContainer">
-                <div class="card card-bordered cardContainer" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;">
-                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                <div class="issuer "><em
-                                            class="icon ni ni-building"></em> ${post.employer}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Budget
-                                    (GHS/month)
-                                </div>
-                                <div class="issuer text-success"><em
-                                            class="icon ni ni-coins"></em> ${post.min_budget}
-                                        - ${post.max_budget}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
-                                <div class="issuer card bg-lighter text-center" style="height: 100px;">
-                                    <div style="font-size: 22px;margin-top:20px;">
-                                        <b>${post.duration}</b></div>
-                                    <div>month(s)</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                <div class="issuer text"><em
-                                            class="icon ni ni-map-pin"></em> ${post.location} (
-            ${post.distance}
-            km away)</div>
-                </div>
-                </div>
-                </div>
-                <div class="card-header text-dark bg-lighter"
-                style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;">
-
-
-
-                <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
-
-
-                <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="#" class="btn btn-outline-light bg-white"><em
-                    class="icon ni ni-list-round"></em></a>
-
-                </div>
-
-                </div>
-                </a>
-                </div>
-                `
-        }
 
 
         const getFixedTermOpportunity = () => {
@@ -385,12 +299,6 @@ border: 1px solid #dbdfea;">
                     $("#fixedTermOpportunitySnapshot").html(ComponentFixedTermOpportunity(data.opportunity))
                     $("#fixedTermOpportunityDetails").html(ComponentFixedTermOpportunityDetails(data.opportunity))
 
-                    let otherFixedTermOpportunitiesList = `<div class="row">`
-                    $.each(data.otherOpportunities, function (key, opportunity) {
-                        otherFixedTermOpportunitiesList += ComponentOtherFixedTermOpportunities(opportunity)
-                    })
-                    $("#otherFixedTermOpportunitiesListing").html(otherFixedTermOpportunitiesList)
-                    otherFixedTermOpportunitiesList += `</div>`
                     $(".savedFixedTermOpportunityIcon").hide()
                     $(".saveFixedTermOpportunityLoader").hide()
                     isLoadingFixedTermOpportunity(false)
