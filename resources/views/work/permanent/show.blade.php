@@ -30,12 +30,11 @@
 
             <div class="row mb-2 mt-2" >
                 <div class="col-md-12">
-                    <p class="text-dark" style="display: flex;"><span style="flex: 1;">Other opportunities</span> <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "fixed-term"])}}" style="text-decoration: underline">See more</a></p>
+                    <p class="text-dark" style="display: flex;"><span style="flex: 1;">Other opportunities</span> <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "permanent"])}}" style="text-decoration: underline">See more</a></p>
                 </div>
             </div>
 
-            <div id="otherFixedTermOpportunitiesShimmerLoader"></div>
-            <div id="otherFixedTermOpportunitiesListing"></div>
+
 
         </div>
         <div class="col-md-8">

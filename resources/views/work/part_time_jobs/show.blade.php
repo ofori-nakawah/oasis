@@ -34,9 +34,6 @@
                 </div>
             </div>
 
-            <div id="otherFixedTermOpportunitiesShimmerLoader"></div>
-            <div id="otherFixedTermOpportunitiesListing"></div>
-
         </div>
         <div class="col-md-8">
             <div id="fixedTermOpportunityDetailsShimmerLoader"></div>
