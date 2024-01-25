@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
-    const JOB_SEARCH_RADIUS = 10;
+    const JOB_SEARCH_RADIUS = 5;
     const VOLUNTEER_SEARCH_RADIUS = 10;
 
     use Responses;
