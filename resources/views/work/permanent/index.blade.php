@@ -62,26 +62,26 @@
                     <div class="d-none d-sm-block .d-sm-none .d-md-block">
                         <hr>
 
-                        <div class="mb-2">
-                            <label class="form-label">Open to</label>
-                            <div style="display: flex;flex-direction: row">
-                                <div class="user-toggle" style="flex: 1">
-                                    <div class="user-avatar bg-secondary-dim sm">
-                                        <em class="icon ni ni-book-read"></em>
-                                    </div>
-                                    <div class="user-info" style="">
-                                        <div class="nk-menu-text text"><b>Internships</b></div>
-                                    </div>
-                                </div>
-                                <div class="custom-control custom-checkbox mt-1">
-                                    <input type="checkbox" class="custom-control-input" id="isInternship"
-                                           onclick="getFixedTermInternshipOpportunities()">
-                                    <label class="custom-control-label" for="isInternship"></label>
-                                </div>
-                            </div>
-                        </div>
+{{--                        <div class="mb-2">--}}
+{{--                            <label class="form-label">Open to</label>--}}
+{{--                            <div style="display: flex;flex-direction: row">--}}
+{{--                                <div class="user-toggle" style="flex: 1">--}}
+{{--                                    <div class="user-avatar bg-secondary-dim sm">--}}
+{{--                                        <em class="icon ni ni-book-read"></em>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="user-info" style="">--}}
+{{--                                        <div class="nk-menu-text text"><b>Internships</b></div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="custom-control custom-checkbox mt-1">--}}
+{{--                                    <input type="checkbox" class="custom-control-input" id="isInternship"--}}
+{{--                                           onclick="getFixedTermInternshipOpportunities()">--}}
+{{--                                    <label class="custom-control-label" for="isInternship"></label>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
-                        <hr>
+{{--                        <hr>--}}
 {{--                        <div class="mb-2">--}}
 {{--                            <label class="form-label">Search radius</label>--}}
 {{--                            <div id="radBox" class="card card-bordered pt-2 pl-3 pr-2" data-toggle="modal"--}}
