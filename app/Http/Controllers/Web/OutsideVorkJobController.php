@@ -192,7 +192,7 @@ class OutsideVorkJobController extends Controller
         $startDate = date("F Y", strtotime($outsideVorkJob->start_date));
         $endDate = $outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing";
         $approvalURL = env("BACKEND_URL") ."/external-job-experience/". $outsideVorkJob->id ."/endorsements/approve";
-        $imgSrc = asset("assets/html-template/src/images/logo_white_bg.png");
+        $imgSrc = asset("assets/html-template/src/images/cl.png");
 
         $message = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">

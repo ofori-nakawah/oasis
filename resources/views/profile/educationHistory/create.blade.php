@@ -1,6 +1,6 @@
 @extends("layouts.master")
 
-@section("title") Education history @endsection
+@section("title") Education  @endsection
 
 @section("content")
     <div class="nk-block-head nk-block-head-sm">
@@ -12,7 +12,7 @@
                     <nav>
                         <ul class="breadcrumb breadcrumb-arrow">
                             <li class="breadcrumb-item"><a href="#">{{$user->name}}</a></li>
-                            <li class="breadcrumb-item">Add education history</li>
+                            <li class="breadcrumb-item">Add education </li>
                         </ul>
                     </nav>
                     </p>
@@ -31,7 +31,7 @@
             <form action="{{route('user.educationHistory.store')}}" method="POST" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <div class="mb-3">
-                    <h2><b>Add a new education history</b></h2>
+                    <h2><b>Add a new education </b></h2>
                 </div>
 
                 <input type="hidden" name="user_id" value="{{auth()->id()}}">
@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="text-right mb-3" id="publishBtn">
-                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Add education history</b></button>
+                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Add education </b></button>
                 </div>
                 <div class="alert alert-primary mt-3" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
@@ -129,10 +129,10 @@ backdrop-filter: blur(5px);
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
                     <h4>Are you sure?</h4>
-                    <p>Confirm all the entered information above are accurate before proceeding to add education history.</p>
+                    <p>Confirm all the entered information above are accurate before proceeding to add education .</p>
                     <div class="text-right" >
                         <button class="btn btn-outline-secondary btn-l" type="button" onclick="cancelPublish()"><b>Cancel</b></button>
-                        <button class="btn btn-success btn-l" type="submit"><b>Yes, add education history!</b></button>
+                        <button class="btn btn-success btn-l" type="submit"><b>Yes, add education !</b></button>
                     </div>
                 </div>
             </form>

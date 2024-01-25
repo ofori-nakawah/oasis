@@ -1,6 +1,6 @@
 @extends("layouts.master")
 
-@section("title") Edit education history @endsection
+@section("title") Edit education  @endsection
 
 @section("content")
     <div class="nk-block-head nk-block-head-sm">
@@ -12,7 +12,7 @@
                     <nav>
                         <ul class="breadcrumb breadcrumb-arrow">
                             <li class="breadcrumb-item"><a href="#">{{$user->name}}</a></li>
-                            <li class="breadcrumb-item">Edit education history</li>
+                            <li class="breadcrumb-item">Edit education </li>
                         </ul>
                     </nav>
                     </p>
@@ -31,7 +31,7 @@
             <form action="{{route('user.educationHistory.update', ["id" => $educationHistory->id])}}" method="POST" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <div class="mb-3">
-                    <h2><b>Edit education history</b></h2>
+                    <h2><b>Edit education </b></h2>
                 </div>
 
                 <div class="input-group1 mb-3">
@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="text-right mb-3" id="publishBtn">
-                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Update education history</b></button>
+                    <button class="btn btn-success btn-l" type="button" onclick="confirmPublish()"><b>Update education </b></button>
                 </div>
                 <div class="alert alert-primary mt-3" style="/* From https://css.glass */
 background: rgba(255, 255, 255, 0.2);
@@ -128,10 +128,10 @@ backdrop-filter: blur(5px);
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid rgba(255, 255, 255, 0.3);" id="publishConfirmationBox">
                     <h4>Are you sure?</h4>
-                    <p>Confirm all the entered information above are accurate before proceeding to updating education history.</p>
+                    <p>Confirm all the entered information above are accurate before proceeding to updating education .</p>
                     <div class="text-right" >
                         <button class="btn btn-outline-secondary btn-l" type="button" onclick="cancelPublish()"><b>Cancel</b></button>
-                        <button class="btn btn-success btn-l" type="submit"><b>Yes, update education history!</b></button>
+                        <button class="btn btn-success btn-l" type="submit"><b>Yes, update education !</b></button>
                     </div>
                 </div>
             </form>
