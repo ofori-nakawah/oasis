@@ -44,6 +44,36 @@
 
     </div>
 
+    <div class="modal fade zoom" tabindex="-1" id="shareOpportunity" style="border-radius: 4px;">
+        <div class="modal-dialog" role="document" style="border-radius: 4px;">
+            <div class="modal-content" style="border-radius: 4px;">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross text-danger"></em>
+                </a>
+                <div class="modal-header" style="border-bottom: none !important;">
+                    <div class="modal-title" style="font-size: 18px;"><b>Share Opportunity</b></div>
+                </div>
+                <div class="modal-body">
+                    <hr style=" margin-top: -25px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and
+                                friends on all platforms.</p>
+                            <p class="alert alert-lighter bg-lighter text-primary no-border"
+                               style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span
+                                        id="shareableLink"></span></b>
+                            </p>
+                            <div class="btn btn-outline-primary copyLinkButton bold" style="float: right !important;"
+                                 onclick="copyLinkToClipboard()"><em class="icon ni ni-copy"></em> Copy link
+                            </div>
+                            <span class="copyStatus text-success"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section("scripts")
@@ -264,7 +294,7 @@ border: 1px solid #dbdfea;">
                      style="border-radius: 4px; margin:5px; display: flex; flex-direction: row;justify-content: space-between;align-items: center">
 
 
-                    <a type="button" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
+                    <a type="button" data-toggle="modal" data-target="#shareOpportunity" onclick="setupShareableLink('${post.type}', '${post.id}')"  href="javascript:void(0)" class="btn btn-outline-light bg-white"><em
                             class="icon ni ni-share" data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em></a>
 
 
