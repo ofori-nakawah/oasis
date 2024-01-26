@@ -1686,6 +1686,7 @@ class PostController extends Controller
                 $post->title = $request->title;
                 $post->description = $request->description;
                 $post->qualifications = $request->qualifications;
+                $post->other_relevant_information = $request->other_relevant_information;
                 $post->date = $request->date;
                 $post->time = $request->time;
                 $post->location = $request->location;
