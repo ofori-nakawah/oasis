@@ -38,7 +38,7 @@ class HomeController extends Controller
          * check if location is set else send user to set location
          */
         if (auth()->user()->is_core_skills_set == "0") {
-            $skills_and_interest = Skill::all();
+            $skills_and_interest = Skill::orderBy("name", "asc")->all();
             return view("onboarding.skills", compact("skills_and_interest"));
         }
 
@@ -46,7 +46,7 @@ class HomeController extends Controller
          * check if location is set else send user to set location
          */
         if (auth()->user()->is_languages_set == "0") {
-            $languages = Language::all();
+            $languages = Language::orderBy("name", "asc")->all();
             return view("onboarding.languages", compact("languages"));
         }
 
