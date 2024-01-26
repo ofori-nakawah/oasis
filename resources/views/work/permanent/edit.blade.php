@@ -76,6 +76,24 @@
                             @enderror
                         </div>
 
+                        <div class="input-group1 mb-3">
+                            <label for="industry"><b>Select Industry</b></label>
+                            <select type="text" data-search="" data-placeholder="Select applicable industry"
+                                    class="form-control form-select form-control-l @error('industry') is-invalid @enderror"
+                                    name="industry" required>
+                                <option value="">Choose industry</option>
+                                @foreach($industries as $industry)
+                                    <option value="{{$industry->name}}" {{(isset($post->industry) && ($post->industry->name === $industry->name)) ? 'selected' : ''}}>{{$industry->name}}</option>
+                                @endforeach
+                            </select>
+
+                            @error('industry')
+                            <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                            @enderror
+                        </div>
+
 
                         <div class="input-group1 mb-3">
                             <label for="description"><b>Job Description/Responsibilities</b></label>
@@ -278,7 +296,7 @@
 
 @section("scripts")
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key={{env("GOOGLE_MAPS_KEY")}}&libraries=places&callback=mountMap"

@@ -78,6 +78,24 @@
                         </div>
 
                         <div class="input-group1 mb-3">
+                            <label for="industry"><b>Select Industry</b></label>
+                            <select type="text" data-search="" data-placeholder="Select applicable industry"
+                                    class="form-control form-select form-control-l @error('industry') is-invalid @enderror"
+                                    name="industry" required>
+                                <option value="">Choose industry</option>
+                                @foreach($industries as $industry)
+                                    <option value="{{$industry->name}}" {{(old('industry') == $industry->name) ? 'selected' : ''}}>{{$industry->name}}</option>
+                                @endforeach
+                            </select>
+
+                            @error('industry')
+                            <span class="invalid-feedback " role="alert">
+                                                    <strong class="text-danger">{{ $message }}</strong>
+                                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="input-group1 mb-3">
                             <label for="description"><b>Job Description/Responsibilities</b></label>
                             <textarea class="form-control summernote form-control-l @error('description') is-invalid @enderror"
                                       placeholder="EnterJob Description/Responsibilities"

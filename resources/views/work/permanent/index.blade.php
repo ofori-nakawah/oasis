@@ -305,6 +305,7 @@
 
 
             const route = `{{env("BACKEND_URL")}}/permanent-jobs/${post.id}`
+            const industry = (post.industry) ? post.industry.name : 'Not Specified'
 
             return `
         <div class="col-md-6">
@@ -337,10 +338,10 @@ border: 1px solid #dbdfea;">
                                         - ${post.max_budget}</div>
                             </div>
                             <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                                <div class="title" style="font-size: 10px;color: #777;">Industry</div>
                                 <div class="issuer card bg-lighter text-center flex justify-center align-center" style="height: 100px;">
                                     <div style="font-size: 22px;" class="flex justify-center align-center">
-                                        <b>Permanent</b></div>
+                                        <b>${industry}</b></div>
                                 </div>
                             </div>
                         </div>
