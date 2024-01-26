@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Helpers\Notifications as Notifications;
 use App\Http\Controllers\Controller;
+use App\Models\IndustryPost;
 use App\Models\JobApplication;
 use App\Models\Post;
 use App\Models\RatingReview;
@@ -1274,6 +1275,7 @@ class PostController extends Controller
             'min_budget' => 'required',
             'max_budget' => 'required',
             'tags' => 'required',
+            'industry' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -1322,11 +1324,13 @@ class PostController extends Controller
 
         $post->tags = json_encode($tags);
         $post->user_id = auth()->id();
+        $post->industry_id = $request->industry;
         $post->type = "PERMANENT_JOB";
         $post->source = "WEB";
 
         try {
             $post->save();
+
             return redirect()->route("home")->with("success", "Post has been published successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
@@ -1673,6 +1677,7 @@ class PostController extends Controller
                 $post->location = $request->location;
                 $post->employer = $request->employer;
                 $post->coords = $request->coords;
+                $post->industry_id = $request->industry;
                 $post->start_date = $request->start_date;
                 $post->max_budget = $request->max_budget;
                 $post->min_budget = $request->min_budget;
