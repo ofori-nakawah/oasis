@@ -1649,6 +1649,7 @@ class PostController extends Controller
                 $post->end_date = $request->end_date;
                 $post->max_budget = $request->max_budget;
                 $post->min_budget = $request->min_budget;
+                $post->other_relevant_information = $request->other_relevant_information;
 
                 if ($request->negotiable === "on") {
                     $post->is_negotiable = "yes";
