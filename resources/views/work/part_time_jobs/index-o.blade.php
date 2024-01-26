@@ -465,6 +465,18 @@ border: 1px solid #dbdfea;">
                 crossDomain: true,
                 success: function (_data) {
                     const data = _data.data
+                    data.sort(function(a, b) {
+                        const c = a.name.toUpperCase();
+                        const d = b.name.toUpperCase();
+                        if (c < d) {
+                            return -1;
+                        }
+                        if (c > d) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+
                     let categories = ``;
                     data.map(category => {
                         categories += ` <div class="custom-control custom-checkbox mt-1">
