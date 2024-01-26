@@ -135,6 +135,9 @@
   white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
             }
 
+            const industry = (post.industry) ? post.industry.name : 'Not Specified'
+
+
             return `
             <div
                style="text-decoration: none !important;" class="">
@@ -167,10 +170,10 @@ border: 1px solid #dbdfea;">
                                         - ${post.max_budget}</div>
                             </div>
                             <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                                <div class="title" style="font-size: 10px;color: #777;">Industry</div>
                                 <div class="issuer card bg-lighter text-center flex justify-center align-center" style="height: 100px;">
                                     <div style="font-size: 22px;">
-                                        <b>Permanent</b></div>
+                                        <b>${industry}</b></div>
                                 </div>
                             </div>
                         </div>
@@ -197,7 +200,7 @@ border: 1px solid #dbdfea;">
 
             const route = `{{env("BACKEND_URL")}}/posts/${post.id}/apply`
 
-            console.log(post)
+            const industry = (post.industry) ? post.industry.name : 'Not Specified'
 
             let applyButton;
             if ('{{auth()->id()}}' != post.user.id) {
@@ -238,10 +241,10 @@ border: 1px solid #dbdfea;">
                                 - ${post.max_budget}</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="title" style="font-size: 10px;color: #777;">Duration</div>
+                            <div class="title" style="font-size: 10px;color: #777;">Industry</div>
                             <div class="issuer card bg-lighter text-center flex justify-center align-center" style="height: 100px;">
                                 <div style="font-size: 22px;">
-                                    <b>Permanent</b></div>
+                                    <b>${industry}</b></div>
                             </div>
                         </div>
                     </div>

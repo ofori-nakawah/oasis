@@ -19,6 +19,11 @@ class Post extends Model
         return $this->belongsTo("App\Models\User", "user_id");
     }
 
+    public function industry()
+    {
+        return $this->belongsTo("App\Models\Industry", "industry_id");
+    }
+
     public function applications()
     {
         return $this->hasMany("App\Models\JobApplication");

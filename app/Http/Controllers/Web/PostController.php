@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Helpers\Notifications as Notifications;
 use App\Http\Controllers\Controller;
+use App\Models\Industry;
 use App\Models\JobApplication;
 use App\Models\Post;
 use App\Models\RatingReview;
@@ -13,7 +14,6 @@ use App\Models\UserSavedPost;
 use App\Services\PushNotification;
 use App\Traits\Responses;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -86,7 +86,8 @@ class PostController extends Controller
                     return $this->list_permanent_jobs();
                 } else {
                     $categories = Skill::orderBy('name')->get();
-                    return view("work.permanent.create", compact("categories"));
+                    $industries = Industry::orderBy('name')->get();
+                    return view("work.permanent.create", compact("categories", "industries"));
                 }
                 break;
         }
@@ -291,6 +292,8 @@ class PostController extends Controller
                 $post["distance"] = number_format($distance, 2);
                 $jobs_near_me->push($post);
             }
+
+            $post->industry;
 
             $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
             if ($has_already_applied) {
@@ -557,6 +560,7 @@ class PostController extends Controller
             $original_post->has_already_applied = "yes";
         }
         $original_post->user;
+        $original_post->industry;
 
         $posts = [];
 
@@ -1274,6 +1278,7 @@ class PostController extends Controller
             'min_budget' => 'required',
             'max_budget' => 'required',
             'tags' => 'required',
+            'industry' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -1286,6 +1291,11 @@ class PostController extends Controller
             if ($category) {
                 array_push($tags, $tag);
             }
+        }
+
+        $industry = Industry::where("name", $request->industry)->first();
+        if (!$industry) {
+            return redirect()->back()->with("danger", "Invalid request");
         }
 
         $post = new Post();
@@ -1322,11 +1332,13 @@ class PostController extends Controller
 
         $post->tags = json_encode($tags);
         $post->user_id = auth()->id();
+        $post->industry_id = $industry->id;
         $post->type = "PERMANENT_JOB";
         $post->source = "WEB";
 
         try {
             $post->save();
+
             return redirect()->route("home")->with("success", "Post has been published successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
@@ -1545,7 +1557,8 @@ class PostController extends Controller
                 return view("work.part_time_jobs.edit", compact("post", "categories"));
             case "PERMANENT_JOB":
                 $categories = Skill::orderBy('name')->get();
-                return view("work.permanent.edit", compact("post", "categories"));
+                $industries = Industry::orderBy('name')->get();
+                return view("work.permanent.edit", compact("post", "categories", "industries"));
         }
 
         return back()->with("danger", "Invalid request");
@@ -1665,6 +1678,11 @@ class PostController extends Controller
                     }
                 }
 
+                $industry = Industry::where("name", $request->industry)->first();
+                if (!$industry) {
+                    return redirect()->back()->with("danger", "Invalid request");
+                }
+
                 $post->title = $request->title;
                 $post->description = $request->description;
                 $post->qualifications = $request->qualifications;
@@ -1673,6 +1691,7 @@ class PostController extends Controller
                 $post->location = $request->location;
                 $post->employer = $request->employer;
                 $post->coords = $request->coords;
+                $post->industry_id = $industry->id;
                 $post->start_date = $request->start_date;
                 $post->max_budget = $request->max_budget;
                 $post->min_budget = $request->min_budget;
