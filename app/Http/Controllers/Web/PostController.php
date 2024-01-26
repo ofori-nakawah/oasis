@@ -716,6 +716,7 @@ class PostController extends Controller
             $original_post->has_already_applied = "yes";
         }
         $original_post->user;
+        $original_post->industry;
         $toDate = Carbon::parse($original_post->end_date);
         $fromDate = Carbon::parse($original_post->start_date);
 //        $original_post["duration"] = $toDate->diffInMonths($fromDate);
@@ -1715,7 +1716,7 @@ class PostController extends Controller
 
         try {
             $post->update();
-            return redirect()->route("user.posts.show", ["uuid" => $post->id])->with("success", "Post has been updated successfully.");
+            return redirect()->route("user.posts.list")->with("success", "Post has been updated successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return back()->with("danger", "Oops. We encountered an issue while updating your post. Kindly try again.");
