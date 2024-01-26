@@ -1656,6 +1656,41 @@ class PostController extends Controller
 
                 $post->tags = json_encode($tags);
                 break;
+            case "PERMANENT_JOB":
+                $tags = array();
+                foreach ($request->tags as $tag) {
+                    $category = Skill::where("name", $tag)->first();
+                    if ($category) {
+                        array_push($tags, $tag);
+                    }
+                }
+
+                $post->title = $request->title;
+                $post->description = $request->description;
+                $post->qualifications = $request->qualifications;
+                $post->date = $request->date;
+                $post->time = $request->time;
+                $post->location = $request->location;
+                $post->employer = $request->employer;
+                $post->coords = $request->coords;
+                $post->start_date = $request->start_date;
+                $post->max_budget = $request->max_budget;
+                $post->min_budget = $request->min_budget;
+
+                if ($request->negotiable === "on") {
+                    $post->is_negotiable = "yes";
+                } else {
+                    $post->is_negotiable = "no";
+                }
+
+                if ($request->renewable === "on") {
+                    $post->is_renewable = "yes";
+                } else {
+                    $post->is_renewable = "no";
+                }
+
+                $post->tags = json_encode($tags);
+                break;
         }
 
         try {
