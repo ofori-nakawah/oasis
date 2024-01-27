@@ -716,6 +716,7 @@ class PostController extends Controller
             $original_post->has_already_applied = "yes";
         }
         $original_post->user;
+        $original_post->industry;
         $toDate = Carbon::parse($original_post->end_date);
         $fromDate = Carbon::parse($original_post->start_date);
 //        $original_post["duration"] = $toDate->diffInMonths($fromDate);
@@ -1648,6 +1649,7 @@ class PostController extends Controller
                 $post->end_date = $request->end_date;
                 $post->max_budget = $request->max_budget;
                 $post->min_budget = $request->min_budget;
+                $post->other_relevant_information = $request->other_relevant_information;
 
                 if ($request->negotiable === "on") {
                     $post->is_negotiable = "yes";
@@ -1686,6 +1688,7 @@ class PostController extends Controller
                 $post->title = $request->title;
                 $post->description = $request->description;
                 $post->qualifications = $request->qualifications;
+                $post->other_relevant_information = $request->other_relevant_information;
                 $post->date = $request->date;
                 $post->time = $request->time;
                 $post->location = $request->location;
@@ -1714,7 +1717,7 @@ class PostController extends Controller
 
         try {
             $post->update();
-            return redirect()->route("user.posts.show", ["uuid" => $post->id])->with("success", "Post has been updated successfully.");
+            return redirect()->route("user.posts.list")->with("success", "Post has been updated successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return back()->with("danger", "Oops. We encountered an issue while updating your post. Kindly try again.");
