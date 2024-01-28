@@ -1,0 +1,20 @@
+{
+    "roboto": {
+        "300": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/roboto_300_43d6ece7837b263a611998fe7db5e097",
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/roboto_normal_bac5c5b20b101802dfed1893fb0a9fd1",
+        "500": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/roboto_500_4afc34917ac033620ddeaec4eff3be98",
+        "bold": "roboto_bold_42c5b115bbbeba54a396f48908c55c7e"
+    },
+    "nunito": {
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/nunito_normal_d7ae7a1e48155bb74cbe9af0044f739e",
+        "bold": "nunito_bold_8cc56e53f598cfe059a2e4d7f4fbdfcc"
+    },
+    "nioicon": {
+        "normal": "nioicon_normal_9c2c243696584c898fbf26922e603007"
+    },
+    "sen": {
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/sen_normal_f2218f690c172bb43e740ac1b7e6c10f",
+        "bold": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/sen_bold_87730a235990cbbc6c6a52fa8fa762b8",
+        "800": "sen_800_c50aac6cadddc818667b3e9ee8283533"
+    }
+}

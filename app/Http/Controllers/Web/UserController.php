@@ -8,13 +8,12 @@ use App\Models\LanguageUser;
 use App\Models\Skill;
 use App\Models\SkillUser;
 use App\Models\User;
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -327,5 +326,50 @@ class UserController extends Controller
         }
 
         return redirect()->route("user.profile", ["user_id" => auth()->id()])->with("success", "Your profile has been updated successfully");
+    }
+
+    public function resume($id)
+    {
+        $user = User::where("id", $id)->first();
+        if (!$user) {
+            return back()->with("danger", "Invalid request");
+        }
+
+        $competencies = array();
+        foreach ($user->skills as $skill) {
+            array_push($competencies, $skill->skill->name);
+        }
+
+        $name = '';
+        $parts = explode(" ", $user->name);
+        switch (count($parts)) {
+            case 2:
+                $name .= '<h2 style="font-family: Rockwell;">'. $parts[0] . '<div style="margin-top: -15px;font-family: Rockwell">'. $parts[1] .'</div></h2>';
+                break;
+            case 3:
+                $name .= '<h2 style="font-family: Rockwell;">'. $parts[0] ." ". $parts[1] .' <div style="margin-top: -15px;font-family: Rockwell">'. $parts[2] .'</div></h2>';
+                break;
+            case 4:
+                $name .= '<h2 style="font-family: Rockwell;">'. $parts[0] ." ". $parts[1] .' <div style="margin-top: -15px;font-family: Rockwell">'. $parts[2] ." ". $parts[3] .'</div></h2>';
+                break;
+            default:
+                $name .= $user->name;
+        }
+
+        $email = $user->email;
+        $phoneNumber = $user->phone_number;
+        $location = $user->location_name;
+
+        $data = [
+            "name" => $name,
+            "email" => $email,
+            "phoneNumber" => $phoneNumber,
+            "location" => $location,
+            "competencies" => $competencies
+        ];
+
+        $pdf = PDF::loadView('profile.resume', $data);
+        return $pdf->download('resume.pdf');
+//        return view("profile.resume", compact("name", "email", "phoneNumber", "competencies", "location"));
     }
 }
