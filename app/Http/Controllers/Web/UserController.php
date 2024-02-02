@@ -359,17 +359,23 @@ class UserController extends Controller
         $email = $user->email;
         $phoneNumber = $user->phone_number;
         $location = $user->location_name;
+        $outsideVorkJobs = $user->outsideVorkJobs;
+        $educationHistories = $user->educationHistory;
+        $certificationsAndTrainings = $user->certificationsAndTrainings;
 
         $data = [
             "name" => $name,
             "email" => $email,
             "phoneNumber" => $phoneNumber,
             "location" => $location,
-            "competencies" => $competencies
+            "competencies" => $competencies,
+            "outsideVorkJobs" => $outsideVorkJobs,
+            "educationHistories" => $educationHistories,
+            "certificationsAndTrainings" => $certificationsAndTrainings
         ];
 
         $pdf = PDF::loadView('profile.resume', $data);
         return $pdf->download('resume.pdf');
-//        return view("profile.resume", compact("name", "email", "phoneNumber", "competencies", "location"));
+//        return view("profile.resume", compact("name", "email", "phoneNumber", "competencies", "location", "outsideVorkJobs", "educationHistories", "certificationsAndTrainings"));
     }
 }
