@@ -257,7 +257,7 @@ class UserController extends Controller
         foreach ($_userSkills as $skill) {
             array_push($userSkills, $skill->skill->name);
         }
-        $skills_and_interest = Skill::orderBy('name')->get();
+        $skills_and_interest = Skill::all()->sortBy('name');
         return view("profile.updateSkills", compact("skills_and_interest", "userSkills"));
     }
 
@@ -268,7 +268,7 @@ class UserController extends Controller
         foreach ($_userLanguages as $language) {
             array_push($userLanguages, $language->language->name);
         }
-        $languages = Language::orderBy('name')->get();
+        $languages = Language::all()->sortBy('name');
         return view("profile.updateLanguages", compact("languages", "userLanguages"));
     }
 
