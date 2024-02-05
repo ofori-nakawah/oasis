@@ -131,6 +131,11 @@ Route::group(['middleware'=>'auth'], function () {
     Route::post('/profile/certifications-and-trainings-history/{id}/update', 'Web\CertificationAndTrainingController@update')->name('user.certificationAndTrainingHistory.update');
 
     /**
+     * resume
+     */
+    Route::get('/profile/{id}/resume', 'Web\UserController@resume')->name('user.profile.resume');
+
+    /**
      * trainings
      */
     Route::get('/training/recommended', 'Web\TrainingController@index')->name('training.index');
