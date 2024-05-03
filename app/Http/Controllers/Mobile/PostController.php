@@ -425,7 +425,7 @@ class PostController extends Controller
         switch ($request->type) {
             case "VOLUNTEER":
                 $volunteer_near_me = collect();
-                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->get();
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->orderByDesc("created_at")->get();
                 $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
                     Log::debug($post->coords);
                     //get post coordinates
@@ -474,12 +474,12 @@ class PostController extends Controller
                         array_push($_searchCategories, $interest);
                     }
 
-                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $_searchCategories)->get();
+                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $_searchCategories)->orderByDesc("created_at")->get();
                 } else {
                     /**
                      * default search categories
                      */
-                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->get();
+                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->orderByDesc("created_at")->get();
                 }
 
                 $jobs_near_me = collect();
@@ -536,7 +536,7 @@ class PostController extends Controller
                     array_push($user_interests, $interest->skill->id);
                 }
 
-                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->orderByDesc("created_at")->get();
 
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
@@ -623,8 +623,8 @@ class PostController extends Controller
      */
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
     {
-        $theta = $lon1 - $lon2;
-        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $theta = (float)$lon1 - (float)$lon2;
+        $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
         $miles = $dist * 60 * 1.1515;

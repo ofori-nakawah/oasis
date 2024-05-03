@@ -9,8 +9,8 @@ trait OpportunitiesAroundMe
 {
     private static function CalculateDistanceBtnUserAndPost($lat1, $lon1, $lat2, $lon2, $unit)
     {
-        $theta = $lon1 - $lon2;
-        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $theta = (float)$lon1 - (float)$lon2;
+        $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
         $miles = $dist * 60 * 1.1515;
@@ -37,7 +37,7 @@ trait OpportunitiesAroundMe
         $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
         $volunteer_near_me = collect();
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->orderByDesc("created_at")->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $search_radius) {
             //get post coordinates
             $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
@@ -81,7 +81,7 @@ trait OpportunitiesAroundMe
          * post type
          * interests | skills
          */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->get();
+        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->orderByDesc("created_at")->get();
 
         /**
          * filter using distance
