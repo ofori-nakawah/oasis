@@ -34,7 +34,7 @@ class UserController extends Controller
         auth()->user()->update();
         auth()->user()->skills;
         auth()->user()->languages;
-       
+
         $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
         $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
         foreach ($recentlyApplied as $item) {
@@ -344,6 +344,8 @@ class UserController extends Controller
                 $vork->rating_and_reviews;
             }
         }
+        $educationHistories = $user->educationHistory;
+        $certificationsAndTrainings = $user->certificationsAndTrainings;
 
         $user_profile = array(
             "number_of_jobs" => $jobs_count,
@@ -358,6 +360,8 @@ class UserController extends Controller
             "username" => $user->name,
             "work_history" => $job_history,
             "profile_picture" => $user->profile_picture,
+            "educationHistory" => $educationHistories,
+            "certificationsAndTrainings" => $certificationsAndTrainings,
         );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");
@@ -425,7 +429,7 @@ class UserController extends Controller
 
         auth()->user()->skills;
         auth()->user()->languages;
-       
+
         $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
         $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
         foreach ($recentlyApplied as $item) {
