@@ -346,6 +346,17 @@ class UserController extends Controller
         }
         $educationHistories = $user->educationHistory;
         $certificationsAndTrainings = $user->certificationsAndTrainings;
+        $userReviews = $user->rating_and_reviews;
+        $reviews = array();
+        foreach ($userReviews as $userReview) {
+            $newReview = [
+                "created_at" => $userReview->created_at,
+                "message" => $userReview->feedback_message,
+                "rating" => $userReview->rating,
+                "reviewBy" => $userReview->post->user->name
+            ];
+            array_push($reviews, $newReview);
+        }
 
         $user_profile = array(
             "number_of_jobs" => $jobs_count,
@@ -362,7 +373,9 @@ class UserController extends Controller
             "profile_picture" => $user->profile_picture,
             "educationHistory" => $educationHistories,
             "certificationsAndTrainings" => $certificationsAndTrainings,
-        );
+            "workExperience" => $user->outsideVorkJobs,
+            "reviews" => $reviews
+    );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");
     }
