@@ -374,7 +374,9 @@ class UserController extends Controller
             "educationHistory" => $educationHistories,
             "certificationsAndTrainings" => $certificationsAndTrainings,
             "workExperience" => $user->outsideVorkJobs,
-            "reviews" => $reviews
+            "reviews" => $reviews,
+            "email" => $user->email,
+            "phoneNumber" => $user->phone_number
     );
 
         return $this->success_response($user_profile, "Profile details fetched successfully.");
