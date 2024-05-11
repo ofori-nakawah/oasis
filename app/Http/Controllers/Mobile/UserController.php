@@ -516,7 +516,7 @@ class UserController extends Controller
 
         if ($request->image) {
             $image = $image;
-            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $name = auth()->user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
@@ -552,7 +552,7 @@ class UserController extends Controller
 
         if ($request->image) {
             $image = $request->file('image');
-            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $name = auth()->user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
@@ -571,8 +571,8 @@ class UserController extends Controller
     public function addCertificationAndTraining(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'end_date' => 'required',
-            'start_date' => 'required',
+            'trainingHours' => 'required',
+            'startDate' => 'required',
             'institution' => 'required',
             'programme' => 'required',
         ]);
@@ -583,10 +583,10 @@ class UserController extends Controller
 
         $certificateAndTraining = new CertificationAndTraining();
         $certificateAndTraining->programme = $request->programme;
-        $certificateAndTraining->start_date = $request->start_date;
-        $certificateAndTraining->end_date = $request->end_date;
+        $certificateAndTraining->start_date = $request->startDate;
+        $certificateAndTraining->end_date = $request->endDate;
         $certificateAndTraining->institution = $request->institution;
-        $certificateAndTraining->training_hours = $request->training_hours;
+        $certificateAndTraining->training_hours = $request->trainingHours;
         $certificateAndTraining->user_id = $userId;
 
         if ($request->is_ongoing === "on") {
@@ -595,7 +595,7 @@ class UserController extends Controller
 
         if ($request->image) {
             $image = $request->image;
-            $name = Auth::user()->name . '-training-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $name = auth()->user()->name . '-training-' . uniqid() . '.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
@@ -631,7 +631,7 @@ class UserController extends Controller
 
         if ($request->image) {
             $image = $request->file('image');
-            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $name = auth()->user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
