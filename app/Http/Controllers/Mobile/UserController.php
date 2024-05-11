@@ -492,26 +492,26 @@ class UserController extends Controller
     public function addEducationHistory(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'end_date' => 'required',
-            'start_date' => 'required',
+            'startDate' => 'required',
             'institution' => 'required',
             'programme' => 'required',
+            'specialty' => 'required',
         ]);
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
 
-        $userId = Auth::id();
+        $userId = auth()->id();
 
         $educationHistory = new EducationHistory();
         $educationHistory->programme = $request->programme;
-        $educationHistory->start_date = $request->start_date;
-        $educationHistory->end_date = $request->end_date;
+        $educationHistory->start_date = $request->startDate;
+        $educationHistory->end_date = $request->endDate;
         $educationHistory->institution = $request->institution;
         $educationHistory->specialty = $request->specialty;
         $educationHistory->user_id = $userId;
 
         if ($request->is_ongoing === "on") {
-            $educationHistory->end_date = null;
+            $educationHistory->endDate = null;
         }
 
         if ($request->image) {
@@ -579,7 +579,7 @@ class UserController extends Controller
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
 
-        $userId = Auth::id();
+        $userId = auth()->id();
 
         $certificateAndTraining = new CertificationAndTraining();
         $certificateAndTraining->programme = $request->programme;
@@ -660,7 +660,7 @@ class UserController extends Controller
 
         if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
 
-        $userId = Auth::id();
+        $userId = auth()->id();
 
         $outsideVorkJob = new OutsideVorkJob();
         $outsideVorkJob->role = $request->role;
