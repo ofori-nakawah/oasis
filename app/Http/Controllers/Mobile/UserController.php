@@ -6,7 +6,7 @@ use App\Models\Language;
 use App\Models\LanguageUser;
 use App\Models\Skill;
 use App\Models\SkillUser;
-use App\Models\CertificationAndTrraining;
+use App\Models\CertificationAndTraining;
 use App\Models\EducationHistory;
 use App\Models\Post;
 use App\Models\JobApplication;
@@ -614,7 +614,7 @@ class UserController extends Controller
     public function updateCertificationsAndTrainings(Request $request)
     {
     
-        $certificationsAndTrainings = CertificationAndTrraining::where("id", $request->id)->first();
+        $certificationsAndTrainings = CertificationAndTraining::where("id", $request->id)->first();
         if (!$certificationsAndTrainings) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
         }
@@ -623,7 +623,7 @@ class UserController extends Controller
         $certificationsAndTrainings->start_date = $request->startDate;
         $certificationsAndTrainings->end_date = $request->endDate;
         $certificationsAndTrainings->institution = $request->institution;
-        $certificationsAndTrainings->specialty = $request->specialty;
+        $certificationsAndTrainings->training_hours = $request->trainingHours;
 
         if ($request->isOngoing === "on" || $request->isOngoing === "true" || $request->isOngoing === true) {
             $certificationsAndTrainings->end_date = null;

@@ -149,11 +149,6 @@ class User extends Authenticatable
         return $this->hasMany("App\Models\OutsideVorkJob", "user_id");
     }
 
-    public function educationHistory()
-    {
-        return $this->hasMany("App\Models\EducationHistory", "user_id");
-    }
-
     public function certificationsAndTrainings()
     {
         return $this->hasMany("App\Models\CertificationAndTraining", "user_id");
