@@ -689,7 +689,7 @@ class UserController extends Controller
 
     public function updateExternalJobHistory(Request $request)
     {
-        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+        $outsideVorkJob = OutsideVorkJob::where("id", $request->id)->first();
         if (!$outsideVorkJob) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
         }
