@@ -71,6 +71,16 @@ class User extends Authenticatable
         return $this->hasMany("App\Models\LanguageUser", "user_id");
     }
 
+    public function educationHistory()
+    {
+        return $this->hasMany("App\Models\EducationHistory", "user_id");
+    }
+
+    public function trainings()
+    {
+        return $this->hasMany("App\Models\Training", "user_id");
+    }
+
     public function savedPosts()
     {
         return $this->hasMany("App\Models\UserSavedPosts", "user_id");

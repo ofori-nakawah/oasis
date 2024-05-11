@@ -486,4 +486,40 @@ class UserController extends Controller
     {
         return $this->success_response(["is_toolbox_user" => auth()->user()->is_toolbox_user], "successful request.");
     }
+
+    public function updateEducationHistory(Request $request)
+    {
+    
+        $educationHistory = EducationHistory::where("id", $request->id)->first();
+        if (!$educationHistory) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        $educationHistory->programme = $request->programme;
+        $educationHistory->start_date = $request->startDate;
+        $educationHistory->end_date = $request->endDate;
+        $educationHistory->institution = $request->institution;
+        $educationHistory->specialty = $request->specialty;
+
+        if ($request->isOngoing === "on" || $request->isOngoing === "true" || $request->isOngoing === true) {
+            $educationHistory->end_date = null;
+        }
+
+        if ($request->image) {
+            $image = $request->file('image');
+            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $educationHistory->certificate_link = URL::to('/public/uploads') . '/' . $name;
+        }
+
+        try {
+            $educationHistory->update();
+                return $this->success_response(auth()->user(), "Education history updated successfully.");        
+        }catch (QueryException $e) {
+            Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response(auth()->user(), "Error updating education history.");   
+        }
+    }
 }
