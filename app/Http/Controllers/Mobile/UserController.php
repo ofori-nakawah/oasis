@@ -489,6 +489,49 @@ class UserController extends Controller
         return $this->success_response(["is_toolbox_user" => auth()->user()->is_toolbox_user], "successful request.");
     }
 
+    public function addEducationHistory(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'end_date' => 'required',
+            'start_date' => 'required',
+            'institution' => 'required',
+            'programme' => 'required',
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $userId = Auth::id();
+
+        $educationHistory = new EducationHistory();
+        $educationHistory->programme = $request->programme;
+        $educationHistory->start_date = $request->start_date;
+        $educationHistory->end_date = $request->end_date;
+        $educationHistory->institution = $request->institution;
+        $educationHistory->specialty = $request->specialty;
+        $educationHistory->user_id = $userId;
+
+        if ($request->is_ongoing === "on") {
+            $educationHistory->end_date = null;
+        }
+
+        if ($request->image) {
+            $image = $image;
+            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $educationHistory->certificate_link = URL::to('/public/uploads') . '/' . $name;
+        }
+
+        try {
+            $educationHistory->save();
+            return $this->success_response(auth()->user(), "Education history has been added to your profile successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response(auth()->user(), "Error saving education history information. Please try again.");
+        }
+    }
+
     public function updateEducationHistory(Request $request)
     {
     
@@ -518,10 +561,53 @@ class UserController extends Controller
 
         try {
             $educationHistory->update();
-                return $this->success_response(auth()->user(), "Education history updated successfully.");        
+            return $this->success_response(auth()->user(), "Education history updated successfully.");        
         }catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->error_response(auth()->user(), "Error updating education history.");   
+        }
+    }
+
+    public function addCertificationAndTraining(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'end_date' => 'required',
+            'start_date' => 'required',
+            'institution' => 'required',
+            'programme' => 'required',
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $userId = Auth::id();
+
+        $certificateAndTraining = new CertificationAndTraining();
+        $certificateAndTraining->programme = $request->programme;
+        $certificateAndTraining->start_date = $request->start_date;
+        $certificateAndTraining->end_date = $request->end_date;
+        $certificateAndTraining->institution = $request->institution;
+        $certificateAndTraining->training_hours = $request->training_hours;
+        $certificateAndTraining->user_id = $userId;
+
+        if ($request->is_ongoing === "on") {
+            $certificateAndTraining->end_date = null;
+        }
+
+        if ($request->image) {
+            $image = $request->image;
+            $name = Auth::user()->name . '-training-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $certificateAndTraining->certificate_link = URL::to('/public/uploads') . '/' . $name;
+        }
+
+        try {
+            $certificateAndTraining->save();
+            return $this->success_response(auth()->user(), "Certificate and training history has been added to your profile successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING CERTIFICATE AND TRAINING HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response(auth()->user(), "Error saving education history information. Please try again.");
         }
     }
 
@@ -558,6 +644,46 @@ class UserController extends Controller
         }catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->error_response(auth()->user(), "Error updating certifications and training history.");   
+        }
+    }
+
+    public function addExternalJobHistory(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'role' => 'required',
+            'employer' => 'required',
+            'start_date' => 'required',
+            'responsibilities' => 'required',
+            'achievements' => 'required',
+            'reference' => 'required',
+        ]);
+
+        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+
+        $userId = Auth::id();
+
+        $outsideVorkJob = new OutsideVorkJob();
+        $outsideVorkJob->role = $request->role;
+        $outsideVorkJob->employer = $request->employer;
+        $outsideVorkJob->start_date = $request->start_date;
+        $outsideVorkJob->end_date = $request->end_date;
+        $outsideVorkJob->responsibilities = $request->responsibilities;
+        $outsideVorkJob->achievements = $request->achievements;
+        $outsideVorkJob->reference = json_encode([
+            "name" => $request->reference
+        ]);
+        $outsideVorkJob->user_id = $userId;
+
+        if ($request->is_ongoing === "on") {
+            $outsideVorkJob->end_date = null;
+        }
+
+        try {
+            $outsideVorkJob->save();
+            return $this->success_response(auth()->user(), "Outside VORK job history has been added to your profile successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response(auth()->user(),"Error adding outside VORK job history information. Please try again.");
         }
     }
 
