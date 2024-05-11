@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use App\Models\Language;
 use App\Models\LanguageUser;
+use App\Models\Skill;
 use App\Models\SkillUser;
 use App\Models\Post;
 use App\Models\JobApplication;
@@ -66,10 +68,14 @@ class UserController extends Controller
         }
 
         for ($i = 0; $i < count($request->skills); $i++) {
-            $skill_user = new SkillUser();
-            $skill_user->user_id = auth()->id();
-            $skill_user->skill_id = $request->skills[$i];
-            $skill_user->save();
+            $skill = Skill::where("name", $request->skills[$i])->first();
+            if ($skill) {
+                $skill_user = new SkillUser();
+                $skill_user->user_id = auth()->id();
+                $skill_user->skill_id = $skill->id;
+                $skill_user->save();
+            }
+
         }
 
         auth()->user()->is_core_skills_set = "1";
@@ -89,10 +95,13 @@ class UserController extends Controller
         }
 
         for ($i = 0; $i < count($request->preferredLanguages); $i++) {
-            $language_user = new LanguageUser();
-            $language_user->user_id = auth()->id();
-            $language_user->language_id = $request->preferredLanguages[$i];
-            $language_user->save();
+            $language = Language::where("name", $request->preferredLanguages[$i])->first();
+            if ($language) {
+                $language_user = new LanguageUser();
+                $language_user->user_id = auth()->id();
+                $language_user->language_id = $language->id;
+                $language_user->save();
+            }
         }
 
         auth()->user()->is_languages_set = "1";
