@@ -6,6 +6,8 @@ use App\Models\Language;
 use App\Models\LanguageUser;
 use App\Models\Skill;
 use App\Models\SkillUser;
+use App\Models\CertificationAndTrraining;
+use App\Models\EducationHistory;
 use App\Models\Post;
 use App\Models\JobApplication;
 use App\Models\User;
@@ -520,6 +522,72 @@ class UserController extends Controller
         }catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->error_response(auth()->user(), "Error updating education history.");   
+        }
+    }
+
+    public function updateCertificationsAndTrainings(Request $request)
+    {
+    
+        $certificationsAndTrainings = CertificationAndTrraining::where("id", $request->id)->first();
+        if (!$certificationsAndTrainings) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        $certificationsAndTrainings->programme = $request->programme;
+        $certificationsAndTrainings->start_date = $request->startDate;
+        $certificationsAndTrainings->end_date = $request->endDate;
+        $certificationsAndTrainings->institution = $request->institution;
+        $certificationsAndTrainings->specialty = $request->specialty;
+
+        if ($request->isOngoing === "on" || $request->isOngoing === "true" || $request->isOngoing === true) {
+            $certificationsAndTrainings->end_date = null;
+        }
+
+        if ($request->image) {
+            $image = $request->file('image');
+            $name = Auth::user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads');
+            $image->move($destinationPath, $name);
+
+            $certificationsAndTrainings->certificate_link = URL::to('/public/uploads') . '/' . $name;
+        }
+
+        try {
+            $certificationsAndTrainings->update();
+            return $this->success_response(auth()->user(), "Certifications and training history updated successfully.");        
+        }catch (QueryException $e) {
+            Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response(auth()->user(), "Error updating certifications and training history.");   
+        }
+    }
+
+    public function updateExternalJobHistory(Request $request)
+    {
+        $outsideVorkJob = OutsideVorkJob::where("id", $id)->first();
+        if (!$outsideVorkJob) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        $outsideVorkJob->role = $request->role;
+        $outsideVorkJob->employer = $request->employer;
+        $outsideVorkJob->start_date = $request->start_date;
+        $outsideVorkJob->end_date = $request->end_date;
+        $outsideVorkJob->responsibilities = $request->responsibilities;
+        $outsideVorkJob->achievements = $request->achievements;
+        $outsideVorkJob->reference = json_encode([
+            "name" => $request->reference
+        ]);
+
+        if ($request->is_ongoing === "on") {
+            $outsideVorkJob->end_date = null;
+        }
+
+        try {
+            $outsideVorkJob->update();
+            return $this->success_response(auth()->user(), "Outside VORK job history has been updated successfully.");        
+        } catch (QueryException $e) {
+            Log::error("ERROR UPDATING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response(auth()->user(),"Error updating outside VORK job history information. Please try again.");   
         }
     }
 }
