@@ -551,8 +551,8 @@ class UserController extends Controller
         }
 
         if ($request->image) {
-            $image = $request->file('image');
-            $name = auth()->user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $image = $request->image;
+            $name = auth()->user()->name . '-education-' . uniqid() . '.png';
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
@@ -595,7 +595,7 @@ class UserController extends Controller
 
         if ($request->image) {
             $image = $request->image;
-            $name = auth()->user()->name . '-training-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $name = auth()->user()->name . '-training-' . uniqid() . '.png';
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
