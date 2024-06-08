@@ -7,8 +7,9 @@ use App\Models\LanguageUser;
 use App\Models\Skill;
 use App\Models\SkillUser;
 use App\Models\CertificationAndTraining;
-use App\Models\EducationHistory;
 use App\Models\Post;
+use App\Models\EducationHistory;
+use App\Models\OutsideVorkJob;
 use App\Models\JobApplication;
 use App\Models\User;
 use App\Services\PushNotification;
@@ -146,10 +147,12 @@ class UserController extends Controller
     public function get_user_notifications(Request $request)
     {
         $notifications = auth()->user()->notifications->map(function ($notification) {
-            $notification["group_id"] = $notification->data["post"]["id"];
-            $notification->update();
-            $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
-            return $notification;
+           if (array_key_exists("post", $notification->data)) {
+               $notification["group_id"] = $notification->data["post"]["id"];
+               $notification->update();
+               $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
+               return $notification;
+           }
         })->unique("group_id");
 
         return $this->success_response($notifications, "Notifications fetched successfully.");
@@ -515,7 +518,7 @@ class UserController extends Controller
         }
 
         if ($request->image) {
-            $image = $image;
+            $image = $request->image;
             $name = auth()->user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
@@ -534,7 +537,7 @@ class UserController extends Controller
 
     public function updateEducationHistory(Request $request)
     {
-    
+
         $educationHistory = EducationHistory::where("id", $request->id)->first();
         if (!$educationHistory) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
@@ -561,10 +564,10 @@ class UserController extends Controller
 
         try {
             $educationHistory->update();
-            return $this->success_response(auth()->user(), "Education history updated successfully.");        
+            return $this->success_response(auth()->user(), "Education history updated successfully.");
         }catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
-            return $this->error_response(auth()->user(), "Error updating education history.");   
+            return $this->error_response(auth()->user(), "Error updating education history.");
         }
     }
 
@@ -613,7 +616,7 @@ class UserController extends Controller
 
     public function updateCertificationsAndTrainings(Request $request)
     {
-    
+
         $certificationsAndTrainings = CertificationAndTraining::where("id", $request->id)->first();
         if (!$certificationsAndTrainings) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
@@ -640,10 +643,10 @@ class UserController extends Controller
 
         try {
             $certificationsAndTrainings->update();
-            return $this->success_response(auth()->user(), "Certifications and training history updated successfully.");        
+            return $this->success_response(auth()->user(), "Certifications and training history updated successfully.");
         }catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
-            return $this->error_response(auth()->user(), "Error updating certifications and training history.");   
+            return $this->error_response(auth()->user(), "Error updating certifications and training history.");
         }
     }
 
@@ -652,7 +655,7 @@ class UserController extends Controller
         $validation = Validator::make($request->all(), [
             'role' => 'required',
             'employer' => 'required',
-            'start_date' => 'required',
+            'startDate' => 'required',
             'responsibilities' => 'required',
             'achievements' => 'required',
             'reference' => 'required',
@@ -665,8 +668,8 @@ class UserController extends Controller
         $outsideVorkJob = new OutsideVorkJob();
         $outsideVorkJob->role = $request->role;
         $outsideVorkJob->employer = $request->employer;
-        $outsideVorkJob->start_date = $request->start_date;
-        $outsideVorkJob->end_date = $request->end_date;
+        $outsideVorkJob->start_date = $request->startDate;
+        $outsideVorkJob->end_date = $request->endDate;
         $outsideVorkJob->responsibilities = $request->responsibilities;
         $outsideVorkJob->achievements = $request->achievements;
         $outsideVorkJob->reference = json_encode([
@@ -674,7 +677,7 @@ class UserController extends Controller
         ]);
         $outsideVorkJob->user_id = $userId;
 
-        if ($request->is_ongoing === "on") {
+        if ($request->isOngoing === "on") {
             $outsideVorkJob->end_date = null;
         }
 
@@ -710,10 +713,10 @@ class UserController extends Controller
 
         try {
             $outsideVorkJob->update();
-            return $this->success_response(auth()->user(), "Outside VORK job history has been updated successfully.");        
+            return $this->success_response(auth()->user(), "Outside VORK job history has been updated successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
-            return $this->error_response(auth()->user(),"Error updating outside VORK job history information. Please try again.");   
+            return $this->error_response(auth()->user(),"Error updating outside VORK job history information. Please try again.");
         }
     }
 }
