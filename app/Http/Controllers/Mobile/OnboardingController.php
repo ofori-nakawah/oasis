@@ -38,7 +38,8 @@ class OnboardingController extends Controller
 //         * Let get country config and check if phone number is required
 //         * Get the verification medium based on the users country
 //         */
-        $country = CountryConfig::GetCountry($request->input("country"));
+        $country = $request->input("country");
+        $country = CountryConfig::GetCountry($country);
         if (!$country) {return $this->general_error_response([]);}
 
         $errors = new MessageBag();
@@ -55,23 +56,24 @@ class OnboardingController extends Controller
             }
         }
 
-        // $isEmailTaken = User::where("email", $request->input("email"))->first();
+         $isEmailTaken = User::where("email", $request->input("email"))->first();
 
-        // if ($isEmailTaken && $isEmailTaken !== null && $isEmailTaken !== "") {
-        //     if ($isEmailTaken->status != User::DELETED_STATUS) {
-        //         $errors->add("email", "This email is already taken");
-        //         return $this->data_validation_error_response($errors->getMessages());
-        //     } else {
-        //         $isEmailTaken->email .= "-000";
-        //         $isEmailTaken->update();
-        //     }
-        // }
+         if ($isEmailTaken && $isEmailTaken !== null && $isEmailTaken !== "") {
+             if ($isEmailTaken->status != User::DELETED_STATUS) {
+                 $errors->add("email", "This email is already taken");
+                 return $this->data_validation_error_response($errors->getMessages());
+             } else {
+                 $isEmailTaken->email .= "-000";
+                 $isEmailTaken->update();
+             }
+         }
 
         if (CountryConfig::QueryCountryConfig($country["name"], "is_phone_number_required_during_onboarding") && !$request->has("phone_number")) {
             $errors = new MessageBag();
             $errors->add("phone_number", "The phone number field is required");
             return $this->data_validation_error_response($errors->getMessages());
         }
+
 
         $user = new User();
         $user->uuid = Str::uuid();
