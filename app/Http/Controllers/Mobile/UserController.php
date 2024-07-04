@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use App\Models\Country as Country;
 use App\Models\Language;
 use App\Models\LanguageUser;
 use App\Models\Skill;
@@ -371,6 +372,17 @@ class UserController extends Controller
             ];
             array_push($reviews, $newReview);
         }
+        auth()->user()->skills;
+        auth()->user()->languages;
+
+        $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
+        $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
+        foreach ($recentlyApplied as $item) {
+            $item->job_post;
+        }
+        auth()->user()->listings = $posts;
+        auth()->user()->recentlyApplied = $recentlyApplied;
+
 
         $user_profile = array(
             "number_of_jobs" => $jobs_count,
@@ -390,10 +402,16 @@ class UserController extends Controller
             "workExperience" => $user->outsideVorkJobs,
             "reviews" => $reviews,
             "email" => $user->email,
-            "phoneNumber" => $user->phone_number
+            "phoneNumber" => $user->phone_number,
+            "user" => auth()->user(),
+            "country" => Country::GetCountry($user->country_id),
+            "token" => auth()->user()->createToken('auth_token')->plainTextToken,
     );
 
-        return $this->success_response($user_profile, "Profile details fetched successfully.");
+        return $this->success_response(["user" => auth()->user(),
+            "country" => Country::GetCountry($user->country_id),
+            "token" => auth()->user()->createToken('auth_token')->plainTextToken,
+            $user_profile], "Profile details fetched successfully.");
     }
 
     public function updateProfileInformation(Request $request)
@@ -718,5 +736,25 @@ class UserController extends Controller
             Log::error("ERROR UPDATING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->error_response(auth()->user(),"Error updating outside VORK job history information. Please try again.");
         }
+    }
+
+    public function getAllUserData()
+    {
+        auth()->user()->skills;
+        auth()->user()->languages;
+
+        $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
+        $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
+        foreach ($recentlyApplied as $item) {
+            $item->job_post;
+        }
+        auth()->user()->listings = $posts;
+        auth()->user()->recentlyApplied = $recentlyApplied;
+
+        return [
+            "user" => auth()->user(),
+            "country" => Country::GetCountry(auth()->user()->country_id),
+            "token" => auth()->user()->createToken('auth_token')->plainTextToken,
+        ];
     }
 }
