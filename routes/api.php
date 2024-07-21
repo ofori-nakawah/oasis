@@ -109,5 +109,14 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/user-accounts')->group(function () {
             Route::get('/deleteAccount', 'Mobile\UserController@deleteAccount');
         });
+
+
+        /**
+         * V2 ENDPOINTS
+         */
+        Route::prefix('/home')->group(function () {
+            Route::post('/feed', 'Mobile\UserController@get_user_home_data');
+        });
     });
 });
+

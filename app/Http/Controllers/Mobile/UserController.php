@@ -757,4 +757,27 @@ class UserController extends Controller
             "token" => auth()->user()->createToken('auth_token')->plainTextToken,
         ];
     }
+
+    /**
+     * V2 CONTROLLER
+     */
+    public function get_user_home_data()
+    {
+        $user = auth()->user();
+        return $this->success_response([
+            "user" => [
+                "id" => $user->id,
+                "name" => $user->name,
+                "profile_picture" => $user->profile_picture
+            ],
+            "latest_active_listing" => "",
+            "kyc_status" => [
+                "is_skills_and_interests_set" => count($user->skills) > 0 ? 1 : 0,
+                "is_languages_set" => count($user->languages) > 0 ? 1 : 0,
+                "is_location_set" => $user->location_coords ? 1 : 0,
+                "is_profile_picture_set" => $user->profile_picture ? 1 : 0
+            ]
+        ], "");
+    }
+
 }
