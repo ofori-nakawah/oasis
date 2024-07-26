@@ -353,7 +353,7 @@ class PostController extends Controller
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
         $post->is_negotiable = $request->is_negotiable;
-        $post->is_renewable = $request->is_renewable;
+        $post->is_renewable = $request->is_renewable ?? 'No';
         $post->is_internship = $request->is_internship;
 
 

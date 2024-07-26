@@ -246,7 +246,7 @@ class UserController extends Controller
             $vork->rating_and_reviews;
         }
 
-        $user_profile = array(
+        return $this->success_response([
             "number_of_jobs" => $jobs_count,
             "number_of_activities" => $volunteer_count,
             "average_rating" => $average_rating,
@@ -256,9 +256,7 @@ class UserController extends Controller
             "total_earnings" => $total_earnings,
             "skills" => $core_skills,
             "languages" => $languages
-        );
-
-        return $this->success_response($user_profile, "Profile details fetched successfully.");
+        ], "Profile details fetched successfully.");
     }
 
     /**
