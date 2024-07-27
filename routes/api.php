@@ -87,7 +87,7 @@ Route::prefix('/v1')->group(function () {
             Route::get('/', 'Mobile\UserController@get_user_full_profile');
             Route::get('/job-history', 'Mobile\UserController@get_job_history');
 
-            Route::post('/update-user-display-name', 'Mobile\UserController@updateProfileInformation');
+            Route::post('/update-user-basic-information', 'Mobile\UserController@updateProfileInformation');
             Route::post('/update-user-password', 'Mobile\UserController@updateProfileInformation');
 
             /**
