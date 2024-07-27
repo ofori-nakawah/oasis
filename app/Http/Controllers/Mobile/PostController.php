@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Services\PushNotification;
 use App\Traits\Responses;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

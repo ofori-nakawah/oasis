@@ -14,6 +14,7 @@ use App\Models\OutsideVorkJob;
 use App\Models\JobApplication;
 use App\Models\User;
 use App\Services\PushNotification;
+use App\Traits\Utils;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
@@ -27,6 +28,7 @@ use Illuminate\Validation\Rules\Password;
 class UserController extends Controller
 {
     use Responses;
+    use Utils;
 
     /**
      * @param Request $request
@@ -523,8 +525,8 @@ class UserController extends Controller
 
         $educationHistory = new EducationHistory();
         $educationHistory->programme = $request->programme;
-        $educationHistory->start_date = $request->startDate;
-        $educationHistory->end_date = $request->endDate;
+        $educationHistory->start_date = $this->convertDateStringToDateTime($request->startDate);
+        $educationHistory->end_date = $this->convertDateStringToDateTime($request->endDate);
         $educationHistory->institution = $request->institution;
         $educationHistory->specialty = $request->specialty;
         $educationHistory->user_id = $userId;
@@ -560,8 +562,8 @@ class UserController extends Controller
         }
 
         $educationHistory->programme = $request->programme;
-        $educationHistory->start_date = $request->startDate;
-        $educationHistory->end_date = $request->endDate;
+        $educationHistory->start_date = $this->convertDateStringToDateTime($request->startDate);
+        $educationHistory->end_date = $this->convertDateStringToDateTime($request->endDate);
         $educationHistory->institution = $request->institution;
         $educationHistory->specialty = $request->specialty;
 
@@ -602,8 +604,8 @@ class UserController extends Controller
 
         $certificateAndTraining = new CertificationAndTraining();
         $certificateAndTraining->programme = $request->programme;
-        $certificateAndTraining->start_date = $request->startDate;
-        $certificateAndTraining->end_date = $request->endDate;
+        $certificateAndTraining->start_date = $this->convertDateStringToDateTime($request->startDate);
+        $certificateAndTraining->end_date = $this->convertDateStringToDateTime($request->endDate);
         $certificateAndTraining->institution = $request->institution;
         $certificateAndTraining->training_hours = $request->trainingHours;
         $certificateAndTraining->user_id = $userId;
@@ -639,8 +641,8 @@ class UserController extends Controller
         }
 
         $certificationsAndTrainings->programme = $request->programme;
-        $certificationsAndTrainings->start_date = $request->startDate;
-        $certificationsAndTrainings->end_date = $request->endDate;
+        $certificationsAndTrainings->start_date = $this->convertDateStringToDateTime($request->startDate);
+        $certificationsAndTrainings->end_date = $this->convertDateStringToDateTime($request->endDate);
         $certificationsAndTrainings->institution = $request->institution;
         $certificationsAndTrainings->training_hours = $request->trainingHours;
 
@@ -684,8 +686,8 @@ class UserController extends Controller
         $outsideVorkJob = new OutsideVorkJob();
         $outsideVorkJob->role = $request->role;
         $outsideVorkJob->employer = $request->employer;
-        $outsideVorkJob->start_date = $request->startDate;
-        $outsideVorkJob->end_date = $request->endDate;
+        $outsideVorkJob->start_date = $this->convertDateStringToDateTime($request->startDate);
+        $outsideVorkJob->end_date = $this->convertDateStringToDateTime($request->endDate);
         $outsideVorkJob->responsibilities = $request->responsibilities;
         $outsideVorkJob->achievements = $request->achievements;
         $outsideVorkJob->reference = json_encode([
