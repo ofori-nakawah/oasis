@@ -395,6 +395,7 @@ class UserController extends Controller
             "skills" => $core_skills,
             "languages" => $languages,
             "username" => $user->name,
+            "bio" => $user->bio,
             "work_history" => $job_history,
             "profile_picture" => $user->profile_picture,
             "educationHistory" => $educationHistories,
@@ -422,12 +423,14 @@ class UserController extends Controller
         $errors = new MessageBag();
 
         switch($request->module) {
-            case "display-name":
+            case "basic-information":
                 if (!$request->name) {
                     $errors->add("name", "The name field is required.");
                     return $this->data_validation_error_response($errors);
                 }
                 auth()->user()->name = $request->name;
+                auth()->user()->email = $request->email;
+                auth()->user()->bio = $request->bio;
                 auth()->user()->update();
 
 //                PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
