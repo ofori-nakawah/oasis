@@ -57,6 +57,7 @@ Route::prefix('/v1')->group(function () {
             Route::post('/get-posts', 'Mobile\PostController@get_posts_closest_to_me');
             Route::get('/get-posts', 'Mobile\PostController@get_posts_closest_to_me');
             Route::get('/get-post-details', 'Mobile\PostController@get_post_details');
+            Route::post('/get-post-details', 'Mobile\PostController@get_post_details');
             Route::post('/apply-for-job', 'Mobile\PostController@apply_for_job');
             Route::post('/get-user-post-status', 'Mobile\PostController@get_user_post_status');
             Route::get('/get-user-post-status', 'Mobile\PostController@get_user_post_status');
