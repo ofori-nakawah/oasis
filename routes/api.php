@@ -90,6 +90,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/update-user-basic-information', 'Mobile\UserController@updateProfileInformation');
             Route::post('/update-user-password', 'Mobile\UserController@updateProfileInformation');
+            Route::post('/update-user-profile-picture', 'Mobile\UserController@updateProfileInformation');
 
             /**
              * other user profile routes
