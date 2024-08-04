@@ -454,6 +454,34 @@ class UserController extends Controller
 
                     return $this->success_response(["image" => auth()->user()->profile_picture], "Profile picture updated successfully.");
                 }
+
+                /**
+                 * new implementaiont
+                 */
+                if ($request->image) {
+                    //save image
+                    $image = $request->image;
+                    $name = auth()->user()->name . '_' . time() . '.png';
+                    $destinationPath = public_path('/uploads/profile_pics/');
+
+                    $image_parts = explode(";base64,", $image);
+                    $image_base64 = base64_decode($image_parts[1]);
+                    $file = $destinationPath . $name;
+                    file_put_contents($file, $image_base64);
+
+                    if (file_exists(auth()->user()->profile_picture)) {
+                        unlink(auth()->user()->profile_picture);
+                    }
+
+                    auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
+                    auth()->user()->update();
+
+//                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+
+                    return $this->success_response(["image" => auth()->user()->profile_picture], "Profile picture updated successfully.");
+                } else {
+                    Log::debug("No file");
+                }
                 break;
             case "update-password":
                 if (!Hash::check($request->old_password, auth()->user()->password)){
