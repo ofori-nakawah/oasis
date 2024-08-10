@@ -1014,10 +1014,46 @@ class PostController extends Controller
                 $application = JobApplication::where("user_id", $request->user_id)->where("post_id", $request->job_post_id)->first();
                 if (!$application) {
                     Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id . " AND POST ID >>>>> " . $request->job_post_id);
+                    $post->status = "closed";
+                    $post->closed_at = Carbon::now();
+                    $post->update();
+                    return $this->success_response($post, "Post has been closed successfully.");
                 }
 
                 $post->final_start_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->start_date)));
                 $post->final_end_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->end_date)));;
+                $post->final_payment_amount = $request->monthly_payment;
+
+                try {
+                    /**
+                     * create notification
+                     */
+                    $post->user;
+                    $application->job_post;
+                    Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
+                    PushNotification::Notify("JOB_CLOSED", $application, null);
+
+                    $participant->update();
+                } catch (QueryException $e) {
+                    Log::error("ERROR UPDATING USER RATING >>>>>>>>>> " . $participant . " >>>>>>>>> " . $e);
+                }
+                break;
+            case "PERMANENT_JOB":
+                $participant = User::where("id", $request->user_id)->first();
+                if (!$participant) {
+                    Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id);
+                }
+
+                $application = JobApplication::where("user_id", $request->user_id)->where("post_id", $request->job_post_id)->first();
+                if (!$application) {
+                    Log::debug("ERROR FETCHING APPLICATION DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id . " AND POST ID >>>>> " . $request->job_post_id);
+                    $post->status = "closed";
+                    $post->closed_at = Carbon::now();
+                    $post->update();
+                    return $this->success_response($post, "Post has been closed successfully.");
+                }
+
+                $post->final_start_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->start_date)));
                 $post->final_payment_amount = $request->monthly_payment;
 
                 try {
