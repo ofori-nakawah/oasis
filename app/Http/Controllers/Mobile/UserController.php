@@ -825,6 +825,7 @@ class UserController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'module' => 'required',
+            'target' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -833,14 +834,29 @@ class UserController extends Controller
 
         switch($request->module) {
             case "NAME_SEARCH":
-                $users = User::where('name', 'LIKE', "%{$request->name}%")->get();
-                Log::debug($users);
+                $users = User::where('name', 'LIKE', "%{$request->target}%")->get();
                 return $this->success_response($users, "Search successful");
                 break;
+            case "CATEGORY_SEARCH":
+                $category = Skill::where("name", $request->target)->first();
+                if (!$category) {
+                    return $this->not_found_response([], "Error fetching information. Kindly try again");
+                }
 
+                $userSkills = SkillUser::where("skill_id", $category->id)->get();
+                if (!$userSkills) {
+                    return $this->success_response([]);
+                }
+
+                $users = collect();
+                foreach ($userSkills as $record) {
+                    $users->push($record->user);
+                }
+                return $this->success_response($users, "Search successful");
+                break;
         }
 
-        return $this->success_response( "");
+        return $this->success_response([]);
     }
 
 }
