@@ -119,6 +119,8 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/home')->group(function () {
             Route::post('/feed', 'Mobile\UserController@get_user_home_data');
         });
+
+        Route::post('/search', 'Mobile\UserController@search_vorkers');
     });
 });
 

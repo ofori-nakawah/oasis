@@ -53,7 +53,7 @@ class UserController extends Controller
         $payload = [
             "location_coords" => auth()->user()->location_coords,
             "location_name" => auth()->user()->location_name,
-            "user"=> auth()->user()
+            "user" => auth()->user()
         ];
         return $this->success_response($payload, "Location updated successfully.");
     }
@@ -150,12 +150,12 @@ class UserController extends Controller
     public function get_user_notifications(Request $request)
     {
         $notifications = auth()->user()->notifications->map(function ($notification) {
-           if (array_key_exists("post", $notification->data)) {
-               $notification["group_id"] = $notification->data["post"]["id"];
-               $notification->update();
-               $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
-               return $notification;
-           }
+            if (array_key_exists("post", $notification->data)) {
+                $notification["group_id"] = $notification->data["post"]["id"];
+                $notification->update();
+                $notification->createdAt = date('d-m-Y H:i:s', strtotime($notification->created_at));
+                return $notification;
+            }
         })->unique("group_id");
 
         return $this->success_response($notifications, "Notifications fetched successfully.");
@@ -198,11 +198,11 @@ class UserController extends Controller
 
         $kyc_status = array(
             "is_kyc_completed" => $is_kyc_completed,
-            "is_core_skills_set" => (int) auth()->user()->is_core_skills_set,
-            "is_languages_set" => (int) auth()->user()->is_languages_set,
+            "is_core_skills_set" => (int)auth()->user()->is_core_skills_set,
+            "is_languages_set" => (int)auth()->user()->is_languages_set,
             "is_location_set" => (!auth()->user()->location_name || auth()->user()->location_name == null) ? 0 : 1,
-            "is_profile_picture_set" => (!auth()->user()->profile_picture || auth()->user()->profile_picture == null)  ? 0 : 1,
-            "is_email_verified" => (!auth()->user()->email_verified_at || auth()->user()->email_verified_at == null)  ? 0 : 1,
+            "is_profile_picture_set" => (!auth()->user()->profile_picture || auth()->user()->profile_picture == null) ? 0 : 1,
+            "is_email_verified" => (!auth()->user()->email_verified_at || auth()->user()->email_verified_at == null) ? 0 : 1,
             "location_coords" => auth()->user()->location_coords
         );
 
@@ -313,13 +313,17 @@ class UserController extends Controller
             'uuid' => 'required',
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         /**
          * get user
          */
         $user = User::where("id", $request->uuid)->first();
-        if (!$user) {return $this->not_found_response([], "Error fetching user information. Kindly try again");}
+        if (!$user) {
+            return $this->not_found_response([], "Error fetching user information. Kindly try again");
+        }
 
         /**
          * Analytics
@@ -407,7 +411,7 @@ class UserController extends Controller
             "user" => auth()->user(),
             "country" => Country::GetCountry($user->country_id),
             "token" => auth()->user()->createToken('auth_token')->plainTextToken,
-    );
+        );
 
         return $this->success_response(["user" => auth()->user(),
             "country" => Country::GetCountry($user->country_id),
@@ -422,7 +426,7 @@ class UserController extends Controller
         }
         $errors = new MessageBag();
 
-        switch($request->module) {
+        switch ($request->module) {
             case "basic-information":
                 if (!$request->name) {
                     $errors->add("name", "The name field is required.");
@@ -484,7 +488,7 @@ class UserController extends Controller
                 }
                 break;
             case "update-password":
-                if (!Hash::check($request->old_password, auth()->user()->password)){
+                if (!Hash::check($request->old_password, auth()->user()->password)) {
                     $errors->add("old_password", "The old password you entered does not match.");
                     return $this->data_validation_error_response($errors);
                 }
@@ -523,7 +527,7 @@ class UserController extends Controller
     public function deleteAccount(Request $request)
     {
         $errors = new MessageBag();
-        if (!Hash::check($request->password, auth()->user()->password)){
+        if (!Hash::check($request->password, auth()->user()->password)) {
             $errors->add("password", "Password confirmation failed. Kindly try again");
             return $this->data_validation_error_response($errors);
         }
@@ -550,7 +554,9 @@ class UserController extends Controller
             'specialty' => 'required',
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         $userId = auth()->id();
 
@@ -568,7 +574,7 @@ class UserController extends Controller
 
         if ($request->image) {
             $image = $request->image;
-            $name = auth()->user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $name = auth()->user()->name . '-education-' . uniqid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
@@ -614,7 +620,7 @@ class UserController extends Controller
         try {
             $educationHistory->update();
             return $this->success_response(auth()->user(), "Education history updated successfully.");
-        }catch (QueryException $e) {
+        } catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->error_response(auth()->user(), "Error updating education history.");
         }
@@ -629,7 +635,9 @@ class UserController extends Controller
             'programme' => 'required',
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         $userId = auth()->id();
 
@@ -683,7 +691,7 @@ class UserController extends Controller
 
         if ($request->image) {
             $image = $request->file('image');
-            $name = auth()->user()->name . '-education-' . uniqid() . '.'.$image->getClientOriginalExtension();
+            $name = auth()->user()->name . '-education-' . uniqid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('/uploads');
             $image->move($destinationPath, $name);
 
@@ -693,7 +701,7 @@ class UserController extends Controller
         try {
             $certificationsAndTrainings->update();
             return $this->success_response(auth()->user(), "Certifications and training history updated successfully.");
-        }catch (QueryException $e) {
+        } catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->error_response(auth()->user(), "Error updating certifications and training history.");
         }
@@ -710,7 +718,9 @@ class UserController extends Controller
             'reference' => 'required',
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         $userId = auth()->id();
 
@@ -735,7 +745,7 @@ class UserController extends Controller
             return $this->success_response(auth()->user(), "Outside VORK job history has been added to your profile successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
-            return $this->error_response(auth()->user(),"Error adding outside VORK job history information. Please try again.");
+            return $this->error_response(auth()->user(), "Error adding outside VORK job history information. Please try again.");
         }
     }
 
@@ -765,7 +775,7 @@ class UserController extends Controller
             return $this->success_response(auth()->user(), "Outside VORK job history has been updated successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
-            return $this->error_response(auth()->user(),"Error updating outside VORK job history information. Please try again.");
+            return $this->error_response(auth()->user(), "Error updating outside VORK job history information. Please try again.");
         }
     }
 
@@ -809,6 +819,28 @@ class UserController extends Controller
                 "is_profile_picture_set" => $user->profile_picture ? 1 : 0
             ]
         ], "");
+    }
+
+    public function search_vorkers(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'module' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        switch($request->module) {
+            case "NAME_SEARCH":
+                $users = User::where('name', 'LIKE', "%{$request->name}%")->get();
+                Log::debug($users);
+                return $this->success_response($users, "Search successful");
+                break;
+
+        }
+
+        return $this->success_response( "");
     }
 
 }
