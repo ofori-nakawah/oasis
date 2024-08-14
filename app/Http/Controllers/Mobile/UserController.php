@@ -835,6 +835,12 @@ class UserController extends Controller
         switch($request->module) {
             case "NAME_SEARCH":
                 $users = User::where('name', 'LIKE', "%{$request->target}%")->get();
+                foreach ($users as $user) {
+                    $skills = $user->skills;
+                    foreach ($skills as $skill) {
+                        $skill->skill;
+                    }
+                }
                 return $this->success_response($users, "Search successful");
                 break;
             case "CATEGORY_SEARCH":
@@ -850,8 +856,13 @@ class UserController extends Controller
 
                 $users = collect();
                 foreach ($userSkills as $record) {
+                    $skills = $record->user->skills;
+                    foreach ($skills as $skill) {
+                        $skill->skill;
+                    }
                     $users->push($record->user);
                 }
+
                 return $this->success_response($users, "Search successful");
                 break;
         }

@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -245,6 +246,80 @@ class PostController extends Controller
             $post->save();
             return $this->success_response($post, "Post has been published successfully.");
         } catch (QueryException $e) {
+            Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->db_operation_error_response([]);
+        }
+    }
+
+    public function requestP2PQuote(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'category' => 'required',
+            'description' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'location' => 'required',
+            'coords' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $category = Skill::where("name", $request->category)->first();
+        if (!$category) {
+            return $this->not_found_response([], "Error fetching category details");
+        }
+
+        DB::beginTransaction();
+        $post = new Post();
+        $post->category = $request->category;
+        $post->category_id = $category->id;
+        $post->description = $request->description;
+        $post->date = $request->date;
+        $post->time = $request->time;
+        $post->location = $request->location;
+        $post->coords = json_encode($request->coords);
+        $post->user_id = auth()->id();
+        $post->confirmed_applicant_id = $request->user_id;
+        $post->is_job_applicant_confirmed = "yes";
+        $post->type = "P2P";
+        $post->source = "MOBILE";
+
+        try {
+            $post->save();
+
+            if ($request->post_image) {
+                //save image
+                $image = $request->post_image;
+                $name = $post->id . '_' . $post->type . '_' . time() . '.png';
+                $destinationPath = public_path('/uploads/listings/p2p/');
+
+                $image_parts = explode(";base64,", $image);
+                $image_base64 = base64_decode($image_parts[1]);
+                $file = $destinationPath . $name;
+                file_put_contents($file, $image_base64);
+
+                $post->post_image_link = URL::to('/public/uploads/listings/p2p') . '/' . $name;
+                $post->update();
+            }
+
+            DB::commit();
+
+            $vorker = User::where('id', $request->user_id)->first();
+            if (!$vorker) {
+                return $this->not_found_response([], "Oops...something went wrong. Please try again later.");
+            }
+
+            /**
+             * create notification
+             */
+            Notifications::PushUserNotification($post, $post, $vorker, "P2P_JOB_REQUEST");
+            //                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+
+            return $this->success_response($post, "Job request has been sent to vorker successfully.");
+        } catch (QueryException $e) {
+            DB::rollBack();
             Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
         }

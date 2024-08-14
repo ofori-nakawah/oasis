@@ -51,6 +51,10 @@ Route::prefix('/v1')->group(function () {
             Route::post('/update-post', 'Mobile\PostController@updatePost');
         });
 
+        Route::prefix('/p2p')->group(function () {
+            Route::post('/request-quote', 'Mobile\PostController@requestP2PQuote');
+        });
+
         Route::prefix('/activities')->group(function () {
             Route::post('/get-user-posts', 'Mobile\PostController@get_user_posts');
             Route::get('/get-user-posts', 'Mobile\PostController@get_user_posts');
