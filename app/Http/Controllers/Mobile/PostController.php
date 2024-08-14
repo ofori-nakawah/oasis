@@ -228,19 +228,19 @@ class PostController extends Controller
         $post->type = "QUICK_JOB";
         $post->source = "MOBILE";
 
-//        if ($request->post_image && $request->post_image != "") {
-//            $image = $request->post_image;
-//            $name = $post->id . '_' . time() . '.png';
-//            $destinationPath = public_path('/uploads/quick_jobs/');
-//
-//            $image_parts = explode(";base64,", $image);
-//            Log::debug($image_parts);
-//            $image_base64 = base64_decode($image_parts[1]);
-//            $file = $destinationPath . $name;
-//            file_put_contents($file, $image_base64);
-//
-//            $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
-//        }
+        //        if ($request->post_image && $request->post_image != "") {
+        //            $image = $request->post_image;
+        //            $name = $post->id . '_' . time() . '.png';
+        //            $destinationPath = public_path('/uploads/quick_jobs/');
+        //
+        //            $image_parts = explode(";base64,", $image);
+        //            Log::debug($image_parts);
+        //            $image_base64 = base64_decode($image_parts[1]);
+        //            $file = $destinationPath . $name;
+        //            file_put_contents($file, $image_base64);
+        //
+        //            $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
+        //        }
 
         try {
             $post->save();
@@ -251,6 +251,9 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * request a quote for a P2P job
+     */
     public function requestP2PQuote(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -272,6 +275,7 @@ class PostController extends Controller
         }
 
         DB::beginTransaction();
+
         $post = new Post();
         $post->category = $request->category;
         $post->category_id = $category->id;
@@ -281,16 +285,19 @@ class PostController extends Controller
         $post->location = $request->location;
         $post->coords = json_encode($request->coords);
         $post->user_id = auth()->id();
-        $post->confirmed_applicant_id = $request->user_id;
-        $post->is_job_applicant_confirmed = "yes";
         $post->type = "P2P";
         $post->source = "MOBILE";
 
         try {
-            $post->save();
+            if (!$post->save()) {
+                Log::error("ERROR CREATING P2P POST " . json_encode($request));
+            }
 
+            /**
+             * if the request included an image this
+             * is when we save the image and add to the post
+             */
             if ($request->post_image) {
-                //save image
                 $image = $request->post_image;
                 $name = $post->id . '_' . $post->type . '_' . time() . '.png';
                 $destinationPath = public_path('/uploads/listings/p2p/');
@@ -301,21 +308,35 @@ class PostController extends Controller
                 file_put_contents($file, $image_base64);
 
                 $post->post_image_link = URL::to('/public/uploads/listings/p2p') . '/' . $name;
-                $post->update();
-            }
-
-            DB::commit();
-
-            $vorker = User::where('id', $request->user_id)->first();
-            if (!$vorker) {
-                return $this->not_found_response([], "Oops...something went wrong. Please try again later.");
+                if (!$post->update()) {
+                    Log::error("ERROR UPDATING IMAGE FOR P2P POST " . $post->id);
+                }
             }
 
             /**
-             * create notification
+             * create application | placeholder quotation
              */
-            Notifications::PushUserNotification($post, $post, $vorker, "P2P_JOB_REQUEST");
-            //                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+            $vorkers = $request->vorkers;
+            foreach ($vorkers as $vorker) {
+                /**
+                 * these are the users we sent the job request to
+                 * for quotation
+                 */
+                $application = new JobApplication();
+                $application->user_id = $vorker->id;
+                $application->post_id = $post->id;
+                if (!$application->save()) {
+                    Log::error("ERROR SAVING APPLICATION FOR " . $vorker->id . " FOR P2P POST " . $post->id);
+                }
+
+                /**
+                 * create notification
+                 */
+                Notifications::PushUserNotification($post, $post, $vorker, "P2P_JOB_REQUEST");
+                //PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+            }
+
+            DB::commit();
 
             return $this->success_response($post, "Job request has been sent to vorker successfully.");
         } catch (QueryException $e) {
@@ -472,8 +493,6 @@ class PostController extends Controller
             }
             $post->applications;
             $post->user;
-
-
         }
         return $this->success_response($posts, "Posts fetched successfully.");
     }
@@ -525,8 +544,6 @@ class PostController extends Controller
                     } else {
                         $post->has_already_applied = "no";
                     }
-
-
                 }
 
 
@@ -1084,7 +1101,6 @@ class PostController extends Controller
 
                         Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                         PushNotification::Notify("JOB_CLOSED", $application, null);
-
                     } catch (QueryException $e) {
                         Log::error("ERROR UPDATING VOLUNTEER HOURS FOR >>>>>>>>>> " . $participant->id . " >>>>>>>>> " . $e);
                         continue;
