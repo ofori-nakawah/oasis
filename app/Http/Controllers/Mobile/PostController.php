@@ -319,20 +319,31 @@ class PostController extends Controller
             $vorkers = $request->vorkers;
             foreach ($vorkers as $vorker) {
                 /**
+                 * get vorker details
+                 */
+                $vorkerDetails = User::where("id", $vorker["userId"])->first();
+                if (!$vorkerDetails) {
+                    Log::error("ERROR FETCHING VORKER " . $vorker["userId"]);
+                    continue;
+                }
+
+                /**
                  * these are the users we sent the job request to
                  * for quotation
                  */
                 $application = new JobApplication();
-                $application->user_id = $vorker->id;
+                $application->user_id = $vorkerDetails->id;
                 $application->post_id = $post->id;
                 if (!$application->save()) {
-                    Log::error("ERROR SAVING APPLICATION FOR " . $vorker->id . " FOR P2P POST " . $post->id);
+                    Log::error("ERROR SAVING APPLICATION FOR " . $vorker["userId"] . " FOR P2P POST " . $post->id);
                 }
+
+                $post->user;
 
                 /**
                  * create notification
                  */
-                Notifications::PushUserNotification($post, $post, $vorker, "P2P_JOB_REQUEST");
+                Notifications::PushUserNotification($post, $post, $vorkerDetails, "SUCCESSFUL_JOB_APPLICATION");
                 //PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
             }
 
@@ -341,6 +352,51 @@ class PostController extends Controller
             return $this->success_response($post, "Job request has been sent to vorker successfully.");
         } catch (QueryException $e) {
             DB::rollBack();
+            Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->db_operation_error_response([]);
+        }
+    }
+
+    /**
+     * submit quote
+     */
+    public function submit_quote(Request $request)
+    {
+        Log::debug($request->all());
+        $validation = Validator::make($request->all(), [
+            'quote' => 'required',
+            'post_id' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $post = Post::where("id", $request->post_id)->first();
+        if (!$post) {
+            return $this->not_found_response([], "Error fetching post details");
+        }
+
+        $application = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+        if (!$application) {
+            return $this->not_found_response([], "Error fetching application details");
+        }
+
+        $application->quote = $request->quote;
+        $application->comments = $request->comments;
+
+        try {
+            $application->update();
+
+            /**
+             * Notify the issuer of a quote
+             */
+            $post->applications;
+            Notifications::PushUserNotification($post, $post, $post->user, "QUOTE_RECEIVED");
+            Notifications::PushUserNotification($post, $post, auth()->user(), "QUOTE_SUBMITTED");
+
+            return $this->success_response($application, "Quote has been submitted successfully.");
+        } catch (QueryException $e) {
             Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);
         }

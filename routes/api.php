@@ -102,7 +102,6 @@ Route::prefix('/v1')->group(function () {
             Route::get('/get-user-vork-profile', 'Mobile\UserController@get_user_vork_profile');
             Route::post('/get-user-vork-profile', 'Mobile\UserController@get_user_vork_profile');
             Route::get('/is-toolbox-user', 'Mobile\UserController@isToolboxUser');
-
         });
 
         Route::prefix('/config')->group(function () {
@@ -125,6 +124,9 @@ Route::prefix('/v1')->group(function () {
         });
 
         Route::post('/search', 'Mobile\UserController@search_vorkers');
+
+        Route::prefix('/p2p')->group(function () {
+            Route::post('/submit-quote', 'Mobile\PostController@submit_quote');
+        });
     });
 });
-

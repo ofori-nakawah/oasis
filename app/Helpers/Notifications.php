@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Helpers;
+
 use App\Notifications\PostActivityNotification;
 use App\Notifications\ReferenceActivityNotification;
 use Illuminate\Support\Facades\Log;
 
 
-class Notifications {
+class Notifications
+{
     /**
      *setup notification payload
      */
@@ -23,7 +25,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Pending Acceptance By Issuer";
                     $category = $post->name;
-                    $message = "Hello ". $user->name .", \n \n Your application for the Volunteer work with reference ID (" . $ref_id .") has been received. \n \n You will be notified when the issuer confirms your attendance.  ";
+                    $message = "Hello " . $user->name . ", \n \n Your application for the Volunteer work with reference ID (" . $ref_id . ") has been received. \n \n You will be notified when the issuer confirms your attendance.  ";
                 }
                 /**
                  * user confirmed for volunteer work
@@ -32,7 +34,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Attendance Confirmed";
                     $category = $post->name;
-                    $message = "Congratulations ". $user->name .", \n \n Your participation for the volunteering activity with REF ID (". $ref_id .") has been confirmed by the Issuer ". $post->user->name . ". \n \n Please contact the number below for any further enquiries. ";
+                    $message = "Congratulations " . $user->name . ", \n \n Your participation for the volunteering activity with REF ID (" . $ref_id . ") has been confirmed by the Issuer " . $post->user->name . ". \n \n Please contact the number below for any further enquiries. ";
                 }
                 /**
                  * user declined for volunteer work
@@ -41,7 +43,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Participation Declined";
                     $category = $post->name;
-                    $message = "Unfortunately, your application to participate in the volunteering activity with reference ID (". $ref_id .") has been declined by the issuer.. ";
+                    $message = "Unfortunately, your application to participate in the volunteering activity with reference ID (" . $ref_id . ") has been declined by the issuer.. ";
                 }
                 /**
                  * volunteer activity closed
@@ -50,7 +52,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Project Closed";
                     $category = $post->name;
-                    $message = "Thank you for participating in the Volunteering activity with REF ID (".$ref_id."). \n \n Your volunteer hours has been credited to your account.. ";
+                    $message = "Thank you for participating in the Volunteering activity with REF ID (" . $ref_id . "). \n \n Your volunteer hours has been credited to your account.. ";
                 }
                 /**
                  * Job removed
@@ -59,7 +61,7 @@ class Notifications {
                     $ref_id = "VO" . explode("-", $application->id)[0];
                     $status = "Project Cancelled";
                     $category = $post->name;
-                    $message = "Hello ". $user->name .", the volunteer activity with REF ID (". $ref_id ."))  has been cancelled by the organiser. Kindly check your feed for other opportunities near you. \n \n Thank You.";
+                    $message = "Hello " . $user->name . ", the volunteer activity with REF ID (" . $ref_id . "))  has been cancelled by the organiser. Kindly check your feed for other opportunities near you. \n \n Thank You.";
                 }
                 break;
             case "QUICK_JOB":
@@ -70,7 +72,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Pending Acceptance By Issuer";
                     $category = $post->category;
-                    $message = "Hello ". $user->name .", \n \n Your application for the Quick Job with reference ID (" . $ref_id .") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
+                    $message = "Hello " . $user->name . ", \n \n Your application for the Quick Job with reference ID (" . $ref_id . ") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
                 }
                 /**
                  * User selected for quick job
@@ -79,7 +81,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Application Accepted";
                     $category = $post->category;
-                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Quick Job issued by ". $post->user->name . ". \n \n The issuer will contact you for further arrangements. ";
+                    $message = "Congratulations " . $user->name . ", \n \n You have been selected for the Quick Job issued by " . $post->user->name . ". \n \n The issuer will contact you for further arrangements. ";
                 }
                 /**
                  * User selected for quick job
@@ -88,7 +90,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Application Declined";
                     $category = $post->category;
-                    $message = "Unfortunately, your application for the Quick Job with reference ID (". $ref_id .") has been declined by the issuer. \n \n Thank You. \n The VORK Team";
+                    $message = "Unfortunately, your application for the Quick Job with reference ID (" . $ref_id . ") has been declined by the issuer. \n \n Thank You. \n The VORK Team";
                 }
                 /**
                  * Job closed
@@ -97,7 +99,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Job Closed";
                     $category = $post->category;
-                    $message = "You have successfully completed the Quick Job with the REF ID (". $ref_id ."). \n \n Please see below for the closure details. ";
+                    $message = "You have successfully completed the Quick Job with the REF ID (" . $ref_id . "). \n \n Please see below for the closure details. ";
                 }
                 /**
                  * Job removed
@@ -106,7 +108,7 @@ class Notifications {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Job No Longer Required";
                     $category = $post->category;
-                    $message = "Hello ". $user->name .", the Quick Job with the REF ID (". $ref_id .") is no longer required by the Issuer. Kindly check your feed for other opportunities near you.  \n \n Thank You.";
+                    $message = "Hello " . $user->name . ", the Quick Job with the REF ID (" . $ref_id . ") is no longer required by the Issuer. Kindly check your feed for other opportunities near you.  \n \n Thank You.";
                 }
                 break;
             case "FIXED_TERM_JOB":
@@ -117,7 +119,7 @@ class Notifications {
                     $ref_id = "FT" . explode("-", $application->id)[0];
                     $status = "Pending Acceptance By Issuer";
                     $category = $post->category;
-                    $message = "Hello ". $user->name .", \n \n Your application for the Fixed Term Job with reference ID (" . $ref_id .") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
+                    $message = "Hello " . $user->name . ", \n \n Your application for the Fixed Term Job with reference ID (" . $ref_id . ") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
                 }
                 /**
                  * User selected for quick job
@@ -126,7 +128,7 @@ class Notifications {
                     $ref_id = "FT" . explode("-", $application->id)[0];
                     $status = "Application Accepted";
                     $category = $post->category;
-                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Fixed Term job issued by ". $post->user->name . " on behalf of ". $post->employer .". \n \n  A representative of the employer will contact you for further arrangements";
+                    $message = "Congratulations " . $user->name . ", \n \n You have been selected for the Fixed Term job issued by " . $post->user->name . " on behalf of " . $post->employer . ". \n \n  A representative of the employer will contact you for further arrangements";
                 }
                 /**
                  * User selected for quick job
@@ -135,7 +137,7 @@ class Notifications {
                     $ref_id = "FT" . explode("-", $application->id)[0];
                     $status = "Application Declined";
                     $category = $post->category;
-                    $message = "Unfortunately, your application for the Fixed Term Job with reference ID (". $ref_id .") has been declined by the issuer. \n \n Thank You. \n The VORK Team";
+                    $message = "Unfortunately, your application for the Fixed Term Job with reference ID (" . $ref_id . ") has been declined by the issuer. \n \n Thank You. \n The VORK Team";
                 }
                 /**
                  * Job closed
@@ -145,9 +147,9 @@ class Notifications {
                     $status = "Job Closed";
                     $category = $post->category;
                     if ($application->status === "confirmed") {
-                        $message = "Applications for the Fixed Term Job with the REF ID (". $ref_id .") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter!. ";
+                        $message = "Applications for the Fixed Term Job with the REF ID (" . $ref_id . ") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter!. ";
                     } else {
-                        $message = "Applications and Review for the Fixed Term Job with the REF ID (". $ref_id .") has been closed.  Kindly explore other opportunities available";
+                        $message = "Applications and Review for the Fixed Term Job with the REF ID (" . $ref_id . ") has been closed.  Kindly explore other opportunities available";
                     }
                 }
                 /**
@@ -157,7 +159,7 @@ class Notifications {
                     $ref_id = "FT" . explode("-", $application->id)[0];
                     $status = "Job No Longer Required";
                     $category = $post->category;
-                    $message = "Hello ". $user->name .", the Fixed Term Job with the REF ID (". $ref_id .") is no longer required by the Issuer. Kindly check your feed for other opportunities near you.  \n \n Thank You.";
+                    $message = "Hello " . $user->name . ", the Fixed Term Job with the REF ID (" . $ref_id . ") is no longer required by the Issuer. Kindly check your feed for other opportunities near you.  \n \n Thank You.";
                 }
                 break;
             case "PERMANENT_JOB":
@@ -168,7 +170,7 @@ class Notifications {
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Pending Acceptance By Issuer";
                     $category = $post->category;
-                    $message = "Hello ". $user->name .", \n \n Your application for the Permanent Job with reference ID (" . $ref_id .") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
+                    $message = "Hello " . $user->name . ", \n \n Your application for the Permanent Job with reference ID (" . $ref_id . ") has been received and under review. \n \n You will  be notified when the issuer completes their review.  ";
                 }
                 /**
                  * User selected for quick job
@@ -177,7 +179,7 @@ class Notifications {
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Application Accepted";
                     $category = $post->category;
-                    $message = "Congratulations ". $user->name .", \n \n You have been selected for the Permanent job issued by ". $post->user->name . " on behalf of ". $post->employer .". \n \n  A representative of the employer will contact you for further arrangements";
+                    $message = "Congratulations " . $user->name . ", \n \n You have been selected for the Permanent job issued by " . $post->user->name . " on behalf of " . $post->employer . ". \n \n  A representative of the employer will contact you for further arrangements";
                 }
                 /**
                  * User selected for quick job
@@ -186,7 +188,7 @@ class Notifications {
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Application Declined";
                     $category = $post->category;
-                    $message = "Unfortunately, your application for the Permanent with reference ID (". $ref_id .") has been declined by the issuer. \n \n Thank You. \n The VORK Team";
+                    $message = "Unfortunately, your application for the Permanent with reference ID (" . $ref_id . ") has been declined by the issuer. \n \n Thank You. \n The VORK Team";
                 }
                 /**
                  * Job closed
@@ -197,9 +199,9 @@ class Notifications {
                     $category = $post->category;
                     Log::debug($application->status);
                     if ($application->status === "confirmed") {
-                        $message = "Applications for the Permanent Job with the REF ID (". $ref_id .") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter! ";
+                        $message = "Applications for the Permanent Job with the REF ID (" . $ref_id . ") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter! ";
                     } else {
-                        $message = "Applications and Review for the Permanent Job with the REF ID (". $ref_id .") has been closed.  Kindly explore other opportunities available";
+                        $message = "Applications and Review for the Permanent Job with the REF ID (" . $ref_id . ") has been closed.  Kindly explore other opportunities available";
                     }
                 }
                 /**
@@ -209,8 +211,39 @@ class Notifications {
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Job No Longer Required";
                     $category = $post->category;
-                    $message = "Hello ". $user->name .", the Permanent Job with the REF ID (". $ref_id .") is no longer required by the Issuer. Kindly check your feed for other opportunities near you.  \n \n Thank You.";
+                    $message = "Hello " . $user->name . ", the Permanent Job with the REF ID (" . $ref_id . ") is no longer required by the Issuer. Kindly check your feed for other opportunities near you.  \n \n Thank You.";
                 }
+                break;
+            case "P2P":
+                /**
+                 * successful job application notification details
+                 */
+                if ($event === "SUCCESSFUL_JOB_APPLICATION") {
+                    $ref_id = "PP" . explode("-", $application->id)[0];
+                    $status = "New P2P job request";
+                    $category = $post->category;
+                    $message = "Hello " . $user->name . ", \n \n You have a new P2P job request with reference ID (" . $ref_id . "). \n \n Kindly review the details and provide quote or let the issuer know if you are not interested.  ";
+                }
+                /**
+                 * Quote submitted
+                 */
+                if ($event === "QUOTE_RECEIVED") {
+                    $ref_id = "PP" . explode("-", $application->id)[0];
+                    $status = "New quote recieved";
+                    $category = $post->category;
+                    $message = "Hello " . $user->name . ", \n \n You have a new quote from a vorker for your job request with reference ID (" . $ref_id . ").  ";
+                }
+
+                /**
+                 * Quote submitted
+                 */
+                if ($event === "QUOTE_SUBMITTED") {
+                    $ref_id = "PP" . explode("-", $application->id)[0];
+                    $status = "Quote submitted successfulLY";
+                    $category = $post->category;
+                    $message = "Hello " . $user->name . ", \n \n Your quote for your job request with reference ID (" . $ref_id . ") has been submitted successfully. We will let you know when the issuer makes a decision.";
+                }
+
                 break;
         }
 

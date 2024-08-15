@@ -15,6 +15,7 @@ class AddQuoteToJobApplicationsTable extends Migration
     {
         Schema::table('job_applications', function (Blueprint $table) {
             $table->string("quote")->nullable();
+            $table->text("comments")->nullable();
         });
     }
 
@@ -27,6 +28,7 @@ class AddQuoteToJobApplicationsTable extends Migration
     {
         Schema::table('job_applications', function (Blueprint $table) {
             $table->dropColumn("quote");
+            $table->dropColumn("comments");
         });
     }
 }
