@@ -244,6 +244,13 @@ class Notifications
                     $message = "Hello " . $user->name . ", \n \n Your quote for your job request with reference ID (" . $ref_id . ") has been submitted successfully. We will let you know when the issuer makes a decision.";
                 }
 
+                if ($event === "APPLICATION_CONFIRMED") {
+                    $ref_id = "PP" . explode("-", $application->id)[0];
+                    $status = "Quote Accepted";
+                    $category = $post->category;
+                    $message = "Congratulations " . $user->name . ", \n \n You have been selected for the job issued by " . $post->user->name . ". \n \n  The issuer will contact you for further arrangements";
+                }
+
                 break;
         }
 
