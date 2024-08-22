@@ -1163,6 +1163,7 @@ class PostController extends Controller
                     }
                 }
                 break;
+            case "P2P":
             case "QUICK_JOB":
                 $participant = User::where("id", $request->user_id)->first();
                 if (!$participant) {
@@ -1220,12 +1221,37 @@ class PostController extends Controller
                 $participant->rating = $user_review_rating;
                 try {
                     /**
-                     * create notification
+                     * create notifications
                      */
                     $post->user;
                     $application->job_post;
+                    $application->job_post->user;
+                    $application->job_post->rating_and_reviews;
+                    $post->rating_and_reviews;
+
+                    /**
+                     * selected vorker notification
+                     */
                     Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
-                    PushNotification::Notify("JOB_CLOSED", $application, null);
+                    // PushNotification::Notify("JOB_CLOSED", $application, null);
+
+                    /**
+                     * issuer notification
+                     */
+                    Notifications::PushUserNotification($post, $post, $post->user, "JOB_CLOSED");
+                    // PushNotification::Notify("JOB_CLOSED", $post, null);
+
+
+                    /**
+                     * unselected vorker notification
+                     */
+                    $allJobApplications = $post->applications;
+                    foreach ($allJobApplications as $jobApplication) {
+                        if ((int) $jobApplication->user_id !== (int) $participant->id) {
+                            Notifications::PushUserNotification($post, $application, $jobApplication->user, "JOB_CLOSED");
+                            // PushNotification::Notify("JOB_CLOSED", $application, null);
+                        }
+                    }
 
                     $participant->update();
                 } catch (QueryException $e) {

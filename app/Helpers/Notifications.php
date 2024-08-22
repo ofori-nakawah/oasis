@@ -100,6 +100,8 @@ class Notifications
                     $status = "Job Closed";
                     $category = $post->category;
                     $message = "You have successfully completed the Quick Job with the REF ID (" . $ref_id . "). \n \n Please see below for the closure details. ";
+
+                    $post->status = "closed";
                 }
                 /**
                  * Job removed
@@ -151,6 +153,7 @@ class Notifications
                     } else {
                         $message = "Applications and Review for the Fixed Term Job with the REF ID (" . $ref_id . ") has been closed.  Kindly explore other opportunities available";
                     }
+                    $post->status = "closed";
                 }
                 /**
                  * Job removed
@@ -197,12 +200,12 @@ class Notifications
                     $ref_id = "PJ" . explode("-", $application->id)[0];
                     $status = "Job Closed";
                     $category = $post->category;
-                    Log::debug($application->status);
                     if ($application->status === "confirmed") {
                         $message = "Applications for the Permanent Job with the REF ID (" . $ref_id . ") has been closed. \n \n Your new employer will be responsible for providing you with further information and assistance. We wish you the best in your New Chapter! ";
                     } else {
                         $message = "Applications and Review for the Permanent Job with the REF ID (" . $ref_id . ") has been closed.  Kindly explore other opportunities available";
                     }
+                    $post->status = "closed";
                 }
                 /**
                  * Job removed
@@ -219,7 +222,7 @@ class Notifications
                  * successful job application notification details
                  */
                 if ($event === "SUCCESSFUL_JOB_APPLICATION") {
-                    $ref_id = "PP" . explode("-", $application->id)[0];
+                    $ref_id = "PP" . explode("-", $post->id)[0];
                     $status = "New P2P job request";
                     $category = $post->category;
                     $message = "Hello " . $user->name . ", \n \n You have a new P2P job request with reference ID (" . $ref_id . "). \n \n Kindly review the details and provide quote or let the issuer know if you are not interested.  ";
@@ -228,7 +231,7 @@ class Notifications
                  * Quote submitted
                  */
                 if ($event === "QUOTE_RECEIVED") {
-                    $ref_id = "PP" . explode("-", $application->id)[0];
+                    $ref_id = "PP" . explode("-", $post->id)[0];
                     $status = "New quote recieved";
                     $category = $post->category;
                     $message = "Hello " . $user->name . ", \n \n You have a new quote from a vorker for your job request with reference ID (" . $ref_id . ").  ";
@@ -238,19 +241,41 @@ class Notifications
                  * Quote submitted
                  */
                 if ($event === "QUOTE_SUBMITTED") {
-                    $ref_id = "PP" . explode("-", $application->id)[0];
-                    $status = "Quote submitted successfulLY";
+                    $ref_id = "PP" . explode("-", $post->id)[0];
+                    $status = "Quote submitted successfully";
                     $category = $post->category;
                     $message = "Hello " . $user->name . ", \n \n Your quote for your job request with reference ID (" . $ref_id . ") has been submitted successfully. We will let you know when the issuer makes a decision.";
                 }
 
                 if ($event === "APPLICATION_CONFIRMED") {
-                    $ref_id = "PP" . explode("-", $application->id)[0];
+                    $ref_id = "PP" . explode("-", $post->id)[0];
                     $status = "Quote Accepted";
                     $category = $post->category;
                     $message = "Congratulations " . $user->name . ", \n \n You have been selected for the job issued by " . $post->user->name . ". \n \n  The issuer will contact you for further arrangements";
                 }
 
+                /**
+                 * vorkers
+                 */
+                if ($event === "JOB_CLOSED") {
+                    $ref_id = "PP" . explode("-", $post->id)[0];
+                    $status = "Job Closed";
+                    $category = $post->category;
+
+                    $isIssuer = (int) $post->user_id === (int) auth()->user()->id && (int) $application->user_id === (int) auth()->user()->id;
+
+                    if ($isIssuer) {
+                        $message = "Your P2P job with the REF ID (" . $ref_id . ") has been closed. Ensure all the necessary payments have been made. Thank you for choosing Vork!";
+                    } else {
+                        if ($application->status === "confirmed") {
+                            $message = "P2P Job with the REF ID (" . $ref_id . ") has been closed.";
+                        } else {
+                            $message = "Applications and review for the P2P job with the REF ID (" . $ref_id . ") has been closed.  Kindly explore other opportunities available";
+                        }
+                    }
+
+                    $post->status = "closed";
+                }
                 break;
         }
 

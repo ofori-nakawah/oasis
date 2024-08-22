@@ -34,4 +34,8 @@ class Post extends Model
         return $this->created_at->diffForHumans();
     }
 
+    public function rating_and_reviews()
+    {
+        return $this->hasMany("App\Models\RatingReview", "post_id");
+    }
 }
