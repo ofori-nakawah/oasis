@@ -1282,6 +1282,7 @@ class PostController extends Controller
                      * create notification
                      */
                     $post->user;
+                    $post->applications;
                     $application->job_post;
                     Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     PushNotification::Notify("JOB_CLOSED", $application, null);
@@ -1314,6 +1315,7 @@ class PostController extends Controller
                      * create notification
                      */
                     $post->user;
+                    $post->applications;
                     $application->job_post;
                     Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
                     PushNotification::Notify("JOB_CLOSED", $application, null);

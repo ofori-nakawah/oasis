@@ -108,6 +108,7 @@ Route::prefix('/v1')->group(function () {
             Route::post('/get-skills', 'Mobile\ConfigController@get_skills');
             Route::get('/get-skills', 'Mobile\ConfigController@get_skills');
             Route::post('/get-languages', 'Mobile\ConfigController@get_languages');
+            Route::post('/get-industries', 'Mobile\ConfigController@get_industries');
             Route::get('/get-languages', 'Mobile\ConfigController@get_languages');
         });
 

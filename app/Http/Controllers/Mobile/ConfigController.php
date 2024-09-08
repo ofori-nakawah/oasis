@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use App\Models\Industry;
 use App\Models\Language;
 use App\Models\Skill;
 use App\Traits\Responses;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+
 
 class ConfigController extends Controller
 {
@@ -22,5 +22,11 @@ class ConfigController extends Controller
     {
         $skills = Language::orderBy('name')->get();
         return $this->success_response($skills, "");
+    }
+
+    public function get_industries()
+    {
+        $industries = Industry::orderBy('name')->get();
+        return $this->success_response($industries, "");
     }
 }
