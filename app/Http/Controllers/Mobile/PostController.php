@@ -953,7 +953,7 @@ class PostController extends Controller
              */
             $post->user;
             Notifications::PushUserNotification($post, $job_application, auth()->user(), "SUCCESSFUL_JOB_APPLICATION");
-            PushNotification::NotifyViaExpo(auth()->user()->expo_push_token, ["title" => "Successful job application", "content" => []], EventsList::SUCCESSFUL_JOB_APPLICATION->toString());
+            PushNotification::NotifyViaExpo(auth()->user()->expo_push_token, ["title" => "Successful job application", "content" => [], "body" => "Your job application was successful"], EventsList::SUCCESSFUL_JOB_APPLICATION->toString());
         } catch (QueryException $e) {
             Log::error("ERROR SAVING JOB APPLICATION >>>>>>>>>> " . $job_application . " >>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);

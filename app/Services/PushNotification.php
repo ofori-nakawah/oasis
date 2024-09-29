@@ -144,7 +144,8 @@ class PushNotification
         $notificationPayload = [
             "to" => $tokens,
             "title" => $notificationData["title"],
-            "body" => [
+            "body" => $notificationData["body"],
+            "data" => [
                 "event" => $event,
                 "notificationDetails" => $notificationData["content"]
             ]
