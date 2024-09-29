@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\Responses;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
@@ -81,7 +82,6 @@ class UserController extends Controller
                 $skill_user->skill_id = $skill->id;
                 $skill_user->save();
             }
-
         }
 
         auth()->user()->is_core_skills_set = "1";
@@ -128,7 +128,7 @@ class UserController extends Controller
         auth()->user()->fcm_token = $request->user_fcm_token;
         auth()->user()->update();
 
-//        PushNotification::FireSingleUserPushNotification("title", "body", "SOME_EVENT", "some details", $request->user_fcm_token);
+        //        PushNotification::FireSingleUserPushNotification("title", "body", "SOME_EVENT", "some details", $request->user_fcm_token);
 
         return $this->success_response([], "FCM token updated successfully.");
     }
@@ -351,7 +351,6 @@ class UserController extends Controller
                 if ($vork->job_post->type === "VOLUNTEER") {
                     $volunteer_count++;
                     $vork->ref_id = "VO" . explode("-", $vork->id)[0];
-
                 } else {
                     $jobs_count++;
                     $vork->ref_id = "QJ" . explode("-", $vork->id)[0];
@@ -410,13 +409,13 @@ class UserController extends Controller
             "phoneNumber" => $user->phone_number,
             "user" => auth()->user(),
             "country" => Country::GetCountry($user->country_id),
-            "token" => auth()->user()->createToken('auth_token')->plainTextToken,
         );
 
-        return $this->success_response(["user" => auth()->user(),
+        return $this->success_response([
+            "user" => auth()->user(),
             "country" => Country::GetCountry($user->country_id),
-            "token" => auth()->user()->createToken('auth_token')->plainTextToken,
-            $user_profile], "Profile details fetched successfully.");
+            $user_profile
+        ], "Profile details fetched successfully.");
     }
 
     public function updateProfileInformation(Request $request)
@@ -437,7 +436,7 @@ class UserController extends Controller
                 auth()->user()->bio = $request->bio;
                 auth()->user()->update();
 
-//                PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+                //                PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
                 break;
             case "profile-picture":
                 if ($request->profile_picture && $request->profile_picture != "") {
@@ -454,7 +453,7 @@ class UserController extends Controller
                     auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
                     auth()->user()->update();
 
-//                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+                    //                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
 
                     return $this->success_response(["image" => auth()->user()->profile_picture], "Profile picture updated successfully.");
                 }
@@ -480,7 +479,7 @@ class UserController extends Controller
                     auth()->user()->profile_picture = URL::to('/public/uploads/profile_pics') . '/' . $name;
                     auth()->user()->update();
 
-//                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+                    //                    PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
 
                     return $this->success_response(["image" => auth()->user()->profile_picture], "Profile picture updated successfully.");
                 } else {
@@ -795,7 +794,6 @@ class UserController extends Controller
         return [
             "user" => auth()->user(),
             "country" => Country::GetCountry(auth()->user()->country_id),
-            "token" => auth()->user()->createToken('auth_token')->plainTextToken,
         ];
     }
 
@@ -832,7 +830,7 @@ class UserController extends Controller
             return $this->data_validation_error_response($validation->errors());
         }
 
-        switch($request->module) {
+        switch ($request->module) {
             case "NAME_SEARCH":
                 $users = User::where('name', 'LIKE', "%{$request->target}%")->get();
                 foreach ($users as $user) {
@@ -870,4 +868,20 @@ class UserController extends Controller
         return $this->success_response([]);
     }
 
+    public function updateUserExpoPushToken(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'token' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $user = auth()->user();
+        $user->expo_push_token = $request->token;
+        $user->update();
+
+        return $this->success_response([]);
+    }
 }
