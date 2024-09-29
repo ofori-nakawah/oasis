@@ -307,7 +307,7 @@ class Notifications
         }
 
         $user->notify(new PostActivityNotification($post, $event, $message, $ref_id, $category, $status));
-        PushNotification::NotifyViaExpo($tokens ?? $user->expo_push_token, ["body" => $message, "title" => $title], $event);
+        PushNotification::NotifyViaExpo($tokens ?? $user->expo_push_token, ["body" => $message, "title" => $title, "data" => ["content" => $post]], $event);
     }
 
     public static function FireReferenceRequestNotification($event, $outsideVorkJob, $user)
