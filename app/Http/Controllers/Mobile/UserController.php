@@ -868,8 +868,13 @@ class UserController extends Controller
         return $this->success_response([]);
     }
 
+    /**
+     * updates user expo push token
+     */
     public function updateUserExpoPushToken(Request $request)
     {
+        Log::debug("REQUEST FOR TOKEN UPDATE >>>>>>>>> " . $request->token);
+
         $validation = Validator::make($request->all(), [
             'token' => 'required',
         ]);

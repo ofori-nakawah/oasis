@@ -280,6 +280,7 @@ class Notifications
         }
 
         $user->notify(new PostActivityNotification($post, $event, $message, $ref_id, $category, $status));
+        
     }
 
     public static function FireReferenceRequestNotification($event, $outsideVorkJob, $user)

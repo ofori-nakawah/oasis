@@ -135,6 +135,8 @@ class PushNotification
 
     public static function NotifyViaExpo($tokens, $notificationData, $event)
     {
+        Log::debug("TOKEN >>>>>>> " . $tokens . " EVENT >>>>>> " . $event);
+
         $headers = [
             'Content-Type: application/json'
         ];
