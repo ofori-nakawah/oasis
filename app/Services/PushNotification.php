@@ -1,11 +1,14 @@
 <?php
 
 namespace App\Services;
+
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
-class PushNotification {
-    public static function Notify($event,$details,$user_fcm_token){
+class PushNotification
+{
+    public static function Notify($event, $details, $user_fcm_token)
+    {
         $server_api_key = env("FIREBASE_SERVER_API_KEY");
         if (!$server_api_key) {
             Log::debug("MISSING FIREBASE_SERVER_API_KEY IN ENV FILE");
@@ -23,7 +26,7 @@ class PushNotification {
         switch ($event) {
             case "APPLICATION_CONFIRMED" || "APPLICATION_DECLINED":
                 $title = ($event === 'APPLICATION_CONFIRMED') ? 'Your application has been confirmed!' : 'Your application has been declined';
-                $body = ($event === 'APPLICATION_CONFIRMED') ? 'The issuer for a job you applied to has confirmed you for the position. Go to your notifications to view more details.': 'ok';
+                $body = ($event === 'APPLICATION_CONFIRMED') ? 'The issuer for a job you applied to has confirmed you for the position. Go to your notifications to view more details.' : 'ok';
 
                 $notification_data = [
                     'title' => $title,
@@ -128,5 +131,42 @@ class PushNotification {
             }
         }
         return $fcm_tokens;
+    }
+
+    public static function NotifyViaExpo($tokens, $notificationData, $event)
+    {
+        Log::debug("TOKEN >>>>>>> " . $tokens . " EVENT >>>>>> " . $event);
+
+        $headers = [
+            'Content-Type: application/json'
+        ];
+
+        $notificationPayload = [
+            "to" => $tokens,
+            "title" => $notificationData["title"],
+            "body" => [
+                "event" => $event,
+                "notificationDetails" => $notificationData["content"]
+            ]
+        ];
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://exp.host/--/api/v2/push/send',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($notificationPayload),
+            CURLOPT_HTTPHEADER => $headers,
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        Log::debug("CUSTOMER PUSH NOTIFICATION RESPONSE VIA EXPO >>>>>>>> " . $response);
     }
 }

@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Constants;
+
+enum EventsList: string
+{
+        case APPLICATION_CONFIRMED = 'APPLICATION_CONFIRMED';
+        case APPLICATION_DECLINED = 'APPLICATION_DECLINED';
+        case JOB_CANCELLED = 'JOB_CANCELLED';
+        case JOB_CLOSED = 'JOB_CLOSED';
+        case QUOTE_SUBMITTED = 'QUOTE_SUBMITTED';
+        case QUOTE_RECEIVED = 'QUOTE_RECEIVED';
+        case SUCCESSFUL_JOB_APPLICATION = 'SUCCESSFUL_JOB_APPLICATION';
+}

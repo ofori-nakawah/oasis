@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mobile;
 
+use App\Constants\EventsList;
 use App\Helpers\DateFormatter;
 use App\Helpers\Notifications as Notifications;
 use App\Models\JobApplication;
@@ -952,6 +953,7 @@ class PostController extends Controller
              */
             $post->user;
             Notifications::PushUserNotification($post, $job_application, auth()->user(), "SUCCESSFUL_JOB_APPLICATION");
+            PushNotification::NotifyViaExpo(auth()->user->expo_push_token, ["title" => "Successful job application", "content" => []], EventsList::SUCCESSFUL_JOB_APPLICATION);
         } catch (QueryException $e) {
             Log::error("ERROR SAVING JOB APPLICATION >>>>>>>>>> " . $job_application . " >>>>>>>>> " . $e);
             return $this->db_operation_error_response([]);

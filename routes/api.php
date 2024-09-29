@@ -96,6 +96,8 @@ Route::prefix('/v1')->group(function () {
             Route::post('/update-user-password', 'Mobile\UserController@updateProfileInformation');
             Route::post('/update-user-profile-picture', 'Mobile\UserController@updateProfileInformation');
 
+            Route::post('/update-user-expo-push-token', 'Mobile\UserController@updateUserExpoPushToken');
+
             /**
              * other user profile routes
              */

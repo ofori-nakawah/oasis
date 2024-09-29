@@ -21,16 +21,21 @@ class AuthController extends Controller
 {
     use Responses;
 
-    public function login (Request  $request) {
+    public function login(Request  $request)
+    {
         $validation = Validator::make($request->all(), [
             'email_phone_number' => 'required',
             'password' => 'required'
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         $user = User::where("phone_number", $request->input("email_phone_number"))->orWhere("email", $request->input("email_phone_number"))->first();
-        if (!$user) {return $this->not_found_response([], "Invalid account credentials.");}
+        if (!$user) {
+            return $this->not_found_response([], "Invalid account credentials.");
+        }
 
         if (Hash::check($request->input("password"), $user->password)) {
             if ($user->status != User::DELETED_STATUS) {
@@ -44,7 +49,7 @@ class AuthController extends Controller
 
         auth()->user()->skills;
         auth()->user()->languages;
-       
+
         $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
         $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
         foreach ($recentlyApplied as $item) {
@@ -67,12 +72,18 @@ class AuthController extends Controller
             'phoneNumber' => 'required',
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         $user = User::where("email", $request->phoneNumber)->orWhere("phone_number", $request->phoneNumber)->first();
-        if (!$user) {return $this->not_found_response([], "Oops. We could not find any records");}
+        if (!$user) {
+            return $this->not_found_response([], "Oops. We could not find any records");
+        }
 
-        if (!OTP::Get($user)) {return $this->general_error_response([], "Oops. We couldn't send confirmation code. Try again");}
+        if (!OTP::Get($user)) {
+            return $this->general_error_response([], "Oops. We couldn't send confirmation code. Try again");
+        }
 
         return $this->success_response([
             "phoneNumber" => $user->phone_number
@@ -86,7 +97,9 @@ class AuthController extends Controller
             'code' => 'required'
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         $verification_status = OTP::Validate("phone_number", $request->input("phone_number"), $request->input("code"));
 
@@ -108,7 +121,9 @@ class AuthController extends Controller
         }
 
         $user = User::where("phone_number", $request->input("phone_number"))->first();
-        if (!$user) {return $this->not_found_response([], "Oops. Something went wrong. Error fetching data."); }
+        if (!$user) {
+            return $this->not_found_response([], "Oops. Something went wrong. Error fetching data.");
+        }
 
         $isLatePhoneNumberVerification = "no";
         if (!$user->phone_number_verified_at) {
@@ -128,10 +143,14 @@ class AuthController extends Controller
             'phoneNumber' => 'required'
         ]);
 
-        if ($validation->fails()) {return $this->data_validation_error_response($validation->errors());}
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
 
         $user = User::where("phone_number", $request->input("phoneNumber"))->first();
-        if (!$user) {return $this->not_found_response([], "Oops..Something went wrong. Error fetching data.");}
+        if (!$user) {
+            return $this->not_found_response([], "Oops..Something went wrong. Error fetching data.");
+        }
 
         $user->password = Hash::make($request->password);
         $user->update();
