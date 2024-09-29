@@ -883,9 +883,8 @@ class UserController extends Controller
             return $this->data_validation_error_response($validation->errors());
         }
 
-        $user = auth()->user();
-        $user->expo_push_token = $request->token;
-        $user->update();
+        auth()->user()->expo_push_token = $request->token;
+        auth()->user()->update();
 
         return $this->success_response([]);
     }
