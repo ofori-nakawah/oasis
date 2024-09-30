@@ -803,13 +803,19 @@ class UserController extends Controller
     public function get_user_home_data()
     {
         $user = auth()->user();
+
+        $latestActiveListing = $user->posts->where("status", "active")->sortByDesc("created_at")->first();
+        $latestOngoingApplication = $user->job_applications->whereIn('status', array("applied", "confirmed"))->sortByDesc("created_at")->first();
+        $latestOngoingApplication->job_post;
+
         return $this->success_response([
             "user" => [
                 "id" => $user->id,
                 "name" => $user->name,
                 "profile_picture" => $user->profile_picture
             ],
-            "latest_active_listing" => "",
+            "latest_active_listing" => $latestActiveListing,
+            "latest_ongoing_application" => $latestOngoingApplication,
             "kyc_status" => [
                 "is_skills_and_interests_set" => count($user->skills) > 0 ? 1 : 0,
                 "is_languages_set" => count($user->languages) > 0 ? 1 : 0,
