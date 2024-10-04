@@ -807,6 +807,7 @@ class UserController extends Controller
         $latestActiveListing = $user->posts->where("status", "active")->sortByDesc("created_at")->first();
         $latestOngoingApplication = $user->job_applications->whereIn('status', array("applied", "confirmed"))->sortByDesc("created_at")->first();
         $latestOngoingApplication->job_post;
+        $latestOngoingApplication->job_post->user;
 
         return $this->success_response([
             "user" => [
