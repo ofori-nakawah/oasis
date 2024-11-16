@@ -363,7 +363,6 @@ class PostController extends Controller
      */
     public function submit_quote(Request $request)
     {
-        Log::debug($request->all());
         $validation = Validator::make($request->all(), [
             'quote' => 'required',
             'post_id' => 'required',
@@ -577,13 +576,11 @@ class PostController extends Controller
                 $volunteer_near_me = collect();
                 $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->orderByDesc("created_at")->get();
                 $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
-                    Log::debug($post->coords);
                     //get post coordinates
                     $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
                     $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
                     $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
-                    Log::debug($post->location . '>>>>>>' . auth()->user()->location_name);
                     $post["organiser_name"] = $post->user->name;
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
@@ -602,7 +599,6 @@ class PostController extends Controller
                         $post->has_already_applied = "no";
                     }
                 }
-
 
                 break;
             case "QUICK_JOB":
@@ -675,6 +671,8 @@ class PostController extends Controller
                 }
 
                 $posts = $jobs_near_me->sortBy("distance");
+
+
                 break;
             case "FIXED_TERM_JOB":
                 $searchCategories = $request->categories;
@@ -777,6 +775,8 @@ class PostController extends Controller
                     $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
 
                     $post->user;
+                    $post->industry;
+
                     /**
                      * filter using distance
                      */
@@ -890,6 +890,7 @@ class PostController extends Controller
             $post->has_already_applied = "yes";
         }
         $post->user;
+        $post->industry;
 
         //get user coordinates
         $user_location = auth()->user()->location_coords;
