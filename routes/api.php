@@ -130,6 +130,7 @@ Route::prefix('/v1')->group(function () {
 
         Route::prefix('/p2p')->group(function () {
             Route::post('/submit-quote', 'Mobile\PostController@submit_quote');
+            Route::post('/declined-job', 'Mobile\PostController@declined_job');
         });
     });
 });

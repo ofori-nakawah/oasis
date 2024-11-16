@@ -261,6 +261,21 @@ class Notifications
                     $message = "Hello " . $user->name . ",\nYou have a new quote from a vorker for your job request with reference ID (" . $ref_id . ").  ";
                 }
 
+                if ($event === "JOB_DECLINED") {
+                    $ref_id = "PP" . explode("-", $post->id)[0];
+                    $status = "Job Declined";
+                    $title = "Job declined";
+                    $category = $post->category;
+
+                    $isIssuer = (int) $post->user_id === (int) auth()->user()->id && (int) $application->user_id === (int) auth()->user()->id;
+
+                    if ($isIssuer) {
+                        $message =  $user->name . " has declined the job opportunity REF ID (" . $ref_id . ").";
+                    } else {
+                        $message = "P2P Job with the REF ID (" . $ref_id . ") has been declined.";
+                    }
+                }
+
                 /**
                  * Quote submitted
                  */

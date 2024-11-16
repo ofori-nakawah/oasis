@@ -358,6 +358,45 @@ class PostController extends Controller
         }
     }
 
+    public function declined_job(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'post_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $post = Post::where("id", $request->id)->first();
+        if (!$post) {
+            return $this->not_found_response([], "Error fetching post details");
+        }
+
+        $application = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+        if (!$application) {
+            return $this->not_found_response([], "Error fetching application details");
+        }
+
+        $application->status = "declined";
+
+        try {
+            $application->update();
+
+            /**
+             * Notify the issuer of a quote
+             */
+            $post->applications;
+            Notifications::PushUserNotification($post, $post, $post->user, "JOB_DECLINED");
+            Notifications::PushUserNotification($post, $post, auth()->user(), "JOB_DECLINED");
+
+            return $this->success_response($application, "Job has been declined successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DECLINING JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->db_operation_error_response([]);
+        }
+    }
+
     /**
      * submit quote
      */
