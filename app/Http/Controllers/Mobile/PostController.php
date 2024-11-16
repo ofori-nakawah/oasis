@@ -368,17 +368,20 @@ class PostController extends Controller
             return $this->data_validation_error_response($validation->errors());
         }
 
-        $post = Post::where("id", $request->id)->first();
+        $post = Post::where("id", $request->post_id)->first();
         if (!$post) {
             return $this->not_found_response([], "Error fetching post details");
         }
 
         $application = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
         if (!$application) {
+            Log::info("DECLINING JOB >>>>>>>>>>>>>>>>>>>>>>>> " . json_encode($request->all()));
+
             return $this->not_found_response([], "Error fetching application details");
         }
 
         $application->status = "declined";
+
 
         try {
             $application->update();
