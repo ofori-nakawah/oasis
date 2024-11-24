@@ -593,6 +593,7 @@ class UserController extends Controller
     {
 
         $educationHistory = EducationHistory::where("id", $request->id)->first();
+        Log::debug("EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $request);
         if (!$educationHistory) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
         }
@@ -607,17 +608,18 @@ class UserController extends Controller
             $educationHistory->end_date = null;
         }
 
-        if ($request->image) {
-            $image = $request->image;
-            $name = auth()->user()->name . '-education-' . uniqid() . '.png';
-            $destinationPath = public_path('/uploads');
-            $image->move($destinationPath, $name);
-
-            $educationHistory->certificate_link = URL::to('/public/uploads') . '/' . $name;
-        }
-
         try {
-            $educationHistory->update();
+            if ($educationHistory->update() && $request->image) {
+                $image = $request->image;
+                $name = auth()->user()->name . '-education-' . uniqid() . '.png';
+                $destinationPath = public_path('/uploads/profile/education-history/');
+                $image->move($destinationPath, $name);
+
+                $educationHistory->certificate_link = URL::to('/uploads/profile/education-history') . '/' . $name;
+                if (!$educationHistory->update()) {
+                    Log::error("ERROR UPDATING IMAGE FOR EDUCATION HISTORY POST " . $educationHistory->id);
+                }
+            }
             return $this->success_response(auth()->user(), "Education history updated successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
@@ -652,17 +654,22 @@ class UserController extends Controller
             $certificateAndTraining->end_date = null;
         }
 
-        if ($request->image) {
-            $image = $request->image;
-            $name = auth()->user()->name . '-training-' . uniqid() . '.png';
-            $destinationPath = public_path('/uploads');
-            $image->move($destinationPath, $name);
-
-            $certificateAndTraining->certificate_link = URL::to('/public/uploads') . '/' . $name;
-        }
-
         try {
-            $certificateAndTraining->save();
+            if ($certificateAndTraining->save() && $request->image) {
+                $image = $request->image;
+                $name = $certificateAndTraining->id . '_' . time() . '.png';
+                $destinationPath = public_path('/uploads/profile/certifications/');
+
+                $image_parts = explode(";base64,", $image);
+                $image_base64 = base64_decode($image_parts[1]);
+                $file = $destinationPath . $name;
+                file_put_contents($file, $image_base64);
+
+                $certificateAndTraining->image_link = URL::to('/uploads/profile/certifications') . '/' . $name;
+                if (!$certificateAndTraining->update()) {
+                    Log::error("ERROR UPDATING IMAGE FOR P2P POST " . $certificateAndTraining->id);
+                }
+            }
             return $this->success_response(auth()->user(), "Certificate and training history has been added to your profile successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING CERTIFICATE AND TRAINING HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);

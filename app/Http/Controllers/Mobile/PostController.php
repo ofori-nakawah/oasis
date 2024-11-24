@@ -229,19 +229,21 @@ class PostController extends Controller
         $post->type = "QUICK_JOB";
         $post->source = "MOBILE";
 
-        //        if ($request->post_image && $request->post_image != "") {
-        //            $image = $request->post_image;
-        //            $name = $post->id . '_' . time() . '.png';
-        //            $destinationPath = public_path('/uploads/quick_jobs/');
-        //
-        //            $image_parts = explode(";base64,", $image);
-        //            Log::debug($image_parts);
-        //            $image_base64 = base64_decode($image_parts[1]);
-        //            $file = $destinationPath . $name;
-        //            file_put_contents($file, $image_base64);
-        //
-        //            $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
-        //        }
+        if ($request->post_image) {
+            $image = $request->post_image;
+            $name = $post->id . '_' . $post->type . '_' . time() . '.png';
+            $destinationPath = public_path('/uploads/listings/quick-job/');
+
+            $image_parts = explode(";base64,", $image);
+            $image_base64 = base64_decode($image_parts[1]);
+            $file = $destinationPath . $name;
+            file_put_contents($file, $image_base64);
+
+            $post->post_image_link = URL::to('/public/uploads/listings/quick-job') . '/' . $name;
+            if (!$post->update()) {
+                Log::error("ERROR UPDATING IMAGE FOR P2P POST " . $post->id);
+            }
+        }
 
         try {
             $post->save();
