@@ -593,7 +593,6 @@ class UserController extends Controller
     {
 
         $educationHistory = EducationHistory::where("id", $request->id)->first();
-        Log::debug("EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $request);
         if (!$educationHistory) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
         }
@@ -610,12 +609,16 @@ class UserController extends Controller
 
         try {
             if ($educationHistory->update() && $request->image) {
-                $image = $request->image;
+                $image = $request->image["_j"];
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
-                $destinationPath = public_path('/uploads/profile/education-history/');
-                $image->move($destinationPath, $name);
+                $destinationPath = public_path('/uploads/education-history/');
 
-                $educationHistory->certificate_link = URL::to('/uploads/profile/education-history') . '/' . $name;
+                $image_parts = explode(";base64,", $image);
+                $image_base64 = base64_decode($image_parts[1]);
+                $file = $destinationPath . $name;
+                file_put_contents($file, $image_base64);
+
+                $educationHistory->certificate_link = URL::to('/uploads/education-history') . '/' . $name;
                 if (!$educationHistory->update()) {
                     Log::error("ERROR UPDATING IMAGE FOR EDUCATION HISTORY POST " . $educationHistory->id);
                 }
