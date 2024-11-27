@@ -571,17 +571,23 @@ class UserController extends Controller
             $educationHistory->endDate = null;
         }
 
-        if ($request->image) {
-            $image = $request->image;
-            $name = auth()->user()->name . '-education-' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads');
-            $image->move($destinationPath, $name);
-
-            $educationHistory->certificate_link = URL::to('/public/uploads') . '/' . $name;
-        }
-
         try {
-            $educationHistory->save();
+
+            if ($educationHistory->save() && $request->image) {
+                $image = $request->image["_j"];
+                $name = auth()->user()->name . '-education-' . uniqid() . '.png';
+                $destinationPath = public_path('/uploads/education-history/');
+
+                $image_parts = explode(";base64,", $image);
+                $image_base64 = base64_decode($image_parts[1]);
+                $file = $destinationPath . $name;
+                file_put_contents($file, $image_base64);
+
+                $educationHistory->certificate_link = URL::to('/uploads/education-history') . '/' . $name;
+                if (!$educationHistory->update()) {
+                    Log::error("ERROR SAVING IMAGE FOR EDUCATION HISTORY POST " . $educationHistory->id);
+                }
+            }
             return $this->success_response(auth()->user(), "Education history has been added to your profile successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR SAVING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
@@ -659,18 +665,18 @@ class UserController extends Controller
 
         try {
             if ($certificateAndTraining->save() && $request->image) {
-                $image = $request->image;
-                $name = $certificateAndTraining->id . '_' . time() . '.png';
-                $destinationPath = public_path('/uploads/profile/certifications/');
+                $image = $request->image["_j"];
+                $name = auth()->user()->name . '-education-' . uniqid() . '.png';
+                $destinationPath = public_path('/uploads/certifications/');
 
                 $image_parts = explode(";base64,", $image);
                 $image_base64 = base64_decode($image_parts[1]);
                 $file = $destinationPath . $name;
                 file_put_contents($file, $image_base64);
 
-                $certificateAndTraining->image_link = URL::to('/uploads/profile/certifications') . '/' . $name;
+                $certificateAndTraining->certificate_link = URL::to('/uploads/certifications') . '/' . $name;
                 if (!$certificateAndTraining->update()) {
-                    Log::error("ERROR UPDATING IMAGE FOR P2P POST " . $certificateAndTraining->id);
+                    Log::error("ERROR SAVING IMAGE FOR CERTIFICATION POST " . $certificateAndTraining->id);
                 }
             }
             return $this->success_response(auth()->user(), "Certificate and training history has been added to your profile successfully.");
@@ -683,32 +689,37 @@ class UserController extends Controller
     public function updateCertificationsAndTrainings(Request $request)
     {
 
-        $certificationsAndTrainings = CertificationAndTraining::where("id", $request->id)->first();
-        if (!$certificationsAndTrainings) {
+        $certificateAndTraining = CertificationAndTraining::where("id", $request->id)->first();
+        if (!$certificateAndTraining) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
         }
 
-        $certificationsAndTrainings->programme = $request->programme;
-        $certificationsAndTrainings->start_date = $this->convertDateStringToDateTime($request->startDate);
-        $certificationsAndTrainings->end_date = $this->convertDateStringToDateTime($request->endDate);
-        $certificationsAndTrainings->institution = $request->institution;
-        $certificationsAndTrainings->training_hours = $request->trainingHours;
+        $certificateAndTraining->programme = $request->programme;
+        $certificateAndTraining->start_date = $this->convertDateStringToDateTime($request->startDate);
+        $certificateAndTraining->end_date = $this->convertDateStringToDateTime($request->endDate);
+        $certificateAndTraining->institution = $request->institution;
+        $certificateAndTraining->training_hours = $request->trainingHours;
 
         if ($request->isOngoing === "on" || $request->isOngoing === "true" || $request->isOngoing === true) {
-            $certificationsAndTrainings->end_date = null;
-        }
-
-        if ($request->image) {
-            $image = $request->file('image');
-            $name = auth()->user()->name . '-education-' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/uploads');
-            $image->move($destinationPath, $name);
-
-            $certificationsAndTrainings->certificate_link = URL::to('/public/uploads') . '/' . $name;
+            $certificateAndTraining->end_date = null;
         }
 
         try {
-            $certificationsAndTrainings->update();
+            if ($certificateAndTraining->update() && $request->image) {
+                $image = $request->image["_j"];
+                $name = auth()->user()->name . '-education-' . uniqid() . '.png';
+                $destinationPath = public_path('/uploads/certifications/');
+
+                $image_parts = explode(";base64,", $image);
+                $image_base64 = base64_decode($image_parts[1]);
+                $file = $destinationPath . $name;
+                file_put_contents($file, $image_base64);
+
+                $certificateAndTraining->certificate_link = URL::to('/uploads/certifications') . '/' . $name;
+                if (!$certificateAndTraining->update()) {
+                    Log::error("ERROR SAVING IMAGE FOR EDUCATION HISTORY POST " . $certificateAndTraining->id);
+                }
+            }
             return $this->success_response(auth()->user(), "Certifications and training history updated successfully.");
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
