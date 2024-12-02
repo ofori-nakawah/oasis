@@ -572,7 +572,7 @@ class UserController extends Controller
         }
 
         try {
-            Log::debug("IMAGE >>>>>>>>>>>>>>>>>>>>>>>> " . $request->image);
+            Log::debug("IMAGE >>>>>>>>>>>>>>>>>>>>>>>> " . json_encode($request->image));
 
             if ($educationHistory->save() && $request->image !== "") {
                 $image = $request->image["_j"];
