@@ -570,10 +570,10 @@ class UserController extends Controller
         if ($request->is_ongoing === "on") {
             $educationHistory->endDate = null;
         }
-
+        
         try {
 
-            if ($educationHistory->save() && isset($request->image["_j"])) {
+            if ($educationHistory->save() && $request->image["_j"] !== []) {
                 $image = $request->image["_j"];
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/education-history/');
@@ -614,7 +614,7 @@ class UserController extends Controller
         }
 
         try {
-            if ($educationHistory->update() && $request->image) {
+            if ($educationHistory->update() && $request->image["_j"] !== []) {
                 $image = $request->image["_j"];
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/education-history/');
@@ -664,7 +664,7 @@ class UserController extends Controller
         }
 
         try {
-            if ($certificateAndTraining->save() && $request->image) {
+            if ($certificateAndTraining->save() && $request->image["_j"] !== []) {
                 $image = $request->image["_j"];
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/certifications/');
@@ -705,7 +705,7 @@ class UserController extends Controller
         }
 
         try {
-            if ($certificateAndTraining->update() && $request->image) {
+            if ($certificateAndTraining->update() && $request->image["_j"] !== []) {
                 $image = $request->image["_j"];
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/certifications/');
