@@ -573,7 +573,7 @@ class UserController extends Controller
 
         try {
 
-            if ($educationHistory->save() && $request->image) {
+            if ($educationHistory->save() && isset($request->image["_j"])) {
                 $image = $request->image["_j"];
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/education-history/');
