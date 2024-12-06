@@ -487,15 +487,16 @@ class UserController extends Controller
                 }
                 break;
             case "update-password":
+                $validation = Validator::make($request->all(), [
+                    'old_password' => 'required',
+                    'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()],
+                    'password_confirmation' => 'required|same:password',
+                ]);
+
                 if (!Hash::check($request->old_password, auth()->user()->password)) {
                     $errors->add("old_password", "The old password you entered does not match.");
                     return $this->data_validation_error_response($errors);
                 }
-
-                $validation = Validator::make($request->all(), [
-                    'old_password' => 'required',
-                    'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()]
-                ]);
 
                 if ($validation->fails()) {
                     return $this->data_validation_error_response($validation->errors());
@@ -570,7 +571,7 @@ class UserController extends Controller
         if ($request->is_ongoing === "on") {
             $educationHistory->endDate = null;
         }
-        
+
         try {
 
             if ($educationHistory->save() && $request->image["_j"] !== []) {

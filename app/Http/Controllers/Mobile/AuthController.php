@@ -69,16 +69,16 @@ class AuthController extends Controller
     public function passwordResetPhoneNumberVerification(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'phoneNumber' => 'required',
+            'phoneNumberEmail' => 'required',
         ]);
 
         if ($validation->fails()) {
             return $this->data_validation_error_response($validation->errors());
         }
 
-        $user = User::where("email", $request->phoneNumber)->orWhere("phone_number", $request->phoneNumber)->first();
+        $user = User::where("email", $request->phoneNumberEmail)->orWhere("phone_number", $request->phoneNumberEmail)->first();
         if (!$user) {
-            return $this->not_found_response([], "Oops. We could not find any records");
+            return $this->not_found_response([], "Oops. We could not find any records with the provided target.");
         }
 
         if (!OTP::Get($user)) {
@@ -86,7 +86,7 @@ class AuthController extends Controller
         }
 
         return $this->success_response([
-            "phoneNumber" => $user->phone_number
+            "phoneNumber" => $user->phone_number,
         ], "An SMS with confirmation code has been sent to your phone number");
     }
 
@@ -140,6 +140,7 @@ class AuthController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'password' => ['required', Password::min(6)->letters()->mixedCase()->uncompromised()],
+            'password_confirmation' => 'required|same:password',
             'phoneNumber' => 'required'
         ]);
 
