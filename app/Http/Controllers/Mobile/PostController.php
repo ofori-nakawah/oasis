@@ -229,7 +229,7 @@ class PostController extends Controller
         $post->type = "QUICK_JOB";
         $post->source = "MOBILE";
 
-        if ($request->post_image) {
+        if ($request->post_image && $request->post_image["_j"] !== []) {
             $image = $request->post_image;
             $name = $post->id . '_' . $post->type . '_' . time() . '.png';
             $destinationPath = public_path('/uploads/listings/quick-job/');
