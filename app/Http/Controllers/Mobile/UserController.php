@@ -301,8 +301,6 @@ class UserController extends Controller
             "total_earnings" => $total_earnings
         );
 
-        Log::debug($user_profile);
-
         return $this->success_response($user_profile, "Profile details fetched successfully.");
     }
 
