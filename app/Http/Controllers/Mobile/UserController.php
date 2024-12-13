@@ -962,7 +962,7 @@ class UserController extends Controller
         });
 
         // Sort users by distance in ascending order
-        $sortedUsers = $usersWithDistance->sortBy('distance');
+        $sortedUsers = $usersWithDistance->sortByDesc('distance');
 
         return $sortedUsers;
     }
