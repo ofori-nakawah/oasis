@@ -127,6 +127,7 @@ Route::prefix('/v1')->group(function () {
         });
 
         Route::post('/search', 'Mobile\UserController@search_vorkers');
+        Route::post('/filter-vorkers-by-location', 'Mobile\UserController@search_vorkers');
 
         Route::prefix('/p2p')->group(function () {
             Route::post('/submit-quote', 'Mobile\PostController@submit_quote');

@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Traits\Responses;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rules\Password;
@@ -872,7 +873,7 @@ class UserController extends Controller
                         $skill->skill;
                     }
                 }
-                return $this->success_response($users, "Search successful");
+                return $this->success_response($this->filterUsersBasedOnDistance($users), "Search successful");
                 break;
             case "CATEGORY_SEARCH":
                 $category = Skill::where("name", $request->target)->first();
@@ -894,7 +895,7 @@ class UserController extends Controller
                     $users->push($record->user);
                 }
 
-                return $this->success_response($users, "Search successful");
+                return $this->success_response($this->filterUsersBasedOnDistance($users), "Search successful");
                 break;
         }
 
@@ -920,5 +921,49 @@ class UserController extends Controller
         auth()->user()->update();
 
         return $this->success_response([]);
+    }
+
+    private function getDistance($lat1, $lon1, $lat2, $lon2, $unit)
+    {
+        $theta = (float)$lon1 - (float)$lon2;
+        $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
+    }
+
+    private function filterUsersBasedOnDistance($users)
+    {
+        $auth_user = Auth::user();
+        $auth_user_location_lat = json_decode($auth_user->location_coords)->latitude ??  explode(',', $auth_user->coords)[0];
+        $auth_user_location_lng = json_decode($auth_user->location_coords)->longitude ?? explode(',', $auth_user->coords)[1];
+
+        // Calculate distances and store them in an array
+        $usersWithDistance = $users->map(function ($user) use ($auth_user_location_lat, $auth_user_location_lng) {
+            $distance = $this->getDistance(
+                $auth_user_location_lat,
+                $auth_user_location_lng,
+                json_decode($user->location_coords)->latitude ?? explode(',', $user->coords)[0],
+                json_decode($user->location_coords)->longitude ?? explode(',', $user->coords)[1],
+                "K"
+            );
+
+            $user->distance = number_format($distance, 2);
+            return $user;
+        });
+
+        // Sort users by distance in ascending order
+        $sortedUsers = $usersWithDistance->sortBy('distance');
+
+        return $sortedUsers;
     }
 }
