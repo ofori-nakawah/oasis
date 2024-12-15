@@ -704,11 +704,8 @@ class PostController extends Controller
                     /**
                      * filter by isNegotiable
                      */
-                    if ($request->filterOptions["isSalaryNegotiable"]) {
-                        $jobs_near_me = $jobs_near_me->filter(function ($post) {
-                            $matchingItems = $post->is_negotiable === "yes";
-                            return !empty($matchingItems);
-                        });
+                    if (isset($request->filterOptions['isSalaryNegotiable']) && $request->filterOptions["isSalaryNegotiable"]) {
+                        $jobs_near_me = $this->filterBySalaryNegotiability($jobs_near_me);
                     }
 
                     /**
@@ -716,9 +713,7 @@ class PostController extends Controller
                      */
                     if (isset($request->filterOptions['minBudget']) && $request->filterOptions['minBudget'] !== '') {
                         $minBudget = floatval($request->filterOptions['minBudget']);
-                        $posts = $posts->filter(function ($post) use ($minBudget) {
-                            return floatval($post->min_budget) >= $minBudget;
-                        });
+                        $jobs_near_me = $this->filterByMinBudget($jobs_near_me, $minBudget);
                     }
 
                     /**
@@ -726,9 +721,7 @@ class PostController extends Controller
                      */
                     if (isset($request->filterOptions['maxBudget']) && $request->filterOptions['maxBudget'] !== '') {
                         $maxBudget = floatval($request->filterOptions['maxBudget']);
-                        $posts = $posts->filter(function ($post) use ($maxBudget) {
-                            return floatval($post->max_budget) <= $maxBudget;
-                        });
+                        $jobs_near_me = $this->filterByMaxBudget($jobs_near_me, $maxBudget);
                     }
 
                     /**
@@ -779,81 +772,64 @@ class PostController extends Controller
                         if ($distance <= $request->searchRadius) {
                             $jobs_near_me->push($post);
                         }
+                    } elseif ($request->filterOptions["distance"]) {
+                        if ($distance <= $request->filterOptions["distance"]) {
+                            $jobs_near_me->push($post);
+                        }
                     } else {
                         if ($distance <= self::JOB_SEARCH_RADIUS) {
                             $jobs_near_me->push($post);
                         }
                     }
+                }
+
+
+                if ($request->filterOptions) {
+                    /**
+                     * filter by isNegotiable
+                     */
+                    if (isset($request->filterOptions['isSalaryNegotiable']) && $request->filterOptions["isSalaryNegotiable"]) {
+                        $jobs_near_me = $this->filterBySalaryNegotiability($jobs_near_me);
+                    }
 
                     /**
-                     * filter using search categories
+                     * filter by isInternship
                      */
+                    if (isset($request->filterOptions['isInternship']) && $request->filterOptions["isInternship"]) {
+                        $jobs_near_me = $this->filterByInternship($jobs_near_me);
+                    }
+
+                    /**
+                     * filter by minBudget from filterOptions
+                     */
+                    if (isset($request->filterOptions['minBudget']) && $request->filterOptions['minBudget'] !== '') {
+                        $minBudget = floatval($request->filterOptions['minBudget']);
+                        $jobs_near_me = $this->filterByMinBudget($jobs_near_me, $minBudget);
+                    }
+
+                    /**
+                     * filter by maxBudget from filterOptions
+                     */
+                    if (isset($request->filterOptions['maxBudget']) && $request->filterOptions['maxBudget'] !== '') {
+                        $maxBudget = floatval($request->filterOptions['maxBudget']);
+                        $jobs_near_me = $this->filterByMaxBudget($jobs_near_me, $maxBudget);
+                    }
+
+                    /**
+                     * fiter by categories
+                     */
+                    $searchCategories = $request->filterOptions["selectedCategories"];
                     if ($searchCategories && count($searchCategories) > 0) {
                         $_searchCategories = array();
                         foreach ($searchCategories as $interest) {
                             array_push($_searchCategories, $interest);
                         }
 
-                        $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
-                        if (!empty($matchingItems)) {
-                            $jobs_near_me->push($post);
-                        }
-                    } else {
-                        /**
-                         * default search categories
-                         */
-                        $matchingItems = array_intersect($user_interests, json_decode($post->tags));
-                        if (!empty($matchingItems)) {
-                            $jobs_near_me->push($post);
-                        }
-                    }
-
-                    if ($request->filterOptions) {
-                        /**
-                         * fiter by category
-                         */
-                        $searchCategories = $request->filterOptions["selectedCategories"];
-                        if ($searchCategories && count($searchCategories) > 0) {
-                            $_searchCategories = array();
-                            foreach ($searchCategories as $interest) {
-                                array_push($_searchCategories, $interest);
-                            }
-
+                        $jobs_near_me = $jobs_near_me->filter(function ($post) use ($_searchCategories) {
                             $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
-                            if (!empty($matchingItems)) {
-                                $jobs_near_me->push($post);
-                            }
-                        } else {
-                            /**
-                             * default search categories
-                             */
-                            $matchingItems = array_intersect($user_interests, json_decode($post->tags));
-                            if (!empty($matchingItems)) {
-                                $jobs_near_me->push($post);
-                            }
-                        }
+                            return !empty($matchingItems);
+                        });
                     }
-                }
-
-
-                /**
-                 * filter by minBudget
-                 */
-                $minBudget = $request->minBudget;
-                if ($minBudget && $minBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($minBudget) {
-                        return $value['min_budget'] >= $minBudget;
-                    });
-                }
-
-                /**
-                 * filter by maxBudget
-                 */
-                $maxBudget = $request->maxBudget;
-                if ($maxBudget && $maxBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($maxBudget) {
-                        return $value['max_budget'] <= $maxBudget;
-                    });
                 }
 
                 $posts = $jobs_near_me->sortBy("distance");
@@ -888,80 +864,63 @@ class PostController extends Controller
                         if ($distance <= $request->searchRadius) {
                             $jobs_near_me->push($post);
                         }
+                    } elseif ($request->filterOptions["distance"]) {
+                        if ($distance <= $request->filterOptions["distance"]) {
+                            $jobs_near_me->push($post);
+                        }
                     } else {
                         if ($distance <= self::JOB_SEARCH_RADIUS) {
                             $jobs_near_me->push($post);
                         }
                     }
+                }
+
+                if ($request->filterOptions) {
+                    /**
+                     * filter by isNegotiable
+                     */
+                    if (isset($request->filterOptions['isSalaryNegotiable']) && $request->filterOptions["isSalaryNegotiable"]) {
+                        $jobs_near_me = $this->filterBySalaryNegotiability($jobs_near_me);
+                    }
 
                     /**
-                     * filter using search categories
+                     * filter by isInternship
                      */
+                    if (isset($request->filterOptions['isInternship']) && $request->filterOptions["isInternship"]) {
+                        $jobs_near_me = $this->filterByInternship($jobs_near_me);
+                    }
+
+                    /**
+                     * filter by minBudget from filterOptions
+                     */
+                    if (isset($request->filterOptions['minBudget']) && $request->filterOptions['minBudget'] !== '') {
+                        $minBudget = floatval($request->filterOptions['minBudget']);
+                        $jobs_near_me = $this->filterByMinBudget($jobs_near_me, $minBudget);
+                    }
+
+                    /**
+                     * filter by maxBudget from filterOptions
+                     */
+                    if (isset($request->filterOptions['maxBudget']) && $request->filterOptions['maxBudget'] !== '') {
+                        $maxBudget = floatval($request->filterOptions['maxBudget']);
+                        $jobs_near_me = $this->filterByMaxBudget($jobs_near_me, $maxBudget);
+                    }
+
+                    /**
+                     * fiter by categories
+                     */
+                    $searchCategories = $request->filterOptions["selectedCategories"];
                     if ($searchCategories && count($searchCategories) > 0) {
                         $_searchCategories = array();
                         foreach ($searchCategories as $interest) {
                             array_push($_searchCategories, $interest);
                         }
 
-                        $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
-                        if (!empty($matchingItems)) {
-                            $jobs_near_me->push($post);
-                        }
-                    } else {
-                        /**
-                         * default search categories
-                         */
-                        $matchingItems = array_intersect($user_interests, json_decode($post->tags));
-                        if (!empty($matchingItems)) {
-                            $jobs_near_me->push($post);
-                        }
-                    }
-
-                    if ($request->filterOptions) {
-                        /**
-                         * fiter by category
-                         */
-                        $searchCategories = $request->filterOptions["selectedCategories"];
-                        if ($searchCategories && count($searchCategories) > 0) {
-                            $_searchCategories = array();
-                            foreach ($searchCategories as $interest) {
-                                array_push($_searchCategories, $interest);
-                            }
-
+                        $jobs_near_me = $jobs_near_me->filter(function ($post) use ($_searchCategories) {
                             $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
-                            if (!empty($matchingItems)) {
-                                $jobs_near_me->push($post);
-                            }
-                        } else {
-                            /**
-                             * default search categories
-                             */
-                            $matchingItems = array_intersect($user_interests, json_decode($post->tags));
-                            if (!empty($matchingItems)) {
-                                $jobs_near_me->push($post);
-                            }
-                        }
+                            return !empty($matchingItems);
+                        });
                     }
-                }
-
-                /**
-                 * filter by minBudget
-                 */
-                $minBudget = $request->minBudget;
-                if ($minBudget && $minBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($minBudget) {
-                        return $value['min_budget'] >= $minBudget;
-                    });
-                }
-
-                /**
-                 * filter by maxBudget
-                 */
-                $maxBudget = $request->maxBudget;
-                if ($maxBudget && $maxBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($maxBudget) {
-                        return $value['max_budget'] <= $maxBudget;
-                    });
                 }
 
                 $posts = $jobs_near_me->sortBy("distance");
@@ -972,11 +931,64 @@ class PostController extends Controller
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 
+    /**
+     * Filter collection by salary negotiability
+     * 
+     * @param Collection $collection
+     * @return Collection
+     */
+    private function filterBySalaryNegotiability($collection)
+    {
+        return $collection->filter(function ($post) {
+            return $post->is_negotiable === "yes";
+        });
+    }
 
+    /**
+     * Filter collection by internship
+     * 
+     * @param Collection $collection
+     * @return Collection
+     */
+    private function filterByInternship($collection)
+    {
+        return $collection->filter(function ($post) {
+            return $post->is_internship === "yes";
+        });
+    }
+
+    /**
+     * Filter collection by minimum budget
+     * 
+     * @param Collection $collection
+     * @param float $minBudget
+     * @return Collection
+     */
+    private function filterByMinBudget($collection, $minBudget)
+    {
+        return $collection->filter(function ($post) use ($minBudget) {
+            return floatval($post->min_budget) >= $minBudget;
+        });
+    }
+
+    /**
+     * Filter collection by maximum budget
+     * 
+     * @param Collection $collection
+     * @param float $maxBudget
+     * @return Collection
+     */
+    private function filterByMaxBudget($collection, $maxBudget)
+    {
+        return $collection->filter(function ($post) use ($maxBudget) {
+            return floatval($post->max_budget) <= $maxBudget;
+        });
+    }
 
     /**
      * @param Request $request
      * @return JsonResponse
+     * Get posts based on user location and category
      */
     public function get_post_details(Request $request)
     {
