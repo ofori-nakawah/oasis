@@ -604,7 +604,6 @@ class PostController extends Controller
      */
     public function get_posts_closest_to_me(Request $request)
     {
-        Log::debug("GET POSTS CLOSEST TO ME >>>>>>>>>>>>>>>>>>>>>>>> " . json_encode($request->all()));
         $posts = [];
 
         //get user coordinates
