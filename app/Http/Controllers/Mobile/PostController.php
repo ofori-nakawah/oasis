@@ -619,8 +619,9 @@ class PostController extends Controller
         switch ($request->type) {
             case "VOLUNTEER":
                 $volunteer_near_me = collect();
+                $filterDistance = $request->filterOptions["distance"];
                 $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->orderByDesc("created_at")->get();
-                $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
+                $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $filterDistance) {
                     //get post coordinates
                     $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
                     $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
@@ -632,10 +633,13 @@ class PostController extends Controller
                     $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
                     if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                         $volunteer_near_me->push($post);
+                    } else if ($distance <= $filterDistance) {
+                        $volunteer_near_me->push($post);
                     }
                     return $post;
                 });
                 $posts = $volunteer_near_me->sortBy("distance");
+
                 foreach ($posts as $post) {
                     $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
                     if ($has_already_applied) {
@@ -919,6 +923,28 @@ class PostController extends Controller
                         $jobs_near_me = $jobs_near_me->filter(function ($post) use ($_searchCategories) {
                             $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
                             return !empty($matchingItems);
+                        });
+                    }
+
+                    /**
+                     * fiter by industry
+                     */
+                    $searchIndustries = $request->filterOptions["selectedIndustries"];
+                    if ($searchIndustries && count($searchIndustries) > 0) {
+                        $_searchIndustries = array();
+                        foreach ($searchIndustries as $interest) {
+                            array_push($_searchIndustries, $interest);
+                        }
+
+
+
+                        $jobs_near_me = $jobs_near_me->filter(function ($post) use ($_searchIndustries) {
+                            if ($post->industry) {
+                                $postIndustry = trim($post->industry->name);
+                                $matchingItems = in_array($postIndustry, array_map('trim', $_searchIndustries), true);
+                                return $matchingItems;
+                            }
+                            return false;
                         });
                     }
                 }
