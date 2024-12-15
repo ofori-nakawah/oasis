@@ -25,7 +25,7 @@ class PostController extends Controller
 {
     use Responses;
 
-    const JOB_SEARCH_RADIUS = 10;
+    const JOB_SEARCH_RADIUS = 5;
     const VOLUNTEER_SEARCH_RADIUS = 10;
 
     /**
@@ -604,6 +604,7 @@ class PostController extends Controller
      */
     public function get_posts_closest_to_me(Request $request)
     {
+        Log::debug("GET POSTS CLOSEST TO ME >>>>>>>>>>>>>>>>>>>>>>>> " . json_encode($request->all()));
         $posts = [];
 
         //get user coordinates
@@ -680,11 +681,16 @@ class PostController extends Controller
                     $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
                     $post->user;
+
                     /**
                      * filter using distance
                      */
                     if ($request->searchRadius && $request->searchRadius != "") {
                         if ($distance <= $request->searchRadius) {
+                            $jobs_near_me->push($post);
+                        }
+                    } elseif ($request->filterOptions["distance"]) {
+                        if ($distance <= $request->filterOptions["distance"]) {
                             $jobs_near_me->push($post);
                         }
                     } else {
@@ -694,29 +700,56 @@ class PostController extends Controller
                     }
                 }
 
-                /**
-                 * filter by minBudget
-                 */
-                $minBudget = $request->minBudget;
-                if ($minBudget && $minBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($minBudget) {
-                        return $value['min_budget'] >= $minBudget;
-                    });
+                if ($request->filterOptions) {
+                    /**
+                     * filter by isNegotiable
+                     */
+                    if ($request->filterOptions["isSalaryNegotiable"]) {
+                        $jobs_near_me = $jobs_near_me->filter(function ($post) {
+                            $matchingItems = $post->is_negotiable === "yes";
+                            return !empty($matchingItems);
+                        });
+                    }
+
+                    /**
+                     * filter by minBudget from filterOptions
+                     */
+                    if (isset($request->filterOptions['minBudget']) && $request->filterOptions['minBudget'] !== '') {
+                        $minBudget = floatval($request->filterOptions['minBudget']);
+                        $posts = $posts->filter(function ($post) use ($minBudget) {
+                            return floatval($post->min_budget) >= $minBudget;
+                        });
+                    }
+
+                    /**
+                     * filter by maxBudget from filterOptions
+                     */
+                    if (isset($request->filterOptions['maxBudget']) && $request->filterOptions['maxBudget'] !== '') {
+                        $maxBudget = floatval($request->filterOptions['maxBudget']);
+                        $posts = $posts->filter(function ($post) use ($maxBudget) {
+                            return floatval($post->max_budget) <= $maxBudget;
+                        });
+                    }
+
+                    /**
+                     * fiter by categories
+                     */
+                    $searchCategories = $request->filterOptions["selectedCategories"];
+                    if ($searchCategories && count($searchCategories) > 0) {
+                        $_searchCategories = array();
+                        foreach ($searchCategories as $interest) {
+                            array_push($_searchCategories, $interest);
+                        }
+
+                        $jobs_near_me = $jobs_near_me->filter(function ($post) use ($_searchCategories) {
+                            $matchingItems = in_array($post->category, $_searchCategories);
+                            return !empty($matchingItems);
+                        });
+                    }
                 }
 
-                /**
-                 * filter by maxBudget
-                 */
-                $maxBudget = $request->maxBudget;
-                if ($maxBudget && $maxBudget != "") {
-                    $jobs_near_me = $jobs_near_me->filter(function ($value, $key) use ($maxBudget) {
-                        return $value['max_budget'] <= $maxBudget;
-                    });
-                }
 
                 $posts = $jobs_near_me->sortBy("distance");
-
-
                 break;
             case "FIXED_TERM_JOB":
                 $searchCategories = $request->categories;
@@ -774,7 +807,34 @@ class PostController extends Controller
                             $jobs_near_me->push($post);
                         }
                     }
+
+                    if ($request->filterOptions) {
+                        /**
+                         * fiter by category
+                         */
+                        $searchCategories = $request->filterOptions["selectedCategories"];
+                        if ($searchCategories && count($searchCategories) > 0) {
+                            $_searchCategories = array();
+                            foreach ($searchCategories as $interest) {
+                                array_push($_searchCategories, $interest);
+                            }
+
+                            $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
+                            if (!empty($matchingItems)) {
+                                $jobs_near_me->push($post);
+                            }
+                        } else {
+                            /**
+                             * default search categories
+                             */
+                            $matchingItems = array_intersect($user_interests, json_decode($post->tags));
+                            if (!empty($matchingItems)) {
+                                $jobs_near_me->push($post);
+                            }
+                        }
+                    }
                 }
+
 
                 /**
                  * filter by minBudget
@@ -856,6 +916,32 @@ class PostController extends Controller
                             $jobs_near_me->push($post);
                         }
                     }
+
+                    if ($request->filterOptions) {
+                        /**
+                         * fiter by category
+                         */
+                        $searchCategories = $request->filterOptions["selectedCategories"];
+                        if ($searchCategories && count($searchCategories) > 0) {
+                            $_searchCategories = array();
+                            foreach ($searchCategories as $interest) {
+                                array_push($_searchCategories, $interest);
+                            }
+
+                            $matchingItems = array_intersect($_searchCategories, json_decode($post->tags));
+                            if (!empty($matchingItems)) {
+                                $jobs_near_me->push($post);
+                            }
+                        } else {
+                            /**
+                             * default search categories
+                             */
+                            $matchingItems = array_intersect($user_interests, json_decode($post->tags));
+                            if (!empty($matchingItems)) {
+                                $jobs_near_me->push($post);
+                            }
+                        }
+                    }
                 }
 
                 /**
@@ -882,34 +968,11 @@ class PostController extends Controller
                 break;
         }
 
+
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 
-    /**
-     * @param $lat1
-     * @param $lon1
-     * @param $lat2
-     * @param $lon2
-     * @param $unit
-     * @return float
-     */
-    private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
-    {
-        $theta = (float)$lon1 - (float)$lon2;
-        $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
-        $dist = acos($dist);
-        $dist = rad2deg($dist);
-        $miles = $dist * 60 * 1.1515;
-        $unit = strtoupper($unit);
 
-        if ($unit == "K") {
-            return ($miles * 1.609344);
-        } else if ($unit == "N") {
-            return ($miles * 0.8684);
-        } else {
-            return $miles;
-        }
-    }
 
     /**
      * @param Request $request
@@ -1064,6 +1127,24 @@ class PostController extends Controller
         }
 
         return $this->success_response($post, "Posts fetched successfully.");
+    }
+
+    public function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
+    {
+        $theta = (float)$lon1 - (float)$lon2;
+        $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
     }
 
     /**
