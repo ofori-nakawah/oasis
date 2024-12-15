@@ -631,11 +631,17 @@ class PostController extends Controller
                     $post["distance"] = number_format($distance, 2);
                     $post["postedOn"] = $post->created_at->diffForHumans();
                     $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
-                    if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
-                        $volunteer_near_me->push($post);
-                    } else if ($distance <= $filterDistance) {
-                        $volunteer_near_me->push($post);
+
+                    if ($filterDistance && $filterDistance !== "") {
+                        if ($distance <= $filterDistance) {
+                            $volunteer_near_me->push($post);
+                        }
+                    } else {
+                        if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
+                            $volunteer_near_me->push($post);
+                        }
                     }
+
                     return $post;
                 });
                 $posts = $volunteer_near_me->sortBy("distance");
