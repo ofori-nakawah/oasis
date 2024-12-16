@@ -944,11 +944,13 @@ class UserController extends Controller
     private function filterUsersBasedOnDistance($users)
     {
         $auth_user = Auth::user();
+        Log::debug("AUTH USER >>>>>>>>>>>>>>> " . $auth_user->location_coords);
         $auth_user_location_lat =  (json_decode($auth_user->location_coords) ? json_decode($auth_user->location_coords)->latitude : (explode(',', $auth_user->coords)[0] ?? explode(',', $auth_user->location_coords)[0]));
         $auth_user_location_lng = (json_decode($auth_user->location_coords) ? json_decode($auth_user->location_coords)->longitude : (explode(',', $auth_user->coords)[1] ?? explode(',', $auth_user->location_coords)[1]));
 
         // Calculate distances and store them in an array
         $usersWithDistance = $users->map(function ($user) use ($auth_user_location_lat, $auth_user_location_lng) {
+            Log::debug("USER LOCATION >>>>>>>> " . $user->location_coords);
             $distance = $this->getDistance(
                 $auth_user_location_lat,
                 $auth_user_location_lng,
