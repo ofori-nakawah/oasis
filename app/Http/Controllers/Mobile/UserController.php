@@ -926,7 +926,7 @@ class UserController extends Controller
     private function getDistance($lat1, $lon1, $lat2, $lon2, $unit)
     {
         $theta = (float)$lon1 - (float)$lon2;
-        if ($theta === 0) {
+        if ($theta == 0) {
             return 0;
         }
         Log::debug("THETA >>>>>>>>> " . $theta);
