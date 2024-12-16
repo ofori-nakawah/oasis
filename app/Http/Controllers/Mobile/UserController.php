@@ -950,13 +950,16 @@ class UserController extends Controller
     private function filterUsersBasedOnDistance($users)
     {
         $auth_user = Auth::user();
-        Log::debug("AUTH USER >>>>>>>>>>>>>>> " . $auth_user->location_coords);
         $auth_user_location_lat =  (json_decode($auth_user->location_coords) ? json_decode($auth_user->location_coords)->latitude : (explode(',', $auth_user->coords)[0] ?? explode(',', $auth_user->location_coords)[0]));
         $auth_user_location_lng = (json_decode($auth_user->location_coords) ? json_decode($auth_user->location_coords)->longitude : (explode(',', $auth_user->coords)[1] ?? explode(',', $auth_user->location_coords)[1]));
 
         // Calculate distances and store them in an array
         $usersWithDistance = $users->map(function ($user) use ($auth_user_location_lat, $auth_user_location_lng) {
-            Log::debug("USER LOCATION >>>>>>>> " . $user->location_coords);
+
+            if (!$user->location_coords || !$auth_user_location_lat || !$auth_user_location_lng) {
+                return;
+            }
+
             $distance = $this->getDistance(
                 $auth_user_location_lat,
                 $auth_user_location_lng,
@@ -964,8 +967,6 @@ class UserController extends Controller
                 (json_decode($user->location_coords) ? json_decode($user->location_coords)->longitude : (explode(',', $user->coords)[1] ?? explode(',', $user->location_coords)[1])),
                 "K"
             );
-
-            Log::debug("DISTANCE BETWEEN AUTH USER AND VORK USERS >>>>>>>> " . $distance);
 
             $user->distance = number_format($distance, 2);
             return $user;
