@@ -959,6 +959,8 @@ class UserController extends Controller
                 "K"
             );
 
+            Log::debug("DISTANCE BETWEEN AUTH USER AND VORK USERS >>>>>>>> " . $distance);
+
             $user->distance = number_format($distance, 2);
             return $user;
         });
