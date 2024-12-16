@@ -926,9 +926,12 @@ class UserController extends Controller
     private function getDistance($lat1, $lon1, $lat2, $lon2, $unit)
     {
         $theta = (float)$lon1 - (float)$lon2;
+        Log::debug("THETA >>>>>>>>> " . $theta);
         $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
+        Log::debug("DISTANCE RAW >>>>>>>>> " . $dist);
         $dist = acos($dist);
         $dist = rad2deg($dist);
+        Log::debug("DISTANCE >>>>>>>>> " . $dist);
         $miles = $dist * 60 * 1.1515;
         $unit = strtoupper($unit);
 
