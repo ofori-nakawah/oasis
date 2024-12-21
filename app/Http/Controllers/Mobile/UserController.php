@@ -934,7 +934,6 @@ class UserController extends Controller
         $dist = rad2deg($dist);
         $miles = $dist * 60 * 1.1515;
         $unit = strtoupper($unit);
-
         if ($unit == "K") {
             return ($miles * 1.609344);
         } else if ($unit == "N") {
@@ -942,6 +941,21 @@ class UserController extends Controller
         } else {
             return $miles;
         }
+    }
+
+    private function getUserLocationCoords($locationCoords)
+    {
+        if (!$locationCoords) {
+            return;
+        }
+
+        $locationLat = explode(", ", $locationCoords)[0] ?? json_decode($locationCoords)->latitude;
+        $locationLng = explode(", ", $locationCoords)[1] ?? json_decode($locationCoords)->longitude;
+
+        return [
+            "latitude" => $locationLat,
+            "longitude" => $locationLng
+        ];
     }
 
     private function filterUsersBasedOnDistance($users)
@@ -957,11 +971,16 @@ class UserController extends Controller
                 return;
             }
 
+            $userLocations = $this->getUserLocationCoords($user->location_coords);
+
+            $user_location_lat = $userLocations["latitude"];
+            $user_location_lng = $userLocations["longitude"];
+
             $distance = $this->getDistance(
                 $auth_user_location_lat,
                 $auth_user_location_lng,
-                (json_decode($user->location_coords) ? json_decode($user->location_coords)->latitude : (explode(',', $user->coords)[0] ?? explode(',', $user->location_coords)[0])),
-                (json_decode($user->location_coords) ? json_decode($user->location_coords)->longitude : (explode(',', $user->coords)[1] ?? explode(',', $user->location_coords)[1])),
+                $user_location_lat,
+                $user_location_lng,
                 "K"
             );
 
