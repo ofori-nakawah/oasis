@@ -945,24 +945,37 @@ class UserController extends Controller
 
     private function getUserLocationCoords($locationCoords)
     {
-        if (!$locationCoords) {
-            return;
+        if (empty($locationCoords)) {
+            return null;
         }
 
-        $locationLat = explode(", ", $locationCoords)[0] ?? json_decode($locationCoords)->latitude;
-        $locationLng = explode(", ", $locationCoords)[1] ?? json_decode($locationCoords)->longitude;
+        // Try JSON format first
+        $jsonCoords = json_decode($locationCoords);
+        if ($jsonCoords && isset($jsonCoords->latitude) && isset($jsonCoords->longitude)) {
+            return [
+                "latitude" => (float) $jsonCoords->latitude,
+                "longitude" => (float) $jsonCoords->longitude
+            ];
+        }
 
-        return [
-            "latitude" => $locationLat,
-            "longitude" => $locationLng
-        ];
+        // Try comma-separated string format
+        $coordsArray = array_map('trim', explode(',', $locationCoords));
+        if (count($coordsArray) === 2 && is_numeric($coordsArray[0]) && is_numeric($coordsArray[1])) {
+            return [
+                "latitude" => (float) $coordsArray[0],
+                "longitude" => (float) $coordsArray[1]
+            ];
+        }
+
+        return null;
     }
 
     private function filterUsersBasedOnDistance($users)
     {
         $auth_user = Auth::user();
-        $auth_user_location_lat =  (json_decode($auth_user->location_coords) ? json_decode($auth_user->location_coords)->latitude : (explode(',', $auth_user->coords)[0] ?? explode(',', $auth_user->location_coords)[0]));
-        $auth_user_location_lng = (json_decode($auth_user->location_coords) ? json_decode($auth_user->location_coords)->longitude : (explode(',', $auth_user->coords)[1] ?? explode(',', $auth_user->location_coords)[1]));
+        $auth_user_location = $this->getUserLocationCoords($auth_user->location_coords);
+        $auth_user_location_lat = $auth_user_location["latitude"];
+        $auth_user_location_lng = $auth_user_location["longitude"];
 
         // Calculate distances and store them in an array
         $usersWithDistance = $users->map(function ($user) use ($auth_user_location_lat, $auth_user_location_lng) {
