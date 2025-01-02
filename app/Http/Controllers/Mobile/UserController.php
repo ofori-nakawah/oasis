@@ -598,7 +598,6 @@ class UserController extends Controller
 
     public function updateEducationHistory(Request $request)
     {
-
         $educationHistory = EducationHistory::where("id", $request->id)->first();
         if (!$educationHistory) {
             return $this->not_found_response([], "Error fetching information. Kindly try again");
@@ -743,7 +742,14 @@ class UserController extends Controller
             $certificateAndTraining->delete();
 
             if ($certificateAndTraining->certificate_link !== null) {
-                unlink(public_path($certificateAndTraining->certificate_link));
+                $path = $certificateAndTraining->certificate_link;
+                if (preg_match('/^https?:\/\//', $path)) {
+                    // Extract the path starting from /uploads
+                    $path = substr($path, strpos($path, '/uploads'));
+                }
+                if (file_exists(public_path($path))) {
+                    unlink(public_path($path));
+                }
             }
 
             return $this->success_response([], "Certifications and training history deleted successfully.");
@@ -768,7 +774,14 @@ class UserController extends Controller
             $educationHistory->delete();
 
             if ($educationHistory->certificate_link !== null) {
-                unlink(public_path($educationHistory->certificate_link));
+                $path = $educationHistory->certificate_link;
+                if (preg_match('/^https?:\/\//', $path)) {
+                    // Extract the path starting from /uploads
+                    $path = substr($path, strpos($path, '/uploads'));
+                }
+                if (file_exists(public_path($path))) {
+                    unlink(public_path($path));
+                }
             }
 
             return $this->success_response([], "Education history deleted successfully.");
