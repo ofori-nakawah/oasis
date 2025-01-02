@@ -87,6 +87,10 @@ Route::prefix('/v1')->group(function () {
             Route::post('/add-certification-and-training', 'Mobile\UserController@addCertificationAndTraining');
             Route::post('/add-external-job-history', 'Mobile\UserController@addExternalJobHistory');
 
+            Route::post('/delete-certification-and-training', 'Mobile\UserController@deleteCertificationsAndTrainings');
+            Route::post('/delete-education-history', 'Mobile\UserController@deleteEducationHistory');
+            Route::post('/delete-external-job-history', 'Mobile\UserController@deleteExternalJobHistory');
+
             Route::post('/update-user-fcm-token', 'Mobile\UserController@update_user_fcm_token');
             Route::get('/kyc', 'Mobile\UserController@get_user_kyc_status');
             Route::get('/', 'Mobile\UserController@get_user_full_profile');

@@ -552,7 +552,6 @@ class UserController extends Controller
             'startDate' => 'required',
             'institution' => 'required',
             'programme' => 'required',
-            'specialty' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -575,8 +574,8 @@ class UserController extends Controller
 
         try {
 
-            if ($educationHistory->save() && $request->image["_j"] !== []) {
-                $image = $request->image["_j"];
+            if ($educationHistory->save() && $request->image !== null) {
+                $image = $request->image;
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/education-history/');
 
@@ -616,8 +615,8 @@ class UserController extends Controller
         }
 
         try {
-            if ($educationHistory->update() && $request->image["_j"] !== []) {
-                $image = $request->image["_j"];
+            if ($educationHistory->update() && $request->image !== null) {
+                $image = $request->image;
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/education-history/');
 
@@ -666,8 +665,8 @@ class UserController extends Controller
         }
 
         try {
-            if ($certificateAndTraining->save() && $request->image["_j"] !== []) {
-                $image = $request->image["_j"];
+            if ($certificateAndTraining->save() && $request->image !== null) {
+                $image = $request->image;
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/certifications/');
 
@@ -707,8 +706,8 @@ class UserController extends Controller
         }
 
         try {
-            if ($certificateAndTraining->update() && $request->image["_j"] !== []) {
-                $image = $request->image["_j"];
+            if ($certificateAndTraining->update() && $request->image !== null) {
+                $image = $request->image;
                 $name = auth()->user()->name . '-education-' . uniqid() . '.png';
                 $destinationPath = public_path('/uploads/certifications/');
 
@@ -726,6 +725,76 @@ class UserController extends Controller
         } catch (QueryException $e) {
             Log::error("ERROR UPDATING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
             return $this->error_response(auth()->user(), "Error updating certifications and training history.");
+        }
+    }
+
+    public function deleteCertificationsAndTrainings(Request $request)
+    {
+        if (!$request->id) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        $certificateAndTraining = CertificationAndTraining::where("id", $request->id)->first();
+        if (!$certificateAndTraining) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        try {
+            $certificateAndTraining->delete();
+
+            if ($certificateAndTraining->certificate_link !== null) {
+                unlink(public_path($certificateAndTraining->certificate_link));
+            }
+
+            return $this->success_response([], "Certifications and training history deleted successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DELETING CERTIFICATION AND TRAINING >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response([], "Error deleting certifications and training history.");
+        }
+    }
+
+    public function deleteEducationHistory(Request $request)
+    {
+        if (!$request->id) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        $educationHistory = EducationHistory::where("id", $request->id)->first();
+        if (!$educationHistory) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        try {
+            $educationHistory->delete();
+
+            if ($educationHistory->certificate_link !== null) {
+                unlink(public_path($educationHistory->certificate_link));
+            }
+
+            return $this->success_response([], "Education history deleted successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DELETING EDUCATION HISTORY >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response([], "Error deleting education history.");
+        }
+    }
+
+    public function deleteExternalJobHistory(Request $request)
+    {
+        if (!$request->id) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        $outsideVorkJob = OutsideVorkJob::where("id", $request->id)->first();
+        if (!$outsideVorkJob) {
+            return $this->not_found_response([], "Error fetching information. Kindly try again");
+        }
+
+        try {
+            $outsideVorkJob->delete();
+            return $this->success_response([], "Outside VORK job history deleted successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DELETING OUTSIDE VORK JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->error_response([], "Error deleting outside VORK job history.");
         }
     }
 
