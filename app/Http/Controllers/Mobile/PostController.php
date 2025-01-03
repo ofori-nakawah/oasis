@@ -490,9 +490,9 @@ class PostController extends Controller
         $post->end_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->end_date)));
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
-        $post->is_negotiable = $request->is_negotiable;
-        $post->is_renewable = $request->is_renewable;
-        $post->is_internship = $request->is_internship;
+        $post->is_negotiable = $request->is_negotiable ?? 'No';
+        $post->is_renewable = $request->is_renewable ?? 'No';
+        $post->is_internship = $request->is_internship ?? 'No';
 
 
         $post->tags = json_encode($tags);
@@ -547,11 +547,9 @@ class PostController extends Controller
         $post->coords = json_encode($request->coords);;
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
-        $post->is_negotiable = $request->is_negotiable;
+        $post->is_negotiable = $request->is_negotiable ?? 'No';
         $post->is_renewable = $request->is_renewable ?? 'No';
-        $post->is_internship = $request->is_internship;
-
-
+        $post->is_internship = $request->is_internship ?? 'No';
         $post->tags = json_encode($tags);
         $post->user_id = auth()->id();
         $post->type = "PERMANENT_JOB";
@@ -573,7 +571,7 @@ class PostController extends Controller
      */
     public function get_user_posts(Request $request)
     {
-        $posts = auth()->user()->posts->sortBy("created_at")->whereNull('deleted_at');
+        $posts = auth()->user()->posts->sortByDesc("created_at")->whereNull('deleted_at');
         foreach ($posts as $post) {
             $post->createdAt = $post->created_at->diffForHumans();
             $time = strtotime($post->date . ' ' . $post->time);
@@ -594,6 +592,7 @@ class PostController extends Controller
             $post->applications;
             $post->user;
         }
+
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 
@@ -1577,7 +1576,7 @@ class PostController extends Controller
                 }
             }
         }
-        $posts = $jobs_near_me->sortBy("distance");
+        $posts = $jobs_near_me->sortByDesc("created_at");
         return $this->success_response($posts, "Posts fetched successfully.");
     }
 }
