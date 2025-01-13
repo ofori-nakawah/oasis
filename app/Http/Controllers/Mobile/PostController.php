@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mobile;
 use App\Constants\EventsList;
 use App\Helpers\DateFormatter;
 use App\Helpers\Notifications as Notifications;
+use App\Models\Industry;
 use App\Models\JobApplication;
 use App\Models\Post;
 use App\Models\RatingReview;
@@ -493,8 +494,7 @@ class PostController extends Controller
         $post->is_negotiable = $request->is_negotiable ?? 'No';
         $post->is_renewable = $request->is_renewable ?? 'No';
         $post->is_internship = $request->is_internship ?? 'No';
-
-
+        $post->other_relevant_information = $request->other_relevant_information;
         $post->tags = json_encode($tags);
         $post->user_id = auth()->id();
         $post->type = "FIXED_TERM_JOB";
@@ -522,6 +522,7 @@ class PostController extends Controller
             'min_budget' => 'required',
             'max_budget' => 'required',
             'tags' => 'required',
+            'industry' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -534,6 +535,11 @@ class PostController extends Controller
             if ($category) {
                 array_push($tags, $tag);
             }
+        }
+
+        $industry = Industry::where("name", $request->industry)->first();
+        if (!$industry) {
+            return $this->data_validation_error_response([], "Invalid request");
         }
 
         $post = new Post();
@@ -550,6 +556,8 @@ class PostController extends Controller
         $post->is_negotiable = $request->is_negotiable ?? 'No';
         $post->is_renewable = $request->is_renewable ?? 'No';
         $post->is_internship = $request->is_internship ?? 'No';
+        $post->industry_id = $industry->id;
+        $post->other_relevant_information = $request->other_relevant_information;
         $post->tags = json_encode($tags);
         $post->user_id = auth()->id();
         $post->type = "PERMANENT_JOB";
