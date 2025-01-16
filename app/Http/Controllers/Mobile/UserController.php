@@ -999,8 +999,10 @@ class UserController extends Controller
             return $this->data_validation_error_response($validation->errors());
         }
 
-        auth()->user()->expo_push_token = $request->token;
-        auth()->user()->update();
+        if (!str_contains($request->token, "Error:")) {
+            auth()->user()->expo_push_token = $request->token;
+            auth()->user()->update();
+        }
 
         return $this->success_response([]);
     }
