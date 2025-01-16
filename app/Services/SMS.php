@@ -66,7 +66,7 @@ class SMS
                 );
 
                 curl_setopt_array($curl, [
-                    CURLOPT_URL => "https://deywuro.com/api/sms/" . http_build_query($query),
+                    CURLOPT_URL => "https://deywuro.com/api/sms?" . http_build_query($query),
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_CUSTOMREQUEST => "GET",
                 ]);
