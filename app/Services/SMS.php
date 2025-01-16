@@ -59,7 +59,7 @@ class SMS
                 $query = array(
                     "username" => env("NPONTU_USERNAME"),
                     "password" => env("NPONTU_PASSWORD"),
-                    "source" => "VORK",
+                    "source" => "myVORK",
                     "destination" => $phone,
                     "message" => $message,
                     "ol" => false
