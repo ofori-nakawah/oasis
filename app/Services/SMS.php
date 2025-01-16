@@ -14,10 +14,11 @@ class SMS
      */
     const SMS_PROVIDER = "HUBTEL";
 
-    public static function notify($phone,$message){
+    public static function notify($phone, $message)
+    {
         $phone = self::format_msisdn($phone);
 
-        Log::debug("SENDING SMS TO >>>>>>>> $phone");
+        Log::debug("SENDING SMS TO >>>>>>>> " . json_encode(array("phone" => $phone, "message" => $message)));
 
         $curl = curl_init();
 
@@ -32,7 +33,7 @@ class SMS
                 );
 
                 curl_setopt_array($curl, [
-                        CURLOPT_URL => "https://smsc.hubtel.com/v1/messages/send?" . http_build_query($query),
+                    CURLOPT_URL => "https://smsc.hubtel.com/v1/messages/send?" . http_build_query($query),
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_CUSTOMREQUEST => "GET",
                 ]);
@@ -53,6 +54,22 @@ class SMS
                         "postman-token: 4134a3ec-0a36-18f3-f24a-7c91f27f78e9"
                     ),
                 ));
+                break;
+            case "NPONTU":
+                $query = array(
+                    "username" => env("NPONTU_USERNAME"),
+                    "password" => env("NPONTU_PASSWORD"),
+                    "source" => "VORK",
+                    "destination" => $phone,
+                    "message" => $message,
+                    "ol" => false
+                );
+
+                curl_setopt_array($curl, [
+                    CURLOPT_URL => "https://deywuro.com/api/sms/" . http_build_query($query),
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_CUSTOMREQUEST => "GET",
+                ]);
                 break;
         }
 
