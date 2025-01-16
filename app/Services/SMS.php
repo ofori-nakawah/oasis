@@ -10,9 +10,9 @@ class SMS
 {
     /**
      * set service provider in the code using PRs
-     * value should be either HUBTEL | SMS_BOLT
+     * value should be either HUBTEL | SMS_BOLT | NPONTU
      */
-    const SMS_PROVIDER = "HUBTEL";
+    const SMS_PROVIDER = "NPONTU";
 
     public static function notify($phone, $message)
     {
