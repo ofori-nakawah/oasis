@@ -888,7 +888,7 @@ class UserController extends Controller
         auth()->user()->skills;
         auth()->user()->languages;
 
-        $posts = Post::where("user_id", auth()->id())->where("status", "active")->first();
+        $posts = Post::where("user_id", auth()->id())->where("status", "active")->whereNull('deleted_at')->get();
         $recentlyApplied = JobApplication::where("user_id", auth()->id())->where("status", "confirmed")->limit(3)->get();
         foreach ($recentlyApplied as $item) {
             $item->job_post;
@@ -909,7 +909,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        $latestActiveListing = $user->posts->where("status", "active")->sortByDesc("created_at")->first();
+        $latestActiveListing = $user->posts->where("status", "active")->whereNull('deleted_at')->sortByDesc("created_at")->first();
         $latestOngoingApplication = $user->job_applications->whereIn('status', array("applied", "confirmed"))->sortByDesc("created_at")->first();
         if ($latestOngoingApplication) {
             $latestOngoingApplication->job_post;
