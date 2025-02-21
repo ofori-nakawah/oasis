@@ -626,7 +626,7 @@ class PostController extends Controller
             case "VOLUNTEER":
                 $volunteer_near_me = collect();
                 $filterDistance = $request->filterOptions["distance"];
-                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->orderByDesc("created_at")->get();
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereNull('deleted_at')->orderByDesc("created_at")->get();
                 $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $filterDistance) {
                     //get post coordinates
                     $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
@@ -684,7 +684,7 @@ class PostController extends Controller
                     /**
                      * default search categories
                      */
-                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->orderByDesc("created_at")->get();
+                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->whereNull('deleted_at')->orderByDesc("created_at")->get();
                 }
 
                 $jobs_near_me = collect();
