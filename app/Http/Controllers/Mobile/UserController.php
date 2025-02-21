@@ -1029,6 +1029,8 @@ class UserController extends Controller
 
     private function getUserLocationCoords($locationCoords)
     {
+        Log::debug("LOCATION COORDS >>>>>>>>> " . $locationCoords);
+
         if (empty($locationCoords)) {
             return null;
         }
