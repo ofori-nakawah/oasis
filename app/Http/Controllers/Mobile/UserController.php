@@ -1029,8 +1029,6 @@ class UserController extends Controller
 
     private function getUserLocationCoords($locationCoords)
     {
-        Log::debug("LOCATION COORDS >>>>>>>>> " . $locationCoords);
-
         if (empty($locationCoords)) {
             return null;
         }
@@ -1071,6 +1069,9 @@ class UserController extends Controller
             }
 
             $userLocations = $this->getUserLocationCoords($user->location_coords);
+            if (!$userLocations) {
+                return;
+            }
 
             $user_location_lat = $userLocations["latitude"];
             $user_location_lng = $userLocations["longitude"];
