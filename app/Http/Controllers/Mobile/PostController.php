@@ -76,6 +76,7 @@ class PostController extends Controller
 
     public function updatePost(Request $request)
     {
+        Log::info("UPDATE POST >>>>>>>>>>>>>>>>>>>>>>>> " . json_encode($request->all()));
         $validation = Validator::make($request->all(), [
             'uuid' => 'required'
         ]);
@@ -102,6 +103,7 @@ class PostController extends Controller
                 $post->other_relevant_information = $request->other_relevant_information;
                 break;
             case "QUICK_JOB":
+            case "P2P":
                 $category = Skill::where("name", $request->category)->first();
                 if (!$category) {
                     return $this->not_found_response([], "Error fetching category details");
@@ -110,7 +112,7 @@ class PostController extends Controller
                 $post->category = $request->category;
                 $post->category_id = $category->id;
                 $post->description = $request->description;
-                $post->date = $request->date;
+                $post->date = $request->type === "P2P" ? $post->date : $request->date;
                 $post->time = $request->time;
                 $post->location = $request->location;
                 $post->coords = $request->coords;
@@ -150,10 +152,64 @@ class PostController extends Controller
                 $post->location = $request->location;
                 $post->employer = $request->employer;
                 $post->coords = $request->coords;
-                $post->start_date = $request->start_date;
-                $post->end_date = $request->end_date;
+                $post->start_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->start_date)));
+                $post->end_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->end_date)));
                 $post->max_budget = $request->max_budget;
                 $post->min_budget = $request->min_budget;
+                $post->tags = json_encode($tags);
+
+                if ($request->negotiable === "on") {
+                    $post->is_negotiable = "yes";
+                } else {
+                    $post->is_negotiable = "no";
+                }
+
+                if ($request->renewable === "on") {
+                    $post->is_renewable = "yes";
+                } else {
+                    $post->is_renewable = "no";
+                }
+
+                if ($request->is_internship === "on") {
+                    $post->is_internship = "yes";
+                } else {
+                    $post->is_internship = "no";
+                }
+
+                $post->tags = json_encode($tags);
+                break;
+            case "PERMANENT_JOB":
+                $tags = array();
+                foreach (explode(",", $request->tags) as $tag) {
+                    $category = Skill::where("name", $tag)->first();
+                    if ($category) {
+                        array_push($tags, $tag);
+                    }
+                }
+
+                Log::debug($request->industry);
+
+                $industry = Industry::where("name", $request->industry)->first();
+                if (!$industry) {
+                    return $this->data_validation_error_response([], "Invalid request");
+                }
+
+
+                $post->title = $request->title;
+                $post->description = $request->description;
+                $post->qualifications = $request->qualifications;
+                $post->date = $request->date;
+                $post->time = $request->time;
+                $post->location = $request->location;
+                $post->employer = $request->employer;
+                $post->coords = $request->coords;
+                $post->start_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->start_date)));
+                $post->end_date = date('Y-m-d', strtotime(str_replace('/', '-', $request->end_date)));
+                $post->max_budget = $request->max_budget;
+                $post->min_budget = $request->min_budget;
+                $post->industry_id = $industry->id;
+                $post->tags = json_encode($tags);
+
 
                 if ($request->negotiable === "on") {
                     $post->is_negotiable = "yes";
