@@ -1208,6 +1208,7 @@ class PostController extends Controller
         $toDate = Carbon::parse($post->final_end_date);
         $fromDate = Carbon::parse($post->final_start_date);
         $post["duration"] = $toDate->diffInMonths($fromDate);
+        $post->industry;
 
         return $this->success_response($post, "Posts fetched successfully.");
     }
