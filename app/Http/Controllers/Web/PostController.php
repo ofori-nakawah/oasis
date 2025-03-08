@@ -20,7 +20,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
-
+/**
+ * Class PostController
+ * @package App\Http\Controllers\Web
+ */
 class PostController extends Controller
 {
     const JOB_SEARCH_RADIUS = 5;
@@ -53,17 +56,18 @@ class PostController extends Controller
 
     public function list_jobs($type_of_user, $type_of_work)
     {
+        Log::info("type_of_work: " . $type_of_work);
+
+
         if (!$type_of_user || !$type_of_work) {
             return back()->with("danger", "Invalid request");
         }
 
-        if ($type_of_user != "seeker" && $type_of_user != "employer") {
+        $valid_work_types = ["quick-job", "fixed-term", "permanent", "p2p"];
+        if (!in_array($type_of_work, $valid_work_types)) {
             return back()->with("danger", "Invalid request");
         }
 
-        if ($type_of_work != "quick-job" && $type_of_work != "fixed-term" && $type_of_work != "permanent") {
-            return back()->with("danger", "Invalid request");
-        }
 
         switch ($type_of_work) {
             case "quick-job":
@@ -90,6 +94,11 @@ class PostController extends Controller
                     return view("work.permanent.create", compact("categories", "industries"));
                 }
                 break;
+            case "p2p":
+                if ($type_of_user != "seeker") {
+                    $skills_and_interest = Skill::orderBy('name')->get();
+                    return view("work.p2p.search", compact("skills_and_interest"));
+                }
         }
 
         return back()->with("danger", "Invalid request");
@@ -110,7 +119,7 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->orderByDesc("created_at")->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -162,7 +171,7 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
@@ -224,7 +233,7 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -277,7 +286,7 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -368,7 +377,7 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -443,7 +452,7 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
@@ -516,7 +525,7 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
@@ -591,7 +600,7 @@ class PostController extends Controller
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
@@ -652,7 +661,7 @@ class PostController extends Controller
         $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
         $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
-        $_post_location_lat =json_decode($original_post->coords)->latitude ?? explode(',', $original_post->coords)[0];
+        $_post_location_lat = json_decode($original_post->coords)->latitude ?? explode(',', $original_post->coords)[0];
         $_post_location_lng = json_decode($original_post->coords)->longitude ?? explode(',', $original_post->coords)[1];
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $_post_location_lat, $_post_location_lng, "K");
         $original_post["distance"] = number_format($distance, 2);
@@ -664,7 +673,7 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->where("id", "!=", $original_post->id)->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
 
@@ -719,7 +728,7 @@ class PostController extends Controller
         $original_post->industry;
         $toDate = Carbon::parse($original_post->end_date);
         $fromDate = Carbon::parse($original_post->start_date);
-//        $original_post["duration"] = $toDate->diffInMonths($fromDate);
+        //        $original_post["duration"] = $toDate->diffInMonths($fromDate);
         $original_post["postedOn"] = $original_post->created_at->diffForHumans();
         $original_post["createdOn"] = $original_post->created_at->diffForHumans();
 
@@ -734,7 +743,7 @@ class PostController extends Controller
         $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
         $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
 
-        $_post_location_lat =json_decode($original_post->coords)->latitude ?? explode(',', $original_post->coords)[0];
+        $_post_location_lat = json_decode($original_post->coords)->latitude ?? explode(',', $original_post->coords)[0];
         $_post_location_lng = json_decode($original_post->coords)->longitude ?? explode(',', $original_post->coords)[1];
         $distance = $this->get_distance($user_location_lat, $user_location_lng, $_post_location_lat, $_post_location_lng, "K");
         $original_post["distance"] = number_format($distance, 2);
@@ -746,7 +755,7 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "PERMANET_JOB")->whereNull('deleted_at')->where("id", "!=", $original_post->id)->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me) {
             //get post coordinates
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             Log::debug($post_location_lng . " >>>> " . $post_location_lat);
@@ -757,7 +766,7 @@ class PostController extends Controller
             $post["distance"] = number_format($distance, 2);
             $toDate = Carbon::parse($post->end_date);
             $fromDate = Carbon::parse($post->start_date);
-//            $post["duration"] = $toDate->diffInMonths($fromDate);
+            //            $post["duration"] = $toDate->diffInMonths($fromDate);
             if ($distance <= self::VOLUNTEER_SEARCH_RADIUS) {
                 $volunteer_near_me->push($post);
             }
@@ -801,7 +810,7 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $radius) {
             //get post coordinates
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -810,7 +819,7 @@ class PostController extends Controller
             $toDate = Carbon::parse($post->end_date);
             $fromDate = Carbon::parse($post->start_date);
             $post["duration"] = $toDate->diffInMonths($fromDate);
-            Log::debug($distance ." >>>>>>>>>>>>>>> " . $radius);
+            Log::debug($distance . " >>>>>>>>>>>>>>> " . $radius);
             if ($distance <= $radius) {
                 $volunteer_near_me->push($post);
             }
@@ -853,7 +862,7 @@ class PostController extends Controller
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "FIXED_TERM_JOB")->whereNull('deleted_at')->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $radius) {
             //get post coordinates
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -861,8 +870,8 @@ class PostController extends Controller
             $post["distance"] = number_format($distance, 2);
             $toDate = Carbon::parse($post->end_date);
             $fromDate = Carbon::parse($post->start_date);
-//            $post["duration"] = $toDate->diffInMonths($fromDate);
-            Log::debug($distance ." >>>>>>>>>>>>>>> " . $radius);
+            //            $post["duration"] = $toDate->diffInMonths($fromDate);
+            Log::debug($distance . " >>>>>>>>>>>>>>> " . $radius);
             if ($distance <= $radius) {
                 $volunteer_near_me->push($post);
             }
@@ -909,15 +918,15 @@ class PostController extends Controller
             return back()->with("warning", "You have already applied for this job.");
         }
 
-//        /**
-//         * validate the number of volunteers required
-//        */
-//        if ($post->type === "VOLUNTEER") {
-//            $countOfConfirmedVolunteers = $post->applications->where("status", "confirmed")->count();
-//            if ($countOfConfirmedVolunteers >= $post->maximum_number_of_volunteers) {
-//                return back()->with("danger", "Maximum number of volunteers reached.");
-//            }
-//        }
+        //        /**
+        //         * validate the number of volunteers required
+        //        */
+        //        if ($post->type === "VOLUNTEER") {
+        //            $countOfConfirmedVolunteers = $post->applications->where("status", "confirmed")->count();
+        //            if ($countOfConfirmedVolunteers >= $post->maximum_number_of_volunteers) {
+        //                return back()->with("danger", "Maximum number of volunteers reached.");
+        //            }
+        //        }
 
         $job_application = new JobApplication();
         $job_application->user_id = auth()->id();
@@ -1553,6 +1562,9 @@ class PostController extends Controller
             case "QUICK_JOB":
                 $categories = Skill::orderBy('name')->get();
                 return view("work.quick_jobs.edit", compact("post", "categories"));
+            case "P2P":
+                $categories = Skill::orderBy('name')->get();
+                return view("work.p2p.edit", compact("post", "categories"));
             case "FIXED_TERM_JOB":
                 $categories = Skill::orderBy('name')->get();
                 return view("work.part_time_jobs.edit", compact("post", "categories"));
@@ -1583,7 +1595,7 @@ class PostController extends Controller
             return back()->with("info", "This post has been removed by the issuer.");
         }
 
-        if ($post->user->id !== auth()->id()) {
+        if ($post->user->id !== auth()->id() || $post->status === "closed") {
             return back()->with("danger", "Unauthorized operation");
         }
 
@@ -1627,7 +1639,7 @@ class PostController extends Controller
 
                     $post->post_image_link = URL::to('/public/uploads/quick_jobs') . '/' . $name;
                 }
-            break;
+                break;
             case "FIXED_TERM_JOB":
                 $tags = array();
                 foreach ($request->tags as $tag) {
@@ -1811,7 +1823,7 @@ class PostController extends Controller
 
                 $isValidOpportunity = Post::where("id", $request->uuid)->get();
                 if (!$isValidOpportunity) {
-                    return $this->not_found_response([]);
+                    return $this->not_found_response([], "Oops...something went wrong");
                 }
 
                 $isValidSavedOpportunity = UserSavedPost::where("post_id", $request->uuid)->get();

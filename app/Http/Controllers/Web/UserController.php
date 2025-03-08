@@ -10,11 +10,14 @@ use App\Models\SkillUser;
 use App\Models\User;
 use PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Log;
+
 
 class UserController extends Controller
 {
@@ -344,13 +347,13 @@ class UserController extends Controller
         $parts = explode(" ", $user->name);
         switch (count($parts)) {
             case 2:
-                $name .= '<h2 style="font-family: Rockwell;">'. $parts[0] . '<div style="margin-top: -15px;font-family: Rockwell">'. $parts[1] .'</div></h2>';
+                $name .= '<h2 style="font-family: Rockwell;">' . $parts[0] . '<div style="margin-top: -15px;font-family: Rockwell">' . $parts[1] . '</div></h2>';
                 break;
             case 3:
-                $name .= '<h2 style="font-family: Rockwell;">'. $parts[0] ." ". $parts[1] .' <div style="margin-top: -15px;font-family: Rockwell">'. $parts[2] .'</div></h2>';
+                $name .= '<h2 style="font-family: Rockwell;">' . $parts[0] . " " . $parts[1] . ' <div style="margin-top: -15px;font-family: Rockwell">' . $parts[2] . '</div></h2>';
                 break;
             case 4:
-                $name .= '<h2 style="font-family: Rockwell;">'. $parts[0] ." ". $parts[1] .' <div style="margin-top: -15px;font-family: Rockwell">'. $parts[2] ." ". $parts[3] .'</div></h2>';
+                $name .= '<h2 style="font-family: Rockwell;">' . $parts[0] . " " . $parts[1] . ' <div style="margin-top: -15px;font-family: Rockwell">' . $parts[2] . " " . $parts[3] . '</div></h2>';
                 break;
             default:
                 $name .= $user->name;
@@ -376,6 +379,182 @@ class UserController extends Controller
 
         $pdf = PDF::loadView('profile.resume', $data);
         return $pdf->download('resume.pdf');
-//        return view("profile.resume", compact("name", "email", "phoneNumber", "competencies", "location", "outsideVorkJobs", "educationHistories", "certificationsAndTrainings"));
+        //        return view("profile.resume", compact("name", "email", "phoneNumber", "competencies", "location", "outsideVorkJobs", "educationHistories", "certificationsAndTrainings"));
+    }
+
+    public function searchVorkers(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'module' => 'required',
+            'target' => 'required'
+        ]);
+
+        $target = $request->target;
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
+        }
+
+
+        switch ($request->module) {
+            case "NAME_SEARCH":
+                $users = User::where('name', 'LIKE', "%{$request->target}%")->get();
+                foreach ($users as $user) {
+                    $skills = $user->skills;
+                    foreach ($skills as $skill) {
+                        $skill->skill;
+                    }
+                }
+                $users = $this->filterUsersBasedOnDistance($users);
+
+                // Store search results in session
+                session(['search_users' => $users, 'search_target' => $target]);
+                
+                // Redirect to search results page
+                return redirect()->route('p2p.searchResults');
+                break;
+            case "CATEGORY_SEARCH":
+                $category = Skill::where("name", $request->target)->first();
+                if (!$category) {
+                    return redirect()->back()->with("danger", "Something went wrong. Please try again");
+                }
+
+                $userSkills = SkillUser::where("skill_id", $category->id)->get();
+                if (!$userSkills) {
+                    return redirect()->back()->with("danger", "Something went wrong. Please try again");
+                }
+
+                $users = collect();
+                foreach ($userSkills as $record) {
+                    $skills = $record->user->skills;
+                    foreach ($skills as $skill) {
+                        $skill->skill;
+                    }
+                    $users->push($record->user);
+                }
+                $users = $this->filterUsersBasedOnDistance($users);
+
+                // Store search results in session
+                session(['search_users' => $users, 'search_target' => $target]);
+                
+                // Redirect to search results page
+                return redirect()->route('p2p.searchResults');
+                break;
+        }
+
+        return $this->success_response([]);
+    }
+
+    private function getUserLocationCoords($locationCoords)
+    {
+        if (empty($locationCoords)) {
+            return null;
+        }
+
+        // Try JSON format first
+        $jsonCoords = json_decode($locationCoords);
+        if ($jsonCoords && isset($jsonCoords->latitude) && isset($jsonCoords->longitude)) {
+            return [
+                "latitude" => (float) $jsonCoords->latitude,
+                "longitude" => (float) $jsonCoords->longitude
+            ];
+        }
+
+        // Try comma-separated string format
+        $coordsArray = array_map('trim', explode(',', $locationCoords));
+        if (count($coordsArray) === 2 && is_numeric($coordsArray[0]) && is_numeric($coordsArray[1])) {
+            return [
+                "latitude" => (float) $coordsArray[0],
+                "longitude" => (float) $coordsArray[1]
+            ];
+        }
+
+        return null;
+    }
+
+    private function getDistance($lat1, $lon1, $lat2, $lon2, $unit)
+    {
+        $theta = (float)$lon1 - (float)$lon2;
+        if ($theta == 0) {
+            return 0;
+        }
+        $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
+    }
+
+    /**
+     * Display search results page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function searchResults(Request $request)
+    {
+        $users = session('search_users', collect());
+        $target = session('search_target', '');
+        
+        return view("work.p2p.searchResults", ['users' => $users, 'target' => $target]);
+    }
+    
+    private function filterUsersBasedOnDistance($users)
+    {
+        $auth_user = Auth::user();
+        $auth_user_location = $this->getUserLocationCoords($auth_user->location_coords);
+
+        // If auth user doesn't have location, return users without distance filtering
+        if (!$auth_user_location) {
+            return null;
+        }
+
+        $auth_user_location_lat = $auth_user_location["latitude"];
+        $auth_user_location_lng = $auth_user_location["longitude"];
+
+        // Calculate distances and store them in an array
+        $usersWithDistance = $users->map(function ($user) use ($auth_user_location_lat, $auth_user_location_lng) {
+            // If user doesn't have location coords, return user without distance
+            if (!$user->location_coords || !$auth_user_location_lat || !$auth_user_location_lng) {
+                $user->distance = null;
+                return $user;
+            }
+
+            $userLocations = $this->getUserLocationCoords($user->location_coords);
+            if (!$userLocations) {
+                $user->distance = null;
+                return $user;
+            }
+
+            $user_location_lat = $userLocations["latitude"];
+            $user_location_lng = $userLocations["longitude"];
+
+            $distance = $this->getDistance(
+                $auth_user_location_lat,
+                $auth_user_location_lng,
+                $user_location_lat,
+                $user_location_lng,
+                "K"
+            );
+
+            $user->distance = number_format($distance, 2);
+            return $user;
+        });
+
+        // Filter out any null values that might have been returned
+        $filteredUsers = $usersWithDistance->filter();
+
+        // Sort users by distance in ascending order (nulls last)
+        $sortedUsers = $filteredUsers->sortBy(function ($user) {
+            return $user->distance === null ? PHP_FLOAT_MAX : $user->distance;
+        });
+
+        return $sortedUsers;
     }
 }

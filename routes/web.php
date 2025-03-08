@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware'=>'auth'], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'Web\HomeController@index')->name('home');
     Route::get('/home', 'Web\HomeController@index')->name('home');
     Route::get('/dashboard', 'Web\HomeController@index')->name('home');
-//    Route::post('/logout', 'Web\AuthController@logout')->name('logout');
+    //    Route::post('/logout', 'Web\AuthController@logout')->name('logout');
 
     /*
      * volunteerism
@@ -41,14 +41,16 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/full-time-jobs/{uuid}', 'Web\PostController@show_permanent_job_details')->name('user.show_permanent_job_details.show');
     Route::get('/permanent-jobs/{uuid}', 'Web\PostController@show_permanent_job_details')->name('user.show_permanent_job_details.show');
     Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');
+    Route::post('/search-vorkers', 'Web\UserController@searchVorkers')->name('p2p.searchVorkers');
+    Route::get('/search-vorkers/results', 'Web\UserController@searchResults')->name('p2p.searchResults');
 
 
-//   Route::group(["prefix" => "/api/a0abaee2-d6c2-4f06-9c14-24c4da21eac9"], function () {
-       Route::get('/getFixedTermOpportunities', 'Web\PostController@getFixedTermOpportunities')->name('work.getFixedTermOpportunities');
-       Route::get('/getCategories', 'Web\PostController@getCategories')->name('work.getCategories');
-       Route::get('/getFixedTermOpportunityDetails/{uuid}', 'Web\PostController@getFixedTermOpportunityDetails')->name('work.getFixedTermOpportunityDetails');
-       Route::get('/getFixedTermOpportunitiesBySearchRadius/{radius}', 'Web\PostController@getFixedTermOpportunitiesBySearchRadius')->name('work.getFixedTermOpportunitiesBySearchRadius');
-//   });
+    //   Route::group(["prefix" => "/api/a0abaee2-d6c2-4f06-9c14-24c4da21eac9"], function () {
+    Route::get('/getFixedTermOpportunities', 'Web\PostController@getFixedTermOpportunities')->name('work.getFixedTermOpportunities');
+    Route::get('/getCategories', 'Web\PostController@getCategories')->name('work.getCategories');
+    Route::get('/getFixedTermOpportunityDetails/{uuid}', 'Web\PostController@getFixedTermOpportunityDetails')->name('work.getFixedTermOpportunityDetails');
+    Route::get('/getFixedTermOpportunitiesBySearchRadius/{radius}', 'Web\PostController@getFixedTermOpportunitiesBySearchRadius')->name('work.getFixedTermOpportunitiesBySearchRadius');
+    //   });
 
 
     Route::get('/getPermanentOpportunities', 'Web\PostController@getPermanentOpportunities')->name('work.getPermanentOpportunities');
@@ -139,7 +141,6 @@ Route::group(['middleware'=>'auth'], function () {
      * trainings
      */
     Route::get('/training/recommended', 'Web\TrainingController@index')->name('training.index');
-
 });
 
 /**
@@ -172,4 +173,4 @@ Route::get('/auth/reload-captcha', 'Web\OnboardingController@reloadCaptcha')->na
 
 Route::get('/external-job-experience/{id}/endorsements/{action}', 'Web\OutsideVorkJobController@approveOrDeclineReferenceRequest')->name('endorsements');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
