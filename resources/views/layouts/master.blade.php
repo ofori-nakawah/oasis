@@ -317,9 +317,27 @@
                                 </a>
                             </div><!-- .nk-header-brand -->
                             <div class="nk-header-news d-none d-xl-block">
-                                <div class="nk-news-list">
+                                <div class="nk-news-list ">
+                                    <!-- Desktop search form -->
+                                    <a href="{{route('user.work.jobs', ['type_of_user' => 'employer', 'type_of_work' => 'p2p'])}}" class="text-decoration-none">
+                                        <div class="form-group bg-white cursor-pointer">
+                                            <div class="form-group-wrap bg-white">
+                                                <div class="form-icon form-icon-left">
+                                                    <em class="icon ni ni-search"></em>
+                                                </div>
+                                                <input type="text" style="min-width: 300px; cursor: pointer;" readonly class="form-control bg-white" placeholder="Search vorkers by name or skill">
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div><!-- .nk-header-news -->
+
+                            <!-- Mobile search icon - visible on smaller screens -->
+                            <div class="d-xl-none mr-auto ml-3">
+                                <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "p2p"])}}">
+                                    <em class="icon ni ni-search"></em>
+                                </a>
+                            </div>
                             <div class="nk-header-tools">
                                 <ul class="nk-quick-nav">
                                     <li>
@@ -450,6 +468,8 @@
                 position: 'top-right'
             });
         @endif
+
+
 
         /**
          * build shareable link

@@ -40,8 +40,8 @@ Work
         @if(count($users) > 0)
         @foreach($users as $user)
         <div class="col-md-4 mb-4">
-                <div class="card card-bordered">
-                        <div class="card-body">
+                <div class="card card-bordered" style="border-radius: 18px;">
+                        <div class="card-body" style="min-height: 120px;">
                                 <div class="row">
                                         <div class="col-md-3">
                                                 <div class="text-center">
@@ -50,7 +50,7 @@ Work
                                         </div>
                                         <div class="col-md-9">
                                                 <div style="font-weight: 800">{{$user->name}}</div>
-                                                <div>{{$user->location_name ?? "Location unavailable"}} ({{$user->distance}}km from you)</div>
+                                                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{$user->location_name ?? "Location unavailable"}} ({{$user->distance}}km from you)</div>
                                                 <div>
                                                         <em class="icon ni ni-star"></em>
                                                         <span class="ml-1">{{$user->rating ?? "0"}}</span>
