@@ -41,8 +41,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/full-time-jobs/{uuid}', 'Web\PostController@show_permanent_job_details')->name('user.show_permanent_job_details.show');
     Route::get('/permanent-jobs/{uuid}', 'Web\PostController@show_permanent_job_details')->name('user.show_permanent_job_details.show');
     Route::get('/work/{type_of_user}/{type_of_work}', 'Web\PostController@list_jobs')->name('user.work.jobs');
+
     Route::post('/search-vorkers', 'Web\UserController@searchVorkers')->name('p2p.searchVorkers');
     Route::get('/search-vorkers/results', 'Web\UserController@searchResults')->name('p2p.searchResults');
+    Route::get('/p2p/{uuid}/request-quote', 'Web\PostController@requestQuote')->name('p2p.requestQuote');
+    Route::post('/p2p/submit-quote-request', 'Web\PostController@submitQuoteRequest')->name('p2p.submitQuoteRequest');
+    Route::get('/p2p/{uuid}/edit', 'Web\PostController@editQuoteRequest')->name('p2p.editQuoteRequest');
+    Route::post('/p2p/{uuid}/update', 'Web\PostController@updateQuoteRequest')->name('p2p.updateQuoteRequest');
+    Route::get('/p2p/{uuid}/remove', 'Web\PostController@removeQuoteRequest')->name('p2p.removeQuoteRequest');
 
 
     //   Route::group(["prefix" => "/api/a0abaee2-d6c2-4f06-9c14-24c4da21eac9"], function () {

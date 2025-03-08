@@ -16,6 +16,7 @@ use App\Traits\Responses;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -1192,6 +1193,224 @@ class PostController extends Controller
         }
     }
 
+    public function submitQuoteRequest(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'category' => 'required',
+            'description' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
+        }
+
+        $category = Skill::where("name", $request->category)->first();
+        if (!$category) {
+            return back()->with("danger", "Error fetching category details");
+        }
+
+        DB::beginTransaction();
+
+        $post = new Post();
+        $post->category = $request->category;
+        $post->category_id = $category->id;
+        $post->description = $request->description;
+        $post->date = date('Y-m-d');
+        $post->time = date('H:i');
+        $post->location = auth()->user()->location_name;
+        $post->coords = auth()->user()->location_coords;
+        $post->user_id = auth()->id();
+        $post->type = "P2P";
+        $post->source = "WEB";
+
+        if ($request->post_image && $request->post_image != "") {
+            //save image
+            $image = $request->file('post_image');
+            $name = $post->user->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/uploads/P2P');
+            $image->move($destinationPath, $name);
+
+            $post->post_image_link = URL::to('/public/uploads/P2P') . '/' . $name;
+        }
+
+        $post->save();
+
+        /**
+         * create application | placeholder quotation
+         */
+        $vorkers = $request->vorkers;
+        $vorkers = json_decode($vorkers);
+
+        foreach ($vorkers as $vorker) {
+            // dd($vorker);
+
+            /**
+             * get vorker details
+             */
+            $vorkerDetails = User::where("id", $vorker->userId)->first();
+            if (!$vorkerDetails) {
+                Log::error("ERROR FETCHING VORKER " . $vorker->userId);
+                continue;
+            }
+
+            /**
+             * these are the users we sent the job request to
+             * for quotation
+             */
+            $application = new JobApplication();
+            $application->user_id = $vorkerDetails->id;
+            $application->post_id = $post->id;
+            if (!$application->save()) {
+                Log::error("ERROR SAVING APPLICATION FOR " . $vorker->userId . " FOR P2P POST " . $post->id);
+            }
+
+            $post->user;
+
+            /**
+             * create notification
+             */
+            Notifications::PushUserNotification($post, $post, $vorkerDetails, "SUCCESSFUL_JOB_APPLICATION");
+            //PushNotification::notify("title", "body", "PROFILE_UPDATE", "details", auth()->user()->fcm_token);
+        }
+
+        try {
+            DB::commit();
+            return redirect()->route("home")->with("success", "Post has been published successfully.");
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while publishing your post. Kindly try again.");
+        }
+    }
+
+    public function requestQuote($uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request");
+        }
+
+        $user = User::where("uuid", $uuid)->first();
+        if (!$user) {
+            return back()->with("danger", "Error fetching vorker details. Please try again");
+        }
+
+        $categories = collect($user->skills)->map(function ($category) {
+            return $category->skill->name;
+        });
+        return view("work.p2p.create", compact("user", "categories"));
+    }
+
+    public function editQuoteRequest($uuid)
+    {
+        if (!$uuid) {
+            return back()->with("danger", "Invalid request");
+        }
+
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching job details. Please try again");
+        }
+
+        // Get the vorker from the job application
+        $application = JobApplication::where("post_id", $post->id)->first();
+        if (!$application) {
+            return back()->with("danger", "Error fetching application details. Please try again");
+        }
+
+        $vorker = User::where("id", $application->user_id)->first();
+        if (!$vorker) {
+            return back()->with("danger", "Error fetching vorker details. Please try again");
+        }
+
+        $categories = collect($vorker->skills)->map(function ($category) {
+            return $category->skill->name;
+        });
+
+        // Pass the application user ID directly to avoid variable issues in the view
+        $workerId = $application->user_id;
+
+        return view("work.p2p.edit", compact("post", "categories", "workerId"));
+    }
+
+    public function updateQuoteRequest(Request $request, $uuid)
+    {
+        $validation = Validator::make($request->all(), [
+            'category' => 'required',
+            'description' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
+        }
+
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching job details. Please try again");
+        }
+
+        $category = Skill::where("name", $request->category)->first();
+        if (!$category) {
+            return back()->with("danger", "Error fetching category details");
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $post->category = $request->category;
+            $post->category_id = $category->id;
+            $post->description = $request->description;
+
+            if ($request->post_image && $request->post_image != "") {
+                // Save image
+                $image = $request->file('post_image');
+                $name = $post->user->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+                $destinationPath = public_path('/uploads/P2P');
+                $image->move($destinationPath, $name);
+
+                $post->post_image_link = URL::to('/public/uploads/P2P') . '/' . $name;
+            }
+
+            $post->save();
+            DB::commit();
+
+            return redirect()->route("home")->with("success", "Job request has been updated successfully.");
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error("ERROR UPDATING P2P JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while updating your job request. Kindly try again.");
+        }
+    }
+
+    public function removeQuoteRequest($uuid)
+    {
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching job details. Please try again");
+        }
+
+        // Check if the post belongs to the authenticated user
+        if ($post->user_id != auth()->id()) {
+            return back()->with("danger", "You are not authorized to remove this job request.");
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Delete related job applications
+            JobApplication::where("post_id", $post->id)->delete();
+
+            // Delete the post
+            $post->delete();
+
+            DB::commit();
+            return redirect()->route("home")->with("success", "Job request has been removed successfully.");
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error("ERROR REMOVING P2P JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while removing your job request. Kindly try again.");
+        }
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -1563,8 +1782,7 @@ class PostController extends Controller
                 $categories = Skill::orderBy('name')->get();
                 return view("work.quick_jobs.edit", compact("post", "categories"));
             case "P2P":
-                $categories = Skill::orderBy('name')->get();
-                return view("work.p2p.edit", compact("post", "categories"));
+                return $this->editQuoteRequest($uuid);
             case "FIXED_TERM_JOB":
                 $categories = Skill::orderBy('name')->get();
                 return view("work.part_time_jobs.edit", compact("post", "categories"));
