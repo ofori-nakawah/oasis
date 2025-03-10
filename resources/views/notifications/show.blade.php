@@ -39,7 +39,8 @@
                                 Reference Verification
                             @endif
                             <span style="float: right">{{$notification->created_at}}</span>
-                        </b></div>
+                        </b>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
@@ -112,7 +113,13 @@
                                 <div class="title" style="font-size: 10px;color: #777;">Status</div>
                                 <div class="issuer"><b>
                                         @if(array_key_exists("post", $notification->data))
-                                            {{$notification->data["status"]}}
+                                            @if(array_key_exists("status", $notification->data))
+                                                {{$notification->data["status"]}}
+                                            @elseif($notification->data["post"]["type"] === "P2P")
+                                                Quote Request
+                                            @else
+                                                Pending
+                                            @endif
                                         @endif
                                         @if(array_key_exists("job", $notification->data))
                                             {{$notification->data["event"] === "REFERENCE_REQUEST_APPROVED" ? "Approved" : "Declined"}}
@@ -141,7 +148,8 @@
                                 Reference Verification
                             @endif
                             <span
-                                style="float: right">{{$notify->created_at}}</span></b></div>
+                                style="float: right">{{$notify->created_at}}</span></b>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
@@ -210,26 +218,29 @@
                                                     Activity Name
                                                 @endif @if($notify->data["post"]["type"] === "QUICK_JOB")
                                                     Category
+                                                @endif @if($notify->data["post"]["type"] === "P2P")
+                                                    Job Type
                                                 @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
                                                     Title
                                                 @endif</div>
                                             <div
                                                 class="date text-danger">@if($notify->data["post"]["type"] === "VOLUNTEER")
                                                     {{$notify->data["post"]["name"]}}
-                                                @endif @if($notify->data["post"]["type"] === "QUICK_JOB")
+                                                @endif @if($notify->data["post"]["type"] === "QUICK_JOB" || $notify->data["post"]["type"] === "P2P")
                                                     {{$notify->data["post"]["category"]}}
                                                 @endif @if($notify->data["post"]["type"] === "FIXED_TERM_JOB" || $notify->data["post"]["type"] === "PERMANENT_JOB")
                                                     {{$notify->data["post"]["title"]}}
-                                                @endif</div>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
-                                            @if($notify->data["post"]["status"] == "closed")
+                                            @if(isset($notify->data["post"]["status"]) && $notify->data["post"]["status"] == "closed")
                                                 <div class="title" style="font-size: 10px;color: #777;">Closure Date
                                                 </div>
                                                 <div>
                                                     <b>{{$notify->data["post"]["closed_at"]}}</b>
                                                 </div>
-                                            @elseif($notify->data["post"]["deleted_at"])
+                                            @elseif(isset($notify->data["post"]["deleted_at"]))
                                                 <div class="title" style="font-size: 10px;color: #777;">Removal Date
                                                 </div>
                                                 <div>
@@ -244,6 +255,28 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    @if($notify->data["event"] === "SUCCESSFUL_JOB_APPLICATION" || $notify->data["post"]["type"] === "P2P")
+                                        <div class="row mt-1">
+                                            <div class="col-md-12">
+                                                <div class="title" style="font-size: 10px;color: #777;">Job
+                                                    Description
+                                                </div>
+                                                <div><b>{{$notify->data["post"]["description"]}}</b></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Not Interested</button>
+                                                <form id="declineForm" method="POST" action="{{ route('job.decline') }}" style="display: none;">
+                                                    @csrf
+                                                    <input type="hidden" name="post_id" value="{{ $notify->data['post']['id'] }}">
+                                                </form>
+                                                <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Submit Quote</button>
+                                            </div>
+                                        </div>
+                                    @endif
 
                                     @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED" && $notify->data["event"] != "JOB_CLOSED")
                                         <div class="row">
@@ -267,6 +300,7 @@
                                             <br>
                                             <p><b style="color: #777;">Payment (GHS)</b></p>
                                             <table class="table table-striped">
+
                                                 <body>
                                                 <tr>
                                                     <td class="text-muted">Gross Amount</td>
@@ -362,6 +396,39 @@
         </div>
     </div>
 
+    <!-- Quote Modal -->
+    <div class="modal fade" tabindex="-1" id="quoteModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Submit Your Quote</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <em class="icon ni ni-cross" aria-hidden="true"></em>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="quoteForm" method="POST" action="{{ route('job.submit.quote') }}">
+                        @csrf
+                        <input type="hidden" name="post_id" value="{{ $notify->data['post']['id'] }}">
+                        <div class="form-group">
+                            <label for="quote_amount">Quote Amount</label>
+                            <input type="number" class="form-control" id="quote_amount" name="quote" placeholder="Enter your quote amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quote_description">Description</label>
+                            <textarea class="form-control" id="quote_description" name="comments" rows="4" placeholder="Enter description of your services" required></textarea>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Location Modal -->
     <div class="modal modal-lg fade" tabindex="-1" id="locationModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -383,6 +450,13 @@
 
 @section("scripts")
     <script>
+        function confirmDecline(event) {
+            event.preventDefault();
+            if (confirm('Are you sure you want to decline this job?')) {
+                document.getElementById('declineForm').submit();
+            }
+        }
+        
         const coords = '{{$location_coordinates}}'
         const lat = parseFloat(coords.split(',')[0])
         const lng = parseFloat(coords.split(',')[1])
@@ -399,7 +473,9 @@
                     lng: parseFloat(coords.split(',')[1])
                 },
                 zoom: 14,
-                componentRestrictions: {country: "gh"}
+                componentRestrictions: {
+                    country: "gh"
+                }
             };
             var map = new google.maps.Map(document.getElementById("locationMap"), mapOptions);
 

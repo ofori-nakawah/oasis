@@ -93,6 +93,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/posts/{application_id}/{action}', 'Web\PostController@confirm_decline_applicant')->name('user.posts.confirm_decline_applicant');
 
     /**
+     * Job quotes and applications
+     */
+    Route::post('/job/decline', 'Web\PostController@declinedJob')->name('job.decline');
+    Route::post('/job/submit-quote', 'Web\PostController@submitQuote')->name('job.submit.quote');
+
+    /**
      * onboarding
      */
     Route::post('/onboarding/location', 'Web\UserController@update_user_location')->name('onboarding.location.update');

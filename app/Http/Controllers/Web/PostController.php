@@ -2055,4 +2055,90 @@ class PostController extends Controller
                 break;
         }
     }
+
+    public function declinedJob(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'post_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
+        }
+
+        $post = Post::where("id", $request->post_id)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching post details");
+        }
+
+        $application = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+        if (!$application) {
+            Log::info("DECLINING JOB >>>>>>>>>>>>>>>>>>>>>>>> " . json_encode($request->all()));
+
+            return $this->not_found_response([], "Error fetching application details");
+        }
+
+        $application->status = "declined";
+
+
+        try {
+            $application->update();
+
+            /**
+             * Notify the issuer of a quote
+             */
+            $post->applications;
+            Notifications::PushUserNotification($post, $post, $post->user, "JOB_DECLINED");
+            Notifications::PushUserNotification($post, $post, auth()->user(), "JOB_DECLINED");
+
+            return back()->with("success", "Job has been declined successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DECLINING JOB >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while declining your job. Kindly try again.");
+        }
+    }
+
+    /**
+     * submit quote
+     */
+    public function submitQuote(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'quote' => 'required',
+            'post_id' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return back()->withErrors($validation->errors())->with("danger", "Please ensure all required fields are completed.")->withInput();
+        }
+
+        $post = Post::where("id", $request->post_id)->first();
+        if (!$post) {
+            return back()->with("danger", "Error fetching post details");
+        }
+
+        $application = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
+        if (!$application) {
+            return back()->with("danger", "Error fetching application details");
+        }
+
+        $application->quote = $request->quote;
+        $application->comments = $request->comments;
+
+        try {
+            $application->update();
+
+            /**
+             * Notify the issuer of a quote
+             */
+            $post->applications;
+            Notifications::PushUserNotification($post, $post, $post->user, "QUOTE_RECEIVED");
+            Notifications::PushUserNotification($post, $post, auth()->user(), "QUOTE_SUBMITTED");
+
+            return back()->with("success", "Quote has been submitted successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR SAVING USER >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return back()->with("danger", "Oops. We encountered an issue while submitting your quote. Kindly try again.");
+        }
+    }
 }
