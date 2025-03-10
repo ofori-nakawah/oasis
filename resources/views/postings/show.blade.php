@@ -415,7 +415,7 @@ Posts
     @endif
     @endif
 
-    @if($post->type === "QUICK_JOB")
+    @if($post->type === "QUICK_JOB" || $post->type === "P2P")
     <div class="card card-bordered">
         <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;"><b>{{$post->type}} <span
                     style="float: right">{{$post->date}} {{$post->time}}</span></b></div>
@@ -427,7 +427,13 @@ Posts
                     <div class="issuer">
                         <b>{{($post->type !== 'VOLUNTEER') ? $post->category : $post->name}}</b>
                     </div>
-                    <div>{{$post->number_of_participants_applied}} applicants shortlisted</div>
+                    <div>{{$post->number_of_participants_applied}} {{ $post->type === "P2P" ? " issued" : " applicants shortlisted"}}</div>
+                    @php
+                        $quotesSubmitted = $post->applications->filter(function($application) {
+                            return !is_null($application->quote) && $application->quote != '';
+                        })->count();
+                    @endphp
+                    <div>{{ $quotesSubmitted }} quote response{{ $quotesSubmitted === 1 ? '' : 's' }}</div>
                     @if($post->number_of_participants_confirmed > 0)
                     <div>{{$post->number_of_participants_confirmed}} selected</div> @endif
                 </div>
@@ -469,6 +475,12 @@ Posts
                 </div>
                 <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}"
                         class="font-italic">See profile</a></div>
+                        @if ($post->type === "P2P")
+                            <div class="border p-3 bg-gray-100 mt-2" style="border-radius: 18px;">
+                                <div class="text-muted"> Quote: {{$applicant->quote}}</div>
+                            <div class="text-muted"> Comments: {{$applicant->comments}}</div>
+                            </div>
+                        @endif
             </div>
             <div class="col-md-2">
                 @if($post->is_job_applicant_confirmed != 1)

@@ -146,6 +146,14 @@
                         break;
                     }
                 }
+
+                $isConfirmed = false;
+                foreach ($group_notifications as $notification) {
+                    if (isset($notification->data["event"]) && $notification->data["event"] === "APPLICATION_CONFIRMED") {
+                        $isConfirmed = true;
+                        break;
+                    }
+                }
             @endphp
             
             @foreach($group_notifications as $notify)
@@ -338,7 +346,7 @@
                                                                     </div>
                                                                 @endif
 
-                                                                @if ($userApplication['user_id'] == auth()->id() && $userApplication['status'] !== 'confirmed')
+                                                                @if ($userApplication['user_id'] == auth()->id() && !$isConfirmed)
                                                                     <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Quote</button>
                                                                 @endif
                                                             </div>
