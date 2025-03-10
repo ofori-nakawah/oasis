@@ -126,7 +126,7 @@ Profile
                                         <label for="bio" style="float: left !important;">Bio</label>
                                         <textarea class="form-control form-control-lg"
                                             id="bio" name="bio"
-                                            placeholder="Enter your new bio" value="{{$user->bio}}"></textarea>
+                                            placeholder="Enter your new bio" >{{$user->bio}}</textarea>
                                     </div>
                                 </div>
                             </div>
