@@ -63,7 +63,7 @@
                                                     Activity Name
                                                 @endif
 
-                                                @if(($notification->data["post"]["type"] === "QUICK_JOB"))
+                                                @if(($notification->data["post"]["type"] === "QUICK_JOB") || ($notification->data["post"]["type"] === "P2P"))
                                                     Category
                                                 @endif
 
@@ -80,7 +80,7 @@
                                                         {{$notification->data["post"]["name"]}}
                                                     @endif
 
-                                                    @if(($notification->data["post"]["type"] === "QUICK_JOB"))
+                                                    @if(($notification->data["post"]["type"] === "QUICK_JOB") || ($notification->data["post"]["type"] === "P2P"))
                                                         {{$notification->data["post"]["category"]}}
                                                     @endif
 
