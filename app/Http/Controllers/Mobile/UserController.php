@@ -862,8 +862,8 @@ class UserController extends Controller
 
         $outsideVorkJob->role = $request->role;
         $outsideVorkJob->employer = $request->employer;
-        $outsideVorkJob->start_date = $request->start_date;
-        $outsideVorkJob->end_date = $request->end_date;
+        $outsideVorkJob->start_date = $this->convertDateStringToDateTime($request->startDate);
+        $outsideVorkJob->end_date = $this->convertDateStringToDateTime($request->endDate);
         $outsideVorkJob->responsibilities = $request->responsibilities;
         $outsideVorkJob->achievements = $request->achievements;
         $outsideVorkJob->reference = json_encode([
