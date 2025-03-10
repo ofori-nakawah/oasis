@@ -365,147 +365,44 @@ Dashboard
 <script src="{{asset('assets/html-template/src/assets/js/example-chart.js?ver=1.4.0"')}}"></script>
 
 <script>
-    const ctx = document.getElementById('chart');
+        const ctx = document.getElementById('chart');
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
                     label: 'In-flow',
-                    data: [{
-                        {
-                            $incomeData["janIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["febIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["marIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["aprIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["mayIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["junIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["julIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["augIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["sepIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["octIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["novIncome"]
-                        }
-                    }, {
-                        {
-                            $incomeData["decIncome"]
-                        }
-                    }],
+                    data: [{{$incomeData["janIncome"]}}, {{$incomeData["febIncome"]}}, {{$incomeData["marIncome"]}}, {{$incomeData["aprIncome"]}}, {{$incomeData["mayIncome"]}}, {{$incomeData["junIncome"]}}, {{$incomeData["julIncome"]}}, {{$incomeData["augIncome"]}}, {{$incomeData["sepIncome"]}}, {{$incomeData["octIncome"]}}, {{$incomeData["novIncome"]}}, {{$incomeData["decIncome"]}}],
                     borderWidth: 1,
                     fill: false,
                     borderColor: 'green'
                 },
-                {
-                    label: 'Out-flow',
-                    data: [{
-                        {
-                            $taxData["janTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["febTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["marTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["aprTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["mayTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["junTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["julTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["augTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["sepTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["octTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["novTax"]
-                        }
-                    }, {
-                        {
-                            $taxData["decTax"]
-                        }
-                    }],
-                    borderWidth: 1,
-                    fill: false,
-                    borderColor: 'red'
+                    {
+                        label: 'Out-flow',
+                        data: [{{$taxData["janTax"]}}, {{$taxData["febTax"]}}, {{$taxData["marTax"]}}, {{$taxData["aprTax"]}}, {{$taxData["mayTax"]}}, {{$taxData["junTax"]}}, {{$taxData["julTax"]}}, {{$taxData["augTax"]}}, {{$taxData["sepTax"]}}, {{$taxData["octTax"]}}, {{$taxData["novTax"]}}, {{$taxData["decTax"]}}],
+                        borderWidth: 1,
+                        fill: false,
+                        borderColor: 'red'
+                    }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Income Trend',
+                    }
                 }
-            ]
-        },
-        options: {
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Income Trend',
-                }
-            }
-        },
-    });
-
-    @if(Session::has('danger'))
-    NioApp.Toast('{{ Session::get('
-        danger ') }}', 'error', {
-            position: 'top-right'
+            },
         });
-    // NioApp.Toast('This is a note for bottom right toast message.', 'info', {position: 'top-right'});
-    @endif
 
-    @if(Session::has('success'))
-    NioApp.Toast('{{ Session::get('
-        success ') }}', 'success', {
-            position: 'top-right'
-        });
-    @endif
-</script>
+        @if(Session::has('danger'))
+        NioApp.Toast('{{ Session::get('danger') }}', 'error', {position: 'top-right'});
+        // NioApp.Toast('This is a note for bottom right toast message.', 'info', {position: 'top-right'});
+        @endif
+
+        @if(Session::has('success'))
+        NioApp.Toast('{{ Session::get('success') }}', 'success', {position: 'top-right'});
+        @endif
+    </script>
 @endsection
