@@ -1644,4 +1644,53 @@ class PostController extends Controller
         $posts = $jobs_near_me->sortByDesc("created_at");
         return $this->success_response($posts, "Posts fetched successfully.");
     }
+
+    /**
+     * Delete a post
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function delete_post(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->data_validation_error_response($validation->errors());
+        }
+
+        $post = Post::where("id", $request->id)->first();
+        if (!$post) {
+            return $this->not_found_response([], "Error fetching post details");
+        }
+
+        // Check if post is already deleted
+        if ($post->deleted_at) {
+            return $this->not_found_response([], "This post has already been removed.");
+        }
+
+        // Check if user is authorized to delete this post
+        if ((int) $post->user_id !== auth()->id() || $post->status === "closed") {
+            return $this->unauthorized_response([], "You are not authorized to remove this post.");
+        }
+
+        // Soft delete the post by setting deleted_at timestamp
+        $post->deleted_at = Carbon::now();
+
+        // Get confirmed applicants and send them notifications
+        $confirmedApplicants = $post->applications->where("status", "confirmed");
+        foreach ($confirmedApplicants as $application) {
+            Notifications::PushUserNotification($post, $application, $application->user, "JOB_REMOVED");
+        }
+
+        try {
+            $post->update();
+            return $this->success_response([], "Post has been removed successfully.");
+        } catch (QueryException $e) {
+            Log::error("ERROR DELETING POST >>>>>>>>>>>>>>>>>>>>>>>> " . $e);
+            return $this->db_operation_error_response([], "Oops. We encountered an issue while removing your post. Please try again.");
+        }
+    }
 }

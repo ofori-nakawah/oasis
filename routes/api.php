@@ -53,6 +53,7 @@ Route::prefix('/v1')->group(function () {
 
         Route::prefix('/listings')->group(function () {
             Route::post('/update-post', 'Mobile\PostController@updatePost');
+            Route::post('/delete-post', 'Mobile\PostController@delete_post')->name('mobile.delete_post');
         });
 
         Route::prefix('/p2p')->group(function () {
