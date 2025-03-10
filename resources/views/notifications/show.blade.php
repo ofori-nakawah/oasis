@@ -137,6 +137,17 @@
         </div>
         <div class="col-md-7">
             @include("utilities.alerts.alerts")
+
+            @php
+                $hasDeclinedOrSubmitted = false;
+                foreach ($group_notifications as $notification) {
+                    if (isset($notification->data["event"]) && in_array($notification->data["event"], ["JOB_DECLINED", "QUOTE_SUBMITTED"])) {
+                        $hasDeclinedOrSubmitted = true;
+                        break;
+                    }
+                }
+            @endphp
+            
             @foreach($group_notifications as $notify)
                 <div class="card card-bordered">
                     <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
@@ -256,27 +267,17 @@
                                         </div>
                                     </div>
 
-                                    @if($notify->data["event"] === "SUCCESSFUL_JOB_APPLICATION" || $notify->data["post"]["type"] === "P2P")
-                                        <div class="row mt-1">
-                                            <div class="col-md-12">
-                                                <div class="title" style="font-size: 10px;color: #777;">Job
-                                                    Description
-                                                </div>
-                                                <div><b>{{$notify->data["post"]["description"]}}</b></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-12">
-                                                <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Not Interested</button>
-                                                <form id="declineForm" method="POST" action="{{ route('job.decline') }}" style="display: none;">
-                                                    @csrf
-                                                    <input type="hidden" name="post_id" value="{{ $notify->data['post']['id'] }}">
-                                                </form>
-                                                <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Submit Quote</button>
-                                            </div>
-                                        </div>
-                                    @endif
+                                    @php
+                                        $userApplication = null;
+                                        if (isset($notify->data["post"]["applications"])) {
+                                            foreach ($notify->data["post"]["applications"] as $application) {
+                                                if ($application["user_id"] == auth()->id()) {
+                                                    $userApplication = $application;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    @endphp
 
                                     @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED" && $notify->data["event"] != "JOB_CLOSED")
                                         <div class="row">
@@ -288,13 +289,77 @@
                                                                                                        class="text-primary">View
                                                         on map</a></div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="title" style="font-size: 10px;color: #777;">Issuer Tel</div>
-                                                <div><b>{{$notify->data["post"]["user"]["phone_number"]}}</b></div>
-                                            </div>
+                                            @if ($userApplication && $userApplication['status'] === 'confirmed')
+                                                <div class="col-md-6">
+                                                    <div class="title" style="font-size: 10px;color: #777;">Issuer Tel</div>
+                                                    <div><b>{{$notify->data["post"]["user"]["phone_number"]}}</b></div>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endif
 
+
+                                    @if($notify->data["event"] === "SUCCESSFUL_JOB_APPLICATION" || $notify->data["post"]["type"] === "P2P")
+                                        <div class="row mt-1">
+                                            <div class="col-md-12">
+                                                <div class="title" style="font-size: 10px;color: #777;">Job
+                                                    Description
+                                                </div>
+                                                <div><b>{{$notify->data["post"]["description"]}}</b></div>
+                                            </div>
+                                        </div>
+
+
+                                        @if ($notify->data["post"]["type"] === "P2P")
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                    @if (!$userApplication && !$hasDeclinedOrSubmitted)
+                                                        <!-- No application yet, show both buttons -->
+                                                        <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Not Interested</button>
+                                                        <form id="declineForm" method="POST" action="{{ route('job.decline') }}" style="display: none;">
+                                                            @csrf
+                                                            <input type="hidden" name="post_id" value="{{ $notify->data['post']['id'] }}">
+                                                        </form>
+                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Submit Quote</button>
+                                                    @elseif ($userApplication && $userApplication['status'] !== 'declined')
+                                                        <!-- Application exists and not declined -->
+                                                        @if (isset($userApplication['quote']) && !empty($userApplication['quote']))
+                                                            <!-- Quote already submitted -->
+                                                            <div class="p-3 border bg-gray-100" style="border-radius: 18px;">
+                                                                <div>
+                                                                    <div class="title" style="font-size: 10px;color: #777;">Quote (GHS)
+                                                </div>
+                                                                    <div class="mb-1"><b>{{ $userApplication['quote'] }}</b></div>
+                                                                </div>
+                                                                @if (isset($userApplication['comments']) && !empty($userApplication['comments']))
+                                                                    <div>
+                                                                        <div class="title" style="font-size: 10px;color: #777;">Comments</div>
+                                                                        <div class="mb-1"><b>{{ $userApplication['comments'] }}</b></div>
+                                                                    </div>
+                                                                @endif
+
+                                                                @if ($userApplication['user_id'] == auth()->id() && $userApplication['status'] !== 'confirmed')
+                                                                    <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Quote</button>
+                                                                @endif
+                                                            </div>
+                                                            
+                                                        @else
+                                                            @if (!$hasDeclinedOrSubmitted)
+                                                                <!-- Applied but no quote submitted yet -->
+                                                                <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Submit Quote</button>
+                                                                <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Application</button>
+                                                            @endif
+                                                        @endif
+                                                    @elseif ($userApplication && $userApplication['status'] === 'declined')
+                                                        <!-- Application was declined by user -->
+                                                        <div class="alert alert-warning">{{auth()->id() != $userApplication['user_id']  ? auth()->user()->name : "You"}} have declined this job.</div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endif
+
+                                    
                                     @if($notify->data["event"] == "JOB_CLOSED")
                                         @if($notify->data["post"]["type"] === "QUICK_JOB")
                                             <br>
