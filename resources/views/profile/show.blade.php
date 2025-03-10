@@ -88,6 +88,7 @@ Profile
                             data-target="#editNameModal"><em
                                 class="icon ni ni-pen"></em> <b>Edit</b></a>
                         @endif</b></div>
+                        <div>{{$user->bio}}</div>
                 <hr>
                 <div><em
                         class="icon ni ni-map-pin"></em>{{$user->location_name}} @if($user->id == auth()->user()->id)
@@ -110,15 +111,22 @@ Profile
                             <em class="icon ni ni-cross"></em>
                         </a>
                         <div class="modal-header">
-                            <h5 class="modal-title">Update your name</h5>
+                            <h5 class="modal-title">Update your name and bio</h5>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-control-wrajhgp">
+                                        <label for="name" style="float: left !important;">Name</label>
                                         <input type="text" class="form-control form-control-lg"
                                             id="name" name="name"
-                                            placeholder="Enter your new name">
+                                            placeholder="Enter your new name" value="{{$user->name}}">
+                                    </div>
+                                    <div class="form-control-wrajhgp mt-3">
+                                        <label for="bio" style="float: left !important;">Bio</label>
+                                        <textarea class="form-control form-control-lg"
+                                            id="bio" name="bio"
+                                            placeholder="Enter your new bio" value="{{$user->bio}}"></textarea>
                                     </div>
                                 </div>
                             </div>

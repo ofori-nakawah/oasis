@@ -289,6 +289,7 @@ class UserController extends Controller
         switch ($module) {
             case "display-name":
                 auth()->user()->name = $request->name;
+                auth()->user()->bio = $request->bio;
                 auth()->user()->update();
                 break;
             case "profile-picture":
@@ -409,7 +410,7 @@ class UserController extends Controller
 
                 // Store search results in session
                 session(['search_users' => $users, 'search_target' => $target]);
-                
+
                 // Redirect to search results page
                 return redirect()->route('p2p.searchResults');
                 break;
@@ -436,7 +437,7 @@ class UserController extends Controller
 
                 // Store search results in session
                 session(['search_users' => $users, 'search_target' => $target]);
-                
+
                 // Redirect to search results page
                 return redirect()->route('p2p.searchResults');
                 break;
@@ -501,10 +502,10 @@ class UserController extends Controller
     {
         $users = session('search_users', collect());
         $target = session('search_target', '');
-        
+
         return view("work.p2p.searchResults", ['users' => $users, 'target' => $target]);
     }
-    
+
     private function filterUsersBasedOnDistance($users)
     {
         $auth_user = Auth::user();
