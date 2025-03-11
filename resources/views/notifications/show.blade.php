@@ -231,6 +231,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row">
+                                        @if($notify->data["event"] != "QUOTE_RECEIVED")
                                         <div class="col-md-6">
                                             <div class="title"
                                                  style="font-size: 10px;color: #777;">@if($notify->data["post"]["type"] === "VOLUNTEER")
@@ -273,7 +274,8 @@
                                                 </div>
                                             @endif
                                         </div>
-                                    </div>
+
+                                        @endif                                    </div>
 
                                     @php
                                         $userApplication = null;
@@ -287,7 +289,7 @@
                                         }
                                     @endphp
 
-                                    @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED" && $notify->data["event"] != "JOB_CLOSED")
+                                    @if($notify->data["event"] != "SUCCESSFUL_JOB_APPLICATION" && $notify->data["event"] != "JOB_REMOVED" && $notify->data["event"] != "APPLICATION_DECLINED" && $notify->data["event"] != "JOB_CLOSED" && $notify->data["event"] != "QUOTE_RECEIVED")
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="title" style="font-size: 10px;color: #777;">Location</div>
@@ -307,7 +309,8 @@
                                     @endif
 
 
-                                    @if($notify->data["event"] === "SUCCESSFUL_JOB_APPLICATION" || $notify->data["post"]["type"] === "P2P")
+                                    @if($notify->data["event"] === "SUCCESSFUL_JOB_APPLICATION" || $notify->data["post"]["type"] === "P2P" )
+                                        @if($notify->data["event"] !== "QUOTE_RECEIVED")
                                         <div class="row mt-1">
                                             <div class="col-md-12">
                                                 <div class="title" style="font-size: 10px;color: #777;">Job
@@ -316,6 +319,7 @@
                                                 <div><b>{{$notify->data["post"]["description"]}}</b></div>
                                             </div>
                                         </div>
+                                        @endif
 
 
                                         @if ($notify->data["post"]["type"] === "P2P")
@@ -346,9 +350,14 @@
                                                                     </div>
                                                                 @endif
 
-                                                                @if ($userApplication['user_id'] == auth()->id() && !$isConfirmed)
-                                                                    <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Quote</button>
+                                                                @if ($notify->data["event"] === "QUOTE_RECEIVED")
+                                                                    <a class="btn btn-primary text-white" href="{{ route('user.posts.show', ['uuid' => $notify->data['post']['id']]) }}">View Post</a>
+                                                                @else
+                                                                    @if(!$isConfirmed)
+<button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Quote</button>
+                                                                    @endif
                                                                 @endif
+                                                                
                                                             </div>
                                                             
                                                         @else
