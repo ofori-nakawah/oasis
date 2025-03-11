@@ -26,7 +26,7 @@ Profile
                 {{-- <a href="{{URL::previous()}}"--}}
                 {{-- class="btn btn-outline-primary ml-2"><span>Gallery</span></a>--}}
                 @if(Auth::id() !== $user->id)
-                <a href="{{URL::previous()}}"
+                <a href="{{route('p2p.requestQuote', ['uuid' => $user->uuid])}}"
                     class="btn btn-primary ml-2"><span>Hire Vorker</span></a>
                 @endif
                 <a href="{{URL::previous()}}"
