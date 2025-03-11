@@ -1602,6 +1602,23 @@ class PostController extends Controller
                  */
                 $volunteer_details = $request->volunteer_details;
                 $user_id = $request->user_id;
+
+                /**
+                 * close if there are no user assignments
+                 */
+                if (empty($user_id)) {
+                    $post->status = "closed";
+
+                    try {
+                        $post->update();
+                    } catch (QueryException $e) {
+                        Log::error("ERROR closing JOB post >>>>>>>>>> " . $post . " >>>>>>>>> " . $e);
+                        return back()->with("danger", "Ooops...we encountered an error while closing job. Kindly try again later.");
+                    }
+
+                    return redirect()->route("user.posts.list")->with("success", "Post has been closed successfully.");
+                }
+
                 for ($i = 0; $i < count($user_id); $i++) {
                     $participant = User::where("id", $user_id[$i])->first();
                     if (!$participant) {
@@ -1620,7 +1637,7 @@ class PostController extends Controller
                         $application->update();
 
                         /**
-                         * create notification
+                         * create notification 
                          */
                         $post->user;
                         Notifications::PushUserNotification($post, $application, $participant, "JOB_CLOSED");
