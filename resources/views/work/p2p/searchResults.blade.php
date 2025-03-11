@@ -60,7 +60,7 @@ Work
                                                                 <a href="{{route('user.profile', ['user_id' => $user->id])}}" class="font-medium">See profile</a>
                                                         </div>
                                                         <div>
-                                                                <a href="{{route('p2p.requestQuote', ['uuid' => $user->uuid])}}" class="font-medium">Request quote</a>
+                                                                <a href="{{route('p2p.requestQuote', ['uuid' => $user->uuid])}}" class="font-medium">Job request</a>
                                                         </div>
                                                 </div>
 

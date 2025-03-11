@@ -332,7 +332,7 @@
                                                             @csrf
                                                             <input type="hidden" name="post_id" value="{{ $notify->data['post']['id'] }}">
                                                         </form>
-                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Submit Quote</button>
+                                                        <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Apply with quote</button>
                                                     @elseif ($userApplication && $userApplication['status'] !== 'declined')
                                                         <!-- Application exists and not declined -->
                                                         @if (isset($userApplication['quote']) && !empty($userApplication['quote']))
@@ -363,7 +363,7 @@
                                                         @else
                                                             @if (!$hasDeclinedOrSubmitted)
                                                                 <!-- Applied but no quote submitted yet -->
-                                                                <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Submit Quote</button>
+                                                                <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Apply with quote</button>
                                                                 <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Application</button>
                                                             @endif
                                                         @endif
@@ -497,8 +497,8 @@
                             <input type="number" class="form-control" id="quote_amount" name="quote" placeholder="Enter your quote amount" required>
                         </div>
                         <div class="form-group">
-                            <label for="quote_description">Description</label>
-                            <textarea class="form-control" id="quote_description" name="comments" rows="4" placeholder="Enter description of your services" required></textarea>
+                            <label for="quote_description">Comment</label>
+                            <textarea class="form-control" id="quote_description" name="comments" rows="4" placeholder="Add a comment" required></textarea>
                         </div>
                         <div class="form-group text-right">
                             <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>

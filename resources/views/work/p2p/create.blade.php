@@ -56,9 +56,9 @@ Work
                                         </div>
 
                                         <div class="input-group1 mb-3">
-                                                <label for="description"><b>Brief Job Description</b></label>
+                                                <label for="description"><b>Provide scope of work</b></label>
                                                 <textarea class="form-control form-control-l @error('description') is-invalid @enderror"
-                                                        placeholder="Enter brief description of the project"
+                                                        placeholder=" Enter the description of the job want to be undertaken"
                                                         name="description">{{ old('description') }}</textarea>
 
                                                 @error('description')
