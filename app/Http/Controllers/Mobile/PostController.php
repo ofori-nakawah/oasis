@@ -1637,7 +1637,7 @@ class PostController extends Controller
         /**
          * filter using search categories
          */
-        if (count($searchCategories) > 1) {
+        if ($searchCategories && count($searchCategories) > 0) {
             $_searchCategories = array();
             foreach ($searchCategories as $category) {
                 array_push($_searchCategories, $category->id);
