@@ -609,9 +609,23 @@ class PostController extends Controller
         $post->coords = json_encode($request->coords);;
         $post->max_budget = $request->max_budget;
         $post->min_budget = $request->min_budget;
-        $post->is_negotiable = $request->is_negotiable ?? 'No';
-        $post->is_renewable = $request->is_renewable ?? 'No';
-        $post->is_internship = $request->is_internship ?? 'No';
+        if ($request->is_negotiable === "on" || $request->is_negotiable === "yes" || $request->is_negotiable === "true" || $request->is_negotiable === true) {
+            $post->is_negotiable = "yes";
+        } else {
+            $post->is_negotiable = "no";
+        }
+
+        if ($request->is_remote === "on" || $request->is_remote === "yes" || $request->is_remote === "true" || $request->is_remote === true) {
+            $post->is_renewable = "yes";
+        } else {
+            $post->is_renewable = "no";
+        }
+
+        if ($request->is_internship === "on" || $request->is_internship === "yes" || $request->is_internship === "true" || $request->is_internship === true) {
+            $post->is_internship = "yes";
+        } else {
+            $post->is_internship = "no";
+        }
         $post->industry_id = $industry->id;
         $post->other_relevant_information = $request->other_relevant_information;
         $post->tags = json_encode($tags);
@@ -963,6 +977,13 @@ class PostController extends Controller
                     }
 
                     /**
+                     * filter by isRemote
+                     */
+                    if (isset($request->filterOptions['isRemote']) && $request->filterOptions["isRemote"]) {
+                        $jobs_near_me = $this->filterByRemote($jobs_near_me);
+                    }
+
+                    /**
                      * filter by minBudget from filterOptions
                      */
                     if (isset($request->filterOptions['minBudget']) && $request->filterOptions['minBudget'] !== '') {
@@ -1050,6 +1071,20 @@ class PostController extends Controller
             return $post->is_internship === "yes";
         });
     }
+
+    /**
+     * Filter collection by remote
+     * 
+     * @param Collection $collection
+     * @return Collection
+     */
+    private function filterByRemote($collection)
+    {
+        return $collection->filter(function ($post) {
+            return $post->is_renewable === "yes";
+        });
+    }
+
 
     /**
      * Filter collection by minimum budget

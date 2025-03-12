@@ -263,7 +263,7 @@ class PostController extends Controller
     {
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
-            return $this->data_validation_error_response();
+            return $this->data_validation_error_response("User location not found");
         }
 
         $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
