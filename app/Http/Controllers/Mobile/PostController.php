@@ -740,22 +740,7 @@ class PostController extends Controller
                     array_push($user_interests, $interest->skill->id);
                 }
 
-                /**
-                 * filter using search categories
-                 */
-                if ($searchCategories && count($searchCategories) > 0) {
-                    $_searchCategories = array();
-                    foreach ($searchCategories as $interest) {
-                        array_push($_searchCategories, $interest);
-                    }
-
-                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $_searchCategories)->orderByDesc("created_at")->get();
-                } else {
-                    /**
-                     * default search categories
-                     */
-                    $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", $request->type)->whereIn("category_id", $user_interests)->whereNull('deleted_at')->orderByDesc("created_at")->get();
-                }
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereNull('deleted_at')->orderByDesc("created_at")->get();
 
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
