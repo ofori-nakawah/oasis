@@ -13,6 +13,7 @@ use App\Models\EducationHistory;
 use App\Models\OutsideVorkJob;
 use App\Models\JobApplication;
 use App\Models\User;
+use App\Models\RatingReview;
 use App\Services\PushNotification;
 use App\Traits\Utils;
 use Carbon\Carbon;
@@ -365,7 +366,7 @@ class UserController extends Controller
         }
         $educationHistories = $user->educationHistory;
         $certificationsAndTrainings = $user->certificationsAndTrainings;
-        $userReviews = $user->rating_and_reviews;
+        $userReviews = $user->rating_and_reviews()->latest()->take(2)->get();
         $reviews = array();
         foreach ($userReviews as $userReview) {
             $newReview = [
@@ -387,11 +388,67 @@ class UserController extends Controller
         auth()->user()->listings = $posts;
         auth()->user()->recentlyApplied = $recentlyApplied;
 
+        $averageRatingsForReviewCategories = [
+            'expertise' => 0,
+            'work_ethic' => 0,
+            'professionalism' => 0,
+            'customer_service' => 0
+        ];
+
+        $ratings = RatingReview::where('user_id', auth()->id())->get();
+        if ($ratings->count() > 0) {
+            $averageRatingsForReviewCategories = [
+                'expertise' => round($ratings->avg('expertise_rating'), 1),
+                'work_ethic' => round($ratings->avg('work_ethic_rating'), 1),
+                'professionalism' => round($ratings->avg('professionalism_rating'), 1),
+                'customer_service' => round($ratings->avg('customer_service_rating'), 1)
+            ];
+        }
+
+        $volunteerHistory = [];
+        $volunteerApplications = JobApplication::where('user_id', auth()->id())
+            ->where('status', 'confirmed')
+            ->whereNotNull('volunteer_hours')
+            ->with(['job_post' => function ($query) {
+                $query->where('type', 'VOLUNTEER')
+                    ->where('status', 'closed');
+            }])
+            ->get();
+
+        foreach ($volunteerApplications as $application) {
+            if ($application->job_post && $application->job_post->type === 'volunteer') {
+                $volunteerHistory[] = [
+                    'date' => $application->job_post->date ?? $application->job_post->created_at->format('Y-m-d'),
+                    'name' => $application->job_post->title,
+                    'volunteer_hours_awarded' => $application->volunteer_hours
+                ];
+            }
+        }
+
+        $references = [];
+
+        $outsideVorkJobs = OutsideVorkJob::where('user_id', auth()->id())
+            ->whereNotNull('reference')
+            ->get();
+        foreach ($outsideVorkJobs as $job) {
+            $referenceData = json_decode($job->reference, true);
+            if (is_array($referenceData)) {
+                $references[] = [
+                    'name' => $referenceData['name'] ?? '',
+                    'company' => $referenceData['company'] ?? $job->employer ?? '',
+                    'email' => $referenceData['email'] ?? '',
+                    'phone_number' => $referenceData['phone_number'] ?? ''
+                ];
+            }
+        }
 
         $user_profile = array(
             "number_of_jobs" => $jobs_count,
             "number_of_activities" => $volunteer_count,
             "average_rating" => $average_rating,
+            "average_ratings_by_category" => $averageRatingsForReviewCategories,
+            "volunteer_history" => $volunteerHistory,
+            "references" => $references,
             "location" => $user->location_name,
             "location_coords" => $user->location_coords,
             "volunteer_hours" => $volunteer_hours,
