@@ -416,7 +416,7 @@ class UserController extends Controller
             ->get();
 
         foreach ($volunteerApplications as $application) {
-            if ($application->job_post && $application->job_post->type === 'volunteer') {
+            if ($application->job_post && $application->job_post->type === 'VOLUNTEER') {
                 $volunteerHistory[] = [
                     'date' => $application->job_post->date ?? $application->job_post->created_at->format('Y-m-d'),
                     'name' => $application->job_post->title,
