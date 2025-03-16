@@ -419,7 +419,7 @@ class UserController extends Controller
             if ($application->job_post && $application->job_post->type === 'VOLUNTEER') {
                 $volunteerHistory[] = [
                     'date' => $application->job_post->date ?? $application->job_post->created_at->format('Y-m-d'),
-                    'name' => $application->job_post->title,
+                    'name' => $application->job_post->name,
                     'volunteer_hours_awarded' => $application->volunteer_hours
                 ];
             }
