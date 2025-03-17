@@ -897,7 +897,7 @@ class UserController extends Controller
         ]);
         $outsideVorkJob->user_id = $userId;
 
-        if ($request->isOngoing === "on") {
+        if ($request->isOngoing === "on" || $request->isOngoing === true || $request->isOngoing === "true" || $request->isOngoing === "1" || $request->isOngoing === 1 || $request->isOngoing === "yes") {
             $outsideVorkJob->end_date = null;
         }
 
@@ -927,7 +927,7 @@ class UserController extends Controller
             "name" => $request->reference
         ]);
 
-        if ($request->is_ongoing === "on") {
+        if ($request->isOngoing === "on" || $request->isOngoing === true || $request->isOngoing === "true" || $request->isOngoing === "1" || $request->isOngoing === 1 || $request->isOngoing === "yes") {
             $outsideVorkJob->end_date = null;
         }
 
