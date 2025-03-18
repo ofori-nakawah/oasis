@@ -740,7 +740,7 @@ class PostController extends Controller
                     array_push($user_interests, $interest->skill->id);
                 }
 
-                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereIn("category_id", $user_interests)->whereNull('deleted_at')->orderByDesc("created_at")->get();
+                $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "QUICK_JOB")->whereNull('deleted_at')->orderByDesc("created_at")->get();
 
                 $jobs_near_me = collect();
                 foreach ($posts as $post) {
@@ -805,10 +805,13 @@ class PostController extends Controller
                             array_push($_searchCategories, $interest);
                         }
 
+
                         $jobs_near_me = $jobs_near_me->filter(function ($post) use ($_searchCategories) {
                             $matchingItems = in_array($post->category, $_searchCategories);
                             return !empty($matchingItems);
                         });
+                    } else {
+                        $jobs_near_me = $jobs_near_me->whereIn("category_id", $user_interests);
                     }
                 }
 
