@@ -105,7 +105,8 @@ class Notifications
                 /**
                  * Job closed
                  */
-                if ($event === "JOB_CLOSED") {
+                $isIssuer = (int) $post->user_id === (int) auth()->user()->id && (int) $application->user_id === (int) auth()->user()->id;
+                if ($event === "JOB_CLOSED" && !$isIssuer) {
                     $ref_id = "QJ" . explode("-", $application->id)[0];
                     $status = "Job Closed";
                     $title = "Job closed";
