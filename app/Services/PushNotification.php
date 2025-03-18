@@ -145,7 +145,7 @@ class PushNotification
             "to" => $tokens,
             "title" => $notificationData["title"],
             "body" => $notificationData["body"],
-            "sound" => true,
+            // "sound" => true,
             "badge" => auth()->user()->unreadNotifications->count(),
             "data" => [
                 "event" => $event,
