@@ -156,7 +156,34 @@
                 }
             @endphp
             
+            <!-- Special handling for QUOTE_RECEIVED events -->
             @foreach($group_notifications as $notify)
+                @if($notify->data["event"] === "QUOTE_RECEIVED" && auth()->id() == $notify->data['post']['user_id'])
+                    <div class="card card-bordered mb-4">
+                        <div class="card-header  bg-white " style="border-bottom: 1px solid #dbdfea;">
+                            @if(array_key_exists("post", $notify->data))
+                                {{$notify->data["post"]["type"]}} | <b>{{$notify->data["ref_id"]}}</b>
+                            @endif
+                            <span
+                                style="float: right; font-weight: bold">{{$notify->created_at}}</span>
+                        </div>
+                        <div class="card-body">
+                            @if(array_key_exists("post", $notify->data))
+                              @if(isset($notify->data["status"]))
+                                <div class="issuer mb-2" style="font-weight: bold;">{{$notify->data["status"]}}</div>
+                              @endif
+                              @if(isset($notify->data["message"]))
+                                <div class="issuer">{{$notify->data["message"]}}</div>
+                              @endif
+                            @endif
+                            <a class="btn btn-primary mt-3 text-white" href="{{ route('user.posts.show', ['uuid' => $notify->data['post']['id']]) }}">Review Quote</a>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+
+            @foreach($group_notifications as $notify)
+                @if(!($notify->data["event"] === "QUOTE_RECEIVED" && auth()->id() == $notify->data['post']['user_id']))
                 <div class="card card-bordered">
                     <div class="card-header bg-white" style="border-bottom: 1px solid #dbdfea;">
                         <b>
@@ -258,7 +285,7 @@
                                                 <div class="title" style="font-size: 10px;color: #777;">Closure Date
                                                 </div>
                                                 <div>
-                                                    <b>{{$notify->data["post"]["closed_at"]}}</b>
+                                                    <b>{{$notify->data["post"]["closed_at"] ?? $notify->data["post"]["updated_at"]}}</b>
                                                 </div>
                                             @elseif(isset($notify->data["post"]["deleted_at"]))
                                                 <div class="title" style="font-size: 10px;color: #777;">Removal Date
@@ -310,7 +337,7 @@
 
 
                                     @if($notify->data["event"] === "SUCCESSFUL_JOB_APPLICATION" || $notify->data["post"]["type"] === "P2P" )
-                                        @if($notify->data["event"] !== "QUOTE_RECEIVED")
+                                        @if($notify->data["event"] !== "QUOTE_RECEIVED" && (!isset($notify->data["post"]["status"]) || $notify->data["post"]["status"] !== "closed") )
                                         <div class="row mt-1">
                                             <div class="col-md-12">
                                                 <div class="title" style="font-size: 10px;color: #777;">Job
@@ -325,8 +352,8 @@
                                         @if ($notify->data["post"]["type"] === "P2P")
                                             <div class="row mt-3">
                                                 <div class="col-md-12">
-                                                    @if (!$userApplication && !$hasDeclinedOrSubmitted)
-                                                        <!-- No application yet, show both buttons -->
+                                                    @if (!$hasDeclinedOrSubmitted && !$userApplication && auth()->user()->id != $notify->data['post']['user_id'])
+                                                        <!-- No application yet, show both buttons if user is not the post creator -->
                                                         <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Not Interested</button>
                                                         <form id="declineForm" method="POST" action="{{ route('job.decline') }}" style="display: none;">
                                                             @csrf
@@ -334,6 +361,7 @@
                                                         </form>
                                                         <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Apply with quote</button>
                                                     @elseif ($userApplication && $userApplication['status'] !== 'declined')
+                                                  
                                                         <!-- Application exists and not declined -->
                                                         @if (isset($userApplication['quote']) && !empty($userApplication['quote']))
                                                             <!-- Quote already submitted -->
@@ -341,7 +369,7 @@
                                                                 <div>
                                                                     <div class="title" style="font-size: 10px;color: #777;">Quote (GHS)
                                                 </div>
-                                                                    <div class="mb-1"><b>{{ $userApplication['quote'] }}</b></div>
+                                                                    <div class="mb-1"><b>{{ is_numeric($userApplication['quote']) ? $userApplication['quote'] : 'N/A' }}</b></div>
                                                                 </div>
                                                                 @if (isset($userApplication['comments']) && !empty($userApplication['comments']))
                                                                     <div>
@@ -351,20 +379,24 @@
                                                                 @endif
 
                                                                 @if ($notify->data["event"] === "QUOTE_RECEIVED")
-                                                                    <a class="btn btn-primary text-white" href="{{ route('user.posts.show', ['uuid' => $notify->data['post']['id']]) }}">View Post</a>
-                                                                @else
-                                                                    @if(!$isConfirmed)
-<button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Quote</button>
+                                                                    @if (auth()->id() == $notify->data['post']['user_id'])
+                                                                        <div class="alert alert-info mb-2">You have received a quote for your post. You can review and respond to it.</div>
                                                                     @endif
+                                                                    
+                                                                    <div style="margin-top: 10px; margin-bottom: 10px;">
+                                                                        @if (auth()->id() == $notify->data['post']['user_id'])
+                                                                            <a class="btn btn-primary btn-lg btn-block text-white" href="{{ route('user.posts.show', ['uuid' => $notify->data['post']['id']]) }}">Review Quote</a>
+                                                                        @else
+                                                                            <a class="btn btn-primary btn-lg btn-block text-white" href="{{ route('user.posts.show', ['uuid' => $notify->data['post']['id']]) }}">View Post</a>
+                                                                        @endif
+                                                                    </div>
                                                                 @endif
-                                                                
                                                             </div>
-                                                            
                                                         @else
                                                             @if (!$hasDeclinedOrSubmitted)
                                                                 <!-- Applied but no quote submitted yet -->
                                                                 <button class="btn btn-primary" data-toggle="modal" data-target="#quoteModal">Apply with quote</button>
-                                                                <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Withdraw Application</button>
+                                                                <button class="btn btn-outline-secondary" onclick="confirmDecline(event)">Not interested</button>
                                                             @endif
                                                         @endif
                                                     @elseif ($userApplication && $userApplication['status'] === 'declined')
@@ -378,7 +410,7 @@
 
                                     
                                     @if($notify->data["event"] == "JOB_CLOSED")
-                                        @if($notify->data["post"]["type"] === "QUICK_JOB")
+                                        @if($notify->data["post"]["type"] === "QUICK_JOB" || $notify->data["post"]["type"] === "P2P")
                                             <br>
                                             <p><b style="color: #777;">Payment (GHS)</b></p>
                                             <table class="table table-striped">
@@ -398,7 +430,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td><b>Net Amount</b></td>
-                                                    <td>{{$notify->data["post"]["final_payment_amount"] - number_format((5/ 100) * $notify->data["post"]["final_payment_amount"], 2) - number_format((1/ 100) * $notify->data["post"]["final_payment_amount"], 2) }}</td>
+                                                    <td>{{$notify->data["post"]["final_payment_amount"] - ((5/ 100) * $notify->data["post"]["final_payment_amount"]) + ((1/ 100) * $notify->data["post"]["final_payment_amount"]) }}</td>
                                                 </tr>
                                                 </body>
                                             </table>
@@ -474,6 +506,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
             @endforeach
         </div>
     </div>
