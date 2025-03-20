@@ -55,7 +55,7 @@ class PostController extends Controller
         return view("work.type", compact("type_of_user"));
     }
 
-    public function list_jobs($type_of_user, $type_of_work)
+    public function list_jobs(Request $request, $type_of_user, $type_of_work)
     {
         Log::info("type_of_work: " . $type_of_work);
 
@@ -88,7 +88,7 @@ class PostController extends Controller
                 break;
             case "permanent":
                 if ($type_of_user == "seeker") {
-                    return $this->list_permanent_jobs();
+                    return $this->getPermanentOpportunities($request);
                 } else {
                     $categories = Skill::orderBy('name')->get();
                     $industries = Industry::orderBy('name')->get();
@@ -259,7 +259,7 @@ class PostController extends Controller
         return $posts;
     }
 
-    public function getPermanentOpportunities()
+    public function getPermanentOpportunities(Request $request)
     {
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
@@ -272,46 +272,87 @@ class PostController extends Controller
         $_user_interests = auth()->user()->skills;
         $user_interests = array();
         foreach ($_user_interests as $interest) {
-            array_push($user_interests, $interest->skill->id);
+            array_push($user_interests, $interest->skill->name);
         }
 
-        /**
-         * filter using:
-         * post type
-         * interests | skills
-         */
-        $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "PERMANENT_JOB")->whereNull('deleted_at')->orderByDesc("created_at")->get();
+        $rawPosts = Post::with(['user', 'industry', 'applications' => function ($query) {
+            $query->where("user_id", "!=", auth()->id());
+        }])
+            ->where("status", "active")
+            ->where("type", "PERMANENT_JOB")
+            ->whereNull('deleted_at')
+            ->orderByDesc("created_at")
+            ->get();
 
-        /**
-         * filter using distance
-         */
-        $jobs_near_me = collect();
-        foreach ($posts as $post) {
-            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
-            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
+        // Filter and enhance posts in a single pass
+        $filteredPosts = $rawPosts->filter(function (Post $post) use ($user_location_lat, $user_location_lng, $user_interests, $request) {
+            // Extract location coordinates
+            $coords = json_decode($post->coords);
+            $post_location_lat = isset($coords->latitude) ? $coords->latitude : explode(',', $post->coords)[0];
+            $post_location_lng = isset($coords->longitude) ? $coords->longitude : explode(',', $post->coords)[1];
 
+            // Calculate distance
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
-            $toDate = Carbon::parse($post->end_date);
-            $fromDate = Carbon::parse($post->start_date);
-            $post["duration"] = $toDate->diffInMonths($fromDate);
+            // Store distance for sorting later
+            $post["distance"] = number_format($distance, 2);
+
+            // Filter out posts that are too far away
+            $maxRadius = $request->has('radius') ? $request->radius : self::JOB_SEARCH_RADIUS;
+            if ($distance > $maxRadius) {
+                return false;
+            }
+
+            // Add additional post data
+            $post["organiser_name"] = $post->user->name;
             $post["createdOn"] = $post->created_at->diffForHumans();
+            $post["industry"] = $post->industry ? $post->industry->name : null;
 
-            if ($distance <= self::JOB_SEARCH_RADIUS) {
-                $post["organiser_name"] = $post->user->name;
-                $post["distance"] = number_format($distance, 2);
-                $jobs_near_me->push($post);
+            // Calculate duration if dates are available
+            if ($post->end_date && $post->start_date) {
+                $post["duration"] = Carbon::parse($post->end_date)->diffInMonths(Carbon::parse($post->start_date));
             }
 
-            $post->industry;
+            // Check if user has already applied using the eager loaded relationship
+            $post->has_already_applied = $post->applications->where('user_id', auth()->id())->count() > 0 ? "yes" : "no";
 
-            $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
-            if ($has_already_applied) {
-                $post->has_already_applied = "yes";
+            $tags = json_decode($post->tags, true);
+
+            // Category filtering logic
+            if ($request->has('categories') && !empty($request->categories)) {
+                // If request has specific categories, filter by those
+                $requestCategories = is_array($request->categories) ? $request->categories : [$request->categories];
+                if ($post->category && !in_array($post->category_id, $requestCategories)) {
+                    return false;
+                }
+            } elseif (!empty($user_interests) && $tags) {
+                // Otherwise, if user has interests and post has a category, filter by user interests
+                if (!array_intersect($tags, $user_interests)) {
+                    return false;
+                }
             }
-        }
-        $posts = $jobs_near_me->sortBy("distance");
-        return $posts;
+
+            return true;
+        });
+
+        // Sort the filtered posts by distance
+        $sortedPosts = $filteredPosts->sortBy(function ($post) {
+            return (float)$post['distance']; // Convert to float for proper numeric sorting
+        });
+
+        // Paginate the sorted posts
+        $perPage = 10; // Number of items per page
+        $page = $request->input('page', 1); // Current page, default to 1
+
+        $posts = new \Illuminate\Pagination\LengthAwarePaginator(
+            $sortedPosts->forPage($page, $perPage),
+            $sortedPosts->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view("work.permanent.index", compact("posts"));
     }
 
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
