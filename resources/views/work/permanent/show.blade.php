@@ -78,6 +78,34 @@
 
 @section("scripts")
     <script>
+        function copyLinkToClipboard() {
+            var copyText = document.getElementById("shareableLink");
+            var textToCopy = copyText.innerText;
+            
+            // Create a temporary input element
+            var tempInput = document.createElement("input");
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            
+            // Select the text
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999);
+            
+            // Copy the text
+            document.execCommand("copy");
+            
+            // Remove the temporary element
+            document.body.removeChild(tempInput);
+            
+            // Show feedback
+            $(".copyLinkButton").hide();
+            $(".copyStatus").html('<div class="text-success"><em class="icon ni ni-check"></em> Copied to clipboard</div>');
+            
+            setTimeout(function() {
+                $(".copyLinkButton").show();
+                $(".copyStatus").html('');
+            }, 2000);
+        }
         /**
          * setup selected fixed term opportunities
          * shimmer loader

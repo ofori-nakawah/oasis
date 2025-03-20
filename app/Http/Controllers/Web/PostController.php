@@ -318,15 +318,20 @@ class PostController extends Controller
 
             $tags = json_decode($post->tags, true);
 
-            // Category filtering logic
-            if ($request->has('categories') && !empty($request->categories)) {
-                // If request has specific categories, filter by those
-                $requestCategories = is_array($request->categories) ? $request->categories : [$request->categories];
-                if ($post->category && !in_array($post->category_id, $requestCategories)) {
+            // Skills filtering logic
+            if ($request->has('skills') && !empty($request->skills)) {
+                // If request has specific skills, filter by those
+                $requestSkills = is_array($request->skills) ? $request->skills : [$request->skills];
+
+                // Get skill names from IDs
+                $skillNames = Skill::whereIn('id', $requestSkills)->pluck('name')->toArray();
+
+                // Check if post tags contain any of the selected skills
+                if ($tags && !array_intersect($tags, $skillNames)) {
                     return false;
                 }
             } elseif (!empty($user_interests) && $tags) {
-                // Otherwise, if user has interests and post has a category, filter by user interests
+                // Otherwise, if user has interests and post has tags, filter by user interests
                 if (!array_intersect($tags, $user_interests)) {
                     return false;
                 }
@@ -352,7 +357,10 @@ class PostController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return view("work.permanent.index", compact("posts"));
+        $skills = Skill::all();
+        $count = count($sortedPosts);
+
+        return view("work.permanent.index", compact("posts", "skills", "count"));
     }
 
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)

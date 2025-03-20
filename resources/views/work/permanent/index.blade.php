@@ -93,11 +93,21 @@
 {{--                        </div>--}}
                         <div class="mb-2">
                             <label class="form-label">Categories</label>
-                            <div class="card card-bordered pt-2 pl-3 pr-2" id="catBox"
-                                 style="height: 46px;border-radius: 4px;display: flex;flex-direction: row"
+                            <div class="card card-bordered pt-2 pl-3 pr-2" id="skillsBox"
+                                 style="min-height: 46px;border-radius: 4px;display: flex;flex-direction: row"
                                  data-toggle="modal" data-target="#skillsModal">
-                                <div class="text-muted" style="flex: 1" id="selectedSkillsBox">Eg. Barber, Fashion
-                                    Designer
+                                <div class="text-muted" style="flex: 1" id="selectedSkillsBox">
+                                    @if(request()->has('skills'))
+                                        @php
+                                            $selectedSkillIds = is_array(request()->skills) ? request()->skills : [request()->skills];
+                                            $selectedSkillNames = App\Models\Skill::whereIn('id', $selectedSkillIds)->pluck('name')->toArray();
+                                        @endphp
+                                        @foreach($selectedSkillNames as $skillName)
+                                            <span class="badge badge-dim badge-primary">{{ $skillName }}</span>
+                                        @endforeach
+                                    @else
+                                        Eg. Barber, Fashion Designer
+                                    @endif
                                 </div>
                                 <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                             </div>
@@ -117,7 +127,7 @@
         </div>
         <div class="col-md-8" style="margin-top: 50px;">
             <div class="text-dark mb-3" style="display: flex; flex-direction: row;">
-                <div style="flex:1">{{$posts->count()}} listings</div>
+                <div style="flex:1">{{$count}} listings</div>
                 <div style="display:flex; gap: 20px;border-bottom: 1px solid #dbdfea;">
                     <span class="text-primary" style="border-bottom: 3px solid #353299;"><b>All</b></span>
 {{--                    <a href="#" class="text-dark">Saved</a>--}}
@@ -162,61 +172,25 @@
             </div>
         </div>
     </div>
+    
+    <script>
+    function copyShareUrl(postId) {
+        var copyText = document.getElementById("share-url-" + postId);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        
+        // Show feedback
+        var button = copyText.nextElementSibling;
+        var originalText = button.innerHTML;
+        button.innerHTML = "<em class='icon ni ni-check'></em> Copied!";
+        setTimeout(function() {
+            button.innerHTML = originalText;
+        }, 2000);
+    }
+    </script>
 
-    <div class="modal fade zoom" tabindex="-1" id="shareOpportunity" style="border-radius: 4px;">
-        <div class="modal-dialog" role="document" style="border-radius: 4px;">
-            <div class="modal-content" style="border-radius: 4px;">
-                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                    <em class="icon ni ni-cross text-danger"></em>
-                </a>
-                <div class="modal-header" style="border-bottom: none !important;">
-                    <div class="modal-title" style="font-size: 18px;"><b>Share Opportunity</b></div>
-                </div>
-                <div class="modal-body">
-                    <hr style=" margin-top: -25px;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p><em class="icon ni ni-bulb"></em> You can copy and share post with your family and
-                                friends on all platforms.</p>
-                            <p class="alert alert-lighter bg-lighter text-primary no-border"
-                               style="padding: 10px;border-radius: 4px;margin-bottom: 15px;border: none !important;"><b><span
-                                        id="shareableLink"></span></b>
-                            </p>
-                            <div class="btn btn-outline-primary copyLinkButton bold" style="float: right !important;"
-                                 onclick="copyLinkToClipboard()"><em class="icon ni ni-copy"></em> Copy link
-                            </div>
-                            <span class="copyStatus text-success"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade zoom" tabindex="-1" id="skillsModal" style="border-radius: 16px;">
-        <div class="modal-dialog" role="document" style="border-radius: 16px;">
-            <div class="modal-content" style="border-radius: 16px;">
-                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                    <em class="icon ni ni-cross"></em>
-                </a>
-                <div class="modal-header" style="border-bottom: none !important;">
-                    <h4 class="modal-title"><b>Skills</b></h4>
-                </div>
-                <div class="modal-body">
-                    <hr style=" margin-top: -25px;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div id="categoriesListing"
-                                 style="display: flex; flex-direction: column;height: 400px; overflow-y: scroll;gap: 5px;"></div>
-                            <div class="btn btn-primary btn-lg bold" style="float: right !important;"
-                                 onclick="applyCategoriesFilter()"> Apply filter
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('work.permanent.partials._skills')
 
     <div class="modal fade zoom" tabindex="-1" id="searchRadiusModal" style="border-radius: 16px;">
         <div class="modal-dialog" role="document" style="border-radius: 16px;">
