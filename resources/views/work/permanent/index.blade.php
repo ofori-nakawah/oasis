@@ -28,21 +28,58 @@
     </div><!-- .nk-block-head -->
 
     <div class="row">
-        <div class="col-md-4 col-sm-8">
-            <ul class="nav nav-tabs">
-                <li class="nav-item"><a style="font-size: 15px;" class="nav-link" data-bs-toggle="tab" href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "quick-job"])}}">Casual</a></li>
-                <li class="nav-item"><a style="font-size: 15px;" class="nav-link" data-bs-toggle="tab" href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "fixed-term"])}}">Fixed Term</a></li>
-                <li class="nav-item"><a style="font-size: 15px;" class="nav-link active" data-bs-toggle="tab" href="javascript:void(0)">Permanent</a></li>
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "permanent"])}}"
-               style="float: right;"
-               class="btn btn-primary"><span>Post a job</span></a>
+        <div class="col-md-12 col-sm-12" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div class="job-tabs-container" style="background-color: #f5f6fa; border-radius: 8px; padding: 5px; display: flex; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;">
+                <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "quick-job"])}}" class="job-tab" style="padding: 10px 15px; margin: 3px; border-radius: 8px; font-weight: 500; text-decoration: none; color: #364a63; transition: all 0.3s ease; white-space: nowrap;font-size: 12px;">
+                    CASUAL
+                </a>
+                <a href="{{route("user.work.jobs", ["type_of_user" => "seeker", "type_of_work" => "fixed-term"])}}" class="job-tab" style="padding: 10px 15px; margin: 3px; border-radius: 8px; font-weight: 500; text-decoration: none; color: #364a63; transition: all 0.3s ease; white-space: nowrap;font-size: 12px;">
+                    FIXED TERM
+                </a>
+                <a href="javascript:void(0)" class="job-tab active" style="padding: 10px 15px; margin: 3px; border-radius: 8px; font-weight: 600; text-decoration: none; border-bottom: 2px solid #353299; color: #353299; transition: all 0.3s ease; white-space: nowrap;font-size: 12px;">
+                    PERMANENT
+                </a>
+            </div>
+            
+            <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "permanent"])}}" 
+               class="btn btn-primary add-job-btn job-tab-active" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: auto;margin:3px;">
+                 <em class="icon ni ni-plus"></em>
+            </a>
+            
+            <style>
+                .job-tab:not(.active):hover {
+                    border-bottom: 2px solid #e6e9f2;
+                    /* transform: translateY(-2px); */
+                }
+                
+                /* .job-tab.active {
+                    box-shadow: 0 4px 10px rgba(53, 50, 153, 0.3);
+                } */
+                
+                /* Responsive styles */
+                @media (max-width: 576px) {
+                    .job-tabs-container {
+                        width: 100%;
+                        justify-content: center;
+                        margin-bottom: 15px;
+                    }
+                    
+                    .add-job-btn {
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        margin: 0;
+                        z-index: 999;
+                        width: 60px;
+                        height: 60px;
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                    }
+                }
+            </style>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="margin-top: -45px;">
         <div class="col-md-4">
             <div class="row " style="position: -webkit-sticky;
   position: sticky;top: 0">
@@ -54,43 +91,55 @@
                                 <em class="icon ni ni-search"></em>
                             </div>
                             <input type="text" class="form-control form-control-lg" name="search"
-                                   id="searchFixedTermJobOpportunities"
-                                   placeholder="Search keywords" style="border-radius: 4px;height: 60px;">
+                                   id="searchPermanentJobOpportunities"
+                                   value="{{ request('search') }}"
+                                   placeholder="Search keywords" style="border-radius: 4px;">
                         </div>
+                        
                     </div>
-                    <p class="mb-3"><em class="icon ni ni-bulb"></em> Hit enter to search</p>
+                    <div class="mb-3" style="display: flex; align-items: center; justify-content: space-between;">
+                        <p class="mb-0"><em class="icon ni ni-bulb"></em> Hit enter to search</p>
+                        @if(request('search'))
+                            <a href="javascript:void(0)" onclick="clearSearch()" class="btn btn-sm btn-outline-secondary">Clear search</a>
+                        @endif
+                    </div>
+                    <script>
+                        document.getElementById('searchPermanentJobOpportunities').addEventListener('keypress', function(e) {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                applySearch();
+                            }
+                        });
+                        
+                        function applySearch() {
+                            var searchValue = document.getElementById('searchPermanentJobOpportunities').value;
+                            var currentUrl = new URL(window.location.href);
+                            
+                            if (searchValue.trim() !== '') {
+                                currentUrl.searchParams.set('search', searchValue);
+                            } else {
+                                currentUrl.searchParams.delete('search');
+                            }
+                            
+                            window.location.href = currentUrl.toString();
+                        }
+                        
+                        function clearSearch() {
+                            var currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.delete('search');
+                            window.location.href = currentUrl.toString();
+                        }
+                    </script>
                     <div class="d-none d-sm-block .d-sm-none .d-md-block">
                         <hr>
 
-{{--                        <div class="mb-2">--}}
-{{--                            <label class="form-label">Open to</label>--}}
-{{--                            <div style="display: flex;flex-direction: row">--}}
-{{--                                <div class="user-toggle" style="flex: 1">--}}
-{{--                                    <div class="user-avatar bg-secondary-dim sm">--}}
-{{--                                        <em class="icon ni ni-book-read"></em>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="user-info" style="">--}}
-{{--                                        <div class="nk-menu-text text"><b>Internships</b></div>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <div class="custom-control custom-checkbox mt-1">--}}
-{{--                                    <input type="checkbox" class="custom-control-input" id="isInternship"--}}
-{{--                                           onclick="getFixedTermInternshipOpportunities()">--}}
-{{--                                    <label class="custom-control-label" for="isInternship"></label>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-
-{{--                        <hr>--}}
-{{--                        <div class="mb-2">--}}
-{{--                            <label class="form-label">Search radius</label>--}}
-{{--                            <div id="radBox" class="card card-bordered pt-2 pl-3 pr-2" data-toggle="modal"--}}
-{{--                                 data-target="#searchRadiusModal"--}}
-{{--                                 style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">--}}
-{{--                                <div class="text-muted" style="flex: 1" id="searchRadiusTrigger">Eg. 11km from me</div>--}}
-{{--                                <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
+                        <div class="mb-2">
+                            <label class="form-label">Search radius</label>
+                            <div id="radBox" class="card card-bordered pt-2 pl-3 pr-2" data-toggle="modal" data-target="#searchRadiusModal" style="height: 46px;border-radius: 4px;display: flex;flex-direction: row">
+                                <div class="text-muted" style="flex: 1" id="searchRadiusTrigger">Eg. 11km from me</div>
+                                <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
+                            </div>
+                        </div>
                         <div class="mb-2">
                             <label class="form-label">Categories</label>
                             <div class="card card-bordered pt-2 pl-3 pr-2" id="skillsBox"
@@ -112,14 +161,14 @@
                                 <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
                             </div>
                         </div>
-{{--                        <div class="mb-2">--}}
-{{--                            <label class="form-label">Budget range</label>--}}
-{{--                            <div class="card card-bordered pt-2 pl-3 pr-2" id="bugBox"--}}
-{{--                                 style="height: 46px;border-radius: 4px;display: flex;flex-direction: row" data-toggle="modal" data-target="#budgetModal">--}}
-{{--                                <div class="text-muted" style="flex: 1" id="budgetRange">Eg. Between GHS240 and GHS490</div>--}}
-{{--                                <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
+                        <div class="mb-2">
+                            <label class="form-label">Budget range</label>
+                            <div class="card card-bordered pt-2 pl-3 pr-2" id="bugBox"
+                                 style="height: 46px;border-radius: 4px;display: flex;flex-direction: row" data-toggle="modal" data-target="#budgetModal">
+                                <div class="text-muted" style="flex: 1" id="budgetRange">Eg. Between GHS240 and GHS490</div>
+                                <div><em class="icon ni ni-chevron-down" style="font-size: 22px;"></em></div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -191,354 +240,7 @@
     </script>
 
     @include('work.permanent.partials._skills')
+    @include('work.permanent.partials._radius')
+    @include('work.permanent.partials._budget')
 
-    <div class="modal fade zoom" tabindex="-1" id="searchRadiusModal" style="border-radius: 16px;">
-        <div class="modal-dialog" role="document" style="border-radius: 16px;">
-            <div class="modal-content" style="border-radius: 16px;">
-                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                    <em class="icon ni ni-cross"></em>
-                </a>
-                <div class="modal-header" style="border-bottom: none !important;">
-                    <h4 class="modal-title"><b>Search Radius</b></h4>
-                </div>
-                <div class="modal-body">
-                    <hr style=" margin-top: -25px;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div>
-                                <p><em class="icon ni ni-bulb"></em> Open up job search radius by updating the search
-                                    radius input below. The bigger the value, the wider the search radius.</p>
-                            </div>
-                            <div class="input-group1 mb-3 mt-3">
-                                <label for="radiusInput">Search Radius (km)</label>
-                                <input type="number" min="2" value="10" max="100" class="form-control"
-                                       placeholder="Number between 1 and 100" name="radiusInput" id="radiusInput">
-                            </div>
-                            <div class="btn btn-primary btn-lg bold" style="float: right !important;"
-                                 onclick="getFixedTermOpportunitiesBySearchRadius()"> Apply filter
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade zoom" tabindex="-1" id="budgetModal" style="border-radius: 16px;">
-        <div class="modal-dialog" role="document" style="border-radius: 16px;">
-            <div class="modal-content" style="border-radius: 16px;">
-                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                    <em class="icon ni ni-cross"></em>
-                </a>
-                <div class="modal-header" style="border-bottom: none !important;">
-                    <h4 class="modal-title"><b>Budget Range</b></h4>
-                </div>
-                <div class="modal-body">
-                    <hr style=" margin-top: -25px;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div>
-                                <p><em class="icon ni ni-bulb"></em> Filter job opportunities based on the budget range</p>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group1 mb-3 mt-3">
-                                        <label for="radiusInput">Min budget (GHS)</label>
-                                        <input type="number" min="2" value="10" max="100" class="form-control"
-                                               placeholder="Min budget" name="radiusInput" id="radiusInput">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group1 mb-3 mt-3">
-                                        <label for="radiusInput">Max budget (GHS)</label>
-                                        <input type="number" min="2" value="10" max="100" class="form-control"
-                                               placeholder="Max budget" name="radiusInput" id="radiusInput">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="btn btn-primary btn-lg bold" style="float: right !important;"
-                                 onclick="getFixedTermOpportunitiesBySearchRadius()"> Apply filter
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
-{{-- 
-@section("scripts")
-    <script>
-        localStorage.removeItem("filteredFixedTermPosts")
-
-        /**
-         * setup fixed term opportunities
-         * shimmer loader
-         */
-        const isLoadingFixedTermOpportunities = (isLoading) => {
-            const fixedTermOpportunitiesShimmerLoader = `<div class="text-center" >Loading...</div>`
-            const fixedTermOpportunitiesCountShimmerLoader = `<div class="s-fixed-term-card" style="width: 130px !important;"><div class="date-line" style="width: 130px !important;"></div></div>`
-
-            if (isLoading) {
-                $("#fixedTermOpportunitiesCountShimmerLoader").html(fixedTermOpportunitiesCountShimmerLoader)
-                $("#fixedTermOpportunitiesListingLoader").html(fixedTermOpportunitiesShimmerLoader)
-                $("#fixedTermOpportunitiesCountShimmerLoader").show()
-                $("#fixedTermOpportunitiesListingLoader").show()
-                $("#fixedTermOpportunitiesListing").html("")
-                $("#fixedTermOpportunitiesCount").html("")
-            } else {
-                $("#fixedTermOpportunitiesCountShimmerLoader").hide()
-                $("#fixedTermOpportunitiesListingLoader").hide("slow")
-            }
-        }
-
-        const ComponentFixedTermOpportunity = (post) => {
-            let isInternship = ``;
-            if (post.is_internship === "yes") {
-                isInternship += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
-  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;" class="bg-primary text-white">Internship</span>`
-            }
-
-            let categories = ``
-            const tags = JSON.parse(post.tags)
-            tags.forEach((tag) => {
-                categories += `<span style="border: 1px solid #364a63; padding: 5px;word-wrap: break-word;
-  white-space: nowrap;border-radius: 4px;margin-bottom: 10px;">${tag}</span>`
-            })
-
-
-            const route = `{{env("BACKEND_URL")}}/permanent-jobs/${post.id}`
-            const industry = (post.industry) ? post.industry.name : 'Not Specified'
-
-            return `
-        <div class="col-md-6">
-                <div class="card card-bordered cardContainer" style="/* From https://css.glass */
-background: rgba(255, 255, 255, 0.2);
-border-radius: 4px;
-/*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);*/
-backdrop-filter: blur(5px);
-margin-bottom: 15px;
--webkit-backdrop-filter: blur(5px);
-border: 1px solid #dbdfea;">
-                    <div class="card-header text bg-lighter" style="border-radius: 4px; margin:5px;display: flex; flex-direction: row;padding-left: 15px;padding-right: 15px;">
-                        <div style="flex: 1;"><b>${post.title}</b> <br> <span style="font-size: 10px;"> <em class="icon ni ni-clock"></em> ${post.createdOn}</span></div> ${isInternship}</div>
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Company</div>
-                                <div class="issuer"><em
-                                            class="icon ni ni-building"></em> ${post.employer}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Budget
-                                    (GHS/month)
-                                </div>
-                                <div class="issuer text-success"><em
-                                            class="icon ni ni-coins"></em> ${post.min_budget}
-                                        - ${post.max_budget}</div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="title" style="font-size: 10px;color: #777;">Industry</div>
-                                <div class="issuer card bg-lighter text-center flex justify-center align-center" style="height: 100px;">
-                                    <div style="font-size: 22px;" class="flex justify-center align-center">
-                                        <b>${industry}</b></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                                <div class="issuer text"><em
-                                            class="icon ni ni-map-pin"></em> ${post.location} (
-            ${post.distance}
-            km away)</div>
-                </div>
-                </div>
-                </div>
-
-                 <div class="flex flex-row justify-between items-center bg-lighter" style="margin: 5px;border-radius: 4px;padding: 10px;">
-                        <a type="button" style="float: left !important;" class="btn btn-outline-gray"  onclick="setupShareableLink('${post.type}', '${post.id}')" data-toggle="modal" data-target="#shareOpportunity" href="javascript:void(0)" >
-                                <em class="icon ni ni-share"  data-toggle="tooltip" data-bs-placement="right" title="Share with family and friends"></em>
-                        </a>
-                    <a data-bs-toggle="tooltip" data-bs-placement="right" title="See more details" href="${route}" class="btn btn-outline-gray " style="float: right !important;"><em
-                    class="icon ni ni-list-round"></em></a></div>
-                </div>
-
-<!--                </div>-->
-<!--                </div>-->
-
-                </div>
-                `
-        }
-
-        const ComponentFixedTermOpportunitiesFetchError = () => {
-            return `
-                <p class="text-center">Oops...something went wrong</p>
-            `
-        }
-
-        /**
-         * get fixed term opportunities
-         * display fixed term opportunities
-         */
-        const getFixedTermOpportunities = () => {
-            isLoadingFixedTermOpportunities(true)
-
-            /**
-             * make api call
-             */
-            $.ajax({
-                url: "{{env("BACKEND_URL")}}/getPermanentOpportunities",
-                method: "GET",
-                dataType: "json",
-                contentType: "application/json",
-                data: {},
-                crossDomain: true,
-                success: function (_data) {
-                    const data = _data
-                    localStorage.setItem("fixedTermPosts", JSON.stringify(data))
-                    $("#fixedTermOpportunitiesListing").html("")
-                    let fixedTermOpportunitiesList = `<div class="row">`
-                    let counter = 0;
-                    $.each(data, function (key, opportunity) {
-                        fixedTermOpportunitiesList += ComponentFixedTermOpportunity(opportunity)
-                        counter++;
-                    })
-                    $("#fixedTermOpportunitiesCount").html(`<p>${counter} jobs listed</p>`)
-                    $("#fixedTermOpportunitiesListing").html(fixedTermOpportunitiesList)
-                    fixedTermOpportunitiesList += `</div>`
-                    $(".savedFixedTermOpportunityIcon").hide()
-                    $(".saveFixedTermOpportunityLoader").hide()
-                    isLoadingFixedTermOpportunities(false)
-                },
-                error: function (e) {
-                    $("#fixedTermOpportunitiesListing").html(ComponentFixedTermOpportunitiesFetchError())
-                    isLoadingFixedTermOpportunities(false)
-                }
-            })
-        }
-
-        getFixedTermOpportunities()
-
-        /**
-         * save post flow
-         * @param post
-         */
-        const saveFixedTermOpportunity = (postId) => {
-            console.log(postId)
-            /**
-             * change icon to loader
-             */
-            $(`#saveFixedTermOpportunityIcon${postId}`).hide()
-            $(`#saveFixedTermOpportunityLoader${postId}`).show()
-
-            /**
-             * change loader back to icon
-             * after api call
-             */
-            setTimeout(function () {
-                $(`#savedFixedTermOpportunityIcon${postId}`).show()
-                $(`#saveFixedTermOpportunityLoader${postId}`).hide()
-
-                NioApp.Toast('Opportunity has added to saved items.', 'success', {
-                    position: 'bottom-center'
-                });
-            }, 3000)
-
-            /**
-             * toast
-             */
-
-        }
-
-        /**
-         * get categories
-         */
-        const getCategories = () => {
-            $.ajax({
-                url: "{{env("BACKEND_URL")}}/getCategories",
-                method: "GET",
-                dataType: "json",
-                contentType: "application/json",
-                data: {},
-                crossDomain: true,
-                success: function (_data) {
-                    const data = _data.data
-                    data.sort(function(a, b) {
-                        const c = a.name.toUpperCase();
-                        const d = b.name.toUpperCase();
-                        if (c < d) {
-                            return -1;
-                        }
-                        if (c > d) {
-                            return 1;
-                        }
-                        return 0;
-                    });
-                    let categories = ``;
-                    data.map(category => {
-                        categories += ` <div class="custom-control custom-checkbox mt-1">
-                            <input type="checkbox" class="custom-control-input" value="${category.name}" name="categories" id="${category.name}">
-                            <label class="custom-control-label bold" for="${category.name}">${category.name}</label>
-                        </div>`
-                    })
-                    $("#categoriesListing").html(categories)
-                },
-                error: function (e) {
-                    $("#categoriesListing").html(ComponentFixedTermOpportunitiesFetchError())
-                    isLoadingFixedTermOpportunities(false)
-                }
-            })
-        }
-        getCategories()
-
-        const getFixedTermOpportunitiesBySearchRadius = () => {
-            isLoadingFixedTermOpportunities(true)
-            const radiusInput = document.getElementById("radiusInput")
-            let radBox = document.getElementById("radBox")
-            const radius = radiusInput.value
-            $("#searchRadiusModal").modal('hide');
-            /**
-             * make api call
-             */
-            $.ajax({
-                url: `{{env("BACKEND_URL")}}/getPermanentOpportunitiesBySearchRadius/${radius}`,
-                method: "GET",
-                dataType: "json",
-                contentType: "application/json",
-                data: {},
-                crossDomain: true,
-                success: function (_data) {
-                    const data = _data.data
-                    localStorage.setItem("fixedTermPosts", JSON.stringify(data.opportunities))
-
-                    $("#searchRadiusTrigger").html(`<span class="text-dark"><b>${radius}km from you</b></span>`)
-                    radBox.classList.add("borderActive")
-
-                    $("#fixedTermOpportunitiesListing").html("")
-                    let fixedTermOpportunitiesList = `<div class="row">`
-                    let counter = 0;
-                    $.each(data.opportunities, function (key, opportunity) {
-                        fixedTermOpportunitiesList += ComponentFixedTermOpportunity(opportunity)
-                        counter++;
-                    })
-                    $("#fixedTermOpportunitiesCount").html(`<p>${counter} jobs listed</p>`)
-                    $("#fixedTermOpportunitiesListing").html(fixedTermOpportunitiesList)
-                    fixedTermOpportunitiesList += `</div>`
-                    $(".savedFixedTermOpportunityIcon").hide()
-                    $(".saveFixedTermOpportunityLoader").hide()
-                    isLoadingFixedTermOpportunities(false)
-                },
-                error: function (e) {
-                    $("#fixedTermOpportunitiesListing").html(ComponentFixedTermOpportunitiesFetchError())
-                    isLoadingFixedTermOpportunities(false)
-                }
-            })
-        }
-
-    </script>
-    <script src="{{asset('public/js/work/fixed-term-jobs/index.js')}}"></script>
-@endsection --}}

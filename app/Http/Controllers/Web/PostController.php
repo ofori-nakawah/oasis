@@ -318,6 +318,78 @@ class PostController extends Controller
 
             $tags = json_decode($post->tags, true);
 
+            // Search functionality
+            if ($request->has('search') && !empty($request->search)) {
+                $searchTerm = strtolower($request->search);
+                $postTitle = strtolower($post->title);
+                $postDescription = strtolower($post->description);
+
+                // Check if search term exists in title, description or tags
+                $titleMatch = str_contains($postTitle, $searchTerm);
+                $descriptionMatch = str_contains($postDescription, $searchTerm);
+
+                $tagMatch = false;
+                if ($tags) {
+                    foreach ($tags as $tag) {
+                        if (str_contains(strtolower($tag), $searchTerm)) {
+                            $tagMatch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$titleMatch && !$descriptionMatch && !$tagMatch) {
+                    return false;
+                }
+            }
+
+            // Budget filtering
+            // Get post budget values
+            $postMinBudget = (int)$post->min_budget;
+            $postMaxBudget = (int)$post->max_budget;
+
+            // Handle min budget filtering
+            if ($request->has('min_budget') && !empty($request->min_budget)) {
+                $minBudget = (int)$request->min_budget;
+                // For min budget: only show posts with min_budget >= user's min_budget
+                if ($postMinBudget <= $minBudget) {
+                    return false;
+                }
+            }
+
+            // Handle max budget filtering
+            if ($request->has('max_budget') && !empty($request->max_budget)) {
+                $maxBudget = (int)$request->max_budget;
+                // For max budget: only show posts with max_budget <= user's max_budget
+                if ($postMaxBudget >= $maxBudget) {
+                    return false;
+                }
+            }
+            
+            // Radius filtering
+            if ($request->has('radius') && !empty($request->radius)) {
+                $searchRadius = (int)$request->radius;
+                
+                // Get post location coordinates
+                $coords = json_decode($post->coords);
+                $post_location_lat = isset($coords->latitude) ? $coords->latitude : explode(',', $post->coords)[0];
+                $post_location_lng = isset($coords->longitude) ? $coords->longitude : explode(',', $post->coords)[1];
+                
+                // Calculate distance between user location and post location
+                $distance = $this->get_distance(
+                    $user_location_lat,
+                    $user_location_lng,
+                    $post_location_lat,
+                    $post_location_lng,
+                    "K"
+                );
+                
+                // Filter out posts that are outside the search radius
+                if ($distance > $searchRadius) {
+                    return false;
+                }
+            }
+
             // Skills filtering logic
             if ($request->has('skills') && !empty($request->skills)) {
                 // If request has specific skills, filter by those

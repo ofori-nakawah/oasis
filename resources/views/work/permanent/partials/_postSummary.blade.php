@@ -4,7 +4,7 @@
                         <span class="badge bg-light text-dark me-2">{{ $post->status }}</span>
                         <div></div>
                     </div>
-                    <h5 class="card-title">{{ $post->title }}</h5>
+                    <h5 class="card-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $post->title }}</h5>
                     <p class="text-muted mb-1 title" style="margin-top: -15px;font-size: 10px;">{{ $post->createdOn }}</p>
                     <div class="d-flex flex-wrap mt-2 mb-2">
                         @php
@@ -12,12 +12,12 @@
                         @endphp
                         @if($tags)
                             @foreach($tags as $key => $tag)
-                                @if($key < 3)
+                                @if($key < 2)
                                     <span class="badge bg-light text-dark me-2">{{ $tag }}</span>
                                 @endif
                             @endforeach
-                            @if(count($tags) > 3)
-                                <span class="badge bg-light text-dark me-2">+{{ count($tags) - 3 }} more</span>
+                            @if(count($tags) > 2)
+                                <span class="badge bg-light text-dark me-2">+{{ count($tags) - 2 }} more</span>
                             @endif
                         @endif                       
                     </div>
@@ -68,7 +68,7 @@
                             @if($post->has_already_applied == "yes")
                                 <button class="btn btn-outline-primary" disabled>Applied</button>
                             @else
-                                <a href="{{route('user.quick_job.show', ['uuid' => $post->id])}}" class="btn btn-primary" >View listing details</a>
+                                <a href="{{route('user.show_permanent_job_details.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary" >View listing details</a>
                             @endif
                         </div>
                     </div>
