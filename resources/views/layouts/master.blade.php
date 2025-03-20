@@ -263,6 +263,12 @@
                                     <span class="nk-menu-text"> Wallet</span>
                                 </a>
                             </li> -->
+                                <li class="nk-menu-item">
+                                    <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "p2p"])}}" class="nk-menu-link">
+                                        <span class="nk-menu-icon"><em class="icon ni ni-search"></em></span>
+                                        <span class="nk-menu-text"> Search</span>
+                                    </a>
+                                </li>
                                 <!-- .nk-menu-item -->
                                 <li class="nk-menu-item">
                                     <a href="{{route('training.index')}}" class="nk-menu-link">
@@ -293,7 +299,7 @@
                                     </a>
                                 </li>
                                 <li class="nk-menu-item" style="padding: 25px;">
-                                    <p><small>Powered by VORK Technologies &copy;{{date('Y')}}</small> <br> <span style="margin-left: 70px;"><small><b> version 1.0.0</b></small></span>
+                                    <p><small>Powered by VORK Technologies &copy;{{date('Y')}}</small> <br> <span style="margin-left: 70px;"><small><b> version 2.2.0</b></small></span>
                                 </li>
                             </ul>
                         </div><!-- .nk-sidebar-menu -->
@@ -333,7 +339,7 @@
                             </div><!-- .nk-header-news -->
 
                             <!-- Mobile search icon - visible on smaller screens -->
-                            <div class="d-xl-none mr-auto ml-3">
+                            <div class="d-none mr-auto ml-3">
                                 <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "p2p"])}}">
                                     <em class="icon ni ni-search"></em>
                                 </a>

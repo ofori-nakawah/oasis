@@ -41,6 +41,25 @@ Dashboard
 
                 <div class="row">
                     <div class="col-md-12 mb-3">
+                        <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "p2p"])}}">
+                            <div class="card card-bordered" style="border-radius: 16px;">
+                                <div class="card-body p-4">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img src="{{asset("assets/html-template/src/images/p2p.png")}}"
+                                                style="height: 120px; width: 120px;" alt="">
+
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h4>P2P</h4>
+                                            <p>List an instant P2P job. These are usually direct hires.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-12 mb-3">
                         <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "quick-job"])}}">
 
                             <div class="card card-bordered" style="border-radius: 16px;">
@@ -99,28 +118,6 @@ Dashboard
                             </div>
                         </a>
                     </div>
-
-                    <div class="col-md-12 mb-3">
-                        <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "p2p"])}}">
-                            <div class="card card-bordered" style="border-radius: 16px;">
-                                <div class="card-body p-4">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <img src="{{asset("assets/html-template/src/images/p2p.png")}}"
-                                                style="height: 120px; width: 120px;" alt="">
-
-                                        </div>
-                                        <div class="col-md-8">
-                                            <h4>P2P</h4>
-                                            <p>List an instant P2P job. These are usually direct hires.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-
                 </div>
             </div>
         </div>

@@ -88,7 +88,7 @@ Profile
                             data-target="#editNameModal"><em
                                 class="icon ni ni-pen"></em> <b>Edit</b></a>
                         @endif</b></div>
-                        <div>{{$user->bio}}</div>
+                        <div class="text-left m-3">{{$user->bio}}</div>
                 <hr>
                 <div><em
                         class="icon ni ni-map-pin"></em>{{$user->location_name}} @if($user->id == auth()->user()->id)
@@ -247,7 +247,7 @@ Profile
                             <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
                                 <div class="text-center"><small><b>Average Rating</b></small></div>
                                 <div class="text-center text-primary tex"
-                                    style="font-size: 28px;">{{$user->rating}}</div>
+                                    style="font-size: 28px;">{{number_format($user->rating, 2)}}</div>
                             </div>
                             <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
                                 <div class="text-center"><small><b>Volunteer Hours</b></small></div>
