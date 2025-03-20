@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Traits;
 
 use App\Models\JobApplication;
@@ -10,6 +11,9 @@ trait OpportunitiesAroundMe
     private static function CalculateDistanceBtnUserAndPost($lat1, $lon1, $lat2, $lon2, $unit)
     {
         $theta = (float)$lon1 - (float)$lon2;
+        if ($theta == 0) {
+            return 0;
+        }
         $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
@@ -40,7 +44,7 @@ trait OpportunitiesAroundMe
         $posts = Post::where("user_id", "!=", auth()->id())->where("status", "active")->where("type", "VOLUNTEER")->whereNull('deleted_at')->orderByDesc("created_at")->get();
         $posts->map(function ($post) use ($user_location_lat, $user_location_lng, $volunteer_near_me, $search_radius) {
             //get post coordinates
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = self::CalculateDistanceBtnUserAndPost($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -88,7 +92,7 @@ trait OpportunitiesAroundMe
          */
         $jobs_near_me = collect();
         foreach ($posts as $post) {
-            $post_location_lat =json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
             $distance = self::CalculateDistanceBtnUserAndPost($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
@@ -104,7 +108,8 @@ trait OpportunitiesAroundMe
         }
         return $jobs_near_me->sortBy("distance");
     }
-    public static function GetOpportunitiesAroundMe($search_radius) {
+    public static function GetOpportunitiesAroundMe($search_radius)
+    {
         return [
             "volunteer_activities" => self::VolunteerProjects($search_radius),
             "quick_jobs" => self::QuickJobs($search_radius),

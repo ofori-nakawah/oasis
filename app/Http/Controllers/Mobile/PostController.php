@@ -1262,6 +1262,9 @@ class PostController extends Controller
     public function get_distance($lat1, $lon1, $lat2, $lon2, $unit)
     {
         $theta = (float)$lon1 - (float)$lon2;
+        if ($theta == 0) {
+            return 0;
+        }
         $dist = sin(deg2rad((float)$lat1)) * sin(deg2rad((float)$lat2)) + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2)) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
