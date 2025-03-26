@@ -681,23 +681,23 @@ class PostController extends Controller
             return back()->with("danger", "Invalid request. Kindly try again.");
         }
 
-        $original_post = Post::where("id", $uuid)->first();
-        if (!$original_post) {
+        $post = Post::where("id", $uuid)->first();
+        if (!$post) {
             return back()->with("danger", "Oops...something went wrong. We could not retrieve post details.");
         }
 
         /**
          * 404@alias
          */
-        if ($original_post->deleted_at) {
+        if ($post->deleted_at) {
             return back()->with("info", "This post has been removed by the issuer.");
         }
 
-        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $original_post->id)->first();
+        $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
         if ($has_already_applied) {
-            $original_post->has_already_applied = "yes";
+            $post->has_already_applied = "yes";
         }
-        $original_post->user;
+        $post->user;
 
         $posts = [];
 
@@ -743,9 +743,9 @@ class PostController extends Controller
                 $post->has_already_applied = "yes";
             }
         }
-        $posts = $jobs_near_me->sortBy("distance");;
+        $posts = $jobs_near_me->sortBy("distance");
 
-        return view("work.quick_jobs.show", compact("original_post", "posts"));
+        return view("work.quick_jobs.show", compact("post", "posts"));
     }
 
     public function show_fixed_term_job_details($uuid)
