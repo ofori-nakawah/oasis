@@ -69,37 +69,31 @@ class PostController extends Controller
             return back()->with("danger", "Invalid request");
         }
 
+        $type = [
+            "quick-job" => "QUICK_JOB",
+            "fixed-term" => "FIXED_TERM_JOB",
+            "permanent" => "PERMANENT_JOB",
+            "p2p" => "P2P"
+        ];
 
-        switch ($type_of_work) {
-            case "quick-job":
-                if ($type_of_user == "seeker") {
-                    return $this->list_quick_jobs();
-                } else {
+        if ($type_of_user == "seeker") {
+            return $this->getOpportunities($request, $type[$type_of_work]);
+        } else {
+            switch ($type_of_work) {
+                case "quick-job":
                     $categories = Skill::orderBy('name')->get();
                     return view("work.quick_jobs.create", compact("categories"));
-                }
-            case "fixed-term":
-                if ($type_of_user == "seeker") {
-                    return $this->getFixedTermOpportunities($request);
-                } else {
+                case "fixed-term":
                     $categories = Skill::orderBy('name')->get();
                     return view("work.part_time_jobs.create", compact("categories"));
-                }
-                break;
-            case "permanent":
-                if ($type_of_user == "seeker") {
-                    return $this->getPermanentOpportunities($request);
-                } else {
+                case "permanent":
                     $categories = Skill::orderBy('name')->get();
                     $industries = Industry::orderBy('name')->get();
                     return view("work.permanent.create", compact("categories", "industries"));
-                }
-                break;
-            case "p2p":
-                if ($type_of_user != "seeker") {
+                case "p2p":
                     $skills_and_interest = Skill::orderBy('name')->get();
                     return view("work.p2p.search", compact("skills_and_interest"));
-                }
+            }
         }
 
         return back()->with("danger", "Invalid request");
@@ -142,7 +136,7 @@ class PostController extends Controller
         return view("volunteerism.list", compact("posts"));
     }
 
-    public function list_quick_jobs()
+    public function list_quick_jobs(Request $request)
     {
         //get user coordinates
         $user_location = auth()->user()->location_coords;
@@ -188,9 +182,31 @@ class PostController extends Controller
             }
         }
         $posts = $jobs_near_me;
-        $skills = Skill::all();
 
-        return view("work.quick_jobs.index", compact("posts", "skills"));
+        // Sort the filtered posts by distance
+        $sortedPosts = $posts->sortBy(function ($post) {
+            return (float)$post['distance']; // Convert to float for proper numeric sorting
+        });
+
+        // Paginate the sorted posts
+        $perPage = 10; // Number of items per page
+        $page = $request->input('page', 1); // Current page, default to 1
+
+        $posts = new \Illuminate\Pagination\LengthAwarePaginator(
+            $sortedPosts->forPage($page, $perPage),
+            $sortedPosts->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        $skills = Skill::all();
+        $count = count($sortedPosts);
+
+        $skills = Skill::all();
+        $count = count($jobs_near_me);
+
+        return view("work.quick_jobs.index", compact("posts", "skills", "count"));
     }
 
     public function list_part_time_jobs($request)
@@ -207,7 +223,183 @@ class PostController extends Controller
         return view("work.permanent.index", compact("skills", "posts"));
     }
 
-    public function getFixedTermOpportunities(Request $request)
+    // public function getOpportunities(Request $request, $type)
+    // {
+    //     $user_location = auth()->user()->location_coords;
+    //     if (!$user_location) {
+    //         return $this->data_validation_error_response("User location not found");
+    //     }
+
+    //     $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+    //     $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
+
+    //     $_user_interests = auth()->user()->skills;
+    //     $user_interests = array();
+    //     foreach ($_user_interests as $interest) {
+    //         array_push($user_interests, $interest->skill->name);
+    //     }
+
+    //     $rawPosts = Post::with(['user', 'industry', 'applications' => function ($query) {
+    //         $query->where("user_id", "!=", auth()->id());
+    //     }])
+    //         ->where("status", "active")
+    //         ->where("type", $type)
+    //         ->whereNull('deleted_at')
+    //         ->orderByDesc("created_at")
+    //         ->get();
+
+    //     // Filter and enhance posts in a single pass
+    //     $filteredPosts = $rawPosts->filter(function (Post $post) use ($user_location_lat, $user_location_lng, $user_interests, $request) {
+    //         // Extract location coordinates
+    //         $coords = json_decode($post->coords);
+    //         $post_location_lat = isset($coords->latitude) ? $coords->latitude : explode(',', $post->coords)[0];
+    //         $post_location_lng = isset($coords->longitude) ? $coords->longitude : explode(',', $post->coords)[1];
+
+    //         // Calculate distance
+    //         $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+
+    //         // Store distance for sorting later
+    //         $post["distance"] = number_format($distance, 2);
+
+    //         // Filter out posts that are too far away
+    //         $maxRadius = $request->has('radius') ? $request->radius : self::JOB_SEARCH_RADIUS;
+    //         if ($distance > $maxRadius) {
+    //             return false;
+    //         }
+
+    //         // Add additional post data
+    //         $post["organiser_name"] = $post->user->name;
+    //         $post["createdOn"] = $post->created_at->diffForHumans();
+    //         $post["industry"] = $post->industry ? $post->industry->name : null;
+
+    //         // Calculate duration if dates are available
+    //         if ($post->end_date && $post->start_date) {
+    //             $post["duration"] = Carbon::parse($post->end_date)->diffInMonths(Carbon::parse($post->start_date));
+    //         }
+
+    //         // Check if user has already applied using the eager loaded relationship
+    //         $post->has_already_applied = $post->applications->where('user_id', auth()->id())->count() > 0 ? "yes" : "no";
+
+    //         $tags = json_decode($post->tags, true);
+
+    //         // Search functionality
+    //         if ($request->has('search') && !empty($request->search)) {
+    //             $searchTerm = strtolower($request->search);
+    //             $postTitle = strtolower($post->title);
+    //             $postDescription = strtolower($post->description);
+
+    //             // Check if search term exists in title, description or tags
+    //             $titleMatch = str_contains($postTitle, $searchTerm);
+    //             $descriptionMatch = str_contains($postDescription, $searchTerm);
+
+    //             $tagMatch = false;
+    //             if ($tags) {
+    //                 foreach ($tags as $tag) {
+    //                     if (str_contains(strtolower($tag), $searchTerm)) {
+    //                         $tagMatch = true;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+
+    //             if (!$titleMatch && !$descriptionMatch && !$tagMatch) {
+    //                 return false;
+    //             }
+    //         }
+
+    //         // Budget filtering
+    //         // Get post budget values
+    //         $postMinBudget = (int)$post->min_budget;
+    //         $postMaxBudget = (int)$post->max_budget;
+
+    //         // Handle min budget filtering
+    //         if ($request->has('min_budget') && !empty($request->min_budget)) {
+    //             $minBudget = (int)$request->min_budget;
+    //             // For min budget: only show posts with min_budget >= user's min_budget
+    //             if ($postMinBudget <= $minBudget) {
+    //                 return false;
+    //             }
+    //         }
+
+    //         // Handle max budget filtering
+    //         if ($request->has('max_budget') && !empty($request->max_budget)) {
+    //             $maxBudget = (int)$request->max_budget;
+    //             // For max budget: only show posts with max_budget <= user's max_budget
+    //             if ($postMaxBudget >= $maxBudget) {
+    //                 return false;
+    //             }
+    //         }
+
+    //         // Radius filtering
+    //         if ($request->has('radius') && !empty($request->radius)) {
+    //             $searchRadius = (int)$request->radius;
+
+    //             // Get post location coordinates
+    //             $coords = json_decode($post->coords);
+    //             $post_location_lat = isset($coords->latitude) ? $coords->latitude : explode(',', $post->coords)[0];
+    //             $post_location_lng = isset($coords->longitude) ? $coords->longitude : explode(',', $post->coords)[1];
+
+    //             // Calculate distance between user location and post location
+    //             $distance = $this->get_distance(
+    //                 $user_location_lat,
+    //                 $user_location_lng,
+    //                 $post_location_lat,
+    //                 $post_location_lng,
+    //                 "K"
+    //             );
+
+    //             // Filter out posts that are outside the search radius
+    //             if ($distance > $searchRadius) {
+    //                 return false;
+    //             }
+    //         }
+
+    //         // Skills filtering logic
+    //         if ($request->has('skills') && !empty($request->skills)) {
+    //             // If request has specific skills, filter by those
+    //             $requestSkills = is_array($request->skills) ? $request->skills : [$request->skills];
+
+    //             // Get skill names from IDs
+    //             $skillNames = Skill::whereIn('id', $requestSkills)->pluck('name')->toArray();
+
+    //             // Check if post tags contain any of the selected skills
+    //             if ($tags && !array_intersect($tags, $skillNames)) {
+    //                 return false;
+    //             }
+    //         } elseif (!empty($user_interests) && $tags) {
+    //             // Otherwise, if user has interests and post has tags, filter by user interests
+    //             if (!array_intersect($tags, $user_interests)) {
+    //                 return false;
+    //             }
+    //         }
+
+    //         return true;
+    //     });
+
+    //     // Sort the filtered posts by distance
+    //     $sortedPosts = $filteredPosts->sortBy(function ($post) {
+    //         return (float)$post['distance']; // Convert to float for proper numeric sorting
+    //     });
+
+    //     // Paginate the sorted posts
+    //     $perPage = 10; // Number of items per page
+    //     $page = $request->input('page', 1); // Current page, default to 1
+
+    //     $posts = new \Illuminate\Pagination\LengthAwarePaginator(
+    //         $sortedPosts->forPage($page, $perPage),
+    //         $sortedPosts->count(),
+    //         $perPage,
+    //         $page,
+    //         ['path' => $request->url(), 'query' => $request->query()]
+    //     );
+
+    //     $skills = Skill::all();
+    //     $count = count($sortedPosts);
+
+    //     return view("work.part_time_jobs.index", compact("posts", "skills", "count"));
+    // }
+
+    public function getOpportunities(Request $request, $type)
     {
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
@@ -227,7 +419,7 @@ class PostController extends Controller
             $query->where("user_id", "!=", auth()->id());
         }])
             ->where("status", "active")
-            ->where("type", "PERMANENT_JOB")
+            ->where("type", $type)
             ->whereNull('deleted_at')
             ->orderByDesc("created_at")
             ->get();
@@ -350,180 +542,8 @@ class PostController extends Controller
                 if ($tags && !array_intersect($tags, $skillNames)) {
                     return false;
                 }
-            } elseif (!empty($user_interests) && $tags) {
-                // Otherwise, if user has interests and post has tags, filter by user interests
-                if (!array_intersect($tags, $user_interests)) {
-                    return false;
-                }
-            }
 
-            return true;
-        });
-
-        // Sort the filtered posts by distance
-        $sortedPosts = $filteredPosts->sortBy(function ($post) {
-            return (float)$post['distance']; // Convert to float for proper numeric sorting
-        });
-
-        // Paginate the sorted posts
-        $perPage = 10; // Number of items per page
-        $page = $request->input('page', 1); // Current page, default to 1
-
-        $posts = new \Illuminate\Pagination\LengthAwarePaginator(
-            $sortedPosts->forPage($page, $perPage),
-            $sortedPosts->count(),
-            $perPage,
-            $page,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
-
-        $skills = Skill::all();
-        $count = count($sortedPosts);
-
-        return view("work.part_time_jobs.index", compact("posts", "skills", "count"));
-    }
-
-    public function getPermanentOpportunities(Request $request)
-    {
-        $user_location = auth()->user()->location_coords;
-        if (!$user_location) {
-            return $this->data_validation_error_response("User location not found");
-        }
-
-        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
-        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
-
-        $_user_interests = auth()->user()->skills;
-        $user_interests = array();
-        foreach ($_user_interests as $interest) {
-            array_push($user_interests, $interest->skill->name);
-        }
-
-        $rawPosts = Post::with(['user', 'industry', 'applications' => function ($query) {
-            $query->where("user_id", "!=", auth()->id());
-        }])
-            ->where("status", "active")
-            ->where("type", "PERMANENT_JOB")
-            ->whereNull('deleted_at')
-            ->orderByDesc("created_at")
-            ->get();
-
-        // Filter and enhance posts in a single pass
-        $filteredPosts = $rawPosts->filter(function (Post $post) use ($user_location_lat, $user_location_lng, $user_interests, $request) {
-            // Extract location coordinates
-            $coords = json_decode($post->coords);
-            $post_location_lat = isset($coords->latitude) ? $coords->latitude : explode(',', $post->coords)[0];
-            $post_location_lng = isset($coords->longitude) ? $coords->longitude : explode(',', $post->coords)[1];
-
-            // Calculate distance
-            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
-
-            // Store distance for sorting later
-            $post["distance"] = number_format($distance, 2);
-
-            // Filter out posts that are too far away
-            $maxRadius = $request->has('radius') ? $request->radius : self::JOB_SEARCH_RADIUS;
-            if ($distance > $maxRadius) {
-                return false;
-            }
-
-            // Add additional post data
-            $post["organiser_name"] = $post->user->name;
-            $post["createdOn"] = $post->created_at->diffForHumans();
-            $post["industry"] = $post->industry ? $post->industry->name : null;
-
-            // Calculate duration if dates are available
-            if ($post->end_date && $post->start_date) {
-                $post["duration"] = Carbon::parse($post->end_date)->diffInMonths(Carbon::parse($post->start_date));
-            }
-
-            // Check if user has already applied using the eager loaded relationship
-            $post->has_already_applied = $post->applications->where('user_id', auth()->id())->count() > 0 ? "yes" : "no";
-
-            $tags = json_decode($post->tags, true);
-
-            // Search functionality
-            if ($request->has('search') && !empty($request->search)) {
-                $searchTerm = strtolower($request->search);
-                $postTitle = strtolower($post->title);
-                $postDescription = strtolower($post->description);
-
-                // Check if search term exists in title, description or tags
-                $titleMatch = str_contains($postTitle, $searchTerm);
-                $descriptionMatch = str_contains($postDescription, $searchTerm);
-
-                $tagMatch = false;
-                if ($tags) {
-                    foreach ($tags as $tag) {
-                        if (str_contains(strtolower($tag), $searchTerm)) {
-                            $tagMatch = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!$titleMatch && !$descriptionMatch && !$tagMatch) {
-                    return false;
-                }
-            }
-
-            // Budget filtering
-            // Get post budget values
-            $postMinBudget = (int)$post->min_budget;
-            $postMaxBudget = (int)$post->max_budget;
-
-            // Handle min budget filtering
-            if ($request->has('min_budget') && !empty($request->min_budget)) {
-                $minBudget = (int)$request->min_budget;
-                // For min budget: only show posts with min_budget >= user's min_budget
-                if ($postMinBudget <= $minBudget) {
-                    return false;
-                }
-            }
-
-            // Handle max budget filtering
-            if ($request->has('max_budget') && !empty($request->max_budget)) {
-                $maxBudget = (int)$request->max_budget;
-                // For max budget: only show posts with max_budget <= user's max_budget
-                if ($postMaxBudget >= $maxBudget) {
-                    return false;
-                }
-            }
-
-            // Radius filtering
-            if ($request->has('radius') && !empty($request->radius)) {
-                $searchRadius = (int)$request->radius;
-
-                // Get post location coordinates
-                $coords = json_decode($post->coords);
-                $post_location_lat = isset($coords->latitude) ? $coords->latitude : explode(',', $post->coords)[0];
-                $post_location_lng = isset($coords->longitude) ? $coords->longitude : explode(',', $post->coords)[1];
-
-                // Calculate distance between user location and post location
-                $distance = $this->get_distance(
-                    $user_location_lat,
-                    $user_location_lng,
-                    $post_location_lat,
-                    $post_location_lng,
-                    "K"
-                );
-
-                // Filter out posts that are outside the search radius
-                if ($distance > $searchRadius) {
-                    return false;
-                }
-            }
-
-            // Skills filtering logic
-            if ($request->has('skills') && !empty($request->skills)) {
-                // If request has specific skills, filter by those
-                $requestSkills = is_array($request->skills) ? $request->skills : [$request->skills];
-
-                // Get skill names from IDs
-                $skillNames = Skill::whereIn('id', $requestSkills)->pluck('name')->toArray();
-
-                // Check if post tags contain any of the selected skills
-                if ($tags && !array_intersect($tags, $skillNames)) {
+                if ($post->category && !in_array($post->category, $skillNames)) {
                     return false;
                 }
             } elseif (!empty($user_interests) && $tags) {
@@ -556,7 +576,14 @@ class PostController extends Controller
         $skills = Skill::all();
         $count = count($sortedPosts);
 
-        return view("work.permanent.index", compact("posts", "skills", "count"));
+        $view = "work.quick_jobs.index";
+        if ($type == "FIXED_TERM_JOB") {
+            $view = "work.part_time_jobs.index";
+        } elseif ($type == "PERMANENT_JOB") {
+            $view = "work.permanent.index";
+        }
+
+        return view($view, compact("posts", "skills", "count"));
     }
 
     private function get_distance($lat1, $lon1, $lat2, $lon2, $unit)

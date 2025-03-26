@@ -12,6 +12,10 @@
 @component('components.listing-filters', ['module' => 'Work', 'type' => 'casual'])@endcomponent
 @endsection
 
+@section('listings')
+@include('partials.shared.listings')
+@endsection
+
 @section('filter-modals')
 @include('partials.listing-filters.distance-filter-modal')
 @include('partials.listing-filters.categories-filter-modal')

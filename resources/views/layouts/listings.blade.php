@@ -30,8 +30,6 @@
 @yield("filter-modals")
 @endsection
 
-
-
 <!-- extend the scripts -->
 @section('scripts')
 @yield("scripts")
