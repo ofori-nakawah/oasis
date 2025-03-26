@@ -1,6 +1,6 @@
     <div class="card card-bordered cardContainer" style="border-radius: 18px;margin-bottom: 25px">
             <div class="card-body">
-                    @include('partials.shared.listing-data', ['isShare' => false])
+                    @include('partials.shared.listing-data', ['isShowDetails' => $isShowDetails, 'isShare' => false])
             </div>
     </div>
 

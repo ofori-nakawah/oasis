@@ -94,13 +94,44 @@ $employerValue = $post->employer;
                 </div>
         </div>
 </div>
+
+
+@if ($isShowDetails)
 <div class="row">
+        <div class="col-md-12">
+                <div class="title" style="font-size: 10px;color: #777;">Job Description</div>
+                <div class="issuer text summernote-description">{{ $post->description }}</div>
+        </div>
+</div>
+
+@if ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB")
+<div class="row mt-2">
+        <div class="col-md-12">
+                <div class="title" style="font-size: 10px;color: #777;">Qualifications</div>
+                <div class="issuer text summernote-qualifications">
+                        {{$post->qualifications}}
+                </div>
+        </div>
+</div>
+@endif
+@endif
+
+<div class="row mt-2">
         <div class="col-md-12">
                 <div class="title" style="font-size: 10px;color: #777;">Location</div>
                 <div class="issuer text"><em
                                 class="icon ni ni-map-pin"></em> {{ $post->location }} ({{ $post->distance }} km away)</div>
         </div>
 </div>
+
+@if ($isShowDetails)
+<div class="row mt-2">
+        <div class="col-md-12">
+                <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
+                <div class="issuer text"> {{ $post->other_relevant_information ?? 'N/A' }}</div>
+        </div>
+</div>
+@endif
 
 @if(!$isShare)
 <div class="row">
@@ -111,11 +142,30 @@ $employerValue = $post->employer;
                                         <em class="icon ni ni-share"></em>
                                 </a>
                         </div>
-                        <div class="mt-3">
+                        <div class="mt-3 ml-2">
                                 @if($post->has_already_applied == "yes")
-                                <button class="btn btn-outline-primary" disabled>Applied</button>
+                                <div class="text-primary text-right">You have already applied for this opportunity</div>
                                 @else
-                                <a href="{{route('user.show_permanent_job_details.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
+                                @php
+                                $route = "";
+                                switch($post->type) {
+                                case "QUICK_JOB":
+                                case "P2P":
+                                $route = route('user.quick_job.show', ['uuid' => $post->id]);
+                                break;
+                                case "FIXED_TERM_JOB":
+                                $route = route('user.fixed_term_job.show', ['uuid' => $post->id]);
+                                break;
+                                case "PERMANENT_JOB":
+                                $route = route('user.permanent_job.show', ['uuid' => $post->id]);
+                                break;
+                                }
+                                @endphp
+                                @if ($isShowDetails)
+                                <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
+                                @else
+                                <a href="{{$route}}" class="btn btn-outline-primary">View details</a>
+                                @endif
                                 @endif
                         </div>
                 </div>

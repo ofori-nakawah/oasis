@@ -44,3 +44,21 @@
                 </div>
         </div>
 </div>
+
+<script>
+        function copyShareUrl(uuid) {
+                var copyText = document.getElementById(`share-url-${uuid}`);
+
+                // Select the text field
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); // For mobile devices
+
+                // Copy the text inside the text field
+                navigator.clipboard.writeText(copyText.value);
+
+                $(`.copyLinkButton`).hide();
+                const successMessage = `<div class="text-success"><em class="icon ni ni-copy"></em> Copied to clipboard</div>`
+                $(".copyStatus").append(successMessage);
+                $(".copyStatus").show();
+        }
+</script>
