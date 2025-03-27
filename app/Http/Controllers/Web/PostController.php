@@ -704,6 +704,8 @@ class PostController extends Controller
 
         $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
         $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
+        $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+        $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
 
         $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
         if ($has_already_applied) {
@@ -711,7 +713,8 @@ class PostController extends Controller
         }
         $post->user;
         $post["industry"] = $post->industry ? $post->industry->name : null;
-
+        $post["distance"] = number_format($this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K"), 2);
+        $post["createdOn"] = $post->created_at->diffForHumans();
 
         if ($post->end_date && $post->start_date) {
             $post["duration"] = Carbon::parse($post->end_date)->diffInMonths(Carbon::parse($post->start_date));
@@ -751,7 +754,8 @@ class PostController extends Controller
             $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
             $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
 
-            $post["distance"] = number_format($distance, 2);
+            $otherPost["distance"] = number_format($distance, 2);
+            $otherPost["createdOn"] = $otherPost->created_at->diffForHumans();
 
             return $otherPost;
         });

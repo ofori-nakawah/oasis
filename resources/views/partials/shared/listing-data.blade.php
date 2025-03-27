@@ -26,11 +26,11 @@ break;
                         @endphp
                         @if($tags)
                         @foreach($tags as $key => $tag)
-                        @if($key < 2)
+                        @if($key < 2 || $isShowDetails)
                                 <span class="badge bg-light text-dark me-2">{{ $tag }}</span>
                                 @endif
                                 @endforeach
-                                @if(count($tags) > 2)
+                                @if(count($tags) > 2 && !$isShowDetails)
                                 <span class="badge bg-light text-dark me-2">+{{ count($tags) - 2 }} more</span>
                                 @endif
                                 @endif
@@ -87,20 +87,31 @@ $employerValue = $post->employer;
         }
         @endphp
 
-        <div class="col-md-8">
+        <div class="col-md-4">
                 <div class="title" style="font-size: 10px;color: #777;">{{$key}}</div>
-                <div class="issuer ">
+                <div class="issuer " @if ($post->type === "QUICK_JOB") style="color: red;" @endif>
                         {{ $value }}
                 </div>
         </div>
+
+        @if ($isShowDetails && ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB"))
+        <div class="col-md-4">
+                <div class="title" style="font-size: 10px;color: #777;">Deadline</div>
+                <div class="issuer text-red-500" style="color: red;">
+                        {{ $post->date }}
+                </div>
+        </div>
+        @endif
 </div>
+
+
 
 
 @if ($isShowDetails)
 <div class="row">
         <div class="col-md-12">
                 <div class="title" style="font-size: 10px;color: #777;">Job Description</div>
-                <div class="issuer text summernote-description">{{ $post->description }}</div>
+                <div class="issuer text summernote-description">{!! $post->description !!}</div>
         </div>
 </div>
 
@@ -109,7 +120,7 @@ $employerValue = $post->employer;
         <div class="col-md-12">
                 <div class="title" style="font-size: 10px;color: #777;">Qualifications</div>
                 <div class="issuer text summernote-qualifications">
-                        {{$post->qualifications}}
+                        {!! $post->qualifications !!}
                 </div>
         </div>
 </div>
@@ -128,7 +139,20 @@ $employerValue = $post->employer;
 <div class="row mt-2">
         <div class="col-md-12">
                 <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
-                <div class="issuer text"> {{ $post->other_relevant_information ?? 'N/A' }}</div>
+                <div class="issuer text">{!! $post->other_relevant_information ?? 'N/A' !!} </div>
+        </div>
+</div>
+@endif
+
+@if ($isShowDetails && ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB"))
+<div class="row mt-2">
+        <div class="col-md-6">
+                <div class="title" style="font-size: 10px;color: #777;">Budget negotiable</div>
+                <div class="issuer text">{{$post->is_negotiable}} </div>
+        </div>
+        <div class="col-md-6">
+                <div class="title" style="font-size: 10px;color: #777;">Term renewable</div>
+                <div class="issuer text">{{$post->is_renewable}} </div>
         </div>
 </div>
 @endif
