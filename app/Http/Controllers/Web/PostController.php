@@ -559,8 +559,8 @@ class PostController extends Controller
         });
 
         // Sort the filtered posts by distance
-        $sortedPosts = $filteredPosts->sortBy(function ($post) {
-            return (float)$post['distance']; // Convert to float for proper numeric sorting
+        $sortedPosts = $filteredPosts->sortByDesc(function ($post) {
+            return $post['created_at']; // Convert to float for proper numeric sorting
         });
 
         // Paginate the sorted posts
