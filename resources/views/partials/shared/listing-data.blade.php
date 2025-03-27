@@ -73,8 +73,9 @@ $employerValue = $post->employer;
         </div>
 
         @php
+        $date = Carbon\Carbon::parse($post->date);
         $key = "Deadline";
-        $value = $post->date;
+        $value = $date->format("Y-m-d");
 
         if($post->type == "FIXED_TERM_JOB") {
         $key = "Duration";
@@ -83,11 +84,11 @@ $employerValue = $post->employer;
 
         if($post->type == "PERMANENT_JOB") {
         $key = "Industry";
-        $value = $post->industry;
+        $value = $post->industry ?? 'Not specified';
         }
         @endphp
 
-        <div class="col-md-4">
+        <div @if($isShowDetails) class="col-md-4" @else class="col-md-6" @endif>
                 <div class="title" style="font-size: 10px;color: #777;">{{$key}}</div>
                 <div class="issuer " @if ($post->type === "QUICK_JOB") style="color: red;" @endif>
                         {{ $value }}
@@ -95,10 +96,13 @@ $employerValue = $post->employer;
         </div>
 
         @if ($isShowDetails && ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB"))
-        <div class="col-md-4">
+        @php
+        $deadline = Carbon\Carbon::parse($post->date);
+        @endphp
+        <div class="col-md-4 mt-2">
                 <div class="title" style="font-size: 10px;color: #777;">Deadline</div>
                 <div class="issuer text-red-500" style="color: red;">
-                        {{ $post->date }}
+                        {{ $deadline->format('Y-m-d') }}
                 </div>
         </div>
         @endif
