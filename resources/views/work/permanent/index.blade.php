@@ -1,7 +1,7 @@
 @extends('layouts.listings', ['title' => 'Work'])
 
 @section('header')
-@component('components.listing-header', ['module' => 'Work', 'icon' => 'ni ni-briefcase', 'type' => 'Fixed Term Jobs', 'description' => 'Explore a world of endless opportunities around you'])@endcomponent
+@component('components.listing-header', ['module' => 'Work', 'icon' => 'ni ni-briefcase', 'type' => 'Permanent Jobs', 'description' => 'Explore a world of endless opportunities around you'])@endcomponent
 @endsection
 
 @section('navigation')
