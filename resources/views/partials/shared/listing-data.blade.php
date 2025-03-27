@@ -146,25 +146,11 @@ $employerValue = $post->employer;
                                 @if($post->has_already_applied == "yes")
                                 <div class="text-primary text-right">You have already applied for this opportunity</div>
                                 @else
-                                @php
-                                $route = "";
-                                switch($post->type) {
-                                case "QUICK_JOB":
-                                case "P2P":
-                                $route = route('user.quick_job.show', ['uuid' => $post->id]);
-                                break;
-                                case "FIXED_TERM_JOB":
-                                $route = route('user.fixed_term_job.show', ['uuid' => $post->id]);
-                                break;
-                                case "PERMANENT_JOB":
-                                $route = route('user.permanent_job.show', ['uuid' => $post->id]);
-                                break;
-                                }
-                                @endphp
+
                                 @if ($isShowDetails)
                                 <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
                                 @else
-                                <a href="{{$route}}" class="btn btn-outline-primary">View details</a>
+                                <a href="{{route('work.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
                                 @endif
                                 @endif
                         </div>

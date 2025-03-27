@@ -5,9 +5,14 @@
 @endsection
 
 @section('listing-details')
+@include('utilities.alerts.alerts')
 @include('partials.shared.listing-container', ['isShowDetails' => true])
 @endsection
 
 @section('ads')
 @include('partials.shared.ads-container')
+@endsection
+
+@section('other-related-listings')
+@include('partials.shared.other-related-listings')
 @endsection

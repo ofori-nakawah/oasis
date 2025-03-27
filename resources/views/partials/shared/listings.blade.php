@@ -10,7 +10,7 @@
         @if($posts->count() > 0)
         @foreach($posts as $post)
         <div class="col-md-6">
-                @include('partials.shared.listing-container')
+                @include('partials.shared.listing-container', ['isShowDetails' => false])
         </div>
         @endforeach
         @else

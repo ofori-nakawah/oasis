@@ -544,7 +544,6 @@ class PostController extends Controller
                 }
 
                 if ($post->category && !in_array($post->category, $skillNames)) {
-                    Log::debug("Post category: " . $post->category . " not in " . json_encode($skillNames));
                     return false;
                 }
             } elseif (!empty($user_interests) && $tags) {
@@ -678,8 +677,9 @@ class PostController extends Controller
         return view("volunteerism.show", compact("original_post", "posts"));
     }
 
-    public function show_quick_job($uuid)
+    public function showListingDetails($uuid)
     {
+        Log::info("uuid: " . $uuid);
         if (!$uuid) {
             return back()->with("danger", "Invalid request. Kindly try again.");
         }
@@ -696,18 +696,80 @@ class PostController extends Controller
             return back()->with("info", "This post has been removed by the issuer.");
         }
 
+        //get user coordinates
+        $user_location = auth()->user()->location_coords;
+        if (!$user_location) {
+            return back()->with("danger", "Could not retrieve user's current location");
+        }
+
+        $user_location_lat = json_decode($user_location)->latitude ??  explode(',', $user_location)[0];
+        $user_location_lng = json_decode($user_location)->longitude ?? explode(',', $user_location)[1];
+
         $has_already_applied = JobApplication::where("user_id", auth()->id())->where("post_id", $post->id)->first();
         if ($has_already_applied) {
             $post->has_already_applied = "yes";
         }
         $post->user;
+        $post["industry"] = $post->industry ? $post->industry->name : null;
+
+
+        if ($post->end_date && $post->start_date) {
+            $post["duration"] = Carbon::parse($post->end_date)->diffInMonths(Carbon::parse($post->start_date));
+        }
 
         /**
          * TODO:
          * get ad to show
          */
 
-        return view("work.quick_jobs.show", compact("post"));
+
+        $otherPosts = Post::with(['user', 'industry', 'applications' => function ($query) {
+            $query->where("user_id", "!=", auth()->id());
+        }])
+            ->where("status", "active")
+            ->where("type", $post->type)
+            ->where('category_id', $post->category_id)
+            ->whereNull('deleted_at')
+            ->whereHas('applications', function ($query) {
+                $query->where("user_id", "!=", auth()->id());
+            })
+            ->orderByDesc("created_at")
+            ->limit(3)
+            ->get();
+
+        $filteredPosts = $otherPosts->map(function (Post $otherPost) use ($post, $user_location_lat, $user_location_lng) {
+            // Calculate duration if dates are available
+            if ($otherPost->end_date && $otherPost->start_date) {
+                $otherPost["duration"] = Carbon::parse($otherPost->end_date)->diffInMonths(Carbon::parse($otherPost->start_date));
+            }
+
+            // Add additional post data
+            $otherPost["organiser_name"] = $otherPost->user->name;
+            $otherPost["industry"] = $otherPost->industry ? $otherPost->industry->name : null;
+
+            $post_location_lat = json_decode($post->coords)->latitude ?? explode(',', $post->coords)[0];
+            $post_location_lng = json_decode($post->coords)->longitude ?? explode(',', $post->coords)[1];
+            $distance = $this->get_distance($user_location_lat, $user_location_lng, $post_location_lat, $post_location_lng, "K");
+
+            $post["distance"] = number_format($distance, 2);
+
+            return $otherPost;
+        });
+
+        $view = "";
+        switch ($post->type) {
+            case "QUICK_JOB":
+                $view = "work.quick_jobs.show";
+                break;
+            case "FIXED_TERM_JOB":
+                $view = "work.part_time_jobs.show";
+                break;
+            case "PERMANENT_JOB":
+                $view = "work.permanent.show";
+                break;
+        }
+
+        return view($view, compact("post", 'filteredPosts'));
     }
 
     public function show_permanent_job_details($uuid)
