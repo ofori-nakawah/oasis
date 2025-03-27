@@ -2,7 +2,15 @@
         <div class="col-md-8" style="margin-top: 50px;">
                 @yield("listing-details")
         </div>
-        <div class="col-md-4" style="margin-top: 50px;">
+        <div class="col-md-4 hide-on-mobile" style="margin-top: 50px;">
                 @yield("ads")
         </div>
 </div>
+
+<style>
+        @media (max-width: 640px) {
+                .hide-on-mobile {
+                        display: none;
+                }
+        }
+</style>
