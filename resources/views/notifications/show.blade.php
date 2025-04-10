@@ -364,7 +364,7 @@ Volunteer
                                 @elseif ($userApplication && $userApplication['status'] !== 'declined')
 
                                 <!-- Application exists and not declined -->
-                                @if (isset($userApplication['quote']) && !empty($userApplication['quote']))
+                                @if (isset($userApplication['quote']) && !empty($userApplication['quote']) && $notify->data["post"]["status"] !== 'closed')
                                 <!-- Quote already submitted -->
                                 <div class="p-3 border bg-gray-100" style="border-radius: 18px;">
                                     <div>
