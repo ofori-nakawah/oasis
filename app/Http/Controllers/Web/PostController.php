@@ -528,6 +528,10 @@ class PostController extends Controller
                 if ($distance > $searchRadius) {
                     return false;
                 }
+            } else {
+                if ($distance > self::JOB_SEARCH_RADIUS) {
+                    return false;
+                }
             }
 
             // Skills filtering logic
@@ -546,12 +550,14 @@ class PostController extends Controller
                 if ($post->category && !in_array($post->category, $skillNames)) {
                     return false;
                 }
-            } elseif (!empty($user_interests) && $tags) {
-                // Otherwise, if user has interests and post has tags, filter by user interest
-                if (!array_intersect($tags, $user_interests)) {
-                    return false;
-                }
-            } elseif ($post->category && !in_array($post->category, $user_interests)) {
+            }
+            // elseif (!empty($user_interests) && $tags) {
+            //     // Otherwise, if user has interests and post has tags, filter by user interest
+            //     if (!array_intersect($tags, $user_interests)) {
+            //         return false;
+            //     }
+            // } 
+            elseif ($post->category && !in_array($post->category, $user_interests)) {
                 return false;
             }
 
