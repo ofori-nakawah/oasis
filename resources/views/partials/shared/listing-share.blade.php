@@ -18,7 +18,7 @@
                                                 </div>
 
                                                 <div class="input-group mb-3 justify-content-center ">
-                                                        <input type="text" class="form-control" value="{{ route('user.quick_job.show', ['uuid' => $post->id]) }}" id="share-url-{{ $post->id }}" readonly>
+                                                        <input type="text" class="form-control" value="{{ route('work.show', ['uuid' => $post->id]) }}" id="share-url-{{ $post->id }}" readonly>
                                                         <button class="btn btn-primary btn-sm ml-1" type="button" onclick="copyShareUrl('{{ $post->id }}')"><em class="icon ni ni-copy"></em> Copy</button>
                                                 </div>
 

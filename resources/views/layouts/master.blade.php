@@ -499,25 +499,24 @@
             $(".copyStatus").html("")
             $(`.copyLinkButton`).show();
 
-            let shareableLink = `{{env("BACKEND_URL")}}/`
-            switch (type) {
-                case "VOLUNTEER":
-                    shareableLink += `volunteerism/`
-                    break;
-                case "QUICK_JOB":
-                    shareableLink += `gigs/`
-                    break;
-                case "P2P":
-                    shareableLink += `p2p/`
-                    break;
-                case "FIXED_TERM_JOB":
-                    shareableLink += `part-time-jobs/`
-                    break;
-                case "PERMANENT_JOB":
-                    shareableLink += `full-time-jobs/`
-                    break;
-            }
-            shareableLink += `${uuid}`
+            let shareableLink = `{{env("BACKEND_URL")}}/listings/work/show/${uuid}`
+            // switch (type) {
+            //     case "VOLUNTEER":
+            //         shareableLink += `volunteerism/`
+            //         break;
+            //     case "QUICK_JOB":
+            //         shareableLink += `gigs/`
+            //         break;
+            //     case "P2P":
+            //         shareableLink += `p2p/`
+            //         break;
+            //     case "FIXED_TERM_JOB":
+            //         shareableLink += `part-time-jobs/`
+            //         break;
+            //     case "PERMANENT_JOB":
+            //         shareableLink += `full-time-jobs/`
+            //         break;
+            // }
             $("#shareableLink").html(`<input value="${shareableLink}" id="shareLink" type="text" readonly="" class="form-control">`)
         }
 
