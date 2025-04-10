@@ -59,6 +59,12 @@ Route::group(['middleware' => 'auth'], function () {
     //   });
 
 
+    /**
+     * get listing details
+     */
+    Route::get('/listings/work/show/{uuid}', 'Web\PostController@showListingDetails')->name("work.show");
+
+
     Route::get('/getPermanentOpportunities', 'Web\PostController@getPermanentOpportunities')->name('work.getPermanentOpportunities');
     Route::get('/getCategories', 'Web\PostController@getCategories')->name('work.getCategories');
     Route::get('/getPermanentOpportunityDetails/{uuid}', 'Web\PostController@getPermanentOpportunityDetails')->name('work.getPermanentOpportunityDetails');

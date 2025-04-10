@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {{-- <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">--}}
 
-
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet"> -->
     {{-- <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap" rel="stylesheet">--}}
     <style>
         *,
@@ -57,7 +57,7 @@
             /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
             /*font-family: 'Lilita One', cursive;*/
             /*font-family: 'Poppins', sans-serif;*/
-            font-family: 'Sen', 'Poppins', sans-serif;
+            font-family: 'Source Sans 3', 'Sen', 'Poppins', sans-serif;
             /*font-family: "Signika",Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif;*/
             /*font-family: 'Mukta', Helvetica, 'lato', sans-serif;*/
             /*font-weight: 600 !important;*/
@@ -217,6 +217,16 @@
 </head>
 
 <body class="nk-body bg-white npc-general has-sidebar ">
+    <x-advanced-preloader
+        loadingText=""
+        spinnerColor="#fff"
+        backgroundColor="rgba(249, 250, 251, 0.9)" />
+
+    <x-no-internet-connection
+        title="Oops! Connection Lost"
+        message="We can't reach the server. Please check your internet connection."
+        retryButtonText="Try Again" />
+
     <div class="nk-app-root">
         <!-- main @s -->
         <div class="nk-main ">
@@ -489,25 +499,24 @@
             $(".copyStatus").html("")
             $(`.copyLinkButton`).show();
 
-            let shareableLink = `{{env("BACKEND_URL")}}/`
-            switch (type) {
-                case "VOLUNTEER":
-                    shareableLink += `volunteerism/`
-                    break;
-                case "QUICK_JOB":
-                    shareableLink += `gigs/`
-                    break;
-                case "P2P":
-                    shareableLink += `p2p/`
-                    break;
-                case "FIXED_TERM_JOB":
-                    shareableLink += `part-time-jobs/`
-                    break;
-                case "PERMANENT_JOB":
-                    shareableLink += `full-time-jobs/`
-                    break;
-            }
-            shareableLink += `${uuid}`
+            let shareableLink = `{{env("BACKEND_URL")}}/listings/work/show/${uuid}`
+            // switch (type) {
+            //     case "VOLUNTEER":
+            //         shareableLink += `volunteerism/`
+            //         break;
+            //     case "QUICK_JOB":
+            //         shareableLink += `gigs/`
+            //         break;
+            //     case "P2P":
+            //         shareableLink += `p2p/`
+            //         break;
+            //     case "FIXED_TERM_JOB":
+            //         shareableLink += `part-time-jobs/`
+            //         break;
+            //     case "PERMANENT_JOB":
+            //         shareableLink += `full-time-jobs/`
+            //         break;
+            // }
             $("#shareableLink").html(`<input value="${shareableLink}" id="shareLink" type="text" readonly="" class="form-control">`)
         }
 
