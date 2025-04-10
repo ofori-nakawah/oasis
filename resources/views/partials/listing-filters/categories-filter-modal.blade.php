@@ -17,7 +17,7 @@
                                                 </div>
 
                                                 <div class="skill-list" style="max-height: 350px; overflow-y: auto; margin-bottom: 20px;">
-                                                        @foreach($skills as $skill)
+                                                        @foreach($skills->sortBy('name') as $skill)
                                                         <div class="custom-control custom-checkbox skill-item mb-2">
                                                                 <input type="checkbox" class="custom-control-input skill-checkbox" id="skill-{{ $skill->id }}" name="skills[]" value="{{ $skill->id }}">
                                                                 <label class="custom-control-label" for="skill-{{ $skill->id }}">{{ $skill->name }}</label>
