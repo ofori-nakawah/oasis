@@ -1147,7 +1147,7 @@ class PostController extends Controller
         $post["postedOn"] = $post->created_at->diffForHumans();
         $toDate = Carbon::parse($post->end_date);
         $fromDate = Carbon::parse($post->start_date);
-        $post["duration"] = $toDate->diffInMonths($fromDate);
+        $post["duration"] = $toDate->diffInMonths($fromDate) + 1;
         $post["deadline"] =  date("jS \of F, Y g:i A", strtotime($post->date . ' ' . $post->time));
         $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
@@ -1224,13 +1224,14 @@ class PostController extends Controller
             $application->user;
             $application->rating_and_reviews;
         }
-
+        $post->applications;
+        $post->user;
         $post->createdAt = $post->created_at->diffForHumans();
         $post["postedDateTime"] = date("jS \of F, Y g:i A", strtotime(DateFormatter::Parse($post->date) . ' ' . $post->time));
 
         $toDate = Carbon::parse($post->final_end_date);
         $fromDate = Carbon::parse($post->final_start_date);
-        $post["duration"] = $toDate->diffInMonths($fromDate);
+        $post["duration"] = $toDate->diffInMonths($fromDate) + 1;
         $post->industry;
 
         return $this->success_response($post, "Posts fetched successfully.");
