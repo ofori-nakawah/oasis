@@ -248,7 +248,7 @@ Dashboard
                                 <tr>
                                     <td>{{$job->distance}}</td>
                                     <td>
-                                        <a href="{{route('user.quick_job.show', ['uuid' => $job->id])}}">{{$job->description}}</a>
+                                        <a href="{{route('work.show', ['uuid' => $job->id])}}">{{$job->description}}</a>
                                     </td>
                                     <td>{{$job->min_budget}} - {{$job->max_budget}}</td>
                                 </tr>
