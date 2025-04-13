@@ -73,7 +73,7 @@ $employerValue = $post->employer;
         </div>
 
         @php
-        $cleanDateString = trim($post->date, ", \t\n\r\0\x0B");
+        $cleanDateString = trim($post->date);
         $date = Carbon\Carbon::createFromFormat('d/m/Y', $cleanDateString);
 
         $key = "Deadline";
