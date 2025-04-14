@@ -419,7 +419,7 @@ Volunteer
                             <body>
                                 <tr>
                                     <td class="text-muted">Gross Amount</td>
-                                    <td>{{$notify->data["post"]["final_payment_amount"]}}</td>
+                                    <td>{{number_format($notify->data["post"]["final_payment_amount"], 2)}}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">WHT Allocation (5%)</td>
@@ -431,7 +431,7 @@ Volunteer
                                 </tr>
                                 <tr>
                                     <td><b>Net Amount</b></td>
-                                    <td>{{$notify->data["post"]["final_payment_amount"] - ((5/ 100) * $notify->data["post"]["final_payment_amount"]) + ((1/ 100) * $notify->data["post"]["final_payment_amount"]) }}</td>
+                                    <td>{{number_format($notify->data["post"]["final_payment_amount"] - ((5/ 100) * $notify->data["post"]["final_payment_amount"]) + ((1/ 100) * $notify->data["post"]["final_payment_amount"]), 2) }}</td>
                                 </tr>
                             </body>
                         </table>
