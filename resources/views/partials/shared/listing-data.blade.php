@@ -73,7 +73,9 @@ $employerValue = $post->employer;
         </div>
 
         @php
-        $date = \Carbon\Carbon::createFromFormat('d/m/Y', $post->date);
+            $normalizedDate = str_replace('-', '/', trim($post->date));
+            Log::info($normalizedDate);
+            $date = \Carbon\Carbon::createFromFormat('d/m/Y', $normalizedDate);
         $key = "Deadline";
         $value = $date->format("Y-m-d");
 
