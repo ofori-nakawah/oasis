@@ -1883,6 +1883,7 @@ class PostController extends Controller
                 }
                 break;
             case "QUICK_JOB":
+            case "P2P":
                 $participant = User::where("id", $request->user_id)->first();
                 if (!$participant) {
                     Log::debug("ERROR FETCHING USER DETAILS FOR USER ID >>>>>>>>>>> " . $request->user_id);
