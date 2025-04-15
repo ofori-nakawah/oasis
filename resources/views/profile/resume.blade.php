@@ -1,11 +1,51 @@
-@extends("layouts.onboarding")
+@extends("layouts.master")
 
 @section("title")
     Resume
 @endsection
 
 @section("content")
-    <div style="font-family: Rockwell !important;, sans-serif">
+    @php
+        $name = $data['name'];
+        $email = $data['email'];
+        $phoneNumber = $data['phoneNumber'];
+        $location = $data['location'];
+        $competencies = $data['competencies'];
+        $outsideVorkJobs = $data['outsideVorkJobs'];
+        $educationHistories = $data['educationHistories'];
+        $certificationsAndTrainings = $data['certificationsAndTrainings'];
+        $references = $data['references'];
+        $volunteerHistory = $data['volunteerHistory'];
+        $ratings = $data['ratings'];
+    @endphp
+
+    <div class="nk-block-head nk-block-head-sm">
+    <div class="nk-block-between">
+        <div class="nk-block-head-content">
+            <h3 class="nk-block-title page-title"><em class="icon ni ni-file-pdf"></em> CV Generator</h3>
+            <div class="nk-block-des text-soft">
+                <p class="hide-mb-sm hide-mb-xs md">
+                    <nav>
+                        <ul class="breadcrumb breadcrumb-arrow">
+                            <li class="breadcrumb-item"><a href="#">VORK Resume Builder</a></li>
+                        </ul>
+                    </nav>
+                    </p>
+                </div>
+            </div>
+            <div class="nk-block-head-content">
+                <a href="#"
+                   class="btn btn-outline-primary"><span> Enhance with AI</span></a>
+                <a href="{{URL::previous()}}"
+                   class="btn btn-outline-primary"><span>Download</span></a>
+                <a href="{{URL::previous()}}"
+                   class="btn btn-outline-primary"><span>Back</span></a>
+            </div><!-- .nk-block-head-content -->
+        </div>
+</div>
+
+     
+    <div style="font-family: Rockwell !important;, sans-serif;  max-width: 800px; margin: 0 auto;border: 1px solid #e5e5e5;padding:10px; border-radius: 4px;" >
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <span style="width: 500px">
             </span>
@@ -45,37 +85,38 @@
             </div>
         </div>
 
-        <hr style="height: 3px;background: #000">
+        @if ($outsideVorkJobs->count() > 0)
+            <hr style="height: 3px;background: #000">
 
-        <div>
-            <h4  style="font-family: Rockwell">Job Experience</h4>
-            <table style="width: 100%;border-bottom-width: 0px;">
-                @foreach($outsideVorkJobs->sortByDesc("start_date") as $outsideVorkJob)
-                    <tr  style="width: 100%;">
-                        <td style="width: 35%;vertical-align:top !important;">
-                           <div style="margin-top: 20px;margin-bottom: 20px;">
-                               <div> [{{strtoupper(date("F Y", strtotime($outsideVorkJob->start_date)))}}
-                                   - {{strtoupper($outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing")}}]</div>
-                               <div style="font-weight: 800;font-family: Rockwell">{{$outsideVorkJob->employer}}</div>
-                           </div>
-                        </td>
-                        <td>
-                           <div style="margin-top: 20px;margin-bottom: 20px;">
-                               <div style="font-weight: bold;font-size: 18px;margin-bottom: 15px;font-family: Rockwell">
-                                   {{$outsideVorkJob->role}}</div>
+            <div>
+                <h4  style="font-family: Rockwell">Job Experience</h4>
+                <table style="width: 100%;border-bottom-width: 0px;">
+                    @foreach($outsideVorkJobs->sortByDesc("start_date") as $outsideVorkJob)
+                        <tr  style="width: 100%;">
+                            <td style="width: 35%;vertical-align:top !important;">
+                                <div style="margin-top: 20px;margin-bottom: 20px;">
+                                    <div> [{{strtoupper(date("F Y", strtotime($outsideVorkJob->start_date)))}}
+                                        - {{strtoupper($outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing")}}]</div>
+                                    <div style="font-weight: 800;font-family: Rockwell">{{$outsideVorkJob->employer}}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="margin-top: 20px;margin-bottom: 20px;">
+                                    <div style="font-weight: bold;font-size: 18px;margin-bottom: 15px;font-family: Rockwell">
+                                        {{$outsideVorkJob->role}}</div>
 
-                               <div style="font-weight: 800;font-family: Rockwell">Responsibilities</div>
-                               <p style="font-family: Rockwell !important;">{!! $outsideVorkJob->responsibilities !!}</p>
+                                    <div style="font-weight: 800;font-family: Rockwell">Responsibilities</div>
+                                    <p style="font-family: Rockwell !important;">{!! $outsideVorkJob->responsibilities !!}</p>
 
-                               <div style="font-weight: 800;font-family: Rockwell">Achievements</div>
-                               <p style="font-family: Rockwell !important;"> {!! $outsideVorkJob->achievements !!}
-                               </p>
-                           </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </table>
-        </div>
+                                    <div style="font-weight: 800;font-family: Rockwell">Achievements</div>
+                                    <p style="font-family: Rockwell !important;"> {!! $outsideVorkJob->achievements !!}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+        @endif
 
         <hr style="height: 3px;background: #000">
 
@@ -100,118 +141,81 @@
             </table>
         </div>
 
-        <hr style="height: 3px;background: #000">
+        @if ($certificationsAndTrainings->count() > 0)
+            <hr style="height: 3px;background: #000">
 
-        <div>
-            <h4  style="font-family: Rockwell; ">Certification & Training</h4>
-            <table style="width: 100%;border-bottom-width: 0px;">
-                @foreach($certificationsAndTrainings->sortByDesc("start_date") as $certificationsAndTraining)
-                    <tr style="width: 100%;">
-                        <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
-                            <div style="font-family: Rockwell"> [{{strtoupper(date("F Y", strtotime($certificationsAndTraining->start_date)))}}
-                                - {{strtoupper($certificationsAndTraining->end_date ? date("F Y", strtotime($certificationsAndTraining->end_date)) : "Ongoing")}}]</div>
-                        </td>
-                        <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
-                            <div style="font-family: Rockwell">{{$certificationsAndTraining->programme}}</div>
-                        </td>
-                        <td>
-                            <div style="font-family: Rockwell">{{$certificationsAndTraining->institution}}
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </table>
-        </div>
+            <div>
+                <h4  style="font-family: Rockwell; ">Certification & Training</h4>
+                <table style="width: 100%;border-bottom-width: 0px;">
+                    @foreach($certificationsAndTrainings->sortByDesc("start_date") as $certificationsAndTraining)
+                        <tr style="width: 100%;">
+                            <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
+                                <div style="font-family: Rockwell"> [{{strtoupper(date("F Y", strtotime($certificationsAndTraining->start_date)))}}
+                                    - {{strtoupper($certificationsAndTraining->end_date ? date("F Y", strtotime($certificationsAndTraining->end_date)) : "Ongoing")}}]</div>
+                            </td>
+                            <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
+                                <div style="font-family: Rockwell">{{$certificationsAndTraining->programme}}</div>
+                            </td>
+                            <td>
+                                <div style="font-family: Rockwell">{{$certificationsAndTraining->institution}}
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+        @endif
 
-{{--        <hr style="height: 3px;background: #000">--}}
 
-{{--        <div>--}}
-{{--            <h4  style="font-family: Rockwell">Volunteerism</h4>--}}
-{{--            <table style="width: 100%;border-bottom-width: 0px;">--}}
-{{--                <tr style="width: 100%;">--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell"> [JULY 2016 – DECEMBER 2017]</div>--}}
-{{--                    </td>--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell">Sociology, BSc</div>--}}
-{{--                    </td>--}}
-{{--                    <td>--}}
-{{--                        <div style="font-family: Rockwell">Kwame Nkrumah University--}}
-{{--                        </div>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--                <tr style="width: 100%;">--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell"> [JULY 2016 – DECEMBER 2017]</div>--}}
-{{--                    </td>--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell">Sociology, BSc</div>--}}
-{{--                    </td>--}}
-{{--                    <td>--}}
-{{--                        <div style="font-family: Rockwell">Kwame Nkrumah University--}}
-{{--                        </div>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--            </table>--}}
-{{--        </div>--}}
+        @if (count($volunteerHistory) > 0)
+            <hr style="height: 3px;background: #000">
 
-{{--        <hr style="height: 3px;background: #000">--}}
+            <div>
+                <h4  style="font-family: Rockwell; ">Volunteerism</h4>
+                <table style="width: 100%;border-bottom-width: 0px;">
+                    @foreach($volunteerHistory as $volunteer)
+                        <tr style="width: 100%;">
+                            <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
+                                <div style="font-family: Rockwell"> {{strtoupper(date("F Y", strtotime($volunteer["date"])))}}</div>
+                            </td>
+                            <td style="width: 55%;vertical-align:top !important;margin-bottom: 20px;">
+                                <div style="font-family: Rockwell">{{$volunteer["name"]}}</div>
+                            </td>
+                            <td>
+                                <div style="font-family: Rockwell">{{$volunteer["volunteer_hours_awarded"]}}
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+        @endif
 
-{{--        <div>--}}
-{{--            <h4  style="font-family: Rockwell">VORK Rating</h4>--}}
-{{--            <table style="width: 100%;border-bottom-width: 0px;">--}}
-{{--                <tr style="width: 100%;">--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell"> Expertise: </div>--}}
-{{--                    </td>--}}
-{{--                    <td>--}}
-{{--                        <div style="font-family: Rockwell">Work Ethic:--}}
-{{--                        </div>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--                <tr style="width: 100%;">--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell"> Professionalism:</div>--}}
-{{--                    </td>--}}
-{{--                    <td>--}}
-{{--                        <div style="font-family: Rockwell">Customer Service:--}}
-{{--                        </div>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--            </table>--}}
-{{--        </div>--}}
+       <hr style="height: 3px;background: #000">
 
-{{--        <hr style="height: 3px;background: #000">--}}
+       <div>           
+        <h4  style="font-family: Rockwell">VORK Rating</h4>
+           <table style="width: 100%;border-bottom-width: 0px;">
+               <tr style="width: 100%;">
+                   <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
+                       <div style="font-family: Rockwell"> Expertise: <em class="ni ni-star" style="color: yellow"></em> {{ $ratings["expertise"] }}</div>
+                   </td>
+                   <td>
+                       <div style="font-family: Rockwell">Work Ethic: <em class="ni ni-star" style="color: yellow"></em> {{ $ratings["work_ethic"] }}</div>
+                   </td>
+               </tr>
+               <tr style="width: 100%;">
+                   <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
+                       <div style="font-family: Rockwell"> Professionalism: <em class="ni ni-star" style="color: yellow"></em> {{ $ratings["professionalism"] }}</div>
+                   </td>
+                   <td>
+                       <div style="font-family: Rockwell">Customer Service: <em class="ni ni-star" style="color: yellow"></em> {{ $ratings["customer_service"] }}</div>
+                   </td>
+               </tr>
+           </table>
+       </div>
 
-{{--        <div>--}}
-{{--            <h4  style="font-family: Rockwell">References</h4>--}}
-{{--            <table style="width: 100%;border-bottom-width: 0px;">--}}
-{{--                <tr style="width: 100%;">--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell"> [JULY 2016 – DECEMBER 2017]</div>--}}
-{{--                    </td>--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell">Sociology, BSc</div>--}}
-{{--                    </td>--}}
-{{--                    <td>--}}
-{{--                        <div style="font-family: Rockwell">Kwame Nkrumah University--}}
-{{--                        </div>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--                <tr style="width: 100%;">--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell"> [JULY 2016 – DECEMBER 2017]</div>--}}
-{{--                    </td>--}}
-{{--                    <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">--}}
-{{--                        <div style="font-family: Rockwell">Sociology, BSc</div>--}}
-{{--                    </td>--}}
-{{--                    <td>--}}
-{{--                        <div style="font-family: Rockwell">Kwame Nkrumah University--}}
-{{--                        </div>--}}
-{{--                    </td>--}}
-{{--                </tr>--}}
-{{--            </table>--}}
-{{--        </div>--}}
+
 
     </div>
 @endsection

@@ -21,13 +21,14 @@ Profile
         </div><!-- .nk-block-head-content -->
         <div class="nk-block-head-content">
             <div class="flex flex-row justify-center items-center">
-                {{-- <a href="{{route('user.profile.resume', ["id" => $user->id])}}"--}}
-                {{-- class=" ml-2 mt-1"><em class="ni ni-download" style="font-size: 28px;"></em></a>--}}
                 {{-- <a href="{{URL::previous()}}"--}}
                 {{-- class="btn btn-outline-primary ml-2"><span>Gallery</span></a>--}}
                 @if(Auth::id() !== $user->id)
                 <a href="{{route('p2p.requestQuote', ['uuid' => $user->uuid])}}"
                     class="btn btn-primary ml-2"><span>P2P Hire</span></a>
+                    @else
+                <a href="{{route('user.profile.resumeLanding', ["id" => $user->id])}}" class="btn btn-outline-primary">Generate Resume/CV</a>
+
                 @endif
                 <a href="{{URL::previous()}}"
                     class="btn btn-outline-light ml-2"><span>Back</span></a>

@@ -154,6 +154,8 @@ Route::group(['middleware' => 'auth'], function () {
      * resume
      */
     Route::get('/profile/{id}/resume', 'Web\UserController@resume')->name('user.profile.resume');
+    Route::get('/profile/{id}/download-resume', 'Web\UserController@downloadResume')->name('user.profile.downloadResume');
+    Route::get('/profile/{id}/resumeLanding', 'Web\UserController@resumeLanding')->name('user.profile.resumeLanding');
 
     /**
      * trainings

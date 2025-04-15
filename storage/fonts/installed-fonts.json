@@ -1,20 +1,20 @@
 {
     "roboto": {
-        "300": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/roboto_300_43d6ece7837b263a611998fe7db5e097",
-        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/roboto_normal_bac5c5b20b101802dfed1893fb0a9fd1",
-        "500": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/roboto_500_4afc34917ac033620ddeaec4eff3be98",
-        "bold": "roboto_bold_42c5b115bbbeba54a396f48908c55c7e"
+        "300": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/roboto_300_402948ea6c87536888785cc9f11c1c00",
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/roboto_normal_ab71a5c84d83483d5695eecbcef8e118",
+        "500": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/roboto_500_2c9c95a22a6f8fffdcd15539bcdfacd9",
+        "bold": "roboto_bold_ea527add9342ed0283c120802b0a0027"
     },
     "nunito": {
-        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/nunito_normal_d7ae7a1e48155bb74cbe9af0044f739e",
-        "bold": "nunito_bold_8cc56e53f598cfe059a2e4d7f4fbdfcc"
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/nunito_normal_6968339a5093addf918c4d510e7e3d94",
+        "bold": "nunito_bold_723680b05e60154dd18d701ef8272cc1"
     },
     "nioicon": {
-        "normal": "nioicon_normal_9c2c243696584c898fbf26922e603007"
+        "normal": "nioicon_normal_cb5ea7422005265b2f57f67239e25667"
     },
     "sen": {
-        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/sen_normal_f2218f690c172bb43e740ac1b7e6c10f",
-        "bold": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/oasis\/storage\/fonts\/sen_bold_87730a235990cbbc6c6a52fa8fa762b8",
-        "800": "sen_800_c50aac6cadddc818667b3e9ee8283533"
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/sen_normal_f2218f690c172bb43e740ac1b7e6c10f",
+        "bold": "sen_bold_87730a235990cbbc6c6a52fa8fa762b8",
+        "800": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/sen_800_c50aac6cadddc818667b3e9ee8283533"
     }
 }

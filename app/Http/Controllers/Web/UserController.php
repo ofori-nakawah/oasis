@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\JobApplication;
 use App\Models\Language;
 use App\Models\LanguageUser;
+use App\Models\OutsideVorkJob;
+use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\SkillUser;
 use App\Models\User;
@@ -332,7 +335,7 @@ class UserController extends Controller
         return redirect()->route("user.profile", ["user_id" => auth()->id()])->with("success", "Your profile has been updated successfully");
     }
 
-    public function resume($id)
+    public function getResumeData($id)
     {
         $user = User::where("id", $id)->first();
         if (!$user) {
@@ -360,6 +363,60 @@ class UserController extends Controller
                 $name .= $user->name;
         }
 
+        $averageRatingsForReviewCategories = [
+            'expertise' => 0,
+            'work_ethic' => 0,
+            'professionalism' => 0,
+            'customer_service' => 0
+        ];
+
+        $ratings = RatingReview::where('user_id', auth()->id())->get();
+        if ($ratings->count() > 0) {
+            $averageRatingsForReviewCategories = [
+                'expertise' => round($ratings->avg('expertise_rating'), 1),
+                'work_ethic' => round($ratings->avg('work_ethic_rating'), 1),
+                'professionalism' => round($ratings->avg('professionalism_rating'), 1),
+                'customer_service' => round($ratings->avg('customer_service_rating'), 1)
+            ];
+        }
+
+        $volunteerHistory = [];
+        $volunteerApplications = JobApplication::where('user_id', auth()->id())
+            ->where('status', 'confirmed')
+            ->whereNotNull('volunteer_hours')
+            ->with(['job_post' => function ($query) {
+                $query->where('type', 'VOLUNTEER')
+                    ->where('status', 'closed');
+            }])
+            ->get();
+
+        foreach ($volunteerApplications as $application) {
+            if ($application->job_post && $application->job_post->type === 'VOLUNTEER') {
+                $volunteerHistory[] = [
+                    'date' => $application->job_post->date ?? $application->job_post->created_at->format('Y-m-d'),
+                    'name' => $application->job_post->name,
+                    'volunteer_hours_awarded' => $application->volunteer_hours
+                ];
+            }
+        }
+
+        $references = [];
+
+        $externalJobs = OutsideVorkJob::where('user_id', auth()->id())
+            ->whereNotNull('reference')
+            ->get();
+        foreach ($externalJobs as $job) {
+            $referenceData = json_decode($job->reference, true);
+            if (is_array($referenceData)) {
+                $references[] = [
+                    'name' => $referenceData['name'] ?? '',
+                    'company' => $referenceData['company'] ?? $job->employer ?? '',
+                    'email' => $referenceData['email'] ?? '',
+                    'phone_number' => $referenceData['phone_number'] ?? ''
+                ];
+            }
+        }
+
         $email = $user->email;
         $phoneNumber = $user->phone_number;
         $location = $user->location_name;
@@ -375,12 +432,31 @@ class UserController extends Controller
             "competencies" => $competencies,
             "outsideVorkJobs" => $outsideVorkJobs,
             "educationHistories" => $educationHistories,
-            "certificationsAndTrainings" => $certificationsAndTrainings
+            "certificationsAndTrainings" => $certificationsAndTrainings,
+            "references" => $references,
+            "volunteerHistory" => $volunteerHistory,
+            "ratings" => $averageRatingsForReviewCategories
         ];
+        return $data;
+    }
 
+    public function resumeLanding($id)
+    {
+        $data = $this->getResumeData($id);
+        return view('profile.resumeLanding', compact('data'));
+    }
+
+    public function resume($id)
+    {
+        $data = $this->getResumeData($id);
+        return view('profile.resume', compact('data'));
+    }
+
+    public function downloadResume($id)
+    {
+        $data = $this->getResumeData($id);
         $pdf = PDF::loadView('profile.resume', $data);
         return $pdf->download('resume.pdf');
-        //        return view("profile.resume", compact("name", "email", "phoneNumber", "competencies", "location", "outsideVorkJobs", "educationHistories", "certificationsAndTrainings"));
     }
 
     public function searchVorkers(Request $request)
