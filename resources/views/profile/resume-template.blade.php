@@ -1,11 +1,4 @@
-@extends("layouts.master")
-
-@section("title")
-    Resume
-@endsection
-
-@section("content")
-    @php
+@php
         $userId = $data['userId'];
         $name = $data['name'];
         $email = $data['email'];
@@ -20,33 +13,10 @@
         $ratings = $data['ratings'];
     @endphp
 
-    <div class="nk-block-head nk-block-head-sm">
-    <div class="nk-block-between">
-        <div class="nk-block-head-content">
-            <h3 class="nk-block-title page-title"><em class="icon ni ni-file-pdf"></em> CV Generator</h3>
-            <div class="nk-block-des text-soft">
-                <p class="hide-mb-sm hide-mb-xs md">
-                    <nav>
-                        <ul class="breadcrumb breadcrumb-arrow">
-                            <li class="breadcrumb-item"><a href="#">VORK Resume Builder</a></li>
-                        </ul>
-                    </nav>
-                    </p>
-                </div>
-            </div>
-            <div class="nk-block-head-content">
-                {{-- <a href="#"
-                   class="btn btn-outline-primary"><span> Enhance with AI</span></a> --}}
-                <a href="{{ route('user.profile.downloadResume', ['id' => $userId]) }}"
-                   class="btn btn-primary"><span>Download</span></a>
-                <a href="{{URL::previous()}}"
-                   class="btn btn-outline-primary"><span>Back</span></a>
-            </div><!-- .nk-block-head-content -->
-        </div>
-</div>
+    
 
      
-    <div style="font-family: Rockwell !important;, sans-serif;  max-width: 800px; margin: 0 auto;border: 1px solid #e5e5e5;padding:10px; border-radius: 4px;" >
+    <div style="font-family: Rockwell !important;, sans-serif;  max-width: 800px; margin: 0 auto;padding:10px; border-radius: 4px;" >
         <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <span style="width: 500px">
             </span>
@@ -91,7 +61,7 @@
 
             <div>
                 <h4  style="font-family: Rockwell">Job Experience</h4>
-                <table style="width: 100%;border-bottom-width: 0px;">
+                <table style="width: 100%;border-bottom-width: 0px;margint-top: -20px;">
                     @foreach($outsideVorkJobs->sortByDesc("start_date") as $outsideVorkJob)
                         <tr  style="width: 100%;">
                             <td style="width: 35%;vertical-align:top !important;">
@@ -245,4 +215,3 @@
            </div>
        @endif
     </div>
-@endsection

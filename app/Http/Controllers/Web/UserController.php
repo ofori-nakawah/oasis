@@ -11,7 +11,7 @@ use App\Models\RatingReview;
 use App\Models\Skill;
 use App\Models\SkillUser;
 use App\Models\User;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +21,12 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Log;
 
-
+/**
+ * UserController
+ *
+ * @author [Adebayo, Oluwaseun]
+ * @link   [https://oluwaseunadebayo.com]
+ */
 class UserController extends Controller
 {
 
@@ -435,7 +440,8 @@ class UserController extends Controller
             "certificationsAndTrainings" => $certificationsAndTrainings,
             "references" => $references,
             "volunteerHistory" => $volunteerHistory,
-            "ratings" => $averageRatingsForReviewCategories
+            "ratings" => $averageRatingsForReviewCategories,
+            "userId" => $user->id
         ];
         return $data;
     }
@@ -455,7 +461,7 @@ class UserController extends Controller
     public function downloadResume($id)
     {
         $data = $this->getResumeData($id);
-        $pdf = PDF::loadView('profile.resume', $data);
+        $pdf = PDF::loadView('profile.resume-template', compact('data'));
         return $pdf->download('resume.pdf');
     }
 
