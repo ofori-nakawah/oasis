@@ -1,41 +1,40 @@
 @php
 $title = $post->title;
 switch($post->type) {
-case "QUICK_JOB":
-case "P2P":
-$title = $post->category;
-break;
-case "VOLUNTEER":
-$title = $post->name;
-break;
+    case "QUICK_JOB":
+    case "P2P":
+        $title = $post->category;
+        break;
+    case "VOLUNTEER":
+        $title = $post->name;
+        break;
 }
 @endphp
 
-
 <div class="row">
-        <div class="col-md-12">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="badge bg-light text-dark me-2">{{ $post->status }}</span>
-                        <div></div>
-                </div>
-                <h5 class="card-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $title }}</h5>
-                <p class="text-muted mb-1 title" style="margin-top: -15px;font-size: 10px;">{{ $post->createdOn }}</p>
-                <div class="d-flex flex-wrap mt-2 mb-2">
-                        @php
-                        $tags = json_decode($post->tags, true);
-                        @endphp
-                        @if($tags)
-                        @foreach($tags as $key => $tag)
-                        @if($key < 2 || $isShowDetails)
-                                <span class="badge bg-light text-dark me-2">{{ $tag }}</span>
-                                @endif
-                                @endforeach
-                                @if(count($tags) > 2 && !$isShowDetails)
-                                <span class="badge bg-light text-dark me-2">+{{ count($tags) - 2 }} more</span>
-                                @endif
-                                @endif
-                </div>
+    <div class="col-md-12">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="badge bg-light text-dark me-2">{{ $post->status }}</span>
+            <div></div>
         </div>
+        <h5 class="card-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $title }}</h5>
+        <p class="text-muted mb-1 title" style="margin-top: -15px;font-size: 10px;">{{ $post->createdOn }}</p>
+        <div class="d-flex flex-wrap mt-2 mb-2">
+            @php
+            $tags = json_decode($post->tags, true);
+            @endphp
+            @if($tags)
+                @foreach($tags as $key => $tag)
+                    @if($key < 2 || $isShowDetails)
+                        <span class="badge bg-light text-dark me-2">{{ $tag }}</span>
+                    @endif
+                @endforeach
+                @if(count($tags) > 2 && !$isShowDetails)
+                    <span class="badge bg-light text-dark me-2">+{{ count($tags) - 2 }} more</span>
+                @endif
+            @endif
+        </div>
+    </div>
 </div>
 
 @php
@@ -43,146 +42,129 @@ $employerKey = "Issuer";
 $employerValue = $post->user->name;
 
 if($post->type == "FIXED_TERM_JOB") {
-$employerKey = "Company";
-$employerValue = $post->employer;
+    $employerKey = "Company";
+    $employerValue = $post->employer;
 }
 
 if($post->type == "PERMANENT_JOB") {
-$employerKey= "Company";
-$employerValue = $post->employer;
+    $employerKey= "Company";
+    $employerValue = $post->employer;
 }
-
 @endphp
 
 <div class="row mb-2">
-        <div class="col-md-12">
-                <div class="title" style="font-size: 10px;color: #777;">{{$employerKey}}</div>
-                <div class="issuer"><em
-                                class="icon ni ni-building"></em> {{ $employerValue }}
-                </div>
-        </div>
+    <div class="col-md-12">
+        <div class="title" style="font-size: 10px;color: #777;">{{$employerKey}}</div>
+        <div class="issuer"><em class="icon ni ni-building"></em> {{ $employerValue }}</div>
+    </div>
 </div>
-<div class="row mb-2">
-        <div class="col-md-4">
-                <div class="title" style="font-size: 10px;color: #777;">Budget
-                        (GHS/month)
-                </div>
-                <div class="issuer text-success"><em
-                                class="icon ni ni-coins"></em> {{ $post->min_budget }}
-                        - {{ $post->max_budget }}</div>
-        </div>
 
-        @php
-            $date = \App\Helpers\DateFormatter::ParseFlexibleDate($post->date);
+<div class="row mb-2">
+    <div class="col-md-4">
+        <div class="title" style="font-size: 10px;color: #777;">Budget (GHS/month)</div>
+        <div class="issuer text-success"><em class="icon ni ni-coins"></em> {{ $post->min_budget }} - {{ $post->max_budget }}</div>
+    </div>
+
+    @php
+        $date = \App\Helpers\DateFormatter::ParseFlexibleDate($post->date);
         $key = "Deadline";
         $value = $date->format("Y-m-d");
 
         if($post->type == "FIXED_TERM_JOB") {
-        $key = "Duration";
-        $value = $post->duration . " months";
+            $key = "Duration";
+            $value = $post->duration . " months";
         }
 
         if($post->type == "PERMANENT_JOB") {
-        $key = "Industry";
-        $value = $post->industry ?? 'Not specified';
+            $key = "Industry";
+            $value = $post->industry ?? 'Not specified';
         }
-        @endphp
+    @endphp
 
-        <div @if($isShowDetails) class="col-md-4" @else class="col-md-6" @endif>
-                <div class="title" style="font-size: 10px;color: #777;">{{$key}}</div>
-                <div class="issuer " @if ($post->type === "QUICK_JOB") style="color: red;" @endif>
-                        {{ $value }}
-                </div>
-        </div>
+    <div @if($isShowDetails) class="col-md-4" @else class="col-md-6" @endif>
+        <div class="title" style="font-size: 10px;color: #777;">{{$key}}</div>
+        <div class="issuer " @if ($post->type === "QUICK_JOB") style="color: red;" @endif>{{ $value }}</div>
+    </div>
 
-        @if ($isShowDetails && ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB"))
+    @if ($isShowDetails && ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB"))
         @php
         $deadline = Carbon\Carbon::parse($post->date);
         @endphp
         <div class="col-md-4 mt-2">
-                <div class="title" style="font-size: 10px;color: #777;">Deadline</div>
-                <div class="issuer text-red-500" style="color: red;">
-                        {{ $deadline->format('Y-m-d') }}
-                </div>
+            <div class="title" style="font-size: 10px;color: #777;">Deadline</div>
+            <div class="issuer text-red-500" style="color: red;">{{ $deadline->format('Y-m-d') }}</div>
         </div>
-        @endif
+    @endif
 </div>
-
-
-
 
 @if ($isShowDetails)
-<div class="row">
+    <div class="row">
         <div class="col-md-12">
-                <div class="title" style="font-size: 10px;color: #777;">Job Description</div>
-                <div class="issuer text summernote-description">{!! $post->description !!}</div>
+            <div class="title" style="font-size: 10px;color: #777;">Job Description</div>
+            <div class="issuer text summernote-description">{!! $post->description !!}</div>
         </div>
-</div>
+    </div>
 
-@if ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB")
-<div class="row mt-2">
-        <div class="col-md-12">
+    @if ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB")
+        <div class="row mt-2">
+            <div class="col-md-12">
                 <div class="title" style="font-size: 10px;color: #777;">Qualifications</div>
-                <div class="issuer text summernote-qualifications">
-                        {!! $post->qualifications !!}
-                </div>
+                <div class="issuer text summernote-qualifications">{!! $post->qualifications !!}</div>
+            </div>
         </div>
-</div>
-@endif
+    @endif
 @endif
 
 <div class="row mt-2">
-        <div class="col-md-12">
-                <div class="title" style="font-size: 10px;color: #777;">Location</div>
-                <div class="issuer text"><em
-                                class="icon ni ni-map-pin"></em> {{ $post->location }} ({{ $post->distance }} km away)</div>
-        </div>
+    <div class="col-md-12">
+        <div class="title" style="font-size: 10px;color: #777;">Location</div>
+        <div class="issuer text"><em class="icon ni ni-map-pin"></em> {{ $post->location }} ({{ $post->distance }} km away)</div>
+    </div>
 </div>
 
 @if ($isShowDetails)
-<div class="row mt-2">
+    <div class="row mt-2">
         <div class="col-md-12">
-                <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
-                <div class="issuer text">{!! $post->other_relevant_information ?? 'N/A' !!} </div>
+            <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
+            <div class="issuer text">{!! $post->other_relevant_information ?? 'N/A' !!}</div>
         </div>
-</div>
+    </div>
 @endif
 
 @if ($isShowDetails && ($post->type == "FIXED_TERM_JOB" || $post->type == "PERMANENT_JOB"))
-<div class="row mt-2">
+    <div class="row mt-2">
         <div class="col-md-6">
-                <div class="title" style="font-size: 10px;color: #777;">Budget negotiable</div>
-                <div class="issuer text">{{$post->is_negotiable}} </div>
+            <div class="title" style="font-size: 10px;color: #777;">Budget negotiable</div>
+            <div class="issuer text">{{$post->is_negotiable}}</div>
         </div>
         <div class="col-md-6">
-                <div class="title" style="font-size: 10px;color: #777;">Term renewable</div>
-                <div class="issuer text">{{$post->is_renewable}} </div>
+            <div class="title" style="font-size: 10px;color: #777;">Term renewable</div>
+            <div class="issuer text">{{$post->is_renewable}}</div>
         </div>
-</div>
+    </div>
 @endif
 
 @if(!$isShare)
-<div class="row">
+    <div class="row">
         <div class="col-md-12">
-                <div class="d-flex justify-content-between align-items-center">
-                        <div class="mt-3">
-                                <a href="javascript:void(0)" type="button" data-toggle="modal" data-target="#shareOpportunity-{{ $post->id }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" style="width: 40px;height: 40px; border-radius: 50%">
-                                        <em class="icon ni ni-share"></em>
-                                </a>
-                        </div>
-                        <div class="mt-3 ml-2">
-                                @if($post->has_already_applied == "yes")
-                                <div class="text-primary text-right">You have already applied for this opportunity</div>
-                                @else
-
-                                @if ($isShowDetails)
-                                <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
-                                @else
-                                <a href="{{route('work.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
-                                @endif
-                                @endif
-                        </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="mt-3">
+                    <a href="javascript:void(0)" type="button" data-toggle="modal" data-target="#shareOpportunity-{{ $post->id }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" style="width: 40px;height: 40px; border-radius: 50%">
+                        <em class="icon ni ni-share"></em>
+                    </a>
                 </div>
+                <div class="mt-3 ml-2">
+                    @if($post->has_already_applied == "yes")
+                        <div class="text-primary text-right">You have already applied for this opportunity</div>
+                    @else
+                        @if ($isShowDetails)
+                            <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
+                        @else
+                            <a href="{{route('work.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
+                        @endif
+                    @endif
+                </div>
+            </div>
         </div>
-</div>
+    </div>
 @endif
