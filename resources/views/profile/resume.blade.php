@@ -79,9 +79,9 @@ $ratings = $data['ratings'];
 
     <div>
         <h4 style="font-family: Rockwell">Core Competencies</h4>
-        <div class="ul">
+        <div class="d-flex flex-row justify-between gap-8">
             @foreach($competencies as $competency)
-            <li style="font-family: Rockwell !important;"> {{$competency}} </li>
+            <span style="font-family: Rockwell !important;"> &#183; {{$competency}} </span>
             @endforeach
         </div>
     </div>
@@ -96,22 +96,22 @@ $ratings = $data['ratings'];
             <tr style="width: 100%;">
                 <td style="width: 35%;vertical-align:top !important;">
                     <div style="margin-top: 20px;margin-bottom: 20px;">
-                        <div> [{{strtoupper(date("F Y", strtotime($outsideVorkJob->start_date)))}}
-                            - {{strtoupper($outsideVorkJob->end_date ? date("F Y", strtotime($outsideVorkJob->end_date)) : "Ongoing")}}]</div>
+                        <div> [{{strtoupper(date("M Y", strtotime($outsideVorkJob->start_date)))}}
+                            - {{strtoupper($outsideVorkJob->end_date ? date("M Y", strtotime($outsideVorkJob->end_date)) : "Ongoing")}}]</div>
                         <div style="font-weight: 800;font-family: Rockwell">{{$outsideVorkJob->employer}}</div>
                     </div>
                 </td>
                 <td>
                     <div style="margin-top: 20px;margin-bottom: 20px;">
-                        <div style="font-weight: bold;font-size: 18px;margin-bottom: 15px;font-family: Rockwell">
+                        <div style="font-weight: bold;font-size: 18px;margin-bottom: 15px;font-family: Rockwell;color: #353299">
                             {{$outsideVorkJob->role}}
                         </div>
 
-                        <div style="font-weight: 800;font-family: Rockwell">Responsibilities</div>
-                        <p style="font-family: Rockwell !important;">{!! $outsideVorkJob->responsibilities !!}</p>
+                        <div style="font-weight: 800;font-family: Rockwell; text-decoration: underline;">Responsibilities</div>
+                        <div style="font-family: Rockwell !important;">{!! $outsideVorkJob->responsibilities !!}</div>
 
-                        <div style="font-weight: 800;font-family: Rockwell">Achievements</div>
-                        <p style="font-family: Rockwell !important;"> {!! $outsideVorkJob->achievements !!}</p>
+                        <div style="font-weight: 800;font-family: Rockwell; text-decoration: underline;margin-top: 5px;">Achievements</div>
+                        <div style="font-family: Rockwell !important;"> {!! $outsideVorkJob->achievements !!}</div>
                     </div>
                 </td>
             </tr>
@@ -128,8 +128,8 @@ $ratings = $data['ratings'];
             @foreach($educationHistories->sortByDesc("start_date") as $educationHistory)
             <tr style="width: 100%;">
                 <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
-                    <div style="font-family: Rockwell"> [{{strtoupper(date("F Y", strtotime($educationHistory->start_date)))}}
-                        - {{strtoupper($educationHistory->end_date ? date("F Y", strtotime($educationHistory->end_date)) : "Ongoing")}}]</div>
+                    <div style="font-family: Rockwell"> [{{strtoupper(date("M Y", strtotime($educationHistory->start_date)))}}
+                        - {{strtoupper($educationHistory->end_date ? date("M Y", strtotime($educationHistory->end_date)) : "Ongoing")}}]</div>
                 </td>
                 <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
                     <div style="font-family: Rockwell">{{$educationHistory->programme}}</div>
@@ -152,8 +152,8 @@ $ratings = $data['ratings'];
             @foreach($certificationsAndTrainings->sortByDesc("start_date") as $certificationsAndTraining)
             <tr style="width: 100%;">
                 <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
-                    <div style="font-family: Rockwell"> [{{strtoupper(date("F Y", strtotime($certificationsAndTraining->start_date)))}}
-                        - {{strtoupper($certificationsAndTraining->end_date ? date("F Y", strtotime($certificationsAndTraining->end_date)) : "Ongoing")}}]</div>
+                    <div style="font-family: Rockwell"> [{{strtoupper(date("M Y", strtotime($certificationsAndTraining->start_date)))}}
+                        - {{strtoupper($certificationsAndTraining->end_date ? date("M Y", strtotime($certificationsAndTraining->end_date)) : "Ongoing")}}]</div>
                 </td>
                 <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
                     <div style="font-family: Rockwell">{{$certificationsAndTraining->programme}}</div>
@@ -178,13 +178,13 @@ $ratings = $data['ratings'];
             @foreach($volunteerHistory as $volunteer)
             <tr style="width: 100%;">
                 <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
-                    <div style="font-family: Rockwell"> {{strtoupper(date("F Y", strtotime($volunteer["date"])))}}</div>
+                    <div style="font-family: Rockwell"> {{strtoupper(date("M Y", strtotime($volunteer["date"])))}}</div>
                 </td>
                 <td style="width: 55%;vertical-align:top !important;margin-bottom: 20px;">
                     <div style="font-family: Rockwell">{{$volunteer["name"]}}</div>
                 </td>
                 <td>
-                    <div style="font-family: Rockwell">{{$volunteer["volunteer_hours_awarded"]}}
+                    <div style="font-family: Rockwell">{{$volunteer["volunteer_hours_awarded"]}} hours
                     </div>
                 </td>
             </tr>
