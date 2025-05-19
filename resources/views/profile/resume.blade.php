@@ -46,7 +46,31 @@ $ratings = $data['ratings'];
 </div>
 
 
-<div style="font-family: Rockwell !important;, sans-serif;  max-width: 800px; margin: 0 auto;;padding:20px; border-radius: 4px;" id="resume-content">
+<style>
+    @media (max-width: 768px) {
+        #resume-content {
+            transform: scale(0.6);
+            transform-origin: top left;
+            width: 166.67%;
+            max-width: 166.67%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            overflow-x: hidden;
+        }
+    }
+    
+    @media print {
+        #resume-content {
+            transform: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+    }
+</style>
+
+<div style="font-family: Rockwell !important; max-width: 800px; margin: 0 auto; padding: 20px; border-radius: 4px;" id="resume-content">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <span style="width: 500px">
         </span>
@@ -327,7 +351,21 @@ $ratings = $data['ratings'];
             }
 
             // Save PDF
+            // Temporarily remove the scaling for PDF export
+            const resumeContent = document.getElementById('resume-content');
+            const originalStyle = resumeContent.getAttribute('style');
+            resumeContent.style.transform = 'none';
+            resumeContent.style.width = '100%';
+            resumeContent.style.maxWidth = '100%';
+            
+            // Force a reflow
+            void resumeContent.offsetHeight;
+            
+            // Save the PDF
             pdf.save('resume.pdf');
+            
+            // Restore the original styles
+            resumeContent.setAttribute('style', originalStyle);
         } catch (error) {
             console.error('PDF export failed:', error);
             alert('Failed to export PDF: ' + error.message);
