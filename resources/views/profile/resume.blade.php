@@ -73,6 +73,7 @@ $ratings = $data['ratings'];
         .volunteer-name {
             width: 45% !important;
             padding-right: 5px !important;
+            padding-left: 25px !important;
         }
     }
 </style>
@@ -156,7 +157,7 @@ $ratings = $data['ratings'];
     <div>
         <h4 style="font-family: Rockwell">Education</h4>
         <table style="width: 100%;border-bottom-width: 0px;">
-            @foreach($educationHistories->sortByDesc("start_date") as $educationHistory)
+            @foreach($educationHistories->sortByDesc('start_date') as $educationHistory)
             <tr style="width: 100%;">
                 <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
                     <div style="font-family: Rockwell"> [{{strtoupper(date("M Y", strtotime($educationHistory->start_date)))}}
@@ -180,7 +181,7 @@ $ratings = $data['ratings'];
     <div>
         <h4 style="font-family: Rockwell; ">Certification & Training</h4>
         <table style="width: 100%;border-bottom-width: 0px;">
-            @foreach($certificationsAndTrainings->sortByDesc("start_date") as $certificationsAndTraining)
+            @foreach($certificationsAndTrainings->sortByDesc('start_date') as $certificationsAndTraining)
             <tr style="width: 100%;">
                 <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
                     <div style="font-family: Rockwell"> [{{strtoupper(date("M Y", strtotime($certificationsAndTraining->start_date)))}}
@@ -206,12 +207,17 @@ $ratings = $data['ratings'];
     <div>
         <h4 style="font-family: Rockwell;">Volunteerism</h4>
         <table style="width: 100%;border-bottom-width: 0px; table-layout: fixed;">
-            @foreach($volunteerHistory as $volunteer)
+            @php
+                $sortedVolunteerHistory = collect($volunteerHistory)->sortByDesc(function($item) {
+                    return strtotime($item['date']);
+                });
+            @endphp
+            @foreach($sortedVolunteerHistory as $volunteer)
             <tr style="width: 100%;">
                 <td style="width: 28%; vertical-align: top !important; margin-bottom: 10px; padding-right: 5px;">
                     <div style="font-family: Rockwell; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{strtoupper(date("M Y", strtotime($volunteer["date"])))}}</div>
                 </td>
-                <td style="width: 55%; vertical-align: top !important; padding-right: 10px;" class="volunteer-name">
+                <td style="width: 55%; vertical-align: top !important; padding-right: 10px; padding-left: 65px;" class="volunteer-name">
                     <div style="font-family: Rockwell; word-wrap: break-word;">{{$volunteer["name"]}}</div>
                 </td>
                 <td style="width: 20%; vertical-align: top !important; padding-left: 10px; white-space: nowrap;">
