@@ -68,6 +68,13 @@ $ratings = $data['ratings'];
             max-width: 100% !important;
         }
     }
+    
+    @media (max-width: 576px) {
+        .volunteer-name {
+            width: 45% !important;
+            padding-right: 5px !important;
+        }
+    }
 </style>
 
 <div style="font-family: Rockwell !important; max-width: 800px; margin: 0 auto; padding: 20px; border-radius: 4px;" id="resume-content">
@@ -197,19 +204,18 @@ $ratings = $data['ratings'];
     <hr style="height: 3px;background: #000">
 
     <div>
-        <h4 style="font-family: Rockwell; ">Volunteerism</h4>
-        <table style="width: 100%;border-bottom-width: 0px;">
+        <h4 style="font-family: Rockwell;">Volunteerism</h4>
+        <table style="width: 100%;border-bottom-width: 0px; table-layout: fixed;">
             @foreach($volunteerHistory as $volunteer)
             <tr style="width: 100%;">
-                <td style="width: 35%;vertical-align:top !important;margin-bottom: 20px;">
-                    <div style="font-family: Rockwell"> {{strtoupper(date("M Y", strtotime($volunteer["date"])))}}</div>
+                <td style="width: 28%; vertical-align: top !important; margin-bottom: 10px; padding-right: 5px;">
+                    <div style="font-family: Rockwell; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{strtoupper(date("M Y", strtotime($volunteer["date"])))}}</div>
                 </td>
-                <td style="width: 55%;vertical-align:top !important;margin-bottom: 20px;">
-                    <div style="font-family: Rockwell">{{$volunteer["name"]}}</div>
+                <td style="width: 55%; vertical-align: top !important; padding-right: 10px;" class="volunteer-name">
+                    <div style="font-family: Rockwell; word-wrap: break-word;">{{$volunteer["name"]}}</div>
                 </td>
-                <td>
-                    <div style="font-family: Rockwell">{{$volunteer["volunteer_hours_awarded"]}} hours
-                    </div>
+                <td style="width: 20%; vertical-align: top !important; padding-left: 10px; white-space: nowrap;">
+                    <div style="font-family: Rockwell; text-align: right;">{{$volunteer["volunteer_hours_awarded"]}} hours</div>
                 </td>
             </tr>
             @endforeach
