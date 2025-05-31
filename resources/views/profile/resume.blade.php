@@ -78,7 +78,7 @@ $ratings = $data['ratings'];
     }
 </style>
 
-<div style="font-family: Rockwell !important; max-width: 800px; margin: 0 auto; padding: 20px; border-radius: 4px;" id="resume-content">
+<div style="font-family: Rockwell !important; max-width: 800px; margin: 0 auto; padding: 20px 20px 40px 20px; border-radius: 4px;" id="resume-content">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <span style="width: 500px">
         </span>
@@ -330,6 +330,11 @@ $ratings = $data['ratings'];
             const imgWidth = pageWidth;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
+            // Define margins (in mm)
+            const marginTop = 20;
+            const marginBottom = 20;
+            const effectivePageHeight = pageHeight - marginTop - marginBottom;
+            
             // Add image to PDF (potentially across multiple pages)
             let heightLeft = imgHeight;
             let position = 0;
@@ -340,15 +345,15 @@ $ratings = $data['ratings'];
                 canvas.toDataURL('image/jpeg', 1.0),
                 'JPEG',
                 0,
-                position,
+                marginTop, // Apply top margin
                 imgWidth,
                 imgHeight
             );
-            heightLeft -= pageHeight;
+            heightLeft -= effectivePageHeight; // Subtract effective page height
 
             // Add additional pages if needed
             while (heightLeft > 0) {
-                position = -pageHeight * pageNumber;
+                position = -(pageHeight * pageNumber) + marginTop;
                 pdf.addPage();
                 pdf.addImage(
                     canvas.toDataURL('image/jpeg', 1.0),
@@ -358,7 +363,7 @@ $ratings = $data['ratings'];
                     imgWidth,
                     imgHeight
                 );
-                heightLeft -= pageHeight;
+                heightLeft -= effectivePageHeight;
                 pageNumber++;
             }
 
