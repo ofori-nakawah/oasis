@@ -507,7 +507,7 @@ class UserController extends Controller
 
         // Generate PDF
         $pdf = PDF::loadView('profile.resume-template', ["data" => $pdfData]);
-        
+
         // Configure PDF options
         $pdf->getDomPDF()->set_option('defaultFont', 'Rockwell');
         $pdf->getDomPDF()->set_option('fontDir', base_path('assets/assets/fonts/'));

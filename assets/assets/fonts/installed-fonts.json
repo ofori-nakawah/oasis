@@ -1,0 +1,23 @@
+{
+    "roboto": {
+        "300": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/roboto_300_402948ea6c87536888785cc9f11c1c00",
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/roboto_normal_ab71a5c84d83483d5695eecbcef8e118",
+        "500": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/roboto_500_2c9c95a22a6f8fffdcd15539bcdfacd9",
+        "bold": "roboto_bold_ea527add9342ed0283c120802b0a0027"
+    },
+    "nunito": {
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/nunito_normal_6968339a5093addf918c4d510e7e3d94",
+        "bold": "nunito_bold_723680b05e60154dd18d701ef8272cc1"
+    },
+    "nioicon": {
+        "normal": "nioicon_normal_cb5ea7422005265b2f57f67239e25667"
+    },
+    "sen": {
+        "normal": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/sen_normal_f2218f690c172bb43e740ac1b7e6c10f",
+        "bold": "sen_bold_87730a235990cbbc6c6a52fa8fa762b8",
+        "800": "\/Applications\/XAMPP\/xamppfiles\/htdocs\/vork\/oasis\/storage\/fonts\/sen_800_c50aac6cadddc818667b3e9ee8283533"
+    },
+    "rockwell": {
+        "normal": "rockwell_normal_a81d92ed7c603660b3564421f730cdc8"
+    }
+}
