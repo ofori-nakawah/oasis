@@ -340,7 +340,7 @@ class UserController extends Controller
         return redirect()->route("user.profile", ["user_id" => auth()->id()])->with("success", "Your profile has been updated successfully");
     }
 
-    public function getResumeData($id)
+    public function getResumeData($id, $forPdf = false)
     {
         $user = User::where("id", $id)->first();
         if (!$user) {
@@ -354,18 +354,21 @@ class UserController extends Controller
 
         $name = '';
         $parts = explode(" ", $user->name);
+        $nameHtml = '';
+        $nameText = $user->name;
+
         switch (count($parts)) {
             case 2:
-                $name .= '<h2 style="font-family: Rockwell;">' . $parts[0] . '<div style="margin-top: -15px;font-family: Rockwell">' . $parts[1] . '</div></h2>';
+                $nameHtml = '<h2 style="font-family: Rockwell;">' . $parts[0] . '<div style="margin-top: -15px;font-family: Rockwell">' . $parts[1] . '</div></h2>';
                 break;
             case 3:
-                $name .= '<h2 style="font-family: Rockwell;">' . $parts[0] . " " . $parts[1] . ' <div style="margin-top: -15px;font-family: Rockwell">' . $parts[2] . '</div></h2>';
+                $nameHtml = '<h2 style="font-family: Rockwell;">' . $parts[0] . " " . $parts[1] . ' <div style="margin-top: -15px;font-family: Rockwell">' . $parts[2] . '</div></h2>';
                 break;
             case 4:
-                $name .= '<h2 style="font-family: Rockwell;">' . $parts[0] . " " . $parts[1] . ' <div style="margin-top: -15px;font-family: Rockwell">' . $parts[2] . " " . $parts[3] . '</div></h2>';
+                $nameHtml = '<h2 style="font-family: Rockwell;">' . $parts[0] . " " . $parts[1] . ' <div style="margin-top: -15px;font-family: Rockwell">' . $parts[2] . " " . $parts[3] . '</div></h2>';
                 break;
             default:
-                $name .= $user->name;
+                $nameHtml = $user->name;
         }
 
         $averageRatingsForReviewCategories = [
@@ -375,7 +378,7 @@ class UserController extends Controller
             'customer_service' => 0
         ];
 
-        $ratings = RatingReview::where('user_id', auth()->id())->get();
+        $ratings = RatingReview::where('user_id', $user->id)->get();
         if ($ratings->count() > 0) {
             $averageRatingsForReviewCategories = [
                 'expertise' => round($ratings->avg('expertise_rating'), 1),
@@ -386,7 +389,7 @@ class UserController extends Controller
         }
 
         $volunteerHistory = [];
-        $volunteerApplications = JobApplication::where('user_id', auth()->id())
+        $volunteerApplications = JobApplication::where('user_id', $user->id)
             ->where('status', 'confirmed')
             ->whereNotNull('volunteer_hours')
             ->with(['job_post' => function ($query) {
@@ -398,18 +401,30 @@ class UserController extends Controller
         foreach ($volunteerApplications as $application) {
             if ($application->job_post && $application->job_post->type === 'VOLUNTEER') {
                 $volunteerHistory[] = [
+                    'name' => $application->job_post->title ?? 'Volunteer Work',
                     'date' => $application->job_post->date ?? $application->job_post->created_at->format('Y-m-d'),
-                    'name' => $application->job_post->name,
-                    'volunteer_hours_awarded' => $application->volunteer_hours
+                    'volunteer_hours_awarded' => $application->volunteer_hours,
+                    'title' => $application->job_post->name ?? 'Volunteer Work',
+                    'description' => $application->job_post->description ?? 'Volunteer work'
                 ];
             }
         }
 
+        $email = $user->email;
+        $phoneNumber = $user->phone_number;
+        $location = $user->location_name;
+        $outsideVorkJobs = $user->outsideVorkJobs;
+        $educationHistories = $user->educationHistory;
+        $certificationsAndTrainings = $user->certificationsAndTrainings;
+
+        // Initialize references array
         $references = [];
 
-        $externalJobs = OutsideVorkJob::where('user_id', auth()->id())
+        // Get references from outside jobs
+        $externalJobs = OutsideVorkJob::where('user_id', $user->id)
             ->whereNotNull('reference')
             ->get();
+
         foreach ($externalJobs as $job) {
             $referenceData = json_decode($job->reference, true);
             if (is_array($referenceData)) {
@@ -422,15 +437,10 @@ class UserController extends Controller
             }
         }
 
-        $email = $user->email;
-        $phoneNumber = $user->phone_number;
-        $location = $user->location_name;
-        $outsideVorkJobs = $user->outsideVorkJobs;
-        $educationHistories = $user->educationHistory;
-        $certificationsAndTrainings = $user->certificationsAndTrainings;
-
         $data = [
             "name" => $name,
+            "bio" => $user->bio,
+            "nameString" => $user->name,
             "email" => $email,
             "phoneNumber" => $phoneNumber,
             "location" => $location,
@@ -454,16 +464,68 @@ class UserController extends Controller
 
     public function resume($id)
     {
-        $data = $this->getResumeData($id);
-        return view('profile.resume', compact('data'));
+        $resumeData = $this->getResumeData($id);
+        if ($resumeData instanceof \Illuminate\Http\RedirectResponse) {
+            return $resumeData; // Return the redirect response if there was an error
+        }
+
+        // The data is already in the correct format from getResumeData
+        return view("profile.resume", ['data' => $resumeData]);
     }
 
+    /**
+     * Download user resume as PDF
+     *
+     * @param int $id User ID
+     * @return \Illuminate\Http\Response
+     */
     public function downloadResume($id)
     {
-        $data = $this->getResumeData($id);
-        $pdf = PDF::loadView('profile.resume-template', compact('data'));
-        return $pdf->download('resume.pdf');
+        $data = $this->getResumeData($id, true);
+        if ($data instanceof \Illuminate\Http\RedirectResponse) {
+            return $data; // Return the redirect response if there was an error
+        }
+
+        // Add user object to data for the PDF view with the exact property names expected by the view
+        $pdfData = array_merge($data, [
+            'user' => (object)[
+                'name' => $data['nameString'],
+                'bio' => $data['bio'] ?? null,
+                'email' => $data['email'] ?? null,
+                'phone' => $data['phoneNumber'] ?? null, // Changed from phone_number to phone
+                'location_name' => $data['location'] ?? null, // Changed from location to location_name
+                'competencies' => $data['competencies'] ?? [],
+                'outsideVorkJobs' => $data['outsideVorkJobs'] ?? [],
+                'educationHistories' => $data['educationHistories'] ?? [],
+                'certificationsAndTrainings' => $data['certificationsAndTrainings'] ?? [],
+                'references' => $data['references'] ?? [],
+                'volunteerHistory' => $data['volunteerHistory'] ?? [],
+                'ratings' => $data['ratings'] ?? [],
+                'userId' => $data['userId'] ?? null
+            ]
+        ]);
+
+        // Generate PDF
+        $pdf = PDF::loadView('profile.resume-template', ["data" => $pdfData]);
+        
+        // Configure PDF options
+        $pdf->getDomPDF()->set_option('defaultFont', 'Rockwell');
+        $pdf->getDomPDF()->set_option('fontDir', base_path('assets/assets/fonts/'));
+        $pdf->getDomPDF()->set_option('fontCache', base_path('assets/assets/fonts/'));
+        $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
+
+        // Set the filename
+        $filename = strtolower(str_replace(' ', '_', $data['name'])) . '_resume.pdf';
+
+        // Download the PDF
+        return $pdf->download($filename);
     }
+
+    // public function resumeLanding($id)
+    // {
+    //     $data = $this->getResumeData($id);
+    //     return view('profile.resumeLanding', compact('data'));
+    // }
 
     public function searchVorkers(Request $request)
     {

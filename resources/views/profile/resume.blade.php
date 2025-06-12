@@ -79,16 +79,20 @@ $ratings = $data['ratings'];
 </style>
 
 <div style="font-family: Rockwell !important; max-width: 800px; margin: 0 auto; padding: 20px 20px 40px 20px; border-radius: 4px;" id="resume-content">
-    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+    <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 20px;">
         <span style="width: 500px">
         </span>
-
+        <div>
+            <a href="{{ route('user.profile.downloadResume', ['id' => $userId]) }}" class="btn btn-primary">
+                <i class="fas fa-download"></i> Download PDF
+            </a>
+        </div>
     </div>
 
     <table style="width: 100%;border-bottom-width: 0px;">
         <tr style="width: 100%">
             <td style="vertical-align:top !important;">
-                <div style="font-size: 32px;margin-bottom: 0;margin-top: 0;word-spacing: 2px; line-height: 2;font-family: Rockwell;font-weight: 800;">{!!$name!!}</div>
+                <div style="font-size: 32px;margin-bottom: 0;margin-top: 0;word-spacing: 2px; line-height: 2;font-family: Rockwell;font-weight: 800;">{{$name}}</div>
             </td>
             <td>
                 <span style="float: right;font-family: Rockwell !important;">
@@ -316,7 +320,7 @@ $ratings = $data['ratings'];
 
             // A4 dimensions
             const pageWidth = 210;
-            const pageHeight = 297;
+            const pageHeight = 290;
 
             // Capture the element
             const canvas = await html2canvas(element, {
