@@ -107,6 +107,8 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/update-user-expo-push-token', 'Mobile\UserController@updateUserExpoPushToken');
 
+            Route::post('/download-user-resume', 'Mobile\UserController@downloadUserResume');
+
             /**
              * other user profile routes
              */

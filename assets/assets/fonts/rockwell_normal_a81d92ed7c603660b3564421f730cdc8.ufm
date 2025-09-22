@@ -20,10 +20,8 @@ IsFixedPitch false
 UnderlineThickness 68
 UnderlinePosition -78
 FontHeightOffset 0
-CapHeight 679
-XHeight 473
-Ascender 679
-Descender -213
+Ascender 946
+Descender -229
 FontBBox -123 -273 1122 942
 StartCharMetrics 242
 U 32 ; WX 250 ; N space ; G 3
