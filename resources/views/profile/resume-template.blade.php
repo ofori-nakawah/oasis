@@ -52,7 +52,7 @@ $ratings = $data['ratings'];
         </tr>
     </table>
 
-    <div style="margin-top: 80px; margin-bottom: 40px">
+    <div style="margin-top: 40px; margin-bottom: 40px">
         <div style="font-family: Rockwell; font-weight: normal; font-size: 11px;">{{ $bio }}</div>
     </div>
 
