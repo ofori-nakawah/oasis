@@ -1166,7 +1166,7 @@ class UserController extends Controller
             array_push($competencies, $skill->skill->name);
         }
 
-        $name = '';
+        $name = $user->name;
         $parts = explode(" ", $user->name);
         $nameHtml = '';
         $nameText = $user->name;
@@ -1215,10 +1215,9 @@ class UserController extends Controller
         foreach ($volunteerApplications as $application) {
             if ($application->job_post && $application->job_post->type === 'VOLUNTEER') {
                 $volunteerHistory[] = [
-                    'name' => $application->job_post->title ?? 'Volunteer Work',
+                    'name' => $application->job_post->name,
                     'date' => $application->job_post->date ?? $application->job_post->created_at->format('Y-m-d'),
                     'volunteer_hours_awarded' => $application->volunteer_hours,
-                    'title' => $application->job_post->name ?? 'Volunteer Work',
                     'description' => $application->job_post->description ?? 'Volunteer work'
                 ];
             }
@@ -1283,14 +1282,11 @@ class UserController extends Controller
         }
 
         $data = $this->getResumeData($userId);
-        if ($data instanceof \Illuminate\Http\RedirectResponse) {
-            return $data; // Return the redirect response if there was an error
-        }
 
         // Add user object to data for the PDF view with the exact property names expected by the view
         $pdfData = array_merge($data, [
             'user' => (object)[
-                'name' => $data['nameString'],
+                'name' => $data['name'],
                 'bio' => $data['bio'] ?? null,
                 'email' => $data['email'] ?? null,
                 'phone' => $data['phoneNumber'] ?? null, // Changed from phone_number to phone

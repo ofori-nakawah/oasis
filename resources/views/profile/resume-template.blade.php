@@ -1,5 +1,6 @@
 @php
 $name = $data['name'];
+$nameParts = explode(' ', $name, 2);
 $nameString = $data['nameString'];
 $bio = $data['bio'];
 $email = $data['email'];
@@ -37,9 +38,9 @@ $ratings = $data['ratings'];
     </div>
 
     <table style="width: 100%; border-bottom-width: 0px;">
-        <tr style="width: 100%">
+        <tr style="width: 100%; ">
             <td style="vertical-align: top !important;">
-                <div style="font-size: 32px; margin-bottom: 0; margin-top: 0; word-spacing: 2px; line-height: 2; font-family: Rockwell; font-weight: 800;">{{$name ?? $nameString}}</div>
+                <div style="font-size: 32px; margin-bottom: 0; margin-top: -10px; word-spacing: 2px; font-family: Rockwell; font-weight: 800;">{{ $nameParts[0] }}<br>{{ $nameParts[1] ?? '' }}</div>
             </td>
             <td>
                 <span style="float: right; font-family: Rockwell !important; font-weight: normal;">
@@ -110,7 +111,7 @@ $ratings = $data['ratings'];
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 11px;">{{ $educationHistory->programme }}</div>
                 </td>
-                <td>
+                <td style="vertical-align: top !important;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 11px;">{{ $educationHistory->institution }}</div>
                 </td>
             </tr>
@@ -132,7 +133,7 @@ $ratings = $data['ratings'];
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 11px;">{{ $certificationsAndTraining->programme }}</div>
                 </td>
-                <td>
+                <td style="vertical-align: top !important;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 11px;">{{ $certificationsAndTraining->institution }}</div>
                 </td>
             </tr>
@@ -155,7 +156,7 @@ $ratings = $data['ratings'];
                 <td style="width: 55%; vertical-align: top !important; margin-bottom: 20px;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 11px;">{{ $volunteer["name"] }}</div>
                 </td>
-                <td>
+                <td style="vertical-align: top !important;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 11px;">{{ $volunteer["volunteer_hours_awarded"] }} hours</div>
                 </td>
             </tr>
