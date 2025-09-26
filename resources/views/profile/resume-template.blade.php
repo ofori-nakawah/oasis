@@ -40,7 +40,7 @@ $ratings = $data['ratings'];
     <table style="width: 100%; border-bottom-width: 0px;">
         <tr style="width: 100%; ">
             <td style="vertical-align: top !important;">
-                <div style="font-size: 32px; margin-bottom: 0; margin-top: -10px; word-spacing: 2px; font-family: Rockwell; font-weight: 800;">{{ $nameParts[0] }}<br>{{ $nameParts[1] ?? '' }}</div>
+                <div style="font-size: 32px; margin-bottom: 0; margin-top: -10px; word-spacing: 2px; font-family: Rockwell; font-weight: 800;color: #000;">{{ $nameParts[0] }}<br>{{ $nameParts[1] ?? '' }}</div>
             </td>
             <td>
                 <span style="float: right; font-family: Rockwell !important; font-weight: normal;">
@@ -78,17 +78,17 @@ $ratings = $data['ratings'];
                 <td style="width: 35%; vertical-align: top !important; padding: 0;">
                     <div style="margin-top: 10px; margin-bottom: 5px;">
                         <div style="font-size: 10px;">[{{ strtoupper(date("M Y", strtotime($outsideVorkJob->start_date))) }} - {{ strtoupper($outsideVorkJob->end_date ? date("M Y", strtotime($outsideVorkJob->end_date)) : "Ongoing") }}]</div>
-                        <div style="font-weight: 800; font-family: Rockwell; font-size: 11px;">{{ $outsideVorkJob->employer }}</div>
+                        <div style="font-weight: 800; font-family: Rockwell; font-size: 11px;color: #000;">{{ $outsideVorkJob->employer }}</div>
                     </div>
                 </td>
                 <td style="padding: 0;">
                     <div style="margin-top: 10px; margin-bottom: 5px;">
                         <div style="font-weight: bold; font-size: 18px; margin-bottom: 8px; font-family: Rockwell; color: #353299">{{ $outsideVorkJob->role }}</div>
 
-                        <div style="font-weight: 800; font-family: Rockwell; margin-bottom: 3px;text-decoration: underline; font-size: 10px;">Responsibilities</div>
+                        <div style="font-weight: 800; font-family: Rockwell; margin-bottom: 3px;text-decoration: underline; font-size: 10px;color: #000;">Responsibilities</div>
                         <div style="font-family: Rockwell !important; font-weight: normal; margin: 0 0 5px 0; line-height: 1.2; font-size: 10px;">{!! $outsideVorkJob->responsibilities !!}</div>
 
-                        <div style="font-weight: 800; font-family: Rockwell; margin-bottom: 3px;text-decoration: underline; font-size: 10px;">Achievements</div>
+                        <div style="font-weight: 800; font-family: Rockwell; margin-bottom: 3px;text-decoration: underline; font-size: 10px;color: #000;">Achievements</div>
                         <div style="font-family: Rockwell !important; font-weight: normal; margin: 0; line-height: 1.2; font-size: 10px;">{!! $outsideVorkJob->achievements !!}</div>
                     </div>
                 </td>

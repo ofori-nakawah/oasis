@@ -1310,7 +1310,7 @@ class UserController extends Controller
         $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
 
         // Set the filename
-        $filename = $userId . "_" . strtolower(str_replace(' ', '_', $data['name'])) . '_resume.pdf';
+        $filename = strtolower(str_replace(' ', '_', $data['name'])) . '_resume.pdf';
 
         // Save the PDF to the storage
         $storagePath = 'public/resumes/' . $filename;
