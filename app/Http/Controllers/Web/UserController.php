@@ -401,7 +401,7 @@ class UserController extends Controller
         foreach ($volunteerApplications as $application) {
             if ($application->job_post && $application->job_post->type === 'VOLUNTEER') {
                 $volunteerHistory[] = [
-                    'name' => $application->job_post->title ?? 'Volunteer Work',
+                    'name' =>  $application->job_post->name,
                     'date' => $application->job_post->date ?? $application->job_post->created_at->format('Y-m-d'),
                     'volunteer_hours_awarded' => $application->volunteer_hours,
                     'title' => $application->job_post->name ?? 'Volunteer Work',
