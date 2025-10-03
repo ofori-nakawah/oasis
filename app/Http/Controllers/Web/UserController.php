@@ -352,7 +352,7 @@ class UserController extends Controller
             array_push($competencies, $skill->skill->name);
         }
 
-        $name = '';
+        $name = $user->name;
         $parts = explode(" ", $user->name);
         $nameHtml = '';
         $nameText = $user->name;
@@ -489,7 +489,7 @@ class UserController extends Controller
         // Add user object to data for the PDF view with the exact property names expected by the view
         $pdfData = array_merge($data, [
             'user' => (object)[
-                'name' => $data['nameString'],
+                'name' => $data['name'],
                 'bio' => $data['bio'] ?? null,
                 'email' => $data['email'] ?? null,
                 'phone' => $data['phoneNumber'] ?? null, // Changed from phone_number to phone
