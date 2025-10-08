@@ -37,7 +37,7 @@ $ratings = $data['ratings'];
         <div class="nk-block-head-conte nt">
             {{-- <a href="#"
                    class="btn btn-outline-primary"><span> Enhance with AI</span></a> --}}
-                   <a href="{{ route('user.profile.downloadResume', ['id' => $userId]) }}" class="btn btn-primary">
+            <a href="{{ route('user.profile.downloadResume', ['id' => $userId]) }}" class="btn btn-primary">
                 <i class="fas fa-download"></i> Download PDF
             </a>
             <a href="{{URL::previous()}}"

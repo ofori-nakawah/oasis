@@ -13,6 +13,7 @@ $certificationsAndTrainings = $data['certificationsAndTrainings'];
 $references = $data['references'];
 $volunteerHistory = $data['volunteerHistory'];
 $ratings = $data['ratings'];
+$otherSkills = $data['otherSkills'];
 @endphp
 
 <style>
@@ -70,7 +71,7 @@ $ratings = $data['ratings'];
     @if ($outsideVorkJobs->count() > 0)
     <hr style="height:0.51px; background: #000">
 
-    <div>
+    <div style="margin-bottom: 10px;">
         <div style="font-family: Rockwell; font-size: 18px;margin-bottom: 20px;font-weight: 800; color: #262626;">Job Experience</div>
         <table style="width: 100%; border-collapse: collapse; border-spacing: 0; border-bottom-width: 0px; margin-top: -20px;">
             @foreach($outsideVorkJobs->sortByDesc("start_date") as $outsideVorkJob)
@@ -78,7 +79,7 @@ $ratings = $data['ratings'];
                 <td style="width: 35%; vertical-align: top !important; padding: 0;">
                     <div style="margin-top: 10px; margin-bottom: 5px;">
                         <div style="font-size: 12px;">[{{ strtoupper(date("M Y", strtotime($outsideVorkJob->start_date))) }} - {{ strtoupper($outsideVorkJob->end_date ? date("M Y", strtotime($outsideVorkJob->end_date)) : "Ongoing") }}]</div>
-                        <div style="font-weight: 800; font-family: Rockwell; font-size: 12px;color: #000;">{{ $outsideVorkJob->employer }}</div>
+                        <div style="font-weight: 800; font-family: Rockwell; font-size: 18px;color: #000;">{{ $outsideVorkJob->employer }}</div>
                     </div>
                 </td>
                 <td style="padding: 0;">
@@ -100,7 +101,7 @@ $ratings = $data['ratings'];
 
     <hr style="height: 0.5px; background: #000">
 
-    <div>
+    <div style="margin-bottom: 10px;">
         <div style="font-family: Rockwell; font-size: 18px;margin-bottom: 10px;font-weight: 800; color: #262626;">Education</div>
         <table style="width: 100%; border-bottom-width: 0px;">
             @foreach($educationHistories->sortByDesc("start_date") as $educationHistory)
@@ -122,7 +123,7 @@ $ratings = $data['ratings'];
     @if ($certificationsAndTrainings->count() > 0)
     <hr style="height: 0.5px; background: #000">
 
-    <div>
+    <div style="margin-bottom: 10px;">
         <div style="font-family: Rockwell; font-size: 18px;margin-bottom: 10px;font-weight: 800; color: #262626;">Certification & Training</div>
         <table style="width: 100%; border-bottom-width: 0px;">
             @foreach($certificationsAndTrainings->sortByDesc("start_date") as $certificationsAndTraining)
@@ -145,7 +146,7 @@ $ratings = $data['ratings'];
     @if (count($volunteerHistory) > 0)
     <hr style="height: 0.5px; background: #000">
 
-    <div>
+    <div style="margin-bottom: 10px;">
         <div style="font-family: Rockwell; font-size: 18px;margin-bottom: 10px;font-weight: 800; color: #262626;">Volunteerism</div>
         <table style="width: 100%; border-bottom-width: 0px;">
             @foreach($volunteerHistory as $volunteer)
@@ -165,9 +166,27 @@ $ratings = $data['ratings'];
     </div>
     @endif
 
+    @if ($otherSkills)
+        <hr style="height: 0.5px; background: #000">
+
+        <div style="margin-bottom: 10px;">
+            <div style="font-family: Rockwell; font-size: 18px;margin-bottom: 10px;font-weight: 800; color: #262626;">Other Skills</div>
+            <table style="width: 100%; border-bottom-width: 0px;">
+                    <tr style="width: 100%;">
+                        <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
+                            <div style="font-family: Rockwell; font-weight: normal; font-size: 12px;">Language Skills</div>
+                        </td>
+                        <td style="vertical-align: top !important;">
+                            <div style="font-family: Rockwell; font-weight: normal; font-size: 12px;">{{ $otherSkills}}</div>
+                        </td>
+                    </tr>
+            </table>
+        </div>
+    @endif
+
     <hr style="height: 0.5px; background: #000">
 
-    <div>
+    <div style="margin-bottom: 10px;">
         <div style="font-family: Rockwell; font-size: 18px;margin-bottom: 10px;font-weight: 800; color: #262626;">VORK Rating</div>
         <table style="width: 100%; border-bottom-width: 0px;">
             <tr style="width: 100%;">
@@ -192,7 +211,7 @@ $ratings = $data['ratings'];
     @if (count($references) > 0)
     <hr style="height: 0.5px; background: #000">
 
-    <div>
+    <div style="margin-bottom: 10px;">
         <div style="font-family: Rockwell; font-size: 18px;font-weight: 800;margin-bottom: 10px; color: #262626;">References</div>
         <table style="width: 100%; border-bottom-width: 0px;">
             @foreach($references as $reference)
