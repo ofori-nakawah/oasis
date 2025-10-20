@@ -23,6 +23,14 @@ $otherSkills = $data['otherSkills'];
         font-weight: normal;
         font-style: normal;
     }
+   
+    @font-face {
+        font-family: 'Sans';
+        src: url({{ public_path('sans.ttf') }}) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
     body { color: #656565; font-family: 'Rockwell', serif; font-weight: normal; }
     ul, ol { margin: 0 0 0 15px; padding: 0; }
     li { margin: 0; padding: 0; line-height: 1.3; font-size: 14px; }
@@ -45,23 +53,23 @@ $otherSkills = $data['otherSkills'];
             </td>
             <td>
                 <span style="float: right; font-family: Rockwell !important; font-weight: normal;">
-                    <div style="font-family: Rockwell !important; font-weight: normal; font-size: 14px;">Address: {{ $location }}</div>
-                    <div style="font-family: Rockwell !important; font-weight: normal; font-size: 14px;">Tel: {{ $phoneNumber }}</div>
-                    <div style="font-family: Rockwell !important; font-weight: normal; font-size: 14px;">Email: {{ $email }}</div>
+                    <div style="font-family: Sans !important; font-weight: normal; font-size: 14px;">Address: {{ $location }}</div>
+                    <div style="font-family: Sans !important; font-weight: normal; font-size: 14px;">Tel: {{ $phoneNumber }}</div>
+                    <div style="font-family: Sans !important; font-weight: normal; font-size: 14px;">Email: {{ $email }}</div>
                 </span>
             </td>
         </tr>
     </table>
 
     <div style="margin-top: 40px; margin-bottom: 40px">
-        <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $bio }}</div>
+        <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $bio }}</div>
     </div>
 
     <hr style="height: 0.5px; background: #000">
 
     <div style="margin-bottom: 10px;">
         <div style="font-family: Rockwell; font-size: 18px;margin-bottom: 10px;font-weight: 800; color: #262626;">Core Competencies</div>
-        <div style="font-family: Rockwell !important; font-weight: normal; line-height: 1.5; font-size: 14px;">
+        <div style="font-family: Sans !important; font-weight: normal; line-height: 1.5; font-size: 14px;">
             @foreach($competencies as $index => $competency)
                 {{ $competency }}@if($index < count($competencies) - 1) • @endif
             @endforeach
@@ -87,7 +95,7 @@ $otherSkills = $data['otherSkills'];
                         <div style="font-weight: bold; font-size: 18px; margin-bottom: 8px; font-family: Rockwell; color: #353299">{{ $outsideVorkJob->role }}</div>
 
                         <div style="font-weight: 800; font-family: Rockwell; margin-bottom: 3px;text-decoration: underline; font-size: 14px;color: #000;">Responsibilities</div>
-                        <div style="font-family: Rockwell !important; font-weight: normal; margin: 0 0 5px 0; line-height: 1.2; font-size: 14px;">
+                        <div style="font-family: Sans !important; font-weight: normal; margin: 0 0 5px 0; line-height: 1.2; font-size: 14px;">
                             @php
                                 $items = explode('*', $outsideVorkJob->responsibilities);
                                 echo '<ul style="margin: 0; padding: 0; list-style-type: none;">';
@@ -104,7 +112,7 @@ $otherSkills = $data['otherSkills'];
                         </div>
 
                         <div style="font-weight: 800; font-family: Rockwell; margin: 15px 0 3px 0;text-decoration: underline; font-size: 14px;color: #000;">Achievements</div>
-                        <div style="font-family: Rockwell !important; font-weight: normal; margin: 0 0 5px 0; line-height: 1.2; font-size: 14px;">
+                        <div style="font-family: Sans !important; font-weight: normal; margin: 0 0 5px 0; line-height: 1.2; font-size: 14px;">
                             @php
                                 $items = explode('*', $outsideVorkJob->achievements);
                                 echo '<ul style="margin: 0; padding: 0; list-style-type: none;">';
@@ -135,10 +143,10 @@ $otherSkills = $data['otherSkills'];
             @foreach($educationHistories->sortByDesc("start_date") as $educationHistory)
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">[{{ strtoupper(date("M Y", strtotime($educationHistory->start_date))) }} - {{ strtoupper($educationHistory->end_date ? date("M Y", strtotime($educationHistory->end_date)) : "Ongoing") }}]</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">[{{ strtoupper(date("M Y", strtotime($educationHistory->start_date))) }} - {{ strtoupper($educationHistory->end_date ? date("M Y", strtotime($educationHistory->end_date)) : "Ongoing") }}]</div>
                 </td>
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $educationHistory->programme }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $educationHistory->programme }}</div>
                 </td>
                 <td style="vertical-align: top !important;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $educationHistory->institution }}</div>
@@ -157,10 +165,10 @@ $otherSkills = $data['otherSkills'];
             @foreach($certificationsAndTrainings->sortByDesc("start_date") as $certificationsAndTraining)
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">[{{ strtoupper(date("M Y", strtotime($certificationsAndTraining->start_date))) }} - {{ strtoupper($certificationsAndTraining->end_date ? date("M Y", strtotime($certificationsAndTraining->end_date)) : "Ongoing") }}]</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">[{{ strtoupper(date("M Y", strtotime($certificationsAndTraining->start_date))) }} - {{ strtoupper($certificationsAndTraining->end_date ? date("M Y", strtotime($certificationsAndTraining->end_date)) : "Ongoing") }}]</div>
                 </td>
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $certificationsAndTraining->programme }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $certificationsAndTraining->programme }}</div>
                 </td>
                 <td style="vertical-align: top !important;">
                     <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $certificationsAndTraining->institution }}</div>
@@ -180,13 +188,13 @@ $otherSkills = $data['otherSkills'];
             @foreach($volunteerHistory as $volunteer)
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ strtoupper(date("M Y", strtotime($volunteer["date"]))) }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ strtoupper(date("M Y", strtotime($volunteer["date"]))) }}</div>
                 </td>
                 <td style="width: 55%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $volunteer["name"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $volunteer["name"] }}</div>
                 </td>
                 <td style="vertical-align: top !important;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $volunteer["volunteer_hours_awarded"] }} hours</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $volunteer["volunteer_hours_awarded"] }} hours</div>
                 </td>
             </tr>
             @endforeach
@@ -202,10 +210,10 @@ $otherSkills = $data['otherSkills'];
             <table style="width: 100%; border-bottom-width: 0px;">
                     <tr style="width: 100%;">
                         <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                            <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">Language Skills</div>
+                            <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Language Skills</div>
                         </td>
                         <td style="vertical-align: top !important;">
-                            <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $otherSkills}}</div>
+                            <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $otherSkills}}</div>
                         </td>
                     </tr>
             </table>
@@ -219,18 +227,18 @@ $otherSkills = $data['otherSkills'];
         <table style="width: 100%; border-bottom-width: 0px;">
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">Expertise: ⭐ {{ $ratings["expertise"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Expertise: ⭐ {{ $ratings["expertise"] }}</div>
                 </td>
                 <td>
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">Work Ethic: ⭐ {{ $ratings["work_ethic"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Work Ethic: ⭐ {{ $ratings["work_ethic"] }}</div>
                 </td>
             </tr>
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">Professionalism: ⭐ {{ $ratings["professionalism"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Professionalism: ⭐ {{ $ratings["professionalism"] }}</div>
                 </td>
                 <td>
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">Customer Service: ⭐ {{ $ratings["customer_service"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Customer Service: ⭐ {{ $ratings["customer_service"] }}</div>
                 </td>
             </tr>
         </table>
@@ -245,16 +253,16 @@ $otherSkills = $data['otherSkills'];
             @foreach($references as $reference)
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $reference['name'] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $reference['name'] }}</div>
                 </td>
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $reference['company'] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $reference['company'] }}</div>
                 </td>
                 <td>
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $reference['email'] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $reference['email'] }}</div>
                 </td>
                 <td>
-                    <div style="font-family: Rockwell; font-weight: normal; font-size: 14px;">{{ $reference['phone_number'] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">{{ $reference['phone_number'] }}</div>
                 </td>
             </tr>
             @endforeach

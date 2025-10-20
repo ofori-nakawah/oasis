@@ -19,5 +19,8 @@
     },
     "rockwell": {
         "normal": "rockwell_normal_a81d92ed7c603660b3564421f730cdc8"
+    },
+    "sans": {
+        "normal": "sans_normal_ac1ca91a13cdb476bbd97ef5a6314af8"
     }
 }
