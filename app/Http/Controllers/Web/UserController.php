@@ -416,9 +416,12 @@ class UserController extends Controller
         $outsideVorkJobs = $user->outsideVorkJobs;
         $educationHistories = $user->educationHistory;
         $certificationsAndTrainings = $user->certificationsAndTrainings;
+        $languages = $user->languages;
+
 
         // Initialize references array
         $references = [];
+        $otherSkills = [];
 
         // Get references from outside jobs
         $externalJobs = OutsideVorkJob::where('user_id', $user->id)
@@ -437,6 +440,15 @@ class UserController extends Controller
             }
         }
 
+        foreach($languages as $language) {
+            $otherSkills[] = [
+                'name' => $language->language->name,
+            ];
+        }
+
+        $otherSkillsString = implode(', ', array_column($otherSkills, 'name'));
+
+
         $data = [
             "name" => $name,
             "bio" => $user->bio,
@@ -451,7 +463,8 @@ class UserController extends Controller
             "references" => $references,
             "volunteerHistory" => $volunteerHistory,
             "ratings" => $averageRatingsForReviewCategories,
-            "userId" => $user->id
+            "userId" => $user->id,
+            "otherSkills" => $otherSkillsString,
         ];
         return $data;
     }
@@ -501,7 +514,8 @@ class UserController extends Controller
                 'references' => $data['references'] ?? [],
                 'volunteerHistory' => $data['volunteerHistory'] ?? [],
                 'ratings' => $data['ratings'] ?? [],
-                'userId' => $data['userId'] ?? null
+                'userId' => $data['userId'] ?? null,
+                'otherSkills' => $data['otherSkills'] ?? null,
             ]
         ]);
 
