@@ -391,19 +391,24 @@ class UserController extends Controller
         auth()->user()->recentlyApplied = $recentlyApplied;
 
         $averageRatingsForReviewCategories = [
-            'expertise' => 0,
-            'work_ethic' => 0,
-            'professionalism' => 0,
-            'customer_service' => 0
+            'expertise' => 5,
+            'work_ethic' => 5,
+            'professionalism' => 5,
+            'customer_service' => 5
         ];
 
         $ratings = RatingReview::where('user_id', auth()->id())->get();
         if ($ratings->count() > 0) {
+            $expertiseAvg = round($ratings->avg('expertise_rating'), 1);
+            $workEthicAvg = round($ratings->avg('work_ethic_rating'), 1);
+            $professionalismAvg = round($ratings->avg('professionalism_rating'), 1);
+            $customerServiceAvg = round($ratings->avg('customer_service_rating'), 1);
+            
             $averageRatingsForReviewCategories = [
-                'expertise' => round($ratings->avg('expertise_rating'), 1),
-                'work_ethic' => round($ratings->avg('work_ethic_rating'), 1),
-                'professionalism' => round($ratings->avg('professionalism_rating'), 1),
-                'customer_service' => round($ratings->avg('customer_service_rating'), 1)
+                'expertise' => $expertiseAvg > 0 ? $expertiseAvg : 5,
+                'work_ethic' => $workEthicAvg > 0 ? $workEthicAvg : 5,
+                'professionalism' => $professionalismAvg > 0 ? $professionalismAvg : 5,
+                'customer_service' => $customerServiceAvg > 0 ? $customerServiceAvg : 5
             ];
         }
 
@@ -1186,19 +1191,24 @@ class UserController extends Controller
         }
 
         $averageRatingsForReviewCategories = [
-            'expertise' => 0,
-            'work_ethic' => 0,
-            'professionalism' => 0,
-            'customer_service' => 0
+            'expertise' => 5,
+            'work_ethic' => 5,
+            'professionalism' => 5,
+            'customer_service' => 5
         ];
 
         $ratings = RatingReview::where('user_id', $user->id)->get();
         if ($ratings->count() > 0) {
+            $expertiseAvg = round($ratings->avg('expertise_rating'), 1);
+            $workEthicAvg = round($ratings->avg('work_ethic_rating'), 1);
+            $professionalismAvg = round($ratings->avg('professionalism_rating'), 1);
+            $customerServiceAvg = round($ratings->avg('customer_service_rating'), 1);
+            
             $averageRatingsForReviewCategories = [
-                'expertise' => round($ratings->avg('expertise_rating'), 1),
-                'work_ethic' => round($ratings->avg('work_ethic_rating'), 1),
-                'professionalism' => round($ratings->avg('professionalism_rating'), 1),
-                'customer_service' => round($ratings->avg('customer_service_rating'), 1)
+                'expertise' => $expertiseAvg > 0 ? $expertiseAvg : 5,
+                'work_ethic' => $workEthicAvg > 0 ? $workEthicAvg : 5,
+                'professionalism' => $professionalismAvg > 0 ? $professionalismAvg : 5,
+                'customer_service' => $customerServiceAvg > 0 ? $customerServiceAvg : 5
             ];
         }
 
