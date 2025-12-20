@@ -210,6 +210,32 @@ class PaystackService
             ]);
         }
 
+        // Handle P2P payment success if this is a P2P transaction
+        if ($status === Transaction::STATUS_SUCCESS) {
+            $metadata = $transaction->metadata ?? [];
+            $paymentType = $metadata['payment_type'] ?? null;
+            
+            if (in_array($paymentType, ['initial', 'final'])) {
+                try {
+                    $p2pPaymentService = app(\App\Services\P2PPaymentService::class);
+                    $p2pPaymentService->handlePaymentSuccess($reference, $paymentType);
+                    
+                    Log::info('P2P payment processed via webhook', [
+                        'transaction_id' => $transaction->id,
+                        'payment_type' => $paymentType,
+                        'reference' => $reference,
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to process P2P payment via webhook', [
+                        'transaction_id' => $transaction->id,
+                        'payment_type' => $paymentType,
+                        'error' => $e->getMessage(),
+                    ]);
+                    // Don't throw - webhook should still be marked as processed
+                }
+            }
+        }
+
         // Mark event as processed
         $event->markAsProcessed();
 

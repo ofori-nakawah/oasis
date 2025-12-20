@@ -105,6 +105,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/job/submit-quote', 'Web\PostController@submitQuote')->name('job.submit.quote');
 
     /**
+     * P2P Payment routes
+     */
+    Route::post('/p2p/initiate-quote-approval-payment', 'Web\P2PPaymentController@initiateQuoteApprovalPayment')->name('p2p.initiate.quote.approval.payment');
+    Route::post('/p2p/initiate-job-closure-payment', 'Web\P2PPaymentController@initiateJobClosurePayment')->name('p2p.initiate.job.closure.payment');
+    Route::get('/p2p/payment-callback', 'Web\P2PPaymentController@handlePaymentCallback')->name('p2p.payment.callback');
+    Route::get('/p2p/payment-status', 'Web\P2PPaymentController@checkPaymentStatus')->name('p2p.payment.status');
+
+    /**
      * onboarding
      */
     Route::post('/onboarding/location', 'Web\UserController@update_user_location')->name('onboarding.location.update');

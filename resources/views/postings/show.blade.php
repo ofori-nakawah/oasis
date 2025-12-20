@@ -484,10 +484,19 @@ Posts
             </div>
             <div class="col-md-2">
                 @if($post->is_job_applicant_confirmed != 1)
-                <a href="{{route('user.posts.confirm_decline_applicant', ['application_id' => $applicant->id, 'action' => 'confirm'])}}"
-                    onclick="return confirm('Are you sure?')"><em
-                        class="icon ni ni-plus-circle text-success"
-                        style="font-size: 30px;float: right;"></em></a>
+                    @if($post->type === "P2P" && !empty($applicant->quote))
+                        {{-- For P2P jobs with quotes, trigger payment flow --}}
+                        <a href="#" onclick="initP2PPayment('{{$post->id}}', '{{$applicant->id}}', 'initial'); return false;"
+                            title="Approve Quote & Pay"><em
+                                class="icon ni ni-plus-circle text-success"
+                                style="font-size: 30px;float: right;"></em></a>
+                    @else
+                        {{-- For non-P2P or P2P without quotes, use standard confirmation --}}
+                        <a href="{{route('user.posts.confirm_decline_applicant', ['application_id' => $applicant->id, 'action' => 'confirm'])}}"
+                            onclick="return confirm('Are you sure?')"><em
+                                class="icon ni ni-plus-circle text-success"
+                                style="font-size: 30px;float: right;"></em></a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -556,12 +565,23 @@ Posts
         <br>
         @endif
 
-        <form action="{{route('user.posts.close')}}" method="POST">
-            {{csrf_field()}}
-            <input type="hidden" name="job_post_id" value="{{$post->id}}">
-            <input type="hidden" name="job_type" value="{{$post->type}}">
-            <input type="hidden" name="user_id" value="{{$post->confirmed_applicant_id}}">
-            <div class="modal modal-lg fade" tabindex="-1" id="closeJobModal">
+        @if($post->type === "P2P" && $post->is_job_applicant_confirmed == 1)
+            {{-- For P2P jobs, trigger payment flow before closing --}}
+            @php
+                $confirmedApplication = $post->applications->firstWhere('user_id', $post->confirmed_applicant_id);
+            @endphp
+            @if($confirmedApplication)
+                <a href="#" onclick="initP2PPayment('{{$post->id}}', '{{$confirmedApplication->id}}', 'final'); return false;"
+                    class="btn btn-outline-danger btn-lg" style="float: right"><b>Close Job & Pay</b></a>
+            @endif
+        @else
+            {{-- For non-P2P jobs, use standard close form --}}
+            <form action="{{route('user.posts.close')}}" method="POST">
+                {{csrf_field()}}
+                <input type="hidden" name="job_post_id" value="{{$post->id}}">
+                <input type="hidden" name="job_type" value="{{$post->type}}">
+                <input type="hidden" name="user_id" value="{{$post->confirmed_applicant_id}}">
+                <div class="modal modal-lg fade" tabindex="-1" id="closeJobModal">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <a href="#" class="close" data-dismiss="modal" aria-label="Close">
@@ -705,7 +725,8 @@ Posts
                     </div>
                 </div>
             </div>
-        </form>
+            </form>
+        @endif
         @endforeach
     </div>
 </div>
@@ -1114,4 +1135,7 @@ Posts
         $("#allApplicants").show("slow")
     }
 </script>
+
+{{-- Include P2P Payment Modal --}}
+@include('components.p2p-payment-modal')
 @endsection
