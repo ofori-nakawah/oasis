@@ -144,5 +144,17 @@ Route::prefix('/v1')->group(function () {
             Route::post('/submit-quote', 'Mobile\PostController@submit_quote');
             Route::post('/decline-job', 'Mobile\PostController@declined_job');
         });
+
+        // Payment routes
+        Route::prefix('/payments')->group(function () {
+            Route::post('/initialize', 'Api\PaymentController@initialize');
+            Route::get('/verify/{reference}', 'Api\PaymentController@verify');
+        });
     });
+
+});
+
+// Webhook routes (no auth required, but signature verified)
+Route::prefix('/v1/webhooks')->group(function () {
+    Route::post('/paystack', 'Api\WebhookController@handlePaystack');
 });

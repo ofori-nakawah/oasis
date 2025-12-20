@@ -36,11 +36,14 @@ class UpdateRatingReviewsDefaults extends Migration
                 ->update(['customer_service_rating' => 5]);
 
             // Set column defaults for new rows
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN rating SET DEFAULT '5'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN expertise_rating SET DEFAULT '5'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN work_ethic_rating SET DEFAULT '5'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN professionalism_rating SET DEFAULT '5'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN customer_service_rating SET DEFAULT '5'");
+            // SQLite doesn't support ALTER COLUMN, skip for SQLite (defaults handled in table creation)
+            if (DB::getDriverName() !== 'sqlite') {
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN rating SET DEFAULT '5'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN expertise_rating SET DEFAULT '5'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN work_ethic_rating SET DEFAULT '5'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN professionalism_rating SET DEFAULT '5'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN customer_service_rating SET DEFAULT '5'");
+            }
         }
     }
 
@@ -53,11 +56,14 @@ class UpdateRatingReviewsDefaults extends Migration
     {
         if (Schema::hasTable('rating_reviews')) {
             // Restore defaults back to 0 (original behaviour / no default equivalent)
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN rating SET DEFAULT '0'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN expertise_rating SET DEFAULT '0'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN work_ethic_rating SET DEFAULT '0'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN professionalism_rating SET DEFAULT '0'");
-            DB::statement("ALTER TABLE rating_reviews ALTER COLUMN customer_service_rating SET DEFAULT '0'");
+            // SQLite doesn't support ALTER COLUMN
+            if (DB::getDriverName() !== 'sqlite') {
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN rating SET DEFAULT '0'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN expertise_rating SET DEFAULT '0'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN work_ethic_rating SET DEFAULT '0'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN professionalism_rating SET DEFAULT '0'");
+                DB::statement("ALTER TABLE rating_reviews ALTER COLUMN customer_service_rating SET DEFAULT '0'");
+            }
         }
     }
 }
