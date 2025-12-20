@@ -30,18 +30,32 @@
 </div>
 
 <script>
-(function() {
+$(document).ready(function() {
     let paymentCheckInterval = null;
     let paymentReference = null;
     let paymentType = null;
 
-    // Initialize payment modal
+    // Initialize payment modal function - make it globally available
     window.initP2PPayment = function(postId, applicationId, type) {
+        console.log('initP2PPayment called', {postId, applicationId, type});
         paymentType = type; // 'initial' or 'final'
+        
+        // Check if jQuery and modal are available
+        if (typeof $ === 'undefined') {
+            console.error('jQuery is not loaded');
+            alert('Error: jQuery is not loaded. Please refresh the page.');
+            return;
+        }
+        
+        if (!$('#p2pPaymentModal').length) {
+            console.error('Payment modal element not found');
+            alert('Error: Payment modal not found. Please refresh the page.');
+            return;
+        }
         
         // Show modal
         $('#p2pPaymentModal').modal('show');
-        
+    
         // Reset UI
         $('#paymentLoading').show();
         $('#paymentIframeContainer').hide();
@@ -62,6 +76,7 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
+                console.log('Payment initiation response:', response);
                 if (response.status && response.data && response.data.authorization_url) {
                     // Load Paystack checkout in iframe
                     paymentReference = response.data.reference;
@@ -80,6 +95,7 @@
                 }
             },
             error: function(xhr) {
+                console.error('Payment initiation error:', xhr);
                 let errorMessage = 'Failed to initialize payment';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
                     errorMessage = xhr.responseJSON.message;
@@ -168,5 +184,5 @@
             }
         }
     });
-})();
+});
 </script>
