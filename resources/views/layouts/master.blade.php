@@ -267,12 +267,12 @@
                                         <span class="nk-menu-text"> Notifications @if(auth()->user()->unreadNotifications->count() > 0) <span class="badge badge-danger circle">{{auth()->user()->unreadNotifications->count() ?? ''}}</span> @endif</span>
                                     </a>
                                 </li><!-- .nk-menu-item -->
-                                <!-- <li class="nk-menu-item">
+                                <li class="nk-menu-item">
                                 <a href="{{route('user.wallet')}}" class="nk-menu-link">
                                     <span class="nk-menu-icon"><em class="icon ni ni-wallet-alt"></em></span>
                                     <span class="nk-menu-text"> Wallet</span>
                                 </a>
-                            </li> -->
+                            </li>
                                 <li class="nk-menu-item">
                                     <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "p2p"])}}" class="nk-menu-link">
                                         <span class="nk-menu-icon"><em class="icon ni ni-search"></em></span>
