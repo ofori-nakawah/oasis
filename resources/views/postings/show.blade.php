@@ -566,13 +566,132 @@ Posts
         @endif
 
         @if($post->type === "P2P" && $post->is_job_applicant_confirmed == 1 && $post->status !== 'closed')
-            {{-- For P2P jobs, trigger payment flow before closing --}}
+            {{-- For P2P jobs, show evaluation form first, then trigger payment --}}
             @php
                 $confirmedApplication = $post->applications->firstWhere('user_id', $post->confirmed_applicant_id);
             @endphp
             @if($confirmedApplication)
-                <a href="#" onclick="initP2PPayment('{{$post->id}}', '{{$confirmedApplication->id}}', 'final'); return false;"
-                    class="btn btn-outline-danger btn-lg" style="float: right"><b>Close Job & Pay</b></a>
+                <form id="p2pCloseJobForm" data-post-id="{{$post->id}}" data-application-id="{{$confirmedApplication->id}}">
+                    {{csrf_field()}}
+                    <div class="modal modal-lg fade" tabindex="-1" id="p2pCloseJobModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                    <em class="icon ni ni-cross"></em>
+                                </a>
+                                <div class="modal-header">
+                                    <h5 class="modal-title"><b>Close Job & Pay</b></h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p class="text-muted">Complete below information to close job and make final payment.</p>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <p style="font-size: 16px;"><b>Rating</b></p>
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="text-color-gray" style="font-size: 10px;">Expertise</div>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <div class="stars">
+                                                <select class="star-rating" name="expertise_rating" required id="p2pExpertise">
+                                                    <option value=""></option>
+                                                    <option value="5">Excellent</option>
+                                                    <option value="4">Very Good</option>
+                                                    <option value="3">Average</option>
+                                                    <option value="2">Fair</option>
+                                                    <option value="1">Poor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="text-color-gray" style="font-size: 10px;">Work Ethic</div>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <div class="stars">
+                                                <select class="star-rating" name="work_ethic_rating" required id="p2pWorkEthic">
+                                                    <option value=""></option>
+                                                    <option value="5">Excellent</option>
+                                                    <option value="4">Very Good</option>
+                                                    <option value="3">Average</option>
+                                                    <option value="2">Fair</option>
+                                                    <option value="1">Poor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="text-color-gray" style="font-size: 10px;">Professionalism</div>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <div class="stars">
+                                                <select class="star-rating" name="professionalism_rating" required id="p2pProfessionalism">
+                                                    <option value=""></option>
+                                                    <option value="5">Excellent</option>
+                                                    <option value="4">Very Good</option>
+                                                    <option value="3">Average</option>
+                                                    <option value="2">Fair</option>
+                                                    <option value="1">Poor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="text-color-gray" style="font-size: 10px;">Customer Service</div>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <div class="stars">
+                                                <select class="star-rating" name="customer_service_rating" required id="p2pCustomerService">
+                                                    <option value=""></option>
+                                                    <option value="5">Excellent</option>
+                                                    <option value="4">Very Good</option>
+                                                    <option value="3">Average</option>
+                                                    <option value="2">Fair</option>
+                                                    <option value="1">Poor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <p style="font-size: 16px;"><b>Review or feedback message</b></p>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-group1 mb-3">
+                                                <textarea type="tel"
+                                                    class="form-control form-control-lg"
+                                                    placeholder="Kindly share your review or feedback of the job done."
+                                                    name="feedback_message"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer bg-white text-right" style="float: right !important;">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" style="float: right;" class="btn btn-outline-primary"><b>Continue to Payment</b></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <a href="#" class="btn btn-outline-danger btn-lg" data-toggle="modal" data-target="#p2pCloseJobModal" style="float: right"><b>Close Job & Pay</b></a>
             @endif
         @else
             {{-- For non-P2P jobs, use standard close form --}}
@@ -1124,6 +1243,77 @@ Posts
         $(".copyStatus").append(successMessage);
         $(".copyStatus").show();
     }
+
+    // Handle P2P Close Job Form Submission
+    $('#p2pCloseJobForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const form = $(this);
+        const postId = form.data('post-id');
+        const applicationId = form.data('application-id');
+        const submitBtn = form.find('button[type="submit"]');
+        
+        // Get form data
+        const formData = {
+            post_id: postId,
+            application_id: applicationId,
+            expertise_rating: form.find('[name="expertise_rating"]').val(),
+            work_ethic_rating: form.find('[name="work_ethic_rating"]').val(),
+            professionalism_rating: form.find('[name="professionalism_rating"]').val(),
+            customer_service_rating: form.find('[name="customer_service_rating"]').val(),
+            feedback_message: form.find('[name="feedback_message"]').val(),
+            _token: '{{ csrf_token() }}'
+        };
+        
+        // Validate ratings
+        if (!formData.expertise_rating || !formData.work_ethic_rating || 
+            !formData.professionalism_rating || !formData.customer_service_rating) {
+            alert('Please provide all ratings before proceeding.');
+            return;
+        }
+        
+        // Disable submit button
+        submitBtn.prop('disabled', true).text('Processing...');
+        
+        // Save rating and initiate payment
+        $.ajax({
+            url: '{{ route("p2p.save.rating.and.initiate.payment") }}',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.status) {
+                    // Close the evaluation modal
+                    $('#p2pCloseJobModal').modal('hide');
+                    
+                    // Initiate payment with the saved rating
+                    if (response.data && response.data.authorization_url) {
+                        // Show payment modal - initP2PPayment will handle the payment flow
+                        if (typeof initP2PPayment === 'function') {
+                            initP2PPayment(postId, applicationId, 'final');
+                        } else {
+                            // Fallback: show payment URL directly
+                            window.location.href = response.data.authorization_url;
+                        }
+                    } else if (response.skip_payment) {
+                        // No payment required
+                        alert('Job closed successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to initiate payment. Please try again.');
+                        submitBtn.prop('disabled', false).text('Continue to Payment');
+                    }
+                } else {
+                    alert(response.message || 'Failed to save rating. Please try again.');
+                    submitBtn.prop('disabled', false).text('Continue to Payment');
+                }
+            },
+            error: function(xhr) {
+                const error = xhr.responseJSON?.message || xhr.responseJSON?.errors || 'An error occurred';
+                alert(typeof error === 'object' ? JSON.stringify(error) : error);
+                submitBtn.prop('disabled', false).text('Continue to Payment');
+            }
+        });
+    });
 
     const showShortlistedApplicants = () => {
         $("#shortlistedApplicants").show("slow")

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\JobApplication;
 use App\Models\Post;
+use App\Models\RatingReview;
 use App\Models\Transaction;
 use App\Services\P2PPaymentService;
 use Illuminate\Http\Request;
@@ -386,6 +387,135 @@ class P2PPaymentController extends Controller
                 'message' => 'Failed to check payment status',
                 'error' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    /**
+     * Save rating review and initiate payment for job closure
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function saveRatingAndInitiatePayment(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'post_id' => 'required',
+            'application_id' => 'required',
+            'expertise_rating' => 'required|numeric|min:1|max:5',
+            'work_ethic_rating' => 'required|numeric|min:1|max:5',
+            'professionalism_rating' => 'required|numeric|min:1|max:5',
+            'customer_service_rating' => 'required|numeric|min:1|max:5',
+            'feedback_message' => 'nullable|string',
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'errors' => $validation->errors(),
+            ], 422);
+        }
+
+        try {
+            $post = Post::find($request->post_id);
+            if (!$post) {
+                throw new \Exception('Post not found');
+            }
+
+            // Verify user owns the post
+            if ((string)$post->user_id !== (string)Auth::id()) {
+                throw new \Exception('Unauthorized: You can only close your own posts');
+            }
+
+            $application = JobApplication::find($request->application_id);
+            if (!$application) {
+                throw new \Exception('Application not found');
+            }
+
+            // Verify application belongs to post
+            if ($application->post_id !== $post->id) {
+                throw new \Exception('Application does not belong to this post');
+            }
+
+            // Check if job is already closed
+            if ($post->status === 'closed') {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Job is already closed',
+                ], 400);
+            }
+
+            // Get worker (participant)
+            $worker = $application->user;
+            if (!$worker) {
+                throw new \Exception('Worker not found');
+            }
+
+            // Calculate average rating
+            $averageRating = (
+                (float)$request->expertise_rating +
+                (float)$request->work_ethic_rating +
+                (float)$request->professionalism_rating +
+                (float)$request->customer_service_rating
+            ) / 4;
+
+            // Save rating review (following old flow)
+            $ratingReview = new RatingReview();
+            $ratingReview->user_id = $worker->id;
+            $ratingReview->job_application_id = $application->id;
+            $ratingReview->post_id = $post->id;
+            $ratingReview->expertise_rating = $request->expertise_rating;
+            $ratingReview->work_ethic_rating = $request->work_ethic_rating;
+            $ratingReview->professionalism_rating = $request->professionalism_rating;
+            $ratingReview->customer_service_rating = $request->customer_service_rating;
+            $ratingReview->rating = $averageRating;
+            $ratingReview->feedback_message = $request->feedback_message;
+            $ratingReview->save();
+
+            Log::info('Rating review saved for P2P job closure', [
+                'post_id' => $post->id,
+                'application_id' => $application->id,
+                'worker_id' => $worker->id,
+                'rating' => $averageRating,
+            ]);
+
+            // Initiate payment
+            $result = $this->p2pPaymentService->initiateJobClosurePayment($post, $application);
+
+            // If payment is skipped (percentage is 0)
+            if (isset($result['skip_payment']) && $result['skip_payment']) {
+                // Close job without payment (this shouldn't happen for final payment, but handle it)
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Job closed successfully (no payment required)',
+                    'skip_payment' => true,
+                ], 200);
+            }
+
+            // Return authorization URL for frontend to display in modal
+            return response()->json([
+                'status' => true,
+                'message' => 'Rating saved and payment initialized successfully',
+                'data' => [
+                    'authorization_url' => $result['data']['authorization_url'] ?? null,
+                    'reference' => $result['data']['reference'] ?? null,
+                    'access_code' => $result['data']['access_code'] ?? null,
+                ],
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('P2P Save Rating and Initiate Payment Failed', [
+                'error' => $e->getMessage(),
+                'post_id' => $request->post_id ?? null,
+                'application_id' => $request->application_id ?? null,
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 }

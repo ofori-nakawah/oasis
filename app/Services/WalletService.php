@@ -237,7 +237,8 @@ class WalletService
                 throw new \Exception('Insufficient balance');
             }
 
-            $user->available_balance = max(0, $newBalance);
+            // Save as string to match database column type
+            $user->available_balance = (string) max(0, $newBalance);
             $user->save();
 
             Log::info('Balance updated', [

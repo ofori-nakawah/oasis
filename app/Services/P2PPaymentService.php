@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\JobApplication;
 use App\Models\Post;
+use App\Models\RatingReview;
 use App\Models\Transaction;
 use App\Services\WalletService;
+use App\Helpers\Notifications;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -261,7 +263,10 @@ class P2PPaymentService
     {
         // Update post - mark final payment as paid and close job
         $metadata = $transaction->metadata ?? [];
-        $post->final_payment_amount = (string) ($metadata['payment_amount'] ?? $transaction->amount);
+        $finalPaymentAmount = (float) ($metadata['payment_amount'] ?? $transaction->amount);
+        $quoteAmount = (float) ($metadata['quote_amount'] ?? $application->quote ?? 0);
+        
+        $post->final_payment_amount = (string) $finalPaymentAmount;
         $post->final_payment_paid_at = now();
         $post->final_payment_transaction_id = $transaction->id;
         $post->payment_status = 'fully_paid';
@@ -269,65 +274,115 @@ class P2PPaymentService
         $post->closed_at = now();
         $post->save();
 
-        // Credit the worker's wallet
-        try {
-            $worker = $application->user;
-            if ($worker) {
-                $quoteAmount = (float) ($metadata['quote_amount'] ?? $application->quote ?? 0);
-                
-                if ($quoteAmount > 0) {
-                    // Create earning transaction for the worker
-                    $earningTransaction = Transaction::create([
-                        'user_id' => $worker->id,
-                        'uuid' => Str::uuid()->toString(),
-                        'client_reference' => 'EARN-' . Str::random(12),
-                        'amount' => $quoteAmount,
-                        'currency' => 'GHS',
-                        'email' => $worker->email,
-                        'status' => Transaction::STATUS_SUCCESS,
-                        'transaction_type' => Transaction::TYPE_EARNING,
-                        'transaction_category' => Transaction::CATEGORY_CREDIT,
-                        'metadata' => [
-                            'post_id' => $post->id,
-                            'application_id' => $application->id,
-                            'payment_transaction_id' => $transaction->id,
-                            'quote_amount' => $quoteAmount,
-                        ],
-                        'paid_at' => now(),
-                    ]);
-
-                    // Update worker's wallet balance
-                    $walletService = app(WalletService::class);
-                    $walletService->updateBalance($worker, $quoteAmount, 'job_earning');
-
-                    // Update worker's total_earnings
-                    $worker->increment('total_earnings', $quoteAmount);
-                    $worker->save();
-
-                    Log::info('Worker wallet credited on job closure', [
-                        'worker_id' => $worker->id,
-                        'post_id' => $post->id,
-                        'application_id' => $application->id,
-                        'amount' => $quoteAmount,
-                        'earning_transaction_id' => $earningTransaction->id,
-                    ]);
-                }
-            }
-        } catch (\Exception $e) {
-            // Log error but don't fail the job closure
-            Log::error('Failed to credit worker wallet on job closure', [
+        // Get worker (participant)
+        $worker = $application->user;
+        if (!$worker) {
+            Log::error('Worker not found for job closure', [
                 'post_id' => $post->id,
                 'application_id' => $application->id,
-                'worker_id' => $application->user_id ?? null,
+            ]);
+            return;
+        }
+
+        // Credit the worker's wallet and update earnings (following old flow)
+        try {
+            if ($quoteAmount > 0) {
+                // Create earning transaction for the worker
+                $earningTransaction = Transaction::create([
+                    'user_id' => $worker->id,
+                    'uuid' => Str::uuid()->toString(),
+                    'client_reference' => 'EARN-' . Str::random(12),
+                    'amount' => $quoteAmount,
+                    'currency' => 'GHS',
+                    'email' => $worker->email,
+                    'status' => Transaction::STATUS_SUCCESS,
+                    'transaction_type' => Transaction::TYPE_EARNING,
+                    'transaction_category' => Transaction::CATEGORY_CREDIT,
+                    'metadata' => [
+                        'post_id' => $post->id,
+                        'application_id' => $application->id,
+                        'payment_transaction_id' => $transaction->id,
+                        'quote_amount' => $quoteAmount,
+                    ],
+                    'paid_at' => now(),
+                ]);
+
+                // Update worker's wallet balance
+                $walletService = app(WalletService::class);
+                
+                // Log before update
+                Log::info('Updating worker balance before job closure', [
+                    'worker_id' => $worker->id,
+                    'current_balance' => $worker->available_balance,
+                    'amount_to_add' => $quoteAmount,
+                ]);
+                
+                $walletService->updateBalance($worker, $quoteAmount, 'job_earning');
+
+                // Refresh worker to get updated balance from database
+                $worker = \App\Models\User::find($worker->id);
+                
+                // Log after update
+                Log::info('Worker balance updated after job closure', [
+                    'worker_id' => $worker->id,
+                    'new_balance' => $worker->available_balance,
+                    'amount_added' => $quoteAmount,
+                ]);
+
+                // Update worker's total_earnings (following old flow)
+                $worker->total_earnings = (float)$worker->total_earnings + (float)$quoteAmount;
+            }
+
+            // Update worker's rating (following old flow - recalculate average rating)
+            $user_review_rating = 0;
+            $ratingReviews = \App\Models\RatingReview::where('user_id', $worker->id)->get();
+            if ($ratingReviews->count() >= 1) {
+                $user_review_rating = $ratingReviews->sum("rating") / $ratingReviews->count();
+            }
+            $worker->rating = $user_review_rating;
+            $worker->save();
+
+            // Set job_done_overall_rating if rating review exists
+            $ratingReview = RatingReview::where('post_id', $post->id)
+                ->where('job_application_id', $application->id)
+                ->first();
+            
+            if ($ratingReview) {
+                $post->job_done_overall_rating = $ratingReview->rating;
+                $post->save();
+            }
+
+            // Send notifications to both parties (following old flow)
+            // Ensure relationships are loaded
+            $post->load('user');
+            $application->load('user');
+
+            // Send notification to worker (participant)
+            Notifications::PushUserNotification($post, $application, $worker, "JOB_CLOSED");
+
+            // Send notification to job poster (issuer)
+            $jobPoster = $post->user;
+            if ($jobPoster && $jobPoster->id !== $worker->id) {
+                Notifications::PushUserNotification($post, $application, $jobPoster, "JOB_CLOSED");
+            }
+
+            Log::info('P2P Final Payment Success - Job closed with notifications', [
+                'post_id' => $post->id,
+                'application_id' => $application->id,
+                'transaction_id' => $transaction->id,
+                'worker_id' => $worker->id,
+                'job_poster_id' => $jobPoster->id ?? null,
+                'amount_credited' => $quoteAmount,
+            ]);
+        } catch (\Exception $e) {
+            // Log error but don't fail the job closure
+            Log::error('Failed to complete job closure process', [
+                'post_id' => $post->id,
+                'application_id' => $application->id,
+                'worker_id' => $worker->id ?? null,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
         }
-
-        Log::info('P2P Final Payment Success', [
-            'post_id' => $post->id,
-            'application_id' => $application->id,
-            'transaction_id' => $transaction->id,
-        ]);
     }
 }
