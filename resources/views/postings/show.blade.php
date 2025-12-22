@@ -565,7 +565,7 @@ Posts
         <br>
         @endif
 
-        @if($post->type === "P2P" && $post->is_job_applicant_confirmed == 1)
+        @if($post->type === "P2P" && $post->is_job_applicant_confirmed == 1 && $post->status !== 'closed')
             {{-- For P2P jobs, trigger payment flow before closing --}}
             @php
                 $confirmedApplication = $post->applications->firstWhere('user_id', $post->confirmed_applicant_id);

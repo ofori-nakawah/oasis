@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\JobApplication;
 use App\Models\Post;
 use App\Models\Transaction;
+use App\Services\WalletService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -267,6 +268,61 @@ class P2PPaymentService
         $post->status = 'closed';
         $post->closed_at = now();
         $post->save();
+
+        // Credit the worker's wallet
+        try {
+            $worker = $application->user;
+            if ($worker) {
+                $quoteAmount = (float) ($metadata['quote_amount'] ?? $application->quote ?? 0);
+                
+                if ($quoteAmount > 0) {
+                    // Create earning transaction for the worker
+                    $earningTransaction = Transaction::create([
+                        'user_id' => $worker->id,
+                        'uuid' => Str::uuid()->toString(),
+                        'client_reference' => 'EARN-' . Str::random(12),
+                        'amount' => $quoteAmount,
+                        'currency' => 'GHS',
+                        'email' => $worker->email,
+                        'status' => Transaction::STATUS_SUCCESS,
+                        'transaction_type' => Transaction::TYPE_EARNING,
+                        'transaction_category' => Transaction::CATEGORY_CREDIT,
+                        'metadata' => [
+                            'post_id' => $post->id,
+                            'application_id' => $application->id,
+                            'payment_transaction_id' => $transaction->id,
+                            'quote_amount' => $quoteAmount,
+                        ],
+                        'paid_at' => now(),
+                    ]);
+
+                    // Update worker's wallet balance
+                    $walletService = app(WalletService::class);
+                    $walletService->updateBalance($worker, $quoteAmount, 'job_earning');
+
+                    // Update worker's total_earnings
+                    $worker->increment('total_earnings', $quoteAmount);
+                    $worker->save();
+
+                    Log::info('Worker wallet credited on job closure', [
+                        'worker_id' => $worker->id,
+                        'post_id' => $post->id,
+                        'application_id' => $application->id,
+                        'amount' => $quoteAmount,
+                        'earning_transaction_id' => $earningTransaction->id,
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            // Log error but don't fail the job closure
+            Log::error('Failed to credit worker wallet on job closure', [
+                'post_id' => $post->id,
+                'application_id' => $application->id,
+                'worker_id' => $application->user_id ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
 
         Log::info('P2P Final Payment Success', [
             'post_id' => $post->id,
