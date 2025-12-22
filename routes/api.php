@@ -143,6 +143,9 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/p2p')->group(function () {
             Route::post('/submit-quote', 'Mobile\PostController@submit_quote');
             Route::post('/decline-job', 'Mobile\PostController@declined_job');
+            Route::post('/initiate-quote-approval-payment', 'Mobile\P2PPaymentController@initiateQuoteApprovalPayment');
+            Route::post('/initiate-job-closure-payment', 'Mobile\P2PPaymentController@initiateJobClosurePayment');
+            Route::get('/payment-status', 'Mobile\P2PPaymentController@checkPaymentStatus');
         });
 
         // Payment routes

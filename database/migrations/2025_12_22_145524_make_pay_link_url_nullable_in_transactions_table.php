@@ -13,8 +13,9 @@ class MakePayLinkUrlNullableInTransactionsTable extends Migration
      */
     public function up()
     {
-        // Use raw SQL to avoid requiring Doctrine DBAL
-        if (Schema::hasColumn('transactions', 'pay_link_url')) {
+        // SQLite doesn't support MODIFY COLUMN syntax
+        // For SQLite, the column is already nullable (from table creation) or we skip this
+        if (Schema::hasColumn('transactions', 'pay_link_url') && \DB::getDriverName() !== 'sqlite') {
             \DB::statement('ALTER TABLE `transactions` MODIFY COLUMN `pay_link_url` VARCHAR(255) NULL');
         }
     }
@@ -26,7 +27,8 @@ class MakePayLinkUrlNullableInTransactionsTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('transactions', 'pay_link_url')) {
+        // SQLite doesn't support MODIFY COLUMN syntax
+        if (Schema::hasColumn('transactions', 'pay_link_url') && \DB::getDriverName() !== 'sqlite') {
             // First, set any null values to empty string
             \DB::table('transactions')
                 ->whereNull('pay_link_url')
