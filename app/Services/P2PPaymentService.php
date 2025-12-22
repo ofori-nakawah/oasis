@@ -298,6 +298,7 @@ class P2PPaymentService
                     'status' => Transaction::STATUS_SUCCESS,
                     'transaction_type' => Transaction::TYPE_EARNING,
                     'transaction_category' => Transaction::CATEGORY_CREDIT,
+                    'pay_link_url' => null, // Earning transactions don't have payment links
                     'metadata' => [
                         'post_id' => $post->id,
                         'application_id' => $application->id,

@@ -128,6 +128,7 @@ class WalletService
             'status' => Transaction::STATUS_PENDING,
             'transaction_type' => Transaction::TYPE_WITHDRAWAL,
             'transaction_category' => Transaction::CATEGORY_DEBIT,
+            'pay_link_url' => null, // Withdrawal transactions don't have payment links
             'bank_account_details' => $bankDetails,
         ]);
 
