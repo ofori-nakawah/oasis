@@ -84,7 +84,10 @@ Route::group(['middleware' => 'auth'], function () {
     /**
      * wallet
      */
-    Route::get('/wallet', 'Web\UserController@my_wallet')->name('user.wallet');
+    Route::get('/wallet', 'Web\WalletController@index')->name('user.wallet');
+    Route::post('/wallet/topup', 'Web\WalletController@topup')->name('wallet.topup');
+    Route::post('/wallet/withdraw', 'Web\WalletController@withdraw')->name('wallet.withdraw');
+    Route::get('/wallet/transactions', 'Web\WalletController@transactions')->name('wallet.transactions');
 
     /**
      * postings
