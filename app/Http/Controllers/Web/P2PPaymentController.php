@@ -338,6 +338,37 @@ class P2PPaymentController extends Controller
                 ], 404);
             }
 
+            // If transaction is still pending, verify with Paystack directly
+            if ($transaction->status === Transaction::STATUS_PENDING) {
+                try {
+                    $paystackService = app(\App\Services\PaystackService::class);
+                    $verification = $paystackService->verifyTransaction($reference);
+                    
+                    // If Paystack says it's successful, update our record
+                    if (isset($verification['data']['status']) && $verification['data']['status'] === 'success') {
+                        $transaction->update([
+                            'status' => Transaction::STATUS_SUCCESS,
+                            'paid_at' => now(),
+                        ]);
+                        
+                        // Process P2P payment if applicable
+                        $metadata = $transaction->metadata ?? [];
+                        $paymentType = $metadata['payment_type'] ?? null;
+                        if (in_array($paymentType, ['initial', 'final'])) {
+                            $this->p2pPaymentService->handlePaymentSuccess($reference, $paymentType);
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Failed to verify transaction with Paystack', [
+                        'reference' => $reference,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+                
+                // Refresh transaction from database
+                $transaction->refresh();
+            }
+
             return response()->json([
                 'status' => true,
                 'transaction_status' => $transaction->status,

@@ -14,7 +14,15 @@ class PaystackService
 
     public function __construct()
     {
-        $this->secretKey = config('services.paystack.secret_key');
+        $secretKey = config('services.paystack.secret_key');
+        
+        if (empty($secretKey)) {
+            throw new \RuntimeException(
+                'Paystack secret key is not configured. Please set PAYSTACK_SECRET_KEY in your .env file.'
+            );
+        }
+        
+        $this->secretKey = $secretKey;
     }
 
     /**
@@ -182,20 +190,40 @@ class PaystackService
         }
 
         // Check if event already processed (idempotency)
-        $existingEvent = \App\Models\TransactionEvent::where('paystack_event_id', $paystackEventId)->first();
-        if ($existingEvent) {
-            Log::info('Webhook event already processed', ['event_id' => $paystackEventId]);
-            return;
+        // Only check if event_id is not empty (some webhooks may not have event_id)
+        if (!empty($paystackEventId)) {
+            $existingEvent = \App\Models\TransactionEvent::where('paystack_event_id', $paystackEventId)->first();
+            if ($existingEvent && $existingEvent->processed) {
+                Log::info('Webhook event already processed', ['event_id' => $paystackEventId]);
+                return;
+            }
         }
 
-        // Create transaction event
-        $event = \App\Models\TransactionEvent::create([
-            'transaction_id' => $transaction->id,
-            'event_type' => $eventType,
-            'paystack_event_id' => $paystackEventId,
-            'payload' => $eventData,
-            'processed' => false,
-        ]);
+        // Create transaction event (only if event_id exists, or create with unique identifier)
+        $event = null;
+        if (!empty($paystackEventId)) {
+            $event = \App\Models\TransactionEvent::firstOrCreate(
+                ['paystack_event_id' => $paystackEventId],
+                [
+                    'transaction_id' => $transaction->id,
+                    'event_type' => $eventType,
+                    'payload' => $eventData,
+                    'processed' => false,
+                ]
+            );
+        } else {
+            // If no event_id, create with reference + timestamp as unique identifier
+            $uniqueId = $reference . '_' . time();
+            $event = \App\Models\TransactionEvent::firstOrCreate(
+                ['paystack_event_id' => $uniqueId],
+                [
+                    'transaction_id' => $transaction->id,
+                    'event_type' => $eventType,
+                    'payload' => $eventData,
+                    'processed' => false,
+                ]
+            );
+        }
 
         // Update transaction status based on event type
         $status = $this->mapEventTypeToStatus($eventType);
@@ -211,6 +239,7 @@ class PaystackService
         }
 
         // Handle P2P payment success if this is a P2P transaction
+        // Process even if event was already seen (in case previous processing failed)
         if ($status === Transaction::STATUS_SUCCESS) {
             $metadata = $transaction->metadata ?? [];
             $paymentType = $metadata['payment_type'] ?? null;
@@ -230,14 +259,19 @@ class PaystackService
                         'transaction_id' => $transaction->id,
                         'payment_type' => $paymentType,
                         'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
                     ]);
                     // Don't throw - webhook should still be marked as processed
                 }
             }
         }
 
-        // Mark event as processed
-        $event->markAsProcessed();
+        // Mark event as processed (only if event was created/found)
+        if ($event && method_exists($event, 'markAsProcessed')) {
+            $event->markAsProcessed();
+        } elseif ($event) {
+            $event->update(['processed' => true, 'processed_at' => now()]);
+        }
 
         Log::info('Webhook event processed', [
             'event_id' => $paystackEventId,
