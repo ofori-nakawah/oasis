@@ -266,6 +266,64 @@ class PaystackService
             }
         }
 
+        // Handle wallet transactions (topup and withdrawal)
+        if ($transaction->user_id && in_array($transaction->transaction_type, ['topup', 'withdrawal'])) {
+            try {
+                $walletService = app(\App\Services\WalletService::class);
+                $user = \App\Models\User::find($transaction->user_id);
+
+                if (!$user) {
+                    Log::warning('User not found for wallet transaction', [
+                        'transaction_id' => $transaction->id,
+                        'user_id' => $transaction->user_id,
+                    ]);
+                } else {
+                    if ($transaction->transaction_type === 'topup') {
+                        // Handle topup success/failure
+                        if ($status === Transaction::STATUS_SUCCESS) {
+                            // Update balance and total_topups
+                            $walletService->updateBalance($user, $transaction->amount, 'topup');
+                            $user->increment('total_topups', $transaction->amount);
+                            
+                            Log::info('Wallet topup processed via webhook', [
+                                'transaction_id' => $transaction->id,
+                                'user_id' => $user->id,
+                                'amount' => $transaction->amount,
+                            ]);
+                        }
+                    } elseif ($transaction->transaction_type === 'withdrawal') {
+                        // Handle withdrawal success/failure
+                        if ($status === Transaction::STATUS_SUCCESS) {
+                            // Balance was already decremented when withdrawal was initiated
+                            // Just log the success
+                            Log::info('Wallet withdrawal processed via webhook', [
+                                'transaction_id' => $transaction->id,
+                                'user_id' => $user->id,
+                                'amount' => $transaction->amount,
+                            ]);
+                        } elseif ($status === Transaction::STATUS_FAILED) {
+                            // Restore balance if withdrawal failed
+                            $walletService->updateBalance($user, $transaction->amount, 'withdrawal_failed_reversal');
+                            
+                            Log::info('Wallet withdrawal failed, balance restored', [
+                                'transaction_id' => $transaction->id,
+                                'user_id' => $user->id,
+                                'amount' => $transaction->amount,
+                            ]);
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to process wallet transaction via webhook', [
+                    'transaction_id' => $transaction->id,
+                    'transaction_type' => $transaction->transaction_type,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                // Don't throw - webhook should still be marked as processed
+            }
+        }
+
         // Mark event as processed (only if event was created/found)
         if ($event && method_exists($event, 'markAsProcessed')) {
             $event->markAsProcessed();
@@ -293,8 +351,124 @@ class PaystackService
             'charge.failed' => Transaction::STATUS_FAILED,
             'transfer.success' => Transaction::STATUS_SUCCESS,
             'transfer.failed' => Transaction::STATUS_FAILED,
+            'transfer.reversed' => Transaction::STATUS_REVERSED,
             default => null,
         };
+    }
+
+    /**
+     * Create a transfer recipient.
+     *
+     * @param array $data
+     * @return array
+     * @throws \Exception
+     */
+    public function createTransferRecipient(array $data): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->post("{$this->baseUrl}/transferrecipient", $data);
+
+            $responseData = $response->json();
+
+            if (!$response->successful() || !($responseData['status'] ?? false)) {
+                Log::error('Paystack Create Recipient Error', [
+                    'status' => $response->status(),
+                    'response' => $responseData,
+                ]);
+
+                throw new \Exception($responseData['message'] ?? 'Failed to create transfer recipient');
+            }
+
+            Log::info('Transfer recipient created', [
+                'recipient_code' => $responseData['data']['recipient_code'] ?? null,
+            ]);
+
+            return $responseData;
+        } catch (\Exception $e) {
+            Log::error('Paystack Create Recipient Service Error', [
+                'error' => $e->getMessage(),
+                'data' => $data,
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Initiate a transfer.
+     *
+     * @param array $data
+     * @return array
+     * @throws \Exception
+     */
+    public function initiateTransfer(array $data): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->post("{$this->baseUrl}/transfer", $data);
+
+            $responseData = $response->json();
+
+            if (!$response->successful() || !($responseData['status'] ?? false)) {
+                Log::error('Paystack Transfer Error', [
+                    'status' => $response->status(),
+                    'response' => $responseData,
+                ]);
+
+                throw new \Exception($responseData['message'] ?? 'Failed to initiate transfer');
+            }
+
+            Log::info('Transfer initiated', [
+                'transfer_code' => $responseData['data']['transfer_code'] ?? null,
+                'reference' => $data['reference'] ?? null,
+            ]);
+
+            return $responseData;
+        } catch (\Exception $e) {
+            Log::error('Paystack Transfer Service Error', [
+                'error' => $e->getMessage(),
+                'data' => $data,
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Verify a transfer.
+     *
+     * @param string $transferCode
+     * @return array
+     * @throws \Exception
+     */
+    public function verifyTransfer(string $transferCode): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->get("{$this->baseUrl}/transfer/{$transferCode}");
+
+            $responseData = $response->json();
+
+            if (!$response->successful() || !($responseData['status'] ?? false)) {
+                throw new \Exception($responseData['message'] ?? 'Failed to verify transfer');
+            }
+
+            return $responseData;
+        } catch (\Exception $e) {
+            Log::error('Paystack Transfer Verification Error', [
+                'error' => $e->getMessage(),
+                'transfer_code' => $transferCode,
+            ]);
+
+            throw $e;
+        }
     }
 }
 
