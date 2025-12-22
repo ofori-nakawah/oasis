@@ -13,12 +13,10 @@ class MakePayLinkUrlNullableInTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            // Make pay_link_url nullable since earning transactions don't have payment links
-            if (Schema::hasColumn('transactions', 'pay_link_url')) {
-                $table->string('pay_link_url')->nullable()->change();
-            }
-        });
+        // Use raw SQL to avoid requiring Doctrine DBAL
+        if (Schema::hasColumn('transactions', 'pay_link_url')) {
+            \DB::statement('ALTER TABLE `transactions` MODIFY COLUMN `pay_link_url` VARCHAR(255) NULL');
+        }
     }
 
     /**
@@ -28,16 +26,14 @@ class MakePayLinkUrlNullableInTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            // Revert pay_link_url to not nullable (but this might fail if there are null values)
-            if (Schema::hasColumn('transactions', 'pay_link_url')) {
-                // First, set any null values to empty string
-                \DB::table('transactions')
-                    ->whereNull('pay_link_url')
-                    ->update(['pay_link_url' => '']);
-                
-                $table->string('pay_link_url')->nullable(false)->change();
-            }
-        });
+        if (Schema::hasColumn('transactions', 'pay_link_url')) {
+            // First, set any null values to empty string
+            \DB::table('transactions')
+                ->whereNull('pay_link_url')
+                ->update(['pay_link_url' => '']);
+            
+            // Revert pay_link_url to not nullable
+            \DB::statement('ALTER TABLE `transactions` MODIFY COLUMN `pay_link_url` VARCHAR(255) NOT NULL');
+        }
     }
 }
