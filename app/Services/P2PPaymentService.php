@@ -202,20 +202,69 @@ class P2PPaymentService
             throw new \Exception('Transaction metadata missing post_id or application_id');
         }
 
-        $post = Post::find($postId);
-        $application = JobApplication::find($applicationId);
+        // Use database transaction with locking to prevent duplicate processing
+        \DB::transaction(function () use ($postId, $applicationId, $transaction, $paymentType) {
+            // Lock the post row to prevent concurrent processing
+            $post = Post::lockForUpdate()->find($postId);
+            $application = JobApplication::find($applicationId);
 
-        if (!$post || !$application) {
-            throw new \Exception('Post or application not found');
-        }
+            if (!$post || !$application) {
+                throw new \Exception('Post or application not found');
+            }
 
-        if ($paymentType === 'initial') {
-            $this->handleInitialPaymentSuccess($post, $application, $transaction);
-        } elseif ($paymentType === 'final') {
-            $this->handleFinalPaymentSuccess($post, $application, $transaction);
-        } else {
-            throw new \Exception("Invalid payment type: {$paymentType}");
-        }
+            // For final payments, check if already processed to prevent duplicates
+            if ($paymentType === 'final') {
+                // Check if job is already closed
+                if ($post->status === 'closed' && $post->final_payment_transaction_id) {
+                    Log::info('P2P Final Payment already processed - skipping duplicate', [
+                        'post_id' => $post->id,
+                        'transaction_id' => $transaction->id,
+                        'existing_final_payment_transaction_id' => $post->final_payment_transaction_id,
+                    ]);
+                    return; // Already processed, skip
+                }
+
+                // Check if earning transaction already exists for this payment transaction
+                // Check by both payment_transaction_id and post_id/application_id to be thorough
+                $existingEarning = Transaction::where('transaction_type', Transaction::TYPE_EARNING)
+                    ->where(function($query) use ($transaction, $postId, $applicationId) {
+                        $query->where('metadata->payment_transaction_id', $transaction->id)
+                              ->orWhere(function($q) use ($postId, $applicationId) {
+                                  $q->where('metadata->post_id', $postId)
+                                    ->where('metadata->application_id', $applicationId);
+                              });
+                    })
+                    ->first();
+
+                if ($existingEarning) {
+                    Log::info('P2P Earning transaction already exists - skipping duplicate', [
+                        'post_id' => $post->id,
+                        'payment_transaction_id' => $transaction->id,
+                        'existing_earning_transaction_id' => $existingEarning->id,
+                    ]);
+                    return; // Already processed, skip
+                }
+            }
+
+            // For initial payments, check if already processed
+            if ($paymentType === 'initial') {
+                if ($post->initial_payment_transaction_id && $post->initial_payment_transaction_id == $transaction->id) {
+                    Log::info('P2P Initial Payment already processed - skipping duplicate', [
+                        'post_id' => $post->id,
+                        'transaction_id' => $transaction->id,
+                    ]);
+                    return; // Already processed, skip
+                }
+            }
+
+            if ($paymentType === 'initial') {
+                $this->handleInitialPaymentSuccess($post, $application, $transaction);
+            } elseif ($paymentType === 'final') {
+                $this->handleFinalPaymentSuccess($post, $application, $transaction);
+            } else {
+                throw new \Exception("Invalid payment type: {$paymentType}");
+            }
+        });
     }
 
     /**
@@ -261,6 +310,46 @@ class P2PPaymentService
      */
     protected function handleFinalPaymentSuccess(Post $post, JobApplication $application, Transaction $transaction): void
     {
+        // Double-check: If job is already closed with this transaction, skip processing
+        if ($post->status === 'closed' && $post->final_payment_transaction_id == $transaction->id) {
+            Log::info('P2P Final Payment already processed - job already closed', [
+                'post_id' => $post->id,
+                'transaction_id' => $transaction->id,
+            ]);
+            return;
+        }
+
+        // Check if earning transaction already exists for this payment transaction
+        // Check by both payment_transaction_id and post_id/application_id to be thorough
+        $existingEarning = Transaction::where('transaction_type', Transaction::TYPE_EARNING)
+            ->where(function($query) use ($transaction, $post, $application) {
+                $query->where('metadata->payment_transaction_id', $transaction->id)
+                      ->orWhere(function($q) use ($post, $application) {
+                          $q->where('metadata->post_id', $post->id)
+                            ->where('metadata->application_id', $application->id);
+                      });
+            })
+            ->first();
+
+        if ($existingEarning) {
+            Log::warning('P2P Earning transaction already exists - preventing duplicate payment', [
+                'post_id' => $post->id,
+                'payment_transaction_id' => $transaction->id,
+                'existing_earning_transaction_id' => $existingEarning->id,
+            ]);
+            // Still update post status if not already closed, but don't credit again
+            if ($post->status !== 'closed') {
+                $post->final_payment_amount = (string) ($transaction->metadata['payment_amount'] ?? $transaction->amount);
+                $post->final_payment_paid_at = now();
+                $post->final_payment_transaction_id = $transaction->id;
+                $post->payment_status = 'fully_paid';
+                $post->status = 'closed';
+                $post->closed_at = now();
+                $post->save();
+            }
+            return;
+        }
+
         // Update post - mark final payment as paid and close job
         $metadata = $transaction->metadata ?? [];
         $finalPaymentAmount = (float) ($metadata['payment_amount'] ?? $transaction->amount);
