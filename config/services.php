@@ -35,4 +35,10 @@ return [
         'public_key' => env('PAYSTACK_PUBLIC_KEY'),
     ],
 
+    'linear' => [
+        'team_id' => env('LINEAR_TEAM_ID'),
+        'team_key' => env('LINEAR_TEAM_KEY'),
+        'label' => env('LINEAR_LABEL'),
+    ],
+
 ];

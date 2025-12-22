@@ -57,7 +57,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <b>Transaction History</b>
-    </div>
+                </div>
                         <div class="col-auto">
                             <div class="form-group mb-0">
                                 <select id="filterType" class="form-control form-control-sm" style="display: inline-block; width: auto;">
@@ -92,13 +92,14 @@
                                 <th>Description</th>
                                     <th>Amount</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                                 </tr>
                                 </thead>
                             <tbody id="transactionsTableBody">
                             @if(isset($transactions) && $transactions->count() > 0)
                                 @foreach($transactions as $transaction)
                                     <tr>
-                                        <td>{{ $transaction->created_at->format('M d, Y') }}</td>
+                                        <td>{{ $transaction->created_at->format('M d, Y H:i') }}</td>
                                         <td>
                                             @if($transaction->transaction_category === 'credit')
                                                 <span class="badge badge-success">Credit</span>
@@ -139,20 +140,29 @@
                                                 <span class="badge badge-secondary">{{ ucfirst($transaction->status) }}</span>
                                             @endif
                                         </td>
+                                        <td>
+                                            @if(in_array($transaction->status, ['pending', 'failed']))
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="showTransactionDetails('{{ $transaction->uuid }}')" title="View Details & Report Issue">
+                                                    <em class="icon ni ni-report"></em>
+                                                </button>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                                 @else
                                 <tr>
-                                    <td colspan="5" class="text-center py-4">
+                                    <td colspan="6" class="text-center py-4">
                                         <p class="text-muted mb-0">You have no transactions yet</p>
                                     </td>
                                             </tr>
                                 @endif
                                 </tbody>
                             </table>
+                        </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 
@@ -221,6 +231,37 @@
                         <button type="submit" class="btn btn-primary">Request Withdrawal</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div class="modal fade" id="transactionDetailsModal" tabindex="-1" role="dialog" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionDetailsModalLabel">Transaction Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="transactionDetailsContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <p class="mt-3">Loading transaction details...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="reportIssueBtn" onclick="reportTransactionIssue()" style="display: none;">
+                        <em class="icon ni ni-report"></em> Report Issue
+                    </button>
+                    <div id="issueReportedMessage" class="alert alert-info mb-0" style="display: none;">
+                        <em class="icon ni ni-info"></em> <strong>Issue Reported:</strong> We are looking into this transaction issue. Our team has been notified and will investigate shortly.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -443,7 +484,7 @@
                             tbody.empty();
 
                             if (response.data.length === 0) {
-                                tbody.append('<tr><td colspan="5" class="text-center py-4"><p class="text-muted mb-0">No transactions found</p></td></tr>');
+                                tbody.append('<tr><td colspan="6" class="text-center py-4"><p class="text-muted mb-0">No transactions found</p></td></tr>');
                             } else {
                                 response.data.forEach(function(transaction) {
                                     const categoryBadge = transaction.category === 'credit' 
@@ -464,6 +505,12 @@
                                         statusBadge = '<span class="badge badge-secondary">' + transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) + '</span>';
                                     }
 
+                                    // Add actions column
+                                    let actionsHtml = '-';
+                                    if (transaction.status === 'pending' || transaction.status === 'failed') {
+                                        actionsHtml = '<button type="button" class="btn btn-sm btn-outline-primary" onclick="showTransactionDetails(\'' + transaction.uuid + '\')" title="View Details & Report Issue"><em class="icon ni ni-report"></em></button>';
+                                    }
+
                                     tbody.append(
                                         '<tr>' +
                                         '<td>' + transaction.created_at_formatted + '</td>' +
@@ -471,6 +518,7 @@
                                         '<td>' + transaction.description + '</td>' +
                                         '<td><span class="' + amountClass + '">' + amountSign + 'GHS ' + parseFloat(transaction.amount).toFixed(2) + '</span></td>' +
                                         '<td>' + statusBadge + '</td>' +
+                                        '<td>' + actionsHtml + '</td>' +
                                         '</tr>'
                                     );
                                 });
@@ -479,6 +527,156 @@
                     }
                 });
             }
+
+            // Store current transaction UUID for report issue
+            let currentTransactionUuid = null;
+
+            // Show transaction details modal
+            window.showTransactionDetails = function(uuid) {
+                currentTransactionUuid = uuid;
+                $('#transactionDetailsModal').modal('show');
+                $('#transactionDetailsContent').html(
+                    '<div class="text-center py-5">' +
+                    '<div class="spinner-border text-primary" role="status">' +
+                    '<span class="sr-only">Loading...</span>' +
+                    '</div>' +
+                    '<p class="mt-3">Loading transaction details...</p>' +
+                    '</div>'
+                );
+                $('#reportIssueBtn').hide();
+                $('#issueReportedMessage').hide();
+
+                // Fetch transaction details
+                $.ajax({
+                    url: '{{ route("wallet.transactions.details", ":id") }}'.replace(':id', uuid),
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.status && response.data) {
+                            const data = response.data;
+                            let html = '<div class="transaction-details">';
+                            html += '<table class="table table-borderless">';
+                            html += '<tr><th width="40%">Transaction Type:</th><td>' + data.type.charAt(0).toUpperCase() + data.type.slice(1) + '</td></tr>';
+                            html += '<tr><th>Status:</th><td><span class="badge badge-' + (data.status === 'success' ? 'success' : data.status === 'pending' ? 'warning' : 'danger') + '">' + data.status.charAt(0).toUpperCase() + data.status.slice(1) + '</span></td></tr>';
+                            html += '<tr><th>Amount:</th><td><strong>' + data.formatted_amount + ' ' + data.currency + '</strong></td></tr>';
+                            const reference = data.reference || 'N/A';
+                            html += '<tr><th>Reference:</th><td>';
+                            if (reference !== 'N/A') {
+                                html += '<span id="transactionReference" style="font-family: monospace;">' + reference + '</span> ';
+                                html += '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyReference(\'' + reference + '\')" title="Copy Reference">';
+                                html += '<em class="icon ni ni-copy"></em>';
+                                html += '</button>';
+                            } else {
+                                html += reference;
+                            }
+                            html += '</td></tr>';
+                            html += '<tr><th>Date:</th><td>' + data.created_at_formatted + '</td></tr>';
+                            if (data.paid_at) {
+                                html += '<tr><th>Paid At:</th><td>' + data.paid_at + '</td></tr>';
+                            }
+                            if (data.channel) {
+                                html += '<tr><th>Channel:</th><td>' + data.channel + '</td></tr>';
+                            }
+                            if (data.gateway_response) {
+                                html += '<tr><th>Gateway Response:</th><td>' + data.gateway_response + '</td></tr>';
+                            }
+                            html += '</table>';
+                            html += '</div>';
+                            $('#transactionDetailsContent').html(html);
+
+                            // Show/hide buttons based on Linear issue status
+                            if (data.has_linear_issue) {
+                                $('#issueReportedMessage').show();
+                                $('#reportIssueBtn').hide();
+                            } else {
+                                $('#reportIssueBtn').show();
+                                $('#issueReportedMessage').hide();
+                            }
+                        } else {
+                            $('#transactionDetailsContent').html(
+                                '<div class="alert alert-danger">Failed to load transaction details. Please try again.</div>'
+                            );
+                        }
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON?.message || 'An error occurred';
+                        $('#transactionDetailsContent').html(
+                            '<div class="alert alert-danger">' + error + '</div>'
+                        );
+                    }
+                });
+            };
+
+            // Report transaction issue
+            window.reportTransactionIssue = function() {
+                if (!currentTransactionUuid) {
+                    alert('Transaction ID not found');
+                    return;
+                }
+
+                const btn = $('#reportIssueBtn');
+                btn.prop('disabled', true).html('<em class="icon ni ni-spinner"></em> Creating Issue...');
+
+                $.ajax({
+                    url: '{{ route("wallet.transactions.report-issue", ":id") }}'.replace(':id', currentTransactionUuid),
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status) {
+                            // Update UI to show message that issue was reported
+                            $('#reportIssueBtn').hide();
+                            $('#issueReportedMessage').show();
+                            
+                            // Show success message
+                            alert('Issue reported successfully! Our team has been notified and will investigate shortly.');
+                        } else {
+                            alert(response.message || 'Failed to create Linear issue');
+                            btn.prop('disabled', false).html('<em class="icon ni ni-report"></em> Report Issue');
+                        }
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON?.message || 'An error occurred';
+                        alert(error);
+                        btn.prop('disabled', false).html('<em class="icon ni ni-report"></em> Report Issue');
+                    }
+                });
+            };
+
+            // Copy reference to clipboard
+            window.copyReference = function(reference) {
+                // Create a temporary textarea element
+                const textarea = document.createElement('textarea');
+                textarea.value = reference;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                
+                try {
+                    // Copy to clipboard
+                    document.execCommand('copy');
+                    
+                    // Show feedback
+                    const btn = event.target.closest('button');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<em class="icon ni ni-check"></em>';
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-success');
+                    
+                    setTimeout(function() {
+                        btn.innerHTML = originalHtml;
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-outline-secondary');
+                    }, 2000);
+                } catch (err) {
+                    // Fallback for browsers that don't support execCommand
+                    alert('Failed to copy. Reference: ' + reference);
+                }
+                
+                // Clean up
+                document.body.removeChild(textarea);
+            };
         });
     </script>
 @endsection

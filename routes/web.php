@@ -88,6 +88,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/wallet/topup', 'Web\WalletController@topup')->name('wallet.topup');
     Route::post('/wallet/withdraw', 'Web\WalletController@withdraw')->name('wallet.withdraw');
     Route::get('/wallet/transactions', 'Web\WalletController@transactions')->name('wallet.transactions');
+    Route::get('/wallet/transactions/{id}/details', 'Web\WalletController@getTransactionDetails')->name('wallet.transactions.details');
+    Route::post('/wallet/transactions/{id}/report-issue', 'Web\WalletController@createLinearIssue')->name('wallet.transactions.report-issue');
 
     /**
      * postings

@@ -35,6 +35,7 @@ class Transaction extends Model
         'transaction_category',
         'bank_account_details',
         'recipient_code',
+        'linear_issue_url',
     ];
 
     protected $casts = [

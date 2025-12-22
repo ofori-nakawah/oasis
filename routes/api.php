@@ -150,6 +150,11 @@ Route::prefix('/v1')->group(function () {
             Route::post('/initialize', 'Api\PaymentController@initialize');
             Route::get('/verify/{reference}', 'Api\PaymentController@verify');
         });
+
+        // Linear issue creation
+        Route::prefix('/linear')->group(function () {
+            Route::post('/issues', 'LinearIssueController@createIssue');
+        });
     });
 
 });
