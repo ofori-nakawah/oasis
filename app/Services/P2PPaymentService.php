@@ -33,15 +33,21 @@ class P2PPaymentService
     }
 
     /**
-     * Calculate final payment amount based on quote and configured percentage
+     * Calculate final payment amount as the remaining amount after initial payment
+     * This ensures users only pay what's left, not a percentage of the full quote again
      *
      * @param float $quoteAmount
      * @return float
      */
     public function calculateFinalPaymentAmount(float $quoteAmount): float
     {
-        $percentage = config('p2p.final_payment_percentage', 90);
-        return ($quoteAmount * $percentage) / 100;
+        $initialPercentage = config('p2p.initial_payment_percentage', 10);
+        $initialPaymentAmount = ($quoteAmount * $initialPercentage) / 100;
+        // Final payment is the remaining amount (quote - initial payment)
+        $finalPaymentAmount = $quoteAmount - $initialPaymentAmount;
+        
+        // Ensure we don't return negative amounts due to rounding
+        return max(0, round($finalPaymentAmount, 2));
     }
 
     /**
