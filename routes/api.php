@@ -165,6 +165,7 @@ Route::prefix('/v1')->group(function () {
             Route::get('/transactions', 'Mobile\WalletController@getTransactions');
             Route::post('/top-up/initiate', 'Mobile\WalletController@initiateTopUp');
             Route::post('/withdraw', 'Mobile\WalletController@withdraw');
+            Route::post('/transactions/{id}/report-issue', 'Mobile\WalletController@reportIssue');
         });
     });
 
