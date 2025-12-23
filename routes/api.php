@@ -158,6 +158,14 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/linear')->group(function () {
             Route::post('/issues', 'LinearIssueController@createIssue');
         });
+
+        // Wallet routes
+        Route::prefix('/wallet')->group(function () {
+            Route::get('/balance', 'Mobile\WalletController@getBalance');
+            Route::get('/transactions', 'Mobile\WalletController@getTransactions');
+            Route::post('/top-up/initiate', 'Mobile\WalletController@initiateTopUp');
+            Route::post('/withdraw', 'Mobile\WalletController@withdraw');
+        });
     });
 
 });
