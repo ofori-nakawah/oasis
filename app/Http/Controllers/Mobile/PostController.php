@@ -446,6 +446,13 @@ class PostController extends Controller
             $application->update();
 
             /**
+             * Close the job posting when user declines
+             */
+            $post->status = "closed";
+            $post->closed_at = Carbon::now();
+            $post->update();
+
+            /**
              * Notify the issuer of a quote
              */
             $post->applications;
@@ -1326,9 +1333,12 @@ class PostController extends Controller
             $application->job_post;
 
             /**
-             * job applicant confirmed
+             * Handle confirm vs decline actions
              */
-            if ($application->job_post->type != "VOLUNTEER" || $request->action === "confirm") {
+            if ($request->action === "confirm") {
+                /**
+                 * job applicant confirmed
+                 */
                 $application->job_post->is_job_applicant_confirmed = "1";
                 $application->job_post->confirmed_applicant_id = $application->user->id;
                 $application->job_post->update();
@@ -1338,6 +1348,14 @@ class PostController extends Controller
                 Notifications::PushUserNotification($application->job_post, $application, $application->user, "APPLICATION_CONFIRMED");
                 PushNotification::Notify("APPLICATION_CONFIRMED", $application, $application->user->fcm_token);
             } else {
+                /**
+                 * Close the job posting when declining a P2P quote
+                 */
+                if ($application->job_post->type === "P2P") {
+                    $application->job_post->status = "closed";
+                    $application->job_post->closed_at = Carbon::now();
+                    $application->job_post->update();
+                }
                 /**
                  * create notification
                  */

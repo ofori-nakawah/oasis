@@ -296,6 +296,14 @@ class Notifications
                     $title = "Quote accepted";
                 }
 
+                if ($event === "APPLICATION_DECLINED") {
+                    $ref_id = "PP" . explode("-", $post->id)[0];
+                    $status = "Quote Declined";
+                    $title = "Quote declined";
+                    $category = $post->category;
+                    $message = "Unfortunately, your quote for the P2P Job with reference ID (" . $ref_id . ") has been declined. The job has been closed.\nThank You.\nThe VORK Team";
+                }
+
                 /**
                  * vorkers
                  */
