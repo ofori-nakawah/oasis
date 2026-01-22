@@ -2349,6 +2349,13 @@ class PostController extends Controller
             $application->update();
 
             /**
+             * Close the job posting when user declines
+             */
+            $post->status = "closed";
+            $post->closed_at = Carbon::now();
+            $post->update();
+
+            /**
              * Notify the issuer of a quote
              */
             $post->applications;
