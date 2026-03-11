@@ -1,19 +1,37 @@
 
 @php
-        $route = '';
-        switch ($type){
-                case 'Quick Jobs':
-                        $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'quick-job']);
-                        break;
-                case 'Part Time Jobs':
-                        $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'fixed-term']);
-                        break;
-                case 'Permanent Jobs':
-                        $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'permanent']);
-                        break;
-                default:
-                        $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'quick-job']);
-                        break;
+        if (auth()->check()) {
+                $route = '';
+                switch ($type){
+                        case 'Quick Jobs':
+                                $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'quick-job']);
+                                break;
+                        case 'Part Time Jobs':
+                                $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'fixed-term']);
+                                break;
+                        case 'Permanent Jobs':
+                                $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'permanent']);
+                                break;
+                        default:
+                                $route = route('user.work.jobs', ['type_of_user' => 'seeker', 'type_of_work' => 'quick-job']);
+                                break;
+                }
+        } else {
+                $route = '';
+                switch ($type){
+                        case 'Quick Jobs':
+                                $route = route('public.jobs.type', ['type' => 'quick-job']);
+                                break;
+                        case 'Part Time Jobs':
+                                $route = route('public.jobs.type', ['type' => 'fixed-term']);
+                                break;
+                        case 'Permanent Jobs':
+                                $route = route('public.jobs.type', ['type' => 'permanent']);
+                                break;
+                        default:
+                                $route = route('public.jobs.index');
+                                break;
+                }
         }
 @endphp
 <div class="nk-block-head nk-block-head-sm">

@@ -118,7 +118,12 @@ if($post->type == "PERMANENT_JOB") {
 <div class="row mt-2">
     <div class="col-md-12">
         <div class="title" style="font-size: 10px;color: #777;">Location</div>
-        <div class="issuer text"><em class="icon ni ni-map-pin"></em> {{ $post->location }} ({{ $post->distance }} km away)</div>
+        <div class="issuer text">
+            <em class="icon ni ni-map-pin"></em> {{ $post->location }}
+            @if($post->distance !== null)
+                ({{ $post->distance }} km away)
+            @endif
+        </div>
     </div>
 </div>
 
@@ -154,15 +159,28 @@ if($post->type == "PERMANENT_JOB") {
                     </a>
                 </div>
                 <div class="mt-3 ml-2">
-                    @if($post->has_already_applied == "yes")
-                        <div class="text-primary text-right">You have already applied for this opportunity</div>
-                    @else
-                        @if ($isShowDetails)
-                            <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
+                    @auth
+                        @if($post->has_already_applied == "yes")
+                            <div class="text-primary text-right">You have already applied for this opportunity</div>
                         @else
-                            <a href="{{route('work.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
+                            @if ($isShowDetails)
+                                <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
+                            @else
+                                <a href="{{route('work.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
+                            @endif
                         @endif
-                    @endif
+                    @endauth
+
+                    @guest
+                        @if ($isShowDetails)
+                            <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Login to Apply</a>
+                        @else
+                            @php
+                                $typeSlug = strtolower(str_replace('_', '-', $post->type));
+                            @endphp
+                            <a href="{{route('public.jobs.show', ['type' => $typeSlug, 'uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
+                        @endif
+                    @endguest
                 </div>
             </div>
         </div>

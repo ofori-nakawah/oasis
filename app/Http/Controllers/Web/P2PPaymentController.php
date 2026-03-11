@@ -293,9 +293,15 @@ class P2PPaymentController extends Controller
             // Handle payment success
             $this->p2pPaymentService->handlePaymentSuccess($reference, $paymentType);
 
-            $message = $paymentType === 'initial' 
-                ? 'Quote approved successfully! Payment completed.' 
+            $message = $paymentType === 'initial'
+                ? 'Quote approved successfully! Payment completed.'
                 : 'Job closed successfully! Payment completed.';
+
+            $postId = $transaction->metadata['post_id'] ?? null;
+
+            if ($postId) {
+                return redirect()->route('work.show', $postId)->with('success', $message);
+            }
 
             return redirect()->route('home')->with('success', $message);
 

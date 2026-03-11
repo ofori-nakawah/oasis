@@ -15,6 +15,11 @@
                     @include("utilities.alerts.alerts")
                 </div>
             </div>
+            <div class="mb-3">
+                <a href="{{ route('public.jobs.index') }}" style="color:#526484; font-size:14px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                    <em class="icon ni ni-arrow-left"></em> Back to Home
+                </a>
+            </div>
             <div class="brand-logo pb-5 text-center">
                 <a href="" class="logo-link">
                     <img class="logo-light logo-img logo-img-lg"

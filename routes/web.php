@@ -13,9 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Public job listings (accessible without authentication)
+ */
+Route::get('/', 'Web\PublicJobsController@index')->name('public.jobs.index');
+Route::get('/jobs/{type}', 'Web\PublicJobsController@listByType')->name('public.jobs.type');
+Route::get('/jobs/{type}/{uuid}', 'Web\PublicJobsController@show')->name('public.jobs.show');
+
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/', 'Web\HomeController@index')->name('home');
-    Route::get('/home', 'Web\HomeController@index')->name('home');
     Route::get('/dashboard', 'Web\HomeController@index')->name('home');
     //    Route::post('/logout', 'Web\AuthController@logout')->name('logout');
 

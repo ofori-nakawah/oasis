@@ -213,7 +213,14 @@
         .hidden {
             display: none;
         }
+
+        .logo-img {
+            max-height: 52px !important;
+            width: auto !important;
+        }
     </style>
+
+    @yield('styles')
 </head>
 
 <body class="nk-body bg-white npc-general has-sidebar ">
@@ -230,6 +237,7 @@
     <div class="nk-app-root">
         <!-- main @s -->
         <div class="nk-main ">
+            @auth
             <!-- sidebar @s -->
             <div class="nk-sidebar nk-sidebar-fixed is-light " data-content="sidebarMenu">
                 <div class="nk-sidebar-element nk-sidebar-head" style="border-bottom: none !important;">
@@ -317,17 +325,20 @@
                 </div><!-- .nk-sidebar-element -->
             </div>
             <!-- sidebar @e -->
+            @endauth
             <!-- wrap @s -->
             <div class="nk-wrap bg-white">
                 <!-- main header @s -->
                 <div class="nk-header nk-header-fixed is-light">
                     <div class="container-fluid">
                         <div class="nk-header-wrap">
+                            @auth
                             <div class="nk-menu-trigger d-xl-none ml-n1">
                                 <a href="#" class="nk-nav-toggle nk-quick-nav-icon" data-target="sidebarMenu"><em class="icon ni ni-menu"></em></a>
                             </div>
-                            <div class="nk-header-brand d-xl-none">
-                                <a href="{{route("home")}}" class="logo-link">
+                            @endauth
+                            <div class="nk-header-brand @auth d-xl-none @endauth">
+                                <a href="@auth {{route("home")}} @else {{route("public.jobs.index")}} @endauth" class="logo-link">
                                     <img class="logo-light logo-img" src="{{asset("assets/html-template/src/images/logo_white_bg.png")}}" srcset="{{asset("assets/html-template/src/images/logo_white_bg.png")}} 2x" alt="logo">
                                     <img class="logo-dark logo-img" src="{{asset("assets/html-template/src/images/logo_white_bg.png")}}" srcset="{{asset("assets/html-template/src/images/logo_white_bg.png")}} 2x" alt="logo-dark">
                                 </a>
@@ -349,13 +360,16 @@
                             </div><!-- .nk-header-news -->
 
                             <!-- Mobile search icon - visible on smaller screens -->
+                            @auth
                             <div class="d-none mr-auto ml-3">
                                 <a href="{{route("user.work.jobs", ["type_of_user" => "employer", "type_of_work" => "p2p"])}}">
                                     <em class="icon ni ni-search"></em>
                                 </a>
                             </div>
+                            @endauth
                             <div class="nk-header-tools">
                                 <ul class="nk-quick-nav">
+                                    @auth
                                     <li>
                                         <a href="{{route("user.volunteerism.list")}}" class="btn btn-outline-success"><b>Volunteer</b></a>
                                     </li>
@@ -408,6 +422,16 @@
                                             </div>
                                         </div>
                                     </li><!-- .dropdown -->
+                                    @endauth
+
+                                    @guest
+                                    <li>
+                                        <a href="{{route('login')}}" class="btn btn-outline-primary"><b>Login</b></a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('onboarding.register')}}" class="btn btn-primary"><b>Register</b></a>
+                                    </li>
+                                    @endguest
                                 </ul><!-- .nk-quick-nav -->
                             </div><!-- .nk-header-tools -->
                         </div><!-- .nk-header-wrap -->
