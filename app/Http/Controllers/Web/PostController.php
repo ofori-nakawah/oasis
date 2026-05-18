@@ -702,6 +702,10 @@ class PostController extends Controller
             return back()->with("info", "This post has been removed by the issuer.");
         }
 
+        if ($post->type === "VOLUNTEER") {
+            return redirect()->route('user.volunteerism.show', ['uuid' => $post->id]);
+        }
+
         //get user coordinates
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {

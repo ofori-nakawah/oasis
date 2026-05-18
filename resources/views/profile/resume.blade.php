@@ -170,7 +170,7 @@ $ratings = $data['ratings'];
                     <div style="font-family: Rockwell">{{$educationHistory->programme}}</div>
                 </td>
                 <td style="vertical-align:top !important;">
-                    <div style="font-family: Rockwell">{{$educationHistory->institution}}
+                    <div style="font-family: Rockwell; font-weight: normal;">{{$educationHistory->institution}}
                     </div>
                 </td>
             </tr>
@@ -194,7 +194,7 @@ $ratings = $data['ratings'];
                     <div style="font-family: Rockwell">{{$certificationsAndTraining->programme}}</div>
                 </td>
                 <td style="vertical-align:top !important;">
-                    <div style="font-family: Rockwell">{{$certificationsAndTraining->institution}}
+                    <div style="font-family: Rockwell; font-weight: normal;">{{$certificationsAndTraining->institution}}
                     </div>
                 </td>
             </tr>

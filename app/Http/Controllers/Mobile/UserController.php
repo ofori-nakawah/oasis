@@ -1216,6 +1216,7 @@ class UserController extends Controller
         $volunteerApplications = JobApplication::where('user_id', $user->id)
             ->where('status', 'confirmed')
             ->whereNotNull('volunteer_hours')
+            ->where('volunteer_hours', '>', 0)
             ->with(['job_post' => function ($query) {
                 $query->where('type', 'VOLUNTEER')
                     ->where('status', 'closed');

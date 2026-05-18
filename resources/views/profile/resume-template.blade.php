@@ -227,18 +227,18 @@ $otherSkills = $data['otherSkills'];
         <table style="width: 100%; border-bottom-width: 0px;">
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Expertise: ⭐ {{ $ratings["expertise"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Expertise: {{ $ratings["expertise"] }}</div>
                 </td>
                 <td>
-                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Work Ethic: ⭐ {{ $ratings["work_ethic"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Work Ethic: {{ $ratings["work_ethic"] }}</div>
                 </td>
             </tr>
             <tr style="width: 100%;">
                 <td style="width: 35%; vertical-align: top !important; margin-bottom: 20px;">
-                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Professionalism: ⭐ {{ $ratings["professionalism"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Professionalism: {{ $ratings["professionalism"] }}</div>
                 </td>
                 <td>
-                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Customer Service: ⭐ {{ $ratings["customer_service"] }}</div>
+                    <div style="font-family: Sans; font-weight: normal; font-size: 14px;">Customer Service: {{ $ratings["customer_service"] }}</div>
                 </td>
             </tr>
         </table>
