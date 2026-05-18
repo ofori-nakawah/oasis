@@ -97,13 +97,13 @@ $otherSkills = $data['otherSkills'];
                         <div style="font-weight: 800; font-family: Rockwell; margin-bottom: 3px;text-decoration: underline; font-size: 14px;color: #000;">Responsibilities</div>
                         <div style="font-family: Sans !important; font-weight: normal; margin: 0 0 5px 0; line-height: 1.2; font-size: 14px;">
                             @php
-                                $items = explode('*', $outsideVorkJob->responsibilities);
+                                $items = preg_split('/[\*\-]/', $outsideVorkJob->responsibilities);
                                 echo '<ul style="margin: 0; padding: 0; list-style-type: none;">';
                                 foreach ($items as $item) {
                                     $item = trim($item);
                                     if (!empty($item)) {
                                         echo '<li style="margin: 0 0 3px 0; padding: 0; display: flex;">';
-                                        echo '<span style="margin-right: 5px;">*</span>' . $item;
+                                        echo '<span style="margin-right: 5px;">-</span>' . $item;
                                         echo '</li>';
                                     }
                                 }
@@ -114,13 +114,13 @@ $otherSkills = $data['otherSkills'];
                         <div style="font-weight: 800; font-family: Rockwell; margin: 15px 0 3px 0;text-decoration: underline; font-size: 14px;color: #000;">Achievements</div>
                         <div style="font-family: Sans !important; font-weight: normal; margin: 0 0 5px 0; line-height: 1.2; font-size: 14px;">
                             @php
-                                $items = explode('*', $outsideVorkJob->achievements);
+                                $items = preg_split('/[\*\-]/', $outsideVorkJob->achievements);
                                 echo '<ul style="margin: 0; padding: 0; list-style-type: none;">';
                                 foreach ($items as $item) {
                                     $item = trim($item);
                                     if (!empty($item)) {
                                         echo '<li style="margin: 0 0 3px 0; padding: 0; display: flex;">';
-                                        echo '<span style="margin-right: 5px;">*</span>' . $item;
+                                        echo '<span style="margin-right: 5px;">-</span>' . $item;
                                         echo '</li>';
                                     }
                                 }
