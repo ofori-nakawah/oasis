@@ -536,17 +536,31 @@ Posts
                         class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
                 </div>
                 @if($post->status === "closed")
-                <div class="text-muted"><em class="icon ni ni-money"></em> GHS {{$post->final_payment_amount}}
-                </div>
+                @if($post->type === "P2P")
+                    @php
+                        $closedQuoteAmount = (float) ($applicant->quote ?? 0);
+                        $closedFeePct = (float) config('p2p.vork_fee_percentage', 1);
+                        $closedTotal = round($closedQuoteAmount * (1 + $closedFeePct / 100), 2);
+                        $closedFeeLabel = rtrim(rtrim(number_format($closedFeePct, 2), '0'), '.');
+                    @endphp
+                    <div class="text-muted"><em class="icon ni ni-money"></em> GHS {{ number_format($closedTotal, 2) }}
+                        <small class="text-muted">(includes {{ $closedFeeLabel }}% service charge)</small>
+                    </div>
+                @else
+                    <div class="text-muted"><em class="icon ni ni-money"></em> GHS {{$post->final_payment_amount}}
+                    </div>
+                @endif
                 <div class="text-muted"><em class="icon ni ni-star-fill"></em> {{$post->job_done_overall_rating}}
                 </div>
                 @endif
             </div>
             <div class="col-md-2">
-                <a href="#" onclick="shareLink()" data-toggle="modal"
-                    data-target="#viewPhoneNumberModal-{{$applicant->id}}"><em
-                        class="icon ni ni-mobile"
-                        style="font-size: 30px;float: right;"></em></a>
+                @if($post->status !== "closed")
+                    <a href="#" onclick="shareLink()" data-toggle="modal"
+                        data-target="#viewPhoneNumberModal-{{$applicant->id}}"><em
+                            class="icon ni ni-mobile"
+                            style="font-size: 30px;float: right;"></em></a>
+                @endif
             </div>
         </div>
         <div class="modal modal-lg fade" tabindex="-1" id="viewPhoneNumberModal-{{$applicant->id}}">
