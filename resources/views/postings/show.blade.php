@@ -599,6 +599,23 @@ Posts
                                         </div>
                                     </div>
 
+                                    @php
+                                        $closureQuoteAmount = (float) ($confirmedApplication->quote ?? 0);
+                                        $closureFeePercentage = (float) config('p2p.vork_fee_percentage', 1);
+                                        $closureVorkFee = round(($closureQuoteAmount * $closureFeePercentage) / 100, 2);
+                                        $closureTotal = round($closureQuoteAmount + $closureVorkFee, 2);
+                                        $closureFeeLabel = rtrim(rtrim(number_format($closureFeePercentage, 2), '0'), '.');
+                                    @endphp
+                                    @if ($closureQuoteAmount > 0)
+                                        <div class="border p-3 mt-2 mb-3" style="border-radius: 12px; background: #f8f9fa;">
+                                            <div class="d-flex justify-content-between"><span class="text-muted">Worker's quote:</span><span>GHS {{ number_format($closureQuoteAmount, 2) }}</span></div>
+                                            <div class="d-flex justify-content-between"><span class="text-muted">Service charge ({{ $closureFeeLabel }}%):</span><span>GHS {{ number_format($closureVorkFee, 2) }}</span></div>
+                                            <hr style="margin: 8px 0;">
+                                            <div class="d-flex justify-content-between" style="font-size: 15px;"><b>Final payment info:</b><b>GHS {{ number_format($closureTotal, 2) }}</b></div>
+                                            <div class="text-muted small text-right">({{ $closureFeeLabel }}% service charge included)</div>
+                                        </div>
+                                    @endif
+
                                     <hr>
 
                                     <p style="font-size: 16px;"><b>Rating</b></p>
