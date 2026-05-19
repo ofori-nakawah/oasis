@@ -476,9 +476,19 @@ Posts
                 <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}"
                         class="font-italic">See profile</a></div>
                         @if ($post->type === "P2P")
+                            @php
+                                $quoteAmount = (float) ($applicant->quote ?? 0);
+                                $vorkFeePercentage = (float) config('p2p.vork_fee_percentage', 1);
+                                $vorkFee = round(($quoteAmount * $vorkFeePercentage) / 100, 2);
+                                $totalEmployerCharge = round($quoteAmount + $vorkFee, 2);
+                            @endphp
                             <div class="border p-3 bg-gray-100 mt-2" style="border-radius: 18px;">
-                                <div class="text-muted"> Quote: {{$applicant->quote}}</div>
-                            <div class="text-muted"> Comments: {{$applicant->comments}}</div>
+                                <div class="text-muted"> Quote: GHS {{ number_format($quoteAmount, 2) }}</div>
+                                @if ($quoteAmount > 0 && $post->is_job_applicant_confirmed != 1)
+                                    <div class="text-muted small">Vork fee ({{ rtrim(rtrim(number_format($vorkFeePercentage, 2), '0'), '.') }}%): GHS {{ number_format($vorkFee, 2) }}</div>
+                                    <div class="font-weight-bold mt-1">You pay: GHS {{ number_format($totalEmployerCharge, 2) }}</div>
+                                @endif
+                                <div class="text-muted mt-1"> Comments: {{$applicant->comments}}</div>
                             </div>
                         @endif
             </div>
