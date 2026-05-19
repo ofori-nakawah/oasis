@@ -131,7 +131,16 @@ if($post->type == "PERMANENT_JOB") {
     <div class="row mt-2">
         <div class="col-md-12">
             <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
-            <div class="issuer text">{!! $post->other_relevant_information ?? 'N/A' !!}</div>
+            <div class="issuer text">
+                @auth
+                    {!! $post->other_relevant_information ?? 'N/A' !!}
+                @else
+                    {!! \App\Helpers\TextMasker::maskContactInfo($post->other_relevant_information) ?: 'N/A' !!}
+                    @if(!empty($post->other_relevant_information))
+                        <div class="small text-muted mt-1"><em class="icon ni ni-lock"></em> Sign in to view contact details.</div>
+                    @endif
+                @endauth
+            </div>
         </div>
     </div>
 @endif
