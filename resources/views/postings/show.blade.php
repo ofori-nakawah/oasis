@@ -476,9 +476,19 @@ Posts
                 <div><a href="{{route('user.profile', ['user_id' => $applicant->user->id])}}"
                         class="font-italic">See profile</a></div>
                         @if ($post->type === "P2P")
+                            @php
+                                $quoteAmount = (float) ($applicant->quote ?? 0);
+                                $vorkFeePercentage = (float) config('p2p.vork_fee_percentage', 1);
+                                $vorkFee = round(($quoteAmount * $vorkFeePercentage) / 100, 2);
+                                $totalEmployerCharge = round($quoteAmount + $vorkFee, 2);
+                            @endphp
                             <div class="border p-3 bg-gray-100 mt-2" style="border-radius: 18px;">
-                                <div class="text-muted"> Quote: {{$applicant->quote}}</div>
-                            <div class="text-muted"> Comments: {{$applicant->comments}}</div>
+                                <div class="text-muted"> Quote: GHS {{ number_format($quoteAmount, 2) }}</div>
+                                @if ($quoteAmount > 0 && $post->is_job_applicant_confirmed != 1)
+                                    <div class="text-muted small">Vork fee ({{ rtrim(rtrim(number_format($vorkFeePercentage, 2), '0'), '.') }}%): GHS {{ number_format($vorkFee, 2) }}</div>
+                                    <div class="font-weight-bold mt-1">You pay: GHS {{ number_format($totalEmployerCharge, 2) }}</div>
+                                @endif
+                                <div class="text-muted mt-1"> Comments: {{$applicant->comments}}</div>
                             </div>
                         @endif
             </div>
@@ -526,17 +536,31 @@ Posts
                         class="icon ni ni-map-pin text-muted"></em> {{$applicant->user->location_name}}
                 </div>
                 @if($post->status === "closed")
-                <div class="text-muted"><em class="icon ni ni-money"></em> GHS {{$post->final_payment_amount}}
-                </div>
+                @if($post->type === "P2P")
+                    @php
+                        $closedQuoteAmount = (float) ($applicant->quote ?? 0);
+                        $closedFeePct = (float) config('p2p.vork_fee_percentage', 1);
+                        $closedTotal = round($closedQuoteAmount * (1 + $closedFeePct / 100), 2);
+                        $closedFeeLabel = rtrim(rtrim(number_format($closedFeePct, 2), '0'), '.');
+                    @endphp
+                    <div class="text-muted"><em class="icon ni ni-money"></em> GHS {{ number_format($closedTotal, 2) }}
+                        <small class="text-muted">(includes {{ $closedFeeLabel }}% service charge)</small>
+                    </div>
+                @else
+                    <div class="text-muted"><em class="icon ni ni-money"></em> GHS {{$post->final_payment_amount}}
+                    </div>
+                @endif
                 <div class="text-muted"><em class="icon ni ni-star-fill"></em> {{$post->job_done_overall_rating}}
                 </div>
                 @endif
             </div>
             <div class="col-md-2">
-                <a href="#" onclick="shareLink()" data-toggle="modal"
-                    data-target="#viewPhoneNumberModal-{{$applicant->id}}"><em
-                        class="icon ni ni-mobile"
-                        style="font-size: 30px;float: right;"></em></a>
+                @if($post->status !== "closed")
+                    <a href="#" onclick="shareLink()" data-toggle="modal"
+                        data-target="#viewPhoneNumberModal-{{$applicant->id}}"><em
+                            class="icon ni ni-mobile"
+                            style="font-size: 30px;float: right;"></em></a>
+                @endif
             </div>
         </div>
         <div class="modal modal-lg fade" tabindex="-1" id="viewPhoneNumberModal-{{$applicant->id}}">
@@ -588,6 +612,23 @@ Posts
                                             <p class="text-muted">Complete below information to close job and make final payment.</p>
                                         </div>
                                     </div>
+
+                                    @php
+                                        $closureQuoteAmount = (float) ($confirmedApplication->quote ?? 0);
+                                        $closureFeePercentage = (float) config('p2p.vork_fee_percentage', 1);
+                                        $closureVorkFee = round(($closureQuoteAmount * $closureFeePercentage) / 100, 2);
+                                        $closureTotal = round($closureQuoteAmount + $closureVorkFee, 2);
+                                        $closureFeeLabel = rtrim(rtrim(number_format($closureFeePercentage, 2), '0'), '.');
+                                    @endphp
+                                    @if ($closureQuoteAmount > 0)
+                                        <div class="border p-3 mt-2 mb-3" style="border-radius: 12px; background: #f8f9fa;">
+                                            <div class="d-flex justify-content-between"><span class="text-muted">Worker's quote:</span><span>GHS {{ number_format($closureQuoteAmount, 2) }}</span></div>
+                                            <div class="d-flex justify-content-between"><span class="text-muted">Service charge ({{ $closureFeeLabel }}%):</span><span>GHS {{ number_format($closureVorkFee, 2) }}</span></div>
+                                            <hr style="margin: 8px 0;">
+                                            <div class="d-flex justify-content-between" style="font-size: 15px;"><b>Final payment info:</b><b>GHS {{ number_format($closureTotal, 2) }}</b></div>
+                                            <div class="text-muted small text-right">({{ $closureFeeLabel }}% service charge included)</div>
+                                        </div>
+                                    @endif
 
                                     <hr>
 

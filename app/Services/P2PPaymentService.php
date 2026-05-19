@@ -21,32 +21,44 @@ class P2PPaymentService
     }
 
     /**
-     * Calculate initial payment amount based on quote and configured percentage
-     *
-     * @param float $quoteAmount
-     * @return float
+     * Vork platform fee added on top of the worker's quote.
+     * The worker still receives the full quote; the employer is charged this extra.
      */
-    public function calculateInitialPaymentAmount(float $quoteAmount): float
+    public function calculateVorkFee(float $quoteAmount): float
     {
-        $percentage = config('p2p.initial_payment_percentage', 10);
-        return ($quoteAmount * $percentage) / 100;
+        $feePercentage = (float) config('p2p.vork_fee_percentage', 1);
+        return round(($quoteAmount * $feePercentage) / 100, 2);
     }
 
     /**
-     * Calculate final payment amount as the remaining amount after initial payment
-     * This ensures users only pay what's left, not a percentage of the full quote again
-     *
-     * @param float $quoteAmount
-     * @return float
+     * Total amount the employer is charged: quote + Vork fee.
+     */
+    public function calculateTotalEmployerCharge(float $quoteAmount): float
+    {
+        return round($quoteAmount + $this->calculateVorkFee($quoteAmount), 2);
+    }
+
+    /**
+     * Initial payment is a percentage of the total employer charge (quote + fee),
+     * so the Vork fee is distributed proportionally between initial and final.
+     */
+    public function calculateInitialPaymentAmount(float $quoteAmount): float
+    {
+        $percentage = (float) config('p2p.initial_payment_percentage', 10);
+        $totalCharge = $this->calculateTotalEmployerCharge($quoteAmount);
+        return round(($totalCharge * $percentage) / 100, 2);
+    }
+
+    /**
+     * Final payment is what remains of the total employer charge after the
+     * initial payment, so the employer pays quote + fee in total.
      */
     public function calculateFinalPaymentAmount(float $quoteAmount): float
     {
-        $initialPercentage = config('p2p.initial_payment_percentage', 10);
-        $initialPaymentAmount = ($quoteAmount * $initialPercentage) / 100;
-        // Final payment is the remaining amount (quote - initial payment)
-        $finalPaymentAmount = $quoteAmount - $initialPaymentAmount;
-        
-        // Ensure we don't return negative amounts due to rounding
+        $totalCharge = $this->calculateTotalEmployerCharge($quoteAmount);
+        $initialPaymentAmount = $this->calculateInitialPaymentAmount($quoteAmount);
+        $finalPaymentAmount = $totalCharge - $initialPaymentAmount;
+
         return max(0, round($finalPaymentAmount, 2));
     }
 
@@ -72,6 +84,8 @@ class P2PPaymentService
 
         $quoteAmount = (float) $application->quote;
         $initialPaymentAmount = $this->calculateInitialPaymentAmount($quoteAmount);
+        $vorkFee = $this->calculateVorkFee($quoteAmount);
+        $totalEmployerCharge = $this->calculateTotalEmployerCharge($quoteAmount);
 
         // If initial payment percentage is 0, skip payment
         if ($initialPaymentAmount <= 0) {
@@ -90,7 +104,7 @@ class P2PPaymentService
         // Initialize transaction with Paystack
         $paymentData = [
             'email' => $user->email,
-            'amount' => (int) ($initialPaymentAmount * 100), // Convert to pesewas/kobo
+            'amount' => (int) round($initialPaymentAmount * 100), // Convert to pesewas/kobo
             'currency' => 'GHS',
             'user_id' => $user->id,
             'metadata' => [
@@ -99,6 +113,8 @@ class P2PPaymentService
                 'payment_type' => 'initial',
                 'quote_amount' => $quoteAmount,
                 'payment_amount' => $initialPaymentAmount,
+                'vork_fee' => $vorkFee,
+                'total_employer_charge' => $totalEmployerCharge,
             ],
         ];
 
@@ -137,6 +153,8 @@ class P2PPaymentService
 
         $quoteAmount = (float) $application->quote;
         $finalPaymentAmount = $this->calculateFinalPaymentAmount($quoteAmount);
+        $vorkFee = $this->calculateVorkFee($quoteAmount);
+        $totalEmployerCharge = $this->calculateTotalEmployerCharge($quoteAmount);
 
         // If final payment percentage is 0, skip payment
         if ($finalPaymentAmount <= 0) {
@@ -155,7 +173,7 @@ class P2PPaymentService
         // Initialize transaction with Paystack
         $paymentData = [
             'email' => $user->email,
-            'amount' => (int) ($finalPaymentAmount * 100), // Convert to pesewas/kobo
+            'amount' => (int) round($finalPaymentAmount * 100), // Convert to pesewas/kobo
             'currency' => 'GHS',
             'user_id' => $user->id,
             'metadata' => [
@@ -164,6 +182,8 @@ class P2PPaymentService
                 'payment_type' => 'final',
                 'quote_amount' => $quoteAmount,
                 'payment_amount' => $finalPaymentAmount,
+                'vork_fee' => $vorkFee,
+                'total_employer_charge' => $totalEmployerCharge,
             ],
         ];
 

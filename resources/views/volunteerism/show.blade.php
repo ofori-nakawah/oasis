@@ -119,8 +119,26 @@
                     </div>
                 </div>
                 @if($original_post->user->id !== auth()->id())
+                    @php
+                        $volunteerIsExpired = false;
+                        try {
+                            $volunteerDeadline = \App\Helpers\DateFormatter::ParseFlexibleDate($original_post->date);
+                            $volunteerIsExpired = $volunteerDeadline instanceof \Carbon\Carbon
+                                && $volunteerDeadline->endOfDay()->isPast();
+                        } catch (\Throwable $e) {
+                            $volunteerIsExpired = false;
+                        }
+                    @endphp
                     <div class="card-footer text-right bg-white" style="border-top: 1px solid #dbdfea;">
-                        @if($original_post->has_already_applied === "yes") <span>You have already applied</span> @elseif($original_post->status === "closed") <span>Post closed</span> @else <a href="{{route("user.apply_for_job", ['uuid' => $original_post->id])}}" class="btn btn-outline-success">Apply</a> @endif
+                        @if($original_post->has_already_applied === "yes")
+                            <span>You have already applied</span>
+                        @elseif($original_post->status === "closed")
+                            <span>Post closed</span>
+                        @elseif($volunteerIsExpired)
+                            <span class="text-danger font-weight-bold">Expired</span>
+                        @else
+                            <a href="{{route("user.apply_for_job", ['uuid' => $original_post->id])}}" class="btn btn-outline-success">Apply</a>
+                        @endif
                     </div>
                 @endif
             </div>

@@ -131,7 +131,16 @@ if($post->type == "PERMANENT_JOB") {
     <div class="row mt-2">
         <div class="col-md-12">
             <div class="title" style="font-size: 10px;color: #777;">Other relevant information</div>
-            <div class="issuer text">{!! $post->other_relevant_information ?? 'N/A' !!}</div>
+            <div class="issuer text">
+                @auth
+                    {!! $post->other_relevant_information ?? 'N/A' !!}
+                @else
+                    {!! \App\Helpers\TextMasker::maskContactInfo($post->other_relevant_information) ?: 'N/A' !!}
+                    @if(!empty($post->other_relevant_information))
+                        <div class="small text-muted mt-1"><em class="icon ni ni-lock"></em> Sign in to view contact details.</div>
+                    @endif
+                @endauth
+            </div>
         </div>
     </div>
 @endif
@@ -150,6 +159,16 @@ if($post->type == "PERMANENT_JOB") {
 @endif
 
 @if(!$isShare)
+    @php
+        $isExpired = false;
+        try {
+            $deadlineDate = \App\Helpers\DateFormatter::ParseFlexibleDate($post->date);
+            $isExpired = $deadlineDate instanceof \Carbon\Carbon
+                && $deadlineDate->endOfDay()->isPast();
+        } catch (\Throwable $e) {
+            $isExpired = false;
+        }
+    @endphp
     <div class="row">
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center">
@@ -164,16 +183,29 @@ if($post->type == "PERMANENT_JOB") {
                             <div class="text-primary text-right">You have already applied for this opportunity</div>
                         @else
                             @if ($isShowDetails)
-                                <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
+                                @if ($isExpired)
+                                    <span class="text-danger font-weight-bold">Expired</span>
+                                @else
+                                    <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Apply</a>
+                                @endif
                             @else
-                                <a href="{{route('work.show', ['uuid' => $post->id])}}" class="btn btn-outline-primary">View details</a>
+                                @php
+                                    $detailsRoute = $post->type === 'VOLUNTEER'
+                                        ? route('user.volunteerism.show', ['uuid' => $post->id])
+                                        : route('work.show', ['uuid' => $post->id]);
+                                @endphp
+                                <a href="{{ $detailsRoute }}" class="btn btn-outline-primary">View details</a>
                             @endif
                         @endif
                     @endauth
 
                     @guest
                         @if ($isShowDetails)
-                            <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Login to Apply</a>
+                            @if ($isExpired)
+                                <span class="text-danger font-weight-bold">Expired</span>
+                            @else
+                                <a href="{{route("user.apply_for_job", ["uuid" => $post->id])}}" class="btn btn-outline-primary">Login to Apply</a>
+                            @endif
                         @else
                             @php
                                 $typeSlug = strtolower(str_replace('_', '-', $post->type));

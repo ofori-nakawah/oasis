@@ -17,22 +17,42 @@
                                                         </div>
                                                 </div>
 
+                                                @php
+                                                        switch ($post->type) {
+                                                            case 'VOLUNTEER':
+                                                                $shareRouteName = 'user.volunteerism.show';
+                                                                break;
+                                                            case 'QUICK_JOB':
+                                                                $shareRouteName = 'user.quick_job.show';
+                                                                break;
+                                                            case 'FIXED_TERM_JOB':
+                                                                $shareRouteName = 'user.show_fixed_term_job_details.show';
+                                                                break;
+                                                            case 'PERMANENT_JOB':
+                                                                $shareRouteName = 'user.show_permanent_job_details.show';
+                                                                break;
+                                                            default:
+                                                                $shareRouteName = 'work.show';
+                                                        }
+                                                        $shareUrl = route($shareRouteName, ['uuid' => $post->id]);
+                                                        $shareSubject = $post->type === 'VOLUNTEER' ? 'Volunteer Opportunity' : 'Job Opportunity';
+                                                @endphp
                                                 <div class="input-group mb-3 justify-content-center ">
-                                                        <input type="text" class="form-control" value="{{ route('work.show', ['uuid' => $post->id]) }}" id="share-url-{{ $post->id }}" readonly>
+                                                        <input type="text" class="form-control" value="{{ $shareUrl }}" id="share-url-{{ $post->id }}" readonly>
                                                         <button class="btn btn-primary btn-sm ml-1" type="button" onclick="copyShareUrl('{{ $post->id }}')"><em class="icon ni ni-copy"></em> Copy</button>
                                                 </div>
 
                                                 <div class="d-flex justify-content-center gap-5 mt-1 mb-1 ">
-                                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('user.quick_job.show', ['uuid' => $post->id])) }}" target="_blank" class="btn btn-outline-primary p-2 m-1">
+                                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}" target="_blank" class="btn btn-outline-primary p-2 m-1">
                                                                 <em class="icon ni ni-facebook-f"></em>
                                                         </a>
-                                                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('user.quick_job.show', ['uuid' => $post->id])) }}&text={{ urlencode('Check out this job: ' . $post->title) }}" target="_blank" class="btn btn-outline-info p-2 m-1">
+                                                        <a href="https://twitter.com/intent/tweet?url={{ urlencode($shareUrl) }}&text={{ urlencode('Check out this opportunity: ' . ($post->title ?? $post->name ?? '')) }}" target="_blank" class="btn btn-outline-info p-2 m-1">
                                                                 <em class="icon ni ni-twitter"></em>
                                                         </a>
-                                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('user.quick_job.show', ['uuid' => $post->id])) }}" target="_blank" class="btn btn-outline-secondary p-2 m-1">
+                                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}" target="_blank" class="btn btn-outline-secondary p-2 m-1">
                                                                 <em class="icon ni ni-linkedin"></em>
                                                         </a>
-                                                        <a href="mailto:?subject={{ urlencode('Job Opportunity: ' . $post->title) }}&body={{ urlencode('Check out this job opportunity: ' . route('user.quick_job.show', ['uuid' => $post->id])) }}" class="btn btn-outline-danger p-2 m-1">
+                                                        <a href="mailto:?subject={{ urlencode($shareSubject . ': ' . ($post->title ?? $post->name ?? '')) }}&body={{ urlencode('Check out this opportunity: ' . $shareUrl) }}" class="btn btn-outline-danger p-2 m-1">
                                                                 <em class="icon ni ni-mail"></em>
                                                         </a>
                                                 </div>

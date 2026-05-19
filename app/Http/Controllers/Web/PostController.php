@@ -702,6 +702,10 @@ class PostController extends Controller
             return back()->with("info", "This post has been removed by the issuer.");
         }
 
+        if ($post->type === "VOLUNTEER") {
+            return redirect()->route('user.volunteerism.show', ['uuid' => $post->id]);
+        }
+
         //get user coordinates
         $user_location = auth()->user()->location_coords;
         if (!$user_location) {
@@ -769,6 +773,7 @@ class PostController extends Controller
         $view = "";
         switch ($post->type) {
             case "QUICK_JOB":
+            case "P2P":
                 $view = "work.quick_jobs.show";
                 break;
             case "FIXED_TERM_JOB":
@@ -777,6 +782,10 @@ class PostController extends Controller
             case "PERMANENT_JOB":
                 $view = "work.permanent.show";
                 break;
+        }
+
+        if ($view === "") {
+            return redirect()->route('user.posts.show', ['uuid' => $post->id]);
         }
 
         return view($view, compact("post", 'filteredPosts'));
